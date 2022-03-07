@@ -4369,7 +4369,7 @@ function _Browser_load(url)
 		}
 	}));
 }
-var $author$project$Main$init = 0;
+var $author$project$Main$init = {button_help: 'assets/buttons/button_help.png', button_highScore: 'assets/buttons/button_highScore.png', button_loadGame: 'assets/buttons/button_loadGame.png', button_newGame: 'assets/buttons/button_newGame.png', button_settings: 'assets/buttons/button_settings.png'};
 var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
 var $elm$core$Basics$LT = {$: 'LT'};
@@ -5182,16 +5182,41 @@ var $elm$browser$Browser$sandbox = function (impl) {
 };
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'Increment') {
-			return model + 1;
-		} else {
-			return model - 1;
+		switch (msg.$) {
+			case 'HoverNewGame':
+				return _Utils_update(
+					model,
+					{button_newGame: 'assets/buttons/button_newGame_hover.png'});
+			case 'HoverLoadGame':
+				return _Utils_update(
+					model,
+					{button_loadGame: 'assets/buttons/button_loadGame_hover.png'});
+			case 'HoverHighScore':
+				return _Utils_update(
+					model,
+					{button_highScore: 'assets/buttons/button_highScore_hover.png'});
+			case 'HoverSettings':
+				return _Utils_update(
+					model,
+					{button_settings: 'assets/buttons/button_settings_hover.png'});
+			case 'HoverHelp':
+				return _Utils_update(
+					model,
+					{button_help: 'assets/buttons/button_help_hover.png'});
+			default:
+				return _Utils_update(
+					model,
+					{button_help: 'assets/buttons/button_help.png', button_highScore: 'assets/buttons/button_highScore.png', button_loadGame: 'assets/buttons/button_loadGame.png', button_newGame: 'assets/buttons/button_newGame.png', button_settings: 'assets/buttons/button_settings.png'});
 		}
 	});
-var $author$project$Main$Decrement = {$: 'Decrement'};
-var $author$project$Main$Increment = {$: 'Increment'};
-var $elm$html$Html$button = _VirtualDom_node('button');
+var $author$project$Main$HoverHelp = {$: 'HoverHelp'};
+var $author$project$Main$HoverHighScore = {$: 'HoverHighScore'};
+var $author$project$Main$HoverLoadGame = {$: 'HoverLoadGame'};
+var $author$project$Main$HoverNewGame = {$: 'HoverNewGame'};
+var $author$project$Main$HoverSettings = {$: 'HoverSettings'};
+var $author$project$Main$MouseOut = {$: 'MouseOut'};
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$img = _VirtualDom_node('img');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -5203,14 +5228,32 @@ var $elm$html$Html$Events$on = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
-var $elm$html$Html$Events$onClick = function (msg) {
+var $elm$html$Html$Events$onMouseOut = function (msg) {
 	return A2(
 		$elm$html$Html$Events$on,
-		'click',
+		'mouseout',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$Events$onMouseOver = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'mouseover',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
 var $author$project$Main$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -5218,32 +5261,62 @@ var $author$project$Main$view = function (model) {
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$button,
+				$elm$html$Html$img,
 				_List_fromArray(
 					[
-						$elm$html$Html$Events$onClick($author$project$Main$Decrement)
+						$elm$html$Html$Attributes$src('assets/mainMenu_background.png')
 					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('-')
-					])),
+				_List_Nil),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text(
-						$elm$core$String$fromInt(model))
-					])),
-				A2(
-				$elm$html$Html$button,
-				_List_fromArray(
-					[
-						$elm$html$Html$Events$onClick($author$project$Main$Increment)
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('+')
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_newGame),
+								$elm$html$Html$Events$onMouseOver($author$project$Main$HoverNewGame),
+								$elm$html$Html$Events$onMouseOut($author$project$Main$MouseOut)
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_loadGame),
+								$elm$html$Html$Events$onMouseOver($author$project$Main$HoverLoadGame),
+								$elm$html$Html$Events$onMouseOut($author$project$Main$MouseOut)
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_highScore),
+								$elm$html$Html$Events$onMouseOver($author$project$Main$HoverHighScore),
+								$elm$html$Html$Events$onMouseOut($author$project$Main$MouseOut)
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_settings),
+								$elm$html$Html$Events$onMouseOver($author$project$Main$HoverSettings),
+								$elm$html$Html$Events$onMouseOut($author$project$Main$MouseOut)
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_help),
+								$elm$html$Html$Events$onMouseOver($author$project$Main$HoverHelp),
+								$elm$html$Html$Events$onMouseOut($author$project$Main$MouseOut)
+							]),
+						_List_Nil)
 					]))
 			]));
 };

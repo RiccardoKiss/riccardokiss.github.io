@@ -1,243 +1,194 @@
 module Main exposing (..)
 
-import Browser
+import Url exposing (Url)
+import Url.Parser as Parser exposing (Parser, (</>), parse, map, oneOf, top, s, string, int)
+import Browser exposing (Document)
+import Browser.Navigation as Nav
+import Json.Decode as Decode
+import Route exposing (Route)
+import Page
+import Home
+import NotFound
+
+import Url.Builder
 import Browser.Events exposing (..)
-import Html exposing (Html, button, div, text, img, iframe)
-import Html.Attributes exposing (srcdoc, src, width, height, style)
-import Html.Events exposing (onClick, onMouseOver, onMouseOut)
-import Playground exposing (..)
-import Player exposing (..)
+import Html exposing (..)
+import Html.Attributes exposing (..)
 
-{-
+-- https://github.com/elm/package.elm-lang.org/blob/master/src/frontend/Main.elm
+-- https://package.elm-lang.org/packages/elm/url/latest/Url-Builder
+-- https://package.elm-lang.org/packages/elm/browser/latest/Browser#application
+-- https://guide.elm-lang.org/webapps/navigation.html
+-- https://github.com/rtfeldman/elm-spa-example
+
 -- MAIN
 
+
+main : Program Decode.Value Model Msg
 main =
-  Browser.sandbox
-  { init = init
-  , update = update
-  , view = view
-  }
+  Browser.application
+    { init = init
+    , view = view
+    , update = update
+    , subscriptions = subscriptions
+    , onUrlChange = UrlChanged
+    , onUrlRequest = LinkClicked
+    }
+
 
 
 -- MODEL
 
-type alias Model =
-  Int
 
-init : Model
-init =
-  1
-
-
--- UPDATE
-
-type Msg
-  = Increment
-  | Decrement
-
-update : Msg -> Model -> Model
-update msg model =
-  case msg of
-    Increment ->
-      model + 1
-
-    Decrement ->
-      model - 1
+type Model
+  = NotFound Nav.Key
+  | Home Home.Model
+  --| NewGame NewGame.Model
+  --| LoadGame LoadGame.Model
+  --| Settings Settings.Model
+  --| HighScore HighScore.Model
+  --| Help Help.Model
 
 
--- VIEW
-
-view : Model -> Html Msg
-view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (String.fromInt model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    , div [style "background-color" "red"] [ img [src "assets/playerIdle1.png"] [] ]
-    , iframe [ heig-- MAIN
-
-    main =
-      Browser.sandbox
-      { init = init
-      , update = update
-      , view = view
-      }
+init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url navKey =
+  changeRouteTo (Route.fromUrl url) (NotFound navKey)
 
 
-    -- MODEL
+changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo maybeRoute model =
+      let
+          navKey =
+            getNavKey model
+      in
+      case maybeRoute of
+          Nothing ->
+              ( NotFound navKey, Cmd.none ) -- model = NotFound Nav.Key
 
-    type alias Model =
-      Int
-
-    init : Model
-    init =
-      1
-
-
-    -- UPDATE
-
-    type Msg
-      = Increment
-      | Decrement
-
-    update : Msg -> Model -> Model
-    update msg model =
-      case msg of
-        Increment ->
-          model + 1
-
-        Decrement ->
-          model - 1
+          Just Route.Home ->
+              Home.init navKey
+                  |> updateWith Home GotHomeMsg model
 
 
-    -- VIEW
-
-    view : Model -> Html Msg
-    view model =
-      div []
-        [ button [ onClick Decrement ] [ text "-" ]
-        , div [] [ text (String.fromInt model) ]
-        , button [ onClick Increment ] [ text "+" ]
-        , div [style "background-color" "red"] [ img [src "assets/playerIdle1.png"] [] ]
-        , iframe [ height 100% ]  -- https://stackoverflow.com/questions/34539606/elm-how-to-use-an-iframe
-        ]ht 100% ]  -- https://stackoverflow.com/questions/34539606/elm-how-to-use-an-iframe
-    ]
--}
--- MAIN
-
-main =
-  Browser.sandbox
-  { init = init
-  , update = update
-  , view = view
-  }
-
-
--- MODEL
-
-type alias Model =
-  { button_newGame : String
-  , button_loadGame : String
-  , button_highScore : String
-  , button_settings : String
-  , button_help : String
-  }
-
-init : Model
-init =
-  { button_newGame = "assets/buttons/button_newGame.png"
-  , button_loadGame = "assets/buttons/button_loadGame.png"
-  , button_highScore = "assets/buttons/button_highScore.png"
-  , button_settings = "assets/buttons/button_settings.png"
-  , button_help = "assets/buttons/button_help.png"
-  }
-
-
--- UPDATE
-
-type Msg
-  = HoverNewGame
-  | HoverLoadGame
-  | HoverHighScore
-  | HoverSettings
-  | HoverHelp
-  | MouseOut
-
-update : Msg -> Model -> Model
-update msg model =
-  case msg of
-    HoverNewGame ->
-      { model
-      | button_newGame = "assets/buttons/button_newGame_hover.png"
-      }
-    HoverLoadGame ->
-      { model
-      | button_loadGame = "assets/buttons/button_loadGame_hover.png"
-      }
-    HoverHighScore ->
-      { model
-      | button_highScore = "assets/buttons/button_highScore_hover.png"
-      }
-    HoverSettings ->
-      { model
-      | button_settings = "assets/buttons/button_settings_hover.png"
-      }
-    HoverHelp ->
-      { model
-      | button_help = "assets/buttons/button_help_hover.png"
-      }
-    MouseOut ->
-      { model
-      | button_newGame = "assets/buttons/button_newGame.png"
-        , button_loadGame = "assets/buttons/button_loadGame.png"
-        , button_highScore = "assets/buttons/button_highScore.png"
-        , button_settings = "assets/buttons/button_settings.png"
-        , button_help = "assets/buttons/button_help.png"
-      }
--- VIEW
-
-view : Model -> Html Msg
-view model =
-  div [ --style "background-image" "url('assets/mainMenu_background.png')"
-      --, style "background-repeat" "no-repeat"
-      --, style "background-position" "center"
-      --, style "background-cover" "cover"
-      ]
-    [ img [src "assets/mainMenu_background.png"] []
-    , div []
-      [ img
-        [ src model.button_newGame
-        , onMouseOver HoverNewGame
-        , onMouseOut MouseOut
-        ] []
-      , img
-        [ src model.button_loadGame
-        , onMouseOver HoverLoadGame
-        , onMouseOut MouseOut
-        ] []
-      , img
-        [ src model.button_highScore
-        , onMouseOver HoverHighScore
-        , onMouseOut MouseOut
-        ] []
-      , img
-        [ src model.button_settings
-        , onMouseOver HoverSettings
-        , onMouseOut MouseOut
-        ] []
-      , img
-        [ src model.button_help
-        , onMouseOver HoverHelp
-        , onMouseOut MouseOut
-        ] []
-      ]
-    ]
-{-
-main =
-  game view update (0,0)
-
-view computer (x,y) =
-  [ image 32 64 "assets/playerIdle250ms.gif"
-      |> move x y
-  ]
-
-update computer (x,y) =
-  ( x + toX computer.keyboard
-  , y + toY computer.keyboard
+updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
+updateWith toModel toMsg model ( subModel, subCmd ) =
+  ( toModel subModel
+  , Cmd.map toMsg subCmd
   )
--}
 
 {-
-subscriptions : Model -> Sub Msg
-subscriptions =
-    Sub.none
+type alias Model =
+  { key : Nav.Key
+  , url : Url.Url
+  }
 
-main =
-  Browser.element
-  { init : init
-  , view : view
-  , update : update
-  , subscriptions : subscriptions
-  ,
-}
+init : Decode.Value -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
+  ( Model key url, Cmd.none )
 -}
+
+-- UPDATE
+
+
+type Msg
+  = LinkClicked Browser.UrlRequest
+  | UrlChanged Url.Url
+  | GotHomeMsg Home.Msg
+--  | GotNewGameMsg
+--  | GotLoadGameMsg
+--  | GotSettingsMsg
+--  | GotHelpMsg
+--  | GotHighScoreMsg
+--  | GotPageNotFoundMsg
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+  case ( msg, model ) of
+    ( LinkClicked urlRequest, _ ) ->
+      case urlRequest of
+        Browser.Internal url ->   -- https://github.com/rtfeldman/elm-spa-example/blob/cb32acd73c3d346d0064e7923049867d8ce67193/src/Main.elm#L213
+          ( model
+          , Nav.pushUrl (getNavKey model) (Url.toString url)
+          )
+
+        Browser.External href ->
+          ( model
+          , Nav.load href
+          )
+
+    ( UrlChanged url, _ ) ->
+      --( { model | url = url }, Cmd.none )
+      changeRouteTo (Route.fromUrl url) model
+
+    ( GotHomeMsg subMsg, Home home ) ->
+      Home.update subMsg home
+        |> updateWith Home GotHomeMsg model
+
+    ( _, _ ) ->
+      ( model, Cmd.none )
+
+
+getNavKey : Model -> Nav.Key
+getNavKey model =
+    case model of
+        NotFound navKey ->
+            navKey
+
+        Home modelHome ->
+            Home.getNavKey modelHome
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+  Sub.none
+
+
+
+-- VIEW
+
+{-
+view : Model -> Document Msg
+view model =
+  case model of
+      Blank ->
+          Blank.view
+
+      Home modelHome ->
+          Home.view modelHome
+
+      --NewGame modelNewGame ->
+
+
+      --LoadGame modelLoadGame ->
+
+
+      --Settings modelSettings ->
+
+
+      --HighScore modelHighScore ->
+
+
+      --Help modelHelp ->
+-}
+view : Model -> Document Msg
+view model =
+  let
+    viewPage page toMsg content =
+      let
+        { title, body } =
+          Page.view page content
+      in
+      { title = title
+      , body = List.map (Html.map toMsg) body
+      }
+  in
+  case model of
+    NotFound _ ->
+      Page.view Page.NotFound NotFound.view
+
+    Home home ->
+      viewPage Page.Home GotHomeMsg (Home.view home)

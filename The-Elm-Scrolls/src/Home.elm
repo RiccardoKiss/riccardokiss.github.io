@@ -196,39 +196,51 @@ view : Model -> { title : String, content : Html Msg }
 view model =
   { title = "Home"
   , content =
-      div [ --style "background-image" "url('assets/mainMenu_background.png')"
+      div [] --style "background-image" "url('assets/mainMenu_background.png')"
           --, style "background-repeat" "no-repeat"
           --, style "background-position" "center"
           --, style "background-cover" "cover"
-          ]
-        [ img [src "assets/mainMenu_background_1920_969.png"] []
-        , div []
-          [ img
-            [ src model.button_newGame
-            , onMouseOver HoverNewGame
-            , onMouseOut MouseOut
-            ] []
-          , img
-            [ src model.button_loadGame
-            , onMouseOver HoverLoadGame
-            , onMouseOut MouseOut
-            ] []
-          , img
-            [ src model.button_highScore
-            , onMouseOver HoverHighScore
-            , onMouseOut MouseOut
-            ] []
-          , img
-            [ src model.button_settings
-            , onMouseOver HoverSettings
-            , onMouseOut MouseOut
-            ] []
-          , img
-            [ src model.button_help
-            , onMouseOver HoverHelp
-            , onMouseOut MouseOut
-            ] []
-          ]
+          --]
+        [ img [src "assets/mainMenu_background_1920_969.png"
+              , style "position" "relative"
+              , style "left" "0px"
+              , style "top" "0px"
+              ] []
+        , img [ src model.button_newGame
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "416px"
+              , onMouseOver HoverNewGame
+              , onMouseOut MouseOut
+              ] []
+        , img [ src model.button_loadGame
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "528px"
+              , onMouseOver HoverLoadGame
+              , onMouseOut MouseOut
+              ] []
+        , img [ src model.button_highScore
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "640px"
+              , onMouseOver HoverHighScore
+              , onMouseOut MouseOut
+              ] []
+        , img [ src model.button_settings
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "752px"
+              , onMouseOver HoverSettings
+              , onMouseOut MouseOut
+              ] []
+        , img [ src model.button_help
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "864px"
+              , onMouseOver HoverHelp
+              , onMouseOut MouseOut
+              ] []
         ]
   }
 {-

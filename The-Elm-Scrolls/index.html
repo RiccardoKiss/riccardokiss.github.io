@@ -6153,6 +6153,8 @@ var $elm$html$Html$Attributes$src = function (url) {
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$Home$view = function (model) {
 	return {
 		content: A2(
@@ -6164,60 +6166,72 @@ var $author$project$Home$view = function (model) {
 					$elm$html$Html$img,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$src('assets/mainMenu_background_1920_969.png')
+							$elm$html$Html$Attributes$src('assets/mainMenu_background_1920_969.png'),
+							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+							A2($elm$html$Html$Attributes$style, 'left', '0px'),
+							A2($elm$html$Html$Attributes$style, 'top', '0px')
 						]),
 					_List_Nil),
 					A2(
-					$elm$html$Html$div,
-					_List_Nil,
+					$elm$html$Html$img,
 					_List_fromArray(
 						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_newGame),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverNewGame),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil),
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_loadGame),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverLoadGame),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil),
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_highScore),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHighScore),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil),
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_settings),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverSettings),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil),
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_help),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHelp),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil)
-						]))
+							$elm$html$Html$Attributes$src(model.button_newGame),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '752px'),
+							A2($elm$html$Html$Attributes$style, 'top', '416px'),
+							$elm$html$Html$Events$onMouseOver($author$project$Home$HoverNewGame),
+							$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src(model.button_loadGame),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '752px'),
+							A2($elm$html$Html$Attributes$style, 'top', '528px'),
+							$elm$html$Html$Events$onMouseOver($author$project$Home$HoverLoadGame),
+							$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src(model.button_highScore),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '752px'),
+							A2($elm$html$Html$Attributes$style, 'top', '640px'),
+							$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHighScore),
+							$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src(model.button_settings),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '752px'),
+							A2($elm$html$Html$Attributes$style, 'top', '752px'),
+							$elm$html$Html$Events$onMouseOver($author$project$Home$HoverSettings),
+							$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src(model.button_help),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '752px'),
+							A2($elm$html$Html$Attributes$style, 'top', '864px'),
+							$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHelp),
+							$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+						]),
+					_List_Nil)
 				])),
 		title: 'Home'
 	};

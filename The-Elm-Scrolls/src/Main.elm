@@ -8,6 +8,7 @@ import Json.Decode as Decode
 import Route exposing (Route)
 import Page
 import Home
+import Settings
 import NotFound
 
 import Url.Builder
@@ -45,29 +46,33 @@ type Model
   | Home Home.Model
   --| NewGame NewGame.Model
   --| LoadGame LoadGame.Model
-  --| Settings Settings.Model
+  | Settings Settings.Model
   --| HighScore HighScore.Model
   --| Help Help.Model
 
 
 init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
-  changeRouteTo (Route.fromUrl url) (NotFound navKey)
+  changeRouteTo (Route.toRoute url.path) (NotFound navKey)
 
 
-changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo : Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
-      let
-          navKey =
-            getNavKey model
-      in
-      case maybeRoute of
-          Nothing ->
-              ( NotFound navKey, Cmd.none ) -- model = NotFound Nav.Key
+  let
+    navKey =
+      getNavKey model
+  in
+  case maybeRoute of
+    Route.NotFound ->
+      ( NotFound navKey, Cmd.none )
 
-          Just Route.Home ->
-              Home.init navKey
-                  |> updateWith Home GotHomeMsg model
+    Route.Home ->
+      Home.init navKey
+        |> updateWith Home GotHomeMsg model
+
+    Route.Settings ->
+      Settings.init navKey
+        |> updateWith Settings GotSettingsMsg model
 
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
@@ -96,7 +101,7 @@ type Msg
   | GotHomeMsg Home.Msg
 --  | GotNewGameMsg
 --  | GotLoadGameMsg
---  | GotSettingsMsg
+  | GotSettingsMsg Settings.Msg
 --  | GotHelpMsg
 --  | GotHighScoreMsg
 --  | GotPageNotFoundMsg
@@ -119,11 +124,15 @@ update msg model =
 
     ( UrlChanged url, _ ) ->
       --( { model | url = url }, Cmd.none )
-      changeRouteTo (Route.fromUrl url) model
+      changeRouteTo (Route.toRoute url.path) model
 
-    ( GotHomeMsg subMsg, Home home ) ->
-      Home.update subMsg home
+    ( GotHomeMsg subMsg, Home modelHome ) ->
+      Home.update subMsg modelHome
         |> updateWith Home GotHomeMsg model
+
+    ( GotSettingsMsg subMsg, Settings modelSettings ) ->
+      Settings.update subMsg modelSettings
+        |> updateWith Settings GotSettingsMsg model
 
     ( _, _ ) ->
       ( model, Cmd.none )
@@ -138,6 +147,8 @@ getNavKey model =
         Home modelHome ->
             Home.getNavKey modelHome
 
+        Settings modelSettings ->
+          Settings.getNavKey modelSettings
 
 -- SUBSCRIPTIONS
 
@@ -190,5 +201,8 @@ view model =
     NotFound _ ->
       Page.view Page.NotFound NotFound.view
 
-    Home home ->
-      viewPage Page.Home GotHomeMsg (Home.view home)
+    Home modelHome ->
+      viewPage Page.Home GotHomeMsg (Home.view modelHome)
+
+    Settings modelSettings ->
+      viewPage Page.Settings GotSettingsMsg (Settings.view modelSettings)

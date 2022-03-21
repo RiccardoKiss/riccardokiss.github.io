@@ -3,9 +3,11 @@ module Home exposing (..)
 import Browser
 import Browser.Navigation as Nav
 import Browser.Events exposing (..)
-import Html exposing (Html, button, div, text, img, iframe)
+import Html exposing (Html, a, button, div, text, img)
 import Html.Attributes exposing (srcdoc, src, width, height, style)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
+import Route exposing (Route)
+
 import Playground exposing (..)
 import Player exposing (..)
 
@@ -144,6 +146,7 @@ type Msg
   | HoverHighScore
   | HoverSettings
   | HoverHelp
+  --| ClickedSettings
   | MouseOut
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -179,6 +182,8 @@ update msg model =
         }
       , Cmd.none
       )
+    --ClickedSettings ->
+      --( { model |}, Cmd.none )
     MouseOut ->
       ( { model
         | button_newGame = "assets/buttons/button_newGame.png"
@@ -196,11 +201,7 @@ view : Model -> { title : String, content : Html Msg }
 view model =
   { title = "Home"
   , content =
-      div [] --style "background-image" "url('assets/mainMenu_background.png')"
-          --, style "background-repeat" "no-repeat"
-          --, style "background-position" "center"
-          --, style "background-cover" "cover"
-          --]
+      div []
         [ img [src "assets/mainMenu_background_1920_969.png"
               , style "position" "relative"
               , style "left" "0px"
@@ -227,13 +228,16 @@ view model =
               , onMouseOver HoverHighScore
               , onMouseOut MouseOut
               ] []
-        , img [ src model.button_settings
-              , style "position" "absolute"
-              , style "left" "752px"
-              , style "top" "752px"
-              , onMouseOver HoverSettings
-              , onMouseOut MouseOut
-              ] []
+        , a [ Route.href Route.Settings ]
+            [ img [ src model.button_settings
+                  , style "position" "absolute"
+                  , style "left" "752px"
+                  , style "top" "752px"
+                  , onMouseOver HoverSettings
+                  , onMouseOut MouseOut
+                  --, onClick ClickedSettings
+                  ] []
+            ]
         , img [ src model.button_help
               , style "position" "absolute"
               , style "left" "752px"

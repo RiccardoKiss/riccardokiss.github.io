@@ -1,5 +1,5 @@
-module Route exposing (Route(..), parser, replaceUrl, fromUrl, routeToPieces)
---module Route exposing (Route(..), fromUrl, href, replaceUrl)
+module Route exposing (Route(..), parser, replaceUrl, fromUrl, routeToPieces, href, toRoute)
+
 
 import Browser.Navigation as Nav
 import Html exposing (Attribute)
@@ -10,12 +10,13 @@ import Url.Parser as Parser exposing (Parser, parse, int, map, oneOf, s, top)
 
 type Route
   = Home
-  --| Settings
+  | Settings
   --| Help
   --| HighScore
   --| NewGame
   --| LoadGame
   --| Game
+  | NotFound
 
 
 parser : Parser (Route -> a) a
@@ -24,12 +25,12 @@ parser =
     [ Parser.map Home Parser.top
     --, Parser.map Help (s "help")
     --, Parser.map HighScore (s "highscore")
-    --, Parser.map Settings (s "settings")
+    , Parser.map Settings (s "settings")
     --, Parser.map NewGame (s "new-game")
     --, Parser.map LoadGame (s "load-game")
     --, Parser.map Game (s "game")
     ]
-{-
+
 toRoute : String -> Route
 toRoute string =
     case Url.fromString string of
@@ -37,18 +38,18 @@ toRoute string =
         NotFound
 
       Just url ->
-        Maybe.withDefault NotFound (parse route url)
--}
+        Maybe.withDefault NotFound (Parser.parse parser url)
+
 
 -- PUBLIC
 
---href : Route -> Attribute msg
---href targetRoute =
---    Attr.href (routeToString targetRoute)
+href : Route -> Attribute msg
+href targetRoute =
+  Attr.href (routeToPieces targetRoute)
 
 replaceUrl : Nav.Key -> Route -> Cmd msg
-replaceUrl key route =
-  Nav.replaceUrl key (routeToPieces route)
+replaceUrl key targetRoute =
+  Nav.replaceUrl key (routeToPieces targetRoute)
 
 
 fromUrl : Url -> Maybe Route
@@ -68,24 +69,25 @@ fromUrl url =
 routeToPieces : Route -> String
 routeToPieces page =
   case page of
+    NotFound ->
+      "not-found"
+
     Home ->
       ""
-{-
-    Help ->
-      "help"
+    --Help ->
+      --"help"
 
-    HighScore ->
-      "highscore"
+    --HighScore ->
+      --"highscore"
 
     Settings ->
       "settings"
 
-    Game ->
-      "game"
+    --Game ->
+      --"game"
 
-    NewGame ->
-      "new-game"
+    --NewGame ->
+      --"new-game"
 
-    LoadGame ->
-      "load-game"
--}
+    --LoadGame ->
+      --"load-game"

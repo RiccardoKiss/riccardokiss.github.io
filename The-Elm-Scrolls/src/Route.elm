@@ -31,9 +31,13 @@ parser =
     --, Parser.map Game (s "game")
     ]
 
+
 toRoute : String -> Route
 toRoute string =
-    case Url.fromString string of
+    let
+      _ = Debug.log "[Route.toRoute] string" string
+    in
+    case Debug.log "[Route.toRoute] Url.fromString string" (Url.fromString string) of
       Nothing ->
         NotFound
 
@@ -45,6 +49,9 @@ toRoute string =
 
 href : Route -> Attribute msg
 href targetRoute =
+  let
+    _ = Debug.log "[Route.href] targetRoute" targetRoute
+  in
   Attr.href (routeToPieces targetRoute)
 
 replaceUrl : Nav.Key -> Route -> Cmd msg
@@ -54,8 +61,12 @@ replaceUrl key targetRoute =
 
 fromUrl : Url -> Maybe Route
 fromUrl url =
-  { url | path = Maybe.withDefault "" url.fragment, fragment = Nothing }
-    |> Parser.parse parser
+  let
+    _ = Debug.log "[Route.fromUrl] url" url
+  in
+    { url | path = Maybe.withDefault "" url.fragment, fragment = Nothing }
+      |> Debug.log "  path"
+      |> Parser.parse parser
 
 
 
@@ -68,6 +79,9 @@ fromUrl url =
 
 routeToPieces : Route -> String
 routeToPieces page =
+  let
+    _ = Debug.log "[Route.routeToPieces] page" page
+  in
   case page of
     NotFound ->
       "not-found"

@@ -6,6 +6,7 @@ import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Json.Decode as Decode
 import Route exposing (Route)
+import Debug exposing (..)
 import Page
 import Home
 import Settings
@@ -42,8 +43,8 @@ main =
 
 
 type Model
-  = NotFound Nav.Key
-  | Home Home.Model
+  = Home Home.Model
+  | NotFound Nav.Key
   --| NewGame NewGame.Model
   --| LoadGame LoadGame.Model
   | Settings Settings.Model
@@ -53,25 +54,34 @@ type Model
 
 init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
-  changeRouteTo (Route.toRoute url.path) (NotFound navKey)
+  let
+    _ = Debug.log "[init] url" url
+  in
+    changeRouteTo (Route.fromUrl url) (Home (Home.initModel navKey))
 
 
-changeRouteTo : Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo maybeRoute model =
   let
     navKey =
       getNavKey model
+    _ = Debug.log "[changeRouteTo] maybeRoute" maybeRoute
   in
   case maybeRoute of
-    Route.NotFound ->
+    Nothing ->
       ( NotFound navKey, Cmd.none )
 
-    Route.Home ->
+    Just Route.NotFound ->
+      ( NotFound navKey, Cmd.none )
+
+    Just Route.Home ->
       Home.init navKey
+        |> Debug.log "changeRouteTo Home"
         |> updateWith Home GotHomeMsg model
 
-    Route.Settings ->
+    Just Route.Settings ->
       Settings.init navKey
+        |> Debug.log "changeRouteTo Settings"
         |> updateWith Settings GotSettingsMsg model
 
 
@@ -124,7 +134,7 @@ update msg model =
 
     ( UrlChanged url, _ ) ->
       --( { model | url = url }, Cmd.none )
-      changeRouteTo (Route.toRoute url.path) model
+      changeRouteTo (Route.fromUrl url) model
 
     ( GotHomeMsg subMsg, Home modelHome ) ->
       Home.update subMsg modelHome

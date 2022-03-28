@@ -12,6 +12,7 @@ type alias Model =
   , button_back : String
   }
 
+
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey

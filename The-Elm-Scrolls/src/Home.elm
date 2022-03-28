@@ -122,6 +122,16 @@ type alias Model =
   , button_help : String
   }
 
+initModel : Nav.Key -> Model
+initModel navKey =
+  { navKey = navKey
+  , button_newGame = "assets/buttons/button_newGame.png"
+  , button_loadGame = "assets/buttons/button_loadGame.png"
+  , button_highScore = "assets/buttons/button_highScore.png"
+  , button_settings = "assets/buttons/button_settings.png"
+  , button_help = "assets/buttons/button_help.png"
+  }
+
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey

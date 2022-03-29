@@ -121,7 +121,7 @@ type alias Model =
   , button_settings : String
   , button_help : String
   }
-
+{-
 initModel : Nav.Key -> Model
 initModel navKey =
   { navKey = navKey
@@ -131,7 +131,7 @@ initModel navKey =
   , button_settings = "assets/buttons/button_settings.png"
   , button_help = "assets/buttons/button_help.png"
   }
-
+-}
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey

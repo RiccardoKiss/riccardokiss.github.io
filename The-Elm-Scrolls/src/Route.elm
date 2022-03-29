@@ -1,4 +1,4 @@
-module Route exposing (Route(..), parser, replaceUrl, fromUrl, routeToPieces, href, toRoute)
+module Route exposing (Route(..), parser, replaceUrl, fromUrl, routeToPieces, href, toRoute, toRoute2)
 
 
 import Browser.Navigation as Nav
@@ -22,7 +22,7 @@ type Route
 parser : Parser (Route -> a) a
 parser =
   oneOf
-    [ Parser.map Home Parser.top
+    [ Parser.map Home (s "index.html")--Parser.top
     --, Parser.map Help (s "help")
     --, Parser.map HighScore (s "highscore")
     , Parser.map Settings (s "settings")
@@ -37,12 +37,24 @@ toRoute string =
     let
       _ = Debug.log "[Route.toRoute] string" string
     in
-    case Debug.log "[Route.toRoute] Url.fromString string" (Url.fromString string) of
+    case Debug.log "  [Route.toRoute] Url.fromString string" (Url.fromString string) of
       Nothing ->
         NotFound
 
       Just url ->
         Maybe.withDefault NotFound (Parser.parse parser url)
+
+toRoute2 : String -> Route
+toRoute2 string =
+  let
+    _ = Debug.log "[Route.toRoute2] string" string
+  in
+  case Debug.log "  [Route.toRoute2] Url.fromString string" (Url.fromString string) of
+    Nothing ->
+      NotFound
+
+    Just url ->
+      Maybe.withDefault NotFound (Parser.parse parser url)
 
 
 -- PUBLIC
@@ -87,7 +99,7 @@ routeToPieces page =
       "not-found"
 
     Home ->
-      ""
+      "index.html"
     --Help ->
       --"help"
 

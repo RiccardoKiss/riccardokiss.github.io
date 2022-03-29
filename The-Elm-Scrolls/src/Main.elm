@@ -57,7 +57,28 @@ init flags url navKey =
   let
     _ = Debug.log "[init] url" url
   in
-    changeRouteTo (Route.fromUrl url) (Home (Home.initModel navKey))
+    changeRouteTo2 (Route.toRoute2 (Url.toString url)) (NotFound navKey)
+
+changeRouteTo2 : Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo2 route model =
+  let
+    navKey =
+      getNavKey model
+    _ = Debug.log "[changeRouteTo2] route" route
+  in
+  case route of
+    Route.NotFound ->
+      ( NotFound navKey, Cmd.none )
+
+    Route.Home ->
+      Home.init navKey
+        |> Debug.log "  [changeRouteTo2] Home"
+        |> updateWith Home GotHomeMsg model
+
+    Route.Settings ->
+      Settings.init navKey
+        |> Debug.log "  [changeRouteTo2] Settings"
+        |> updateWith Settings GotSettingsMsg model
 
 
 changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
@@ -76,12 +97,12 @@ changeRouteTo maybeRoute model =
 
     Just Route.Home ->
       Home.init navKey
-        |> Debug.log "changeRouteTo Home"
+        |> Debug.log "  [changeRouteTo] Home"
         |> updateWith Home GotHomeMsg model
 
     Just Route.Settings ->
       Settings.init navKey
-        |> Debug.log "changeRouteTo Settings"
+        |> Debug.log "  [changeRouteTo] Settings"
         |> updateWith Settings GotSettingsMsg model
 
 
@@ -134,7 +155,7 @@ update msg model =
 
     ( UrlChanged url, _ ) ->
       --( { model | url = url }, Cmd.none )
-      changeRouteTo (Route.fromUrl url) model
+      changeRouteTo2 (Route.toRoute2 (Url.toString url)) model
 
     ( GotHomeMsg subMsg, Home modelHome ) ->
       Home.update subMsg modelHome

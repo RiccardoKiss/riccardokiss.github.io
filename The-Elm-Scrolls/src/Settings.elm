@@ -1,8 +1,8 @@
 module Settings exposing (..)
 
 import Browser.Navigation as Nav
-import Html exposing (Html, div, h1, a, text, img)
-import Html.Attributes exposing (src, style)
+import Html exposing (Html, div, h1, a, text, img, input, p)
+import Html.Attributes exposing (src, style, type_)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 import Route exposing (Route)
 
@@ -56,6 +56,22 @@ view model =
             , style "left" "0px"
             , style "top" "0px"
             ] []
+      , h1 [ style "position" "absolute"
+           , style "left" "800px"
+           , style "top" "100px"
+           ] [ text "Settings" ]
+      , div [ style "position" "absolute"
+            , style "left" "700px"
+            , style "top" "500px"
+            ]
+            [ h1 [style "white-space" "nowrap"]
+                 [ text "Sound:"
+                 , input [ type_ "radio", style "margin-left" "40px" ] []
+                 , text "off"
+                 , input [ type_ "radio", style "margin-left" "40px" ] []
+                 , text "on"
+                 ]
+            ]
       , a [ Route.href Route.Home ]
           [ img [ src model.button_back
                 , style "position" "absolute"

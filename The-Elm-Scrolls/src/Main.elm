@@ -10,6 +10,7 @@ import Debug exposing (..)
 import Page
 import Home
 import Settings
+import Help
 import NotFound
 
 import Url.Builder
@@ -49,7 +50,7 @@ type Model
   --| LoadGame LoadGame.Model
   | Settings Settings.Model
   --| HighScore HighScore.Model
-  --| Help Help.Model
+  | Help Help.Model
 
 
 init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -57,14 +58,14 @@ init flags url navKey =
   let
     _ = Debug.log "[init] url" url
   in
-    changeRouteTo2 (Route.toRoute2 (Url.toString url)) (NotFound navKey)
+    changeRouteTo (Route.toRoute (Url.toString url)) (NotFound navKey)
 
-changeRouteTo2 : Route -> Model -> ( Model, Cmd Msg )
-changeRouteTo2 route model =
+changeRouteTo : Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo route model =
   let
     navKey =
       getNavKey model
-    _ = Debug.log "[changeRouteTo2] route" route
+    _ = Debug.log "[changeRouteTo] route" route
   in
   case route of
     Route.NotFound ->
@@ -72,38 +73,18 @@ changeRouteTo2 route model =
 
     Route.Home ->
       Home.init navKey
-        |> Debug.log "  [changeRouteTo2] Home"
+        |> Debug.log "  [changeRouteTo] Home"
         |> updateWith Home GotHomeMsg model
 
     Route.Settings ->
       Settings.init navKey
-        |> Debug.log "  [changeRouteTo2] Settings"
-        |> updateWith Settings GotSettingsMsg model
-
-
-changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
-changeRouteTo maybeRoute model =
-  let
-    navKey =
-      getNavKey model
-    _ = Debug.log "[changeRouteTo] maybeRoute" maybeRoute
-  in
-  case maybeRoute of
-    Nothing ->
-      ( NotFound navKey, Cmd.none )
-
-    Just Route.NotFound ->
-      ( NotFound navKey, Cmd.none )
-
-    Just Route.Home ->
-      Home.init navKey
-        |> Debug.log "  [changeRouteTo] Home"
-        |> updateWith Home GotHomeMsg model
-
-    Just Route.Settings ->
-      Settings.init navKey
         |> Debug.log "  [changeRouteTo] Settings"
         |> updateWith Settings GotSettingsMsg model
+
+    Route.Help ->
+      Help.init navKey
+        |> Debug.log "  [changeRouteTo] Help"
+        |> updateWith Help GotHelpMsg model
 
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
@@ -133,7 +114,7 @@ type Msg
 --  | GotNewGameMsg
 --  | GotLoadGameMsg
   | GotSettingsMsg Settings.Msg
---  | GotHelpMsg
+  | GotHelpMsg Help.Msg
 --  | GotHighScoreMsg
 --  | GotPageNotFoundMsg
 
@@ -155,7 +136,7 @@ update msg model =
 
     ( UrlChanged url, _ ) ->
       --( { model | url = url }, Cmd.none )
-      changeRouteTo2 (Route.toRoute2 (Url.toString url)) model
+      changeRouteTo (Route.toRoute (Url.toString url)) model
 
     ( GotHomeMsg subMsg, Home modelHome ) ->
       Home.update subMsg modelHome
@@ -164,6 +145,10 @@ update msg model =
     ( GotSettingsMsg subMsg, Settings modelSettings ) ->
       Settings.update subMsg modelSettings
         |> updateWith Settings GotSettingsMsg model
+
+    ( GotHelpMsg subMsg, Help modelHelp ) ->
+      Help.update subMsg modelHelp
+        |> updateWith Help GotHelpMsg model
 
     ( _, _ ) ->
       ( model, Cmd.none )
@@ -180,6 +165,9 @@ getNavKey model =
 
         Settings modelSettings ->
           Settings.getNavKey modelSettings
+
+        Help modelHelp ->
+          Help.getNavKey modelHelp
 
 -- SUBSCRIPTIONS
 
@@ -237,3 +225,6 @@ view model =
 
     Settings modelSettings ->
       viewPage Page.Settings GotSettingsMsg (Settings.view modelSettings)
+
+    Help modelHelp ->
+      viewPage Page.Help GotHelpMsg (Help.view modelHelp)

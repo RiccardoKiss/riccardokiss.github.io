@@ -248,13 +248,15 @@ view model =
                   --, onClick ClickedSettings
                   ] []
             ]
-        , img [ src model.button_help
-              , style "position" "absolute"
-              , style "left" "752px"
-              , style "top" "864px"
-              , onMouseOver HoverHelp
-              , onMouseOut MouseOut
-              ] []
+        , a [ Route.href Route.Help ]
+            [ img [ src model.button_help
+                  , style "position" "absolute"
+                  , style "left" "752px"
+                  , style "top" "864px"
+                  , onMouseOver HoverHelp
+                  , onMouseOut MouseOut
+                  ] []
+            ]
         ]
   }
 {-

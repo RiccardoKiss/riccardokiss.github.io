@@ -1,4 +1,4 @@
-module Route exposing (Route(..), parser, replaceUrl, fromUrl, routeToPieces, href, toRoute, toRoute2)
+module Route exposing (Route(..), parser, replaceUrl, fromUrl, routeToPieces, href, toRoute)
 
 
 import Browser.Navigation as Nav
@@ -11,7 +11,7 @@ import Url.Parser as Parser exposing (Parser, parse, int, map, oneOf, s, top)
 type Route
   = Home
   | Settings
-  --| Help
+  | Help
   --| HighScore
   --| NewGame
   --| LoadGame
@@ -23,7 +23,7 @@ parser : Parser (Route -> a) a
 parser =
   oneOf
     [ Parser.map Home (s "index.html")--Parser.top
-    --, Parser.map Help (s "help")
+    , Parser.map Help (s "help")
     --, Parser.map HighScore (s "highscore")
     , Parser.map Settings (s "settings")
     --, Parser.map NewGame (s "new-game")
@@ -31,25 +31,12 @@ parser =
     --, Parser.map Game (s "game")
     ]
 
-
 toRoute : String -> Route
 toRoute string =
-    let
-      _ = Debug.log "[Route.toRoute] string" string
-    in
-    case Debug.log "  [Route.toRoute] Url.fromString string" (Url.fromString string) of
-      Nothing ->
-        NotFound
-
-      Just url ->
-        Maybe.withDefault NotFound (Parser.parse parser url)
-
-toRoute2 : String -> Route
-toRoute2 string =
   let
-    _ = Debug.log "[Route.toRoute2] string" string
+    _ = Debug.log "[Route.toRoute] string" string
   in
-  case Debug.log "  [Route.toRoute2] Url.fromString string" (Url.fromString string) of
+  case Debug.log "  [Route.toRoute] Url.fromString string" (Url.fromString string) of
     Nothing ->
       NotFound
 
@@ -84,11 +71,6 @@ fromUrl url =
 
 -- INTERNAL
 
---routeToString : Route -> String
---routeToString page =
---  "#/" ++ String.join "/" (routeToPieces page)
-
-
 routeToPieces : Route -> String
 routeToPieces page =
   let
@@ -100,8 +82,9 @@ routeToPieces page =
 
     Home ->
       "index.html"
-    --Help ->
-      --"help"
+
+    Help ->
+      "help"
 
     --HighScore ->
       --"highscore"

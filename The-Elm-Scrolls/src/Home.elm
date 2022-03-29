@@ -231,13 +231,15 @@ view model =
               , onMouseOver HoverLoadGame
               , onMouseOut MouseOut
               ] []
-        , img [ src model.button_highScore
-              , style "position" "absolute"
-              , style "left" "752px"
-              , style "top" "640px"
-              , onMouseOver HoverHighScore
-              , onMouseOut MouseOut
-              ] []
+        , a [ Route.href Route.HighScores ]
+            [ img [ src model.button_highScore
+                  , style "position" "absolute"
+                  , style "left" "752px"
+                  , style "top" "640px"
+                  , onMouseOver HoverHighScore
+                  , onMouseOut MouseOut
+                  ] []
+            ]
         , a [ Route.href Route.Settings ]
             [ img [ src model.button_settings
                   , style "position" "absolute"

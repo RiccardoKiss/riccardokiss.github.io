@@ -5187,6 +5187,9 @@ var $author$project$Main$NotFound = function (a) {
 var $author$project$Main$GotHelpMsg = function (a) {
 	return {$: 'GotHelpMsg', a: a};
 };
+var $author$project$Main$GotHighScoresMsg = function (a) {
+	return {$: 'GotHighScoresMsg', a: a};
+};
 var $author$project$Main$GotHomeMsg = function (a) {
 	return {$: 'GotHomeMsg', a: a};
 };
@@ -5196,6 +5199,9 @@ var $author$project$Main$GotSettingsMsg = function (a) {
 var $author$project$Main$Help = function (a) {
 	return {$: 'Help', a: a};
 };
+var $author$project$Main$HighScores = function (a) {
+	return {$: 'HighScores', a: a};
+};
 var $author$project$Main$Home = function (a) {
 	return {$: 'Home', a: a};
 };
@@ -5203,6 +5209,9 @@ var $author$project$Main$Settings = function (a) {
 	return {$: 'Settings', a: a};
 };
 var $author$project$Help$getNavKey = function (model) {
+	return model.navKey;
+};
+var $author$project$HighScores$getNavKey = function (model) {
 	return model.navKey;
 };
 var $author$project$Home$getNavKey = function (model) {
@@ -5222,14 +5231,22 @@ var $author$project$Main$getNavKey = function (model) {
 		case 'Settings':
 			var modelSettings = model.a;
 			return $author$project$Settings$getNavKey(modelSettings);
-		default:
+		case 'Help':
 			var modelHelp = model.a;
 			return $author$project$Help$getNavKey(modelHelp);
+		default:
+			var modelHighScores = model.a;
+			return $author$project$HighScores$getNavKey(modelHighScores);
 	}
 };
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Help$init = function (navKey) {
+	return _Utils_Tuple2(
+		{button_back: 'assets/buttons/button_back.png', navKey: navKey},
+		$elm$core$Platform$Cmd$none);
+};
+var $author$project$HighScores$init = function (navKey) {
 	return _Utils_Tuple2(
 		{button_back: 'assets/buttons/button_back.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
@@ -5283,7 +5300,7 @@ var $author$project$Main$changeRouteTo = F2(
 						$elm$core$Debug$log,
 						'  [changeRouteTo] Settings',
 						$author$project$Settings$init(navKey)));
-			default:
+			case 'Help':
 				return A4(
 					$author$project$Main$updateWith,
 					$author$project$Main$Help,
@@ -5293,6 +5310,16 @@ var $author$project$Main$changeRouteTo = F2(
 						$elm$core$Debug$log,
 						'  [changeRouteTo] Help',
 						$author$project$Help$init(navKey)));
+			default:
+				return A4(
+					$author$project$Main$updateWith,
+					$author$project$Main$HighScores,
+					$author$project$Main$GotHighScoresMsg,
+					model,
+					A2(
+						$elm$core$Debug$log,
+						'  [changeRouteTo] Help',
+						$author$project$HighScores$init(navKey)));
 		}
 	});
 var $author$project$Route$NotFound = {$: 'NotFound'};
@@ -5931,6 +5958,7 @@ var $elm$url$Url$Parser$parse = F2(
 					$elm$core$Basics$identity)));
 	});
 var $author$project$Route$Help = {$: 'Help'};
+var $author$project$Route$HighScores = {$: 'HighScores'};
 var $author$project$Route$Home = {$: 'Home'};
 var $author$project$Route$Settings = {$: 'Settings'};
 var $elm$url$Url$Parser$Parser = function (a) {
@@ -6033,6 +6061,10 @@ var $author$project$Route$parser = $elm$url$Url$Parser$oneOf(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Help,
 			$elm$url$Url$Parser$s('help')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$HighScores,
+			$elm$url$Url$Parser$s('highscores')),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Settings,
@@ -6139,6 +6171,22 @@ var $author$project$Help$update = F2(
 				$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$HighScores$update = F2(
+	function (msg, model) {
+		if (msg.$ === 'HoverBack') {
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{button_back: 'assets/buttons/button_back_hover.png'}),
+				$elm$core$Platform$Cmd$none);
+		} else {
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{button_back: 'assets/buttons/button_back.png'}),
+				$elm$core$Platform$Cmd$none);
+		}
+	});
 var $author$project$Home$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6199,7 +6247,7 @@ var $author$project$Settings$update = F2(
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple2(msg, model);
-		_v0$5:
+		_v0$6:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'LinkClicked':
@@ -6236,7 +6284,7 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$Home$update, subMsg, modelHome));
 					} else {
-						break _v0$5;
+						break _v0$6;
 					}
 				case 'GotSettingsMsg':
 					if (_v0.b.$ === 'Settings') {
@@ -6249,9 +6297,9 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$Settings$update, subMsg, modelSettings));
 					} else {
-						break _v0$5;
+						break _v0$6;
 					}
-				default:
+				case 'GotHelpMsg':
 					if (_v0.b.$ === 'Help') {
 						var subMsg = _v0.a.a;
 						var modelHelp = _v0.b.a;
@@ -6262,7 +6310,20 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$Help$update, subMsg, modelHelp));
 					} else {
-						break _v0$5;
+						break _v0$6;
+					}
+				default:
+					if (_v0.b.$ === 'HighScores') {
+						var subMsg = _v0.a.a;
+						var modelHighScores = _v0.b.a;
+						return A4(
+							$author$project$Main$updateWith,
+							$author$project$Main$HighScores,
+							$author$project$Main$GotHighScoresMsg,
+							model,
+							A2($author$project$HighScores$update, subMsg, modelHighScores));
+					} else {
+						break _v0$6;
 					}
 			}
 		}
@@ -6270,6 +6331,7 @@ var $author$project$Main$update = F2(
 	});
 var $elm$json$Json$Decode$value = _Json_decodeValue;
 var $author$project$Page$Help = {$: 'Help'};
+var $author$project$Page$HighScores = {$: 'HighScores'};
 var $author$project$Page$Home = {$: 'Home'};
 var $author$project$Page$NotFound = {$: 'NotFound'};
 var $author$project$Page$Settings = {$: 'Settings'};
@@ -6303,6 +6365,8 @@ var $author$project$Route$routeToPieces = function (page) {
 			return 'index.html';
 		case 'Help':
 			return 'help';
+		case 'HighScores':
+			return 'highscores';
 		default:
 			return 'settings';
 	}
@@ -6400,6 +6464,62 @@ var $author$project$Help$view = function (model) {
 		title: 'Help'
 	};
 };
+var $author$project$HighScores$HoverBack = {$: 'HoverBack'};
+var $author$project$HighScores$MouseOut = {$: 'MouseOut'};
+var $author$project$HighScores$view = function (model) {
+	return {
+		content: A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
+							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+							A2($elm$html$Html$Attributes$style, 'left', '0px'),
+							A2($elm$html$Html$Attributes$style, 'top', '0px')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$h1,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '800px'),
+							A2($elm$html$Html$Attributes$style, 'top', '100px')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('High Scores')
+						])),
+					A2(
+					$elm$html$Html$a,
+					_List_fromArray(
+						[
+							$author$project$Route$href($author$project$Route$Home)
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(model.button_back),
+									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+									A2($elm$html$Html$Attributes$style, 'left', '752px'),
+									A2($elm$html$Html$Attributes$style, 'top', '864px'),
+									$elm$html$Html$Events$onMouseOver($author$project$HighScores$HoverBack),
+									$elm$html$Html$Events$onMouseOut($author$project$HighScores$MouseOut)
+								]),
+							_List_Nil)
+						]))
+				])),
+		title: 'HighScores'
+	};
+};
 var $author$project$Home$HoverHelp = {$: 'HoverHelp'};
 var $author$project$Home$HoverHighScore = {$: 'HoverHighScore'};
 var $author$project$Home$HoverLoadGame = {$: 'HoverLoadGame'};
@@ -6448,17 +6568,26 @@ var $author$project$Home$view = function (model) {
 						]),
 					_List_Nil),
 					A2(
-					$elm$html$Html$img,
+					$elm$html$Html$a,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$src(model.button_highScore),
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '752px'),
-							A2($elm$html$Html$Attributes$style, 'top', '640px'),
-							$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHighScore),
-							$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+							$author$project$Route$href($author$project$Route$HighScores)
 						]),
-					_List_Nil),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(model.button_highScore),
+									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+									A2($elm$html$Html$Attributes$style, 'left', '752px'),
+									A2($elm$html$Html$Attributes$style, 'top', '640px'),
+									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHighScore),
+									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+								]),
+							_List_Nil)
+						])),
 					A2(
 					$elm$html$Html$a,
 					_List_fromArray(
@@ -6647,13 +6776,20 @@ var $author$project$Main$view = function (model) {
 				$author$project$Page$Settings,
 				$author$project$Main$GotSettingsMsg,
 				$author$project$Settings$view(modelSettings));
-		default:
+		case 'Help':
 			var modelHelp = model.a;
 			return A3(
 				viewPage,
 				$author$project$Page$Help,
 				$author$project$Main$GotHelpMsg,
 				$author$project$Help$view(modelHelp));
+		default:
+			var modelHighScores = model.a;
+			return A3(
+				viewPage,
+				$author$project$Page$HighScores,
+				$author$project$Main$GotHighScoresMsg,
+				$author$project$HighScores$view(modelHighScores));
 	}
 };
 var $author$project$Main$main = $elm$browser$Browser$application(

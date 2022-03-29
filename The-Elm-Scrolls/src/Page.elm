@@ -7,7 +7,7 @@ type Page
   = NotFound
   | Home
   | Settings
-  | HighScore
+  | HighScores
   | Help
   | Game
 

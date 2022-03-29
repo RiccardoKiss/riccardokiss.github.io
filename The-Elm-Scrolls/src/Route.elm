@@ -12,7 +12,7 @@ type Route
   = Home
   | Settings
   | Help
-  --| HighScore
+  | HighScores
   --| NewGame
   --| LoadGame
   --| Game
@@ -24,7 +24,7 @@ parser =
   oneOf
     [ Parser.map Home (s "index.html")--Parser.top
     , Parser.map Help (s "help")
-    --, Parser.map HighScore (s "highscore")
+    , Parser.map HighScores (s "highscores")
     , Parser.map Settings (s "settings")
     --, Parser.map NewGame (s "new-game")
     --, Parser.map LoadGame (s "load-game")
@@ -86,8 +86,8 @@ routeToPieces page =
     Help ->
       "help"
 
-    --HighScore ->
-      --"highscore"
+    HighScores ->
+      "highscores"
 
     Settings ->
       "settings"

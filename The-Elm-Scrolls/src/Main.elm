@@ -11,6 +11,7 @@ import Page
 import Home
 import Settings
 import Help
+import HighScores
 import NotFound
 
 import Url.Builder
@@ -49,7 +50,7 @@ type Model
   --| NewGame NewGame.Model
   --| LoadGame LoadGame.Model
   | Settings Settings.Model
-  --| HighScore HighScore.Model
+  | HighScores HighScores.Model
   | Help Help.Model
 
 
@@ -86,6 +87,10 @@ changeRouteTo route model =
         |> Debug.log "  [changeRouteTo] Help"
         |> updateWith Help GotHelpMsg model
 
+    Route.HighScores ->
+      HighScores.init navKey
+        |> Debug.log "  [changeRouteTo] Help"
+        |> updateWith HighScores GotHighScoresMsg model
 
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
 updateWith toModel toMsg model ( subModel, subCmd ) =
@@ -115,7 +120,7 @@ type Msg
 --  | GotLoadGameMsg
   | GotSettingsMsg Settings.Msg
   | GotHelpMsg Help.Msg
---  | GotHighScoreMsg
+  | GotHighScoresMsg HighScores.Msg
 --  | GotPageNotFoundMsg
 
 
@@ -150,6 +155,10 @@ update msg model =
       Help.update subMsg modelHelp
         |> updateWith Help GotHelpMsg model
 
+    ( GotHighScoresMsg subMsg, HighScores modelHighScores ) ->
+      HighScores.update subMsg modelHighScores
+        |> updateWith HighScores GotHighScoresMsg model
+
     ( _, _ ) ->
       ( model, Cmd.none )
 
@@ -168,6 +177,9 @@ getNavKey model =
 
         Help modelHelp ->
           Help.getNavKey modelHelp
+
+        HighScores modelHighScores ->
+          HighScores.getNavKey modelHighScores
 
 -- SUBSCRIPTIONS
 
@@ -228,3 +240,6 @@ view model =
 
     Help modelHelp ->
       viewPage Page.Help GotHelpMsg (Help.view modelHelp)
+
+    HighScores modelHighScores ->
+      viewPage Page.HighScores GotHighScoresMsg (HighScores.view modelHighScores)

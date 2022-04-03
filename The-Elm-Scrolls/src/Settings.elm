@@ -2,9 +2,14 @@ module Settings exposing (..)
 
 import Browser.Navigation as Nav
 import Html exposing (Html, div, h1, a, text, img, input)
-import Html.Attributes exposing (src, style, type_)
+import Html.Attributes exposing (src, style, type_, checked)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 import Route exposing (Route)
+
+
+type Sound
+  = On
+  | Off
 
 
 type alias Model =
@@ -12,10 +17,6 @@ type alias Model =
   , button_back : String
   , sound : Sound
   }
-
-type Sound
-  = On
-  | Off
 
 
 init : Nav.Key -> ( Model, Cmd Msg )
@@ -33,10 +34,22 @@ getNavKey model =
   model.navKey
 
 
+radio : msg -> Bool -> String -> List ( Html msg )
+radio  msg isChecked value =
+  [ input [ type_ "radio"
+            , style "margin-left" "40px"
+            , onClick msg
+            , checked isChecked
+            ] []
+  , text value
+  ]
+
+
 type Msg
   = HoverBack
   --| ClickedBack
   | MouseOut
+  | SoundTo Sound
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -56,6 +69,11 @@ update msg model =
       , Cmd.none
       )
 
+    SoundTo choice ->
+      ( { model
+        | sound = choice }
+      , Cmd.none
+      )
 
 view : Model -> { title : String, content : Html Msg }
 view model =
@@ -77,16 +95,10 @@ view model =
             , style "top" "500px"
             ]
             [ h1 [style "white-space" "nowrap"]
-                 [ text "Sound:"
-                 , input [ type_ "radio"
-                         , style "margin-left" "40px"
-                         ] []
-                 , text "off"
-                 , input [ type_ "radio"
-                         , style "margin-left" "40px"
-                         ] []
-                 , text "on"
-                 ]
+                 ([ text "Sound:" ]
+                 ++ radio ( SoundTo Off ) ( model.sound == Off ) "off"
+                 ++ radio ( SoundTo On ) ( model.sound == On ) "on"
+                 )
             ]
       , a [ Route.href Route.Home ]
           [ img [ src model.button_back

@@ -2,15 +2,22 @@ module NewGame exposing (..)
 
 import Browser.Navigation as Nav
 import Html exposing (Html, div, h1, a, text, img, input)
-import Html.Attributes exposing (src, style, type_)
+import Html.Attributes exposing (src, style, type_, checked)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 import Route exposing (Route)
+
+
+type Difficulty
+  = Easy
+  | Medium
+  | Hard
 
 
 type alias Model =
   { navKey : Nav.Key
   , button_back : String
   , button_start : String
+  , difficulty : Difficulty
   }
 
 
@@ -19,6 +26,7 @@ init navKey =
   ( { navKey = navKey
     , button_back = "assets/buttons/button_back.png"
     , button_start = "assets/buttons/button_start.png"
+    , difficulty = Medium
     }
   , Cmd.none
   )
@@ -29,11 +37,23 @@ getNavKey model =
   model.navKey
 
 
+radio : msg -> Bool -> String -> List ( Html msg )
+radio  msg isChecked value =
+  [ input [ type_ "radio"
+          , style "margin-left" "40px"
+          , onClick msg
+          , checked isChecked
+          ] []
+  , text value
+  ]
+
+
 type Msg
   = HoverBack
   | HoverStart
   --| ClickedBack
   | MouseOut
+  | DifficultyTo Difficulty
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -58,6 +78,12 @@ update msg model =
         | button_back = "assets/buttons/button_back.png"
           , button_start = "assets/buttons/button_start.png"
         }
+      , Cmd.none
+      )
+
+    DifficultyTo choice ->
+      ( { model
+        | difficulty = choice }
       , Cmd.none
       )
 
@@ -86,14 +112,11 @@ view model =
                  , input [ type_ "input", style "margin-left" "40px" ] []
                  ]
             , h1 [style "white-space" "nowrap"]
-                 [ text "Difficulty:"
-                 , input [ type_ "radio", style "margin-left" "40px" ] []
-                 , text "easy"
-                 , input [ type_ "radio", style "margin-left" "40px" ] []
-                 , text "medium"
-                 , input [ type_ "radio", style "margin-left" "40px" ] []
-                 , text "hard"
-                 ]
+                 ([ text "Difficulty:" ]
+                 ++ radio ( DifficultyTo Easy ) ( model.difficulty == Easy ) "easy"
+                 ++ radio ( DifficultyTo Medium ) ( model.difficulty == Medium ) "medium"
+                 ++ radio ( DifficultyTo Hard ) ( model.difficulty == Hard ) "hard"
+                 )
             ]
       , a [ Route.href Route.Home ]
           [ img [ src model.button_back

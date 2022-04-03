@@ -21,7 +21,8 @@ type Route
 parser : Parser (Route -> a) a
 parser =
   oneOf
-    [ Parser.map Home (s "index.html")--Parser.top
+    [ Parser.map Home (s "index.html")
+    --, Parser.map Home Parser.top
     , Parser.map Help (s "help")
     , Parser.map HighScores (s "highscores")
     , Parser.map Settings (s "settings")

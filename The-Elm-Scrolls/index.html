@@ -5268,9 +5268,10 @@ var $author$project$Home$init = function (navKey) {
 		{button_help: 'assets/buttons/button_help.png', button_highScore: 'assets/buttons/button_highScore.png', button_loadGame: 'assets/buttons/button_loadGame.png', button_newGame: 'assets/buttons/button_newGame.png', button_settings: 'assets/buttons/button_settings.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
+var $author$project$NewGame$Medium = {$: 'Medium'};
 var $author$project$NewGame$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/buttons/button_back.png', button_start: 'assets/buttons/button_start.png', navKey: navKey},
+		{button_back: 'assets/buttons/button_back.png', button_start: 'assets/buttons/button_start.png', difficulty: $author$project$NewGame$Medium, navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Settings$Off = {$: 'Off'};
@@ -6276,28 +6277,43 @@ var $author$project$NewGame$update = F2(
 						model,
 						{button_start: 'assets/buttons/button_start_hover.png'}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'MouseOut':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{button_back: 'assets/buttons/button_back.png', button_start: 'assets/buttons/button_start.png'}),
 					$elm$core$Platform$Cmd$none);
+			default:
+				var choice = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{difficulty: choice}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Settings$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'HoverBack') {
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{button_back: 'assets/buttons/button_back_hover.png'}),
-				$elm$core$Platform$Cmd$none);
-		} else {
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{button_back: 'assets/buttons/button_back.png'}),
-				$elm$core$Platform$Cmd$none);
+		switch (msg.$) {
+			case 'HoverBack':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{button_back: 'assets/buttons/button_back_hover.png'}),
+					$elm$core$Platform$Cmd$none);
+			case 'MouseOut':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{button_back: 'assets/buttons/button_back.png'}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var choice = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{sound: choice}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$update = F2(
@@ -6716,11 +6732,48 @@ var $author$project$Home$view = function (model) {
 		title: 'Home'
 	};
 };
+var $author$project$NewGame$DifficultyTo = function (a) {
+	return {$: 'DifficultyTo', a: a};
+};
+var $author$project$NewGame$Easy = {$: 'Easy'};
+var $author$project$NewGame$Hard = {$: 'Hard'};
 var $author$project$NewGame$HoverBack = {$: 'HoverBack'};
 var $author$project$NewGame$HoverStart = {$: 'HoverStart'};
 var $author$project$NewGame$MouseOut = {$: 'MouseOut'};
 var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $author$project$NewGame$radio = F3(
+	function (msg, isChecked, value) {
+		return _List_fromArray(
+			[
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('radio'),
+						A2($elm$html$Html$Attributes$style, 'margin-left', '40px'),
+						$elm$html$Html$Events$onClick(msg),
+						$elm$html$Html$Attributes$checked(isChecked)
+					]),
+				_List_Nil),
+				$elm$html$Html$text(value)
+			]);
+	});
 var $author$project$NewGame$view = function (model) {
 	return {
 		content: A2(
@@ -6785,37 +6838,28 @@ var $author$project$NewGame$view = function (model) {
 								[
 									A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
 								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Difficulty:'),
-									A2(
-									$elm$html$Html$input,
-									_List_fromArray(
-										[
-											$elm$html$Html$Attributes$type_('radio'),
-											A2($elm$html$Html$Attributes$style, 'margin-left', '40px')
-										]),
-									_List_Nil),
-									$elm$html$Html$text('easy'),
-									A2(
-									$elm$html$Html$input,
-									_List_fromArray(
-										[
-											$elm$html$Html$Attributes$type_('radio'),
-											A2($elm$html$Html$Attributes$style, 'margin-left', '40px')
-										]),
-									_List_Nil),
-									$elm$html$Html$text('medium'),
-									A2(
-									$elm$html$Html$input,
-									_List_fromArray(
-										[
-											$elm$html$Html$Attributes$type_('radio'),
-											A2($elm$html$Html$Attributes$style, 'margin-left', '40px')
-										]),
-									_List_Nil),
-									$elm$html$Html$text('hard')
-								]))
+							_Utils_ap(
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Difficulty:')
+									]),
+								_Utils_ap(
+									A3(
+										$author$project$NewGame$radio,
+										$author$project$NewGame$DifficultyTo($author$project$NewGame$Easy),
+										_Utils_eq(model.difficulty, $author$project$NewGame$Easy),
+										'easy'),
+									_Utils_ap(
+										A3(
+											$author$project$NewGame$radio,
+											$author$project$NewGame$DifficultyTo($author$project$NewGame$Medium),
+											_Utils_eq(model.difficulty, $author$project$NewGame$Medium),
+											'medium'),
+										A3(
+											$author$project$NewGame$radio,
+											$author$project$NewGame$DifficultyTo($author$project$NewGame$Hard),
+											_Utils_eq(model.difficulty, $author$project$NewGame$Hard),
+											'hard')))))
 						])),
 					A2(
 					$elm$html$Html$a,
@@ -6870,6 +6914,27 @@ var $author$project$Page$view = F2(
 	});
 var $author$project$Settings$HoverBack = {$: 'HoverBack'};
 var $author$project$Settings$MouseOut = {$: 'MouseOut'};
+var $author$project$Settings$On = {$: 'On'};
+var $author$project$Settings$SoundTo = function (a) {
+	return {$: 'SoundTo', a: a};
+};
+var $author$project$Settings$radio = F3(
+	function (msg, isChecked, value) {
+		return _List_fromArray(
+			[
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('radio'),
+						A2($elm$html$Html$Attributes$style, 'margin-left', '40px'),
+						$elm$html$Html$Events$onClick(msg),
+						$elm$html$Html$Attributes$checked(isChecked)
+					]),
+				_List_Nil),
+				$elm$html$Html$text(value)
+			]);
+	});
 var $author$project$Settings$view = function (model) {
 	return {
 		content: A2(
@@ -6916,28 +6981,22 @@ var $author$project$Settings$view = function (model) {
 								[
 									A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
 								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Sound:'),
-									A2(
-									$elm$html$Html$input,
-									_List_fromArray(
-										[
-											$elm$html$Html$Attributes$type_('radio'),
-											A2($elm$html$Html$Attributes$style, 'margin-left', '40px')
-										]),
-									_List_Nil),
-									$elm$html$Html$text('off'),
-									A2(
-									$elm$html$Html$input,
-									_List_fromArray(
-										[
-											$elm$html$Html$Attributes$type_('radio'),
-											A2($elm$html$Html$Attributes$style, 'margin-left', '40px')
-										]),
-									_List_Nil),
-									$elm$html$Html$text('on')
-								]))
+							_Utils_ap(
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Sound:')
+									]),
+								_Utils_ap(
+									A3(
+										$author$project$Settings$radio,
+										$author$project$Settings$SoundTo($author$project$Settings$Off),
+										_Utils_eq(model.sound, $author$project$Settings$Off),
+										'off'),
+									A3(
+										$author$project$Settings$radio,
+										$author$project$Settings$SoundTo($author$project$Settings$On),
+										_Utils_eq(model.sound, $author$project$Settings$On),
+										'on'))))
 						])),
 					A2(
 					$elm$html$Html$a,

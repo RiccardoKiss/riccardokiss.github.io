@@ -21,14 +21,17 @@ init navKey =
   , Cmd.none
   )
 
+
 getNavKey : Model -> Nav.Key
 getNavKey model =
   model.navKey
+
 
 type Msg
   = HoverBack
   --| ClickedBack
   | MouseOut
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -39,12 +42,14 @@ update msg model =
         }
       , Cmd.none
       )
+
     MouseOut ->
       ( { model
         | button_back = "assets/buttons/button_back.png"
         }
       , Cmd.none
       )
+
 
 view : Model -> { title : String, content : Html Msg }
 view model =

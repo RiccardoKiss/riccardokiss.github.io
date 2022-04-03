@@ -9,8 +9,6 @@ import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 import Route exposing (Route)
 
 
--- MODEL
-
 type alias Model =
   { navKey : Nav.Key
   , button_newGame : String
@@ -19,6 +17,7 @@ type alias Model =
   , button_settings : String
   , button_help : String
   }
+
 
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
@@ -32,11 +31,11 @@ init navKey =
   , Cmd.none
   )
 
+
 getNavKey : Model -> Nav.Key
 getNavKey model =
   model.navKey
 
--- UPDATE
 
 type Msg
   = HoverNewGame
@@ -47,6 +46,7 @@ type Msg
   --| ClickedSettings
   | MouseOut
 
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
@@ -56,32 +56,35 @@ update msg model =
         }
       , Cmd.none
       )
+
     HoverLoadGame ->
       ( { model
         | button_loadGame = "assets/buttons/button_loadGame_hover.png"
         }
       , Cmd.none
       )
+
     HoverHighScore ->
       ( { model
         | button_highScore = "assets/buttons/button_highScore_hover.png"
         }
       , Cmd.none
       )
+
     HoverSettings ->
       ( { model
         | button_settings = "assets/buttons/button_settings_hover.png"
         }
       , Cmd.none
       )
+
     HoverHelp ->
       ( { model
         | button_help = "assets/buttons/button_help_hover.png"
         }
       , Cmd.none
       )
-    --ClickedSettings ->
-      --( { model |}, Cmd.none )
+
     MouseOut ->
       ( { model
         | button_newGame = "assets/buttons/button_newGame.png"
@@ -93,7 +96,6 @@ update msg model =
       , Cmd.none
       )
 
--- VIEW
 
 view : Model -> { title : String, content : Html Msg }
 view model =
@@ -106,13 +108,15 @@ view model =
               , style "left" "0px"
               , style "top" "0px"
               ] []
-        , img [ src model.button_newGame
-              , style "position" "absolute"
-              , style "left" "752px"
-              , style "top" "416px"
-              , onMouseOver HoverNewGame
-              , onMouseOut MouseOut
-              ] []
+        , a [ Route.href Route.NewGame ]
+            [ img [ src model.button_newGame
+                  , style "position" "absolute"
+                  , style "left" "752px"
+                  , style "top" "416px"
+                  , onMouseOver HoverNewGame
+                  , onMouseOut MouseOut
+                  ] []
+            ]
         , img [ src model.button_loadGame
               , style "position" "absolute"
               , style "left" "752px"

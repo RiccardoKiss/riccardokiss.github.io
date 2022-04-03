@@ -12,7 +12,7 @@ type Route
   | Settings
   | Help
   | HighScores
-  --| NewGame
+  | NewGame
   --| LoadGame
   --| Game
   | NotFound
@@ -25,7 +25,7 @@ parser =
     , Parser.map Help (s "help")
     , Parser.map HighScores (s "highscores")
     , Parser.map Settings (s "settings")
-    --, Parser.map NewGame (s "new-game")
+    , Parser.map NewGame (s "new-game")
     --, Parser.map LoadGame (s "load-game")
     --, Parser.map Game (s "game")
     ]
@@ -95,8 +95,8 @@ routeToPieces page =
     --Game ->
       --"game"
 
-    --NewGame ->
-      --"new-game"
+    NewGame ->
+      "new-game"
 
     --LoadGame ->
       --"load-game"

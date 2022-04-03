@@ -10,7 +10,7 @@ type Page
   | Settings
   | HighScores
   | Help
-  | Game
+  | NewGame
 
 view : Page -> { title : String, content : Html msg } -> Document msg
 view page { title, content } =

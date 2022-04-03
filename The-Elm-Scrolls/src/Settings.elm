@@ -1,7 +1,7 @@
 module Settings exposing (..)
 
 import Browser.Navigation as Nav
-import Html exposing (Html, div, h1, a, text, img, input, p)
+import Html exposing (Html, div, h1, a, text, img, input)
 import Html.Attributes exposing (src, style, type_)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 import Route exposing (Route)
@@ -10,25 +10,34 @@ import Route exposing (Route)
 type alias Model =
   { navKey : Nav.Key
   , button_back : String
+  , sound : Sound
   }
+
+type Sound
+  = On
+  | Off
 
 
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
     , button_back = "assets/buttons/button_back.png"
+    , sound = Off
     }
   , Cmd.none
   )
+
 
 getNavKey : Model -> Nav.Key
 getNavKey model =
   model.navKey
 
+
 type Msg
   = HoverBack
   --| ClickedBack
   | MouseOut
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -39,12 +48,14 @@ update msg model =
         }
       , Cmd.none
       )
+
     MouseOut ->
       ( { model
         | button_back = "assets/buttons/button_back.png"
         }
       , Cmd.none
       )
+
 
 view : Model -> { title : String, content : Html Msg }
 view model =
@@ -67,9 +78,13 @@ view model =
             ]
             [ h1 [style "white-space" "nowrap"]
                  [ text "Sound:"
-                 , input [ type_ "radio", style "margin-left" "40px" ] []
+                 , input [ type_ "radio"
+                         , style "margin-left" "40px"
+                         ] []
                  , text "off"
-                 , input [ type_ "radio", style "margin-left" "40px" ] []
+                 , input [ type_ "radio"
+                         , style "margin-left" "40px"
+                         ] []
                  , text "on"
                  ]
             ]

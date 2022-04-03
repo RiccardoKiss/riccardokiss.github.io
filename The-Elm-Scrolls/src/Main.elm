@@ -9,6 +9,7 @@ import Route exposing (Route)
 import Debug exposing (..)
 import Page
 import Home
+import NewGame
 import Settings
 import Help
 import HighScores
@@ -47,7 +48,7 @@ main =
 type Model
   = Home Home.Model
   | NotFound Nav.Key
-  --| NewGame NewGame.Model
+  | NewGame NewGame.Model
   --| LoadGame LoadGame.Model
   | Settings Settings.Model
   | HighScores HighScores.Model
@@ -77,6 +78,11 @@ changeRouteTo route model =
       Home.init navKey
         |> Debug.log "  [changeRouteTo] Home"
         |> updateWith Home GotHomeMsg model
+
+    Route.NewGame ->
+      NewGame.init navKey
+        |> Debug.log "  [changeRouteTo] NewGame"
+        |> updateWith NewGame GotNewGameMsg model
 
     Route.Settings ->
       Settings.init navKey
@@ -108,7 +114,7 @@ type Msg
   = LinkClicked Browser.UrlRequest
   | UrlChanged Url.Url
   | GotHomeMsg Home.Msg
---  | GotNewGameMsg
+  | GotNewGameMsg NewGame.Msg
 --  | GotLoadGameMsg
   | GotSettingsMsg Settings.Msg
   | GotHelpMsg Help.Msg
@@ -139,6 +145,10 @@ update msg model =
       Home.update subMsg modelHome
         |> updateWith Home GotHomeMsg model
 
+    ( GotNewGameMsg subMsg, NewGame modelNewGame ) ->
+      NewGame.update subMsg modelNewGame
+        |> updateWith NewGame GotNewGameMsg model
+
     ( GotSettingsMsg subMsg, Settings modelSettings ) ->
       Settings.update subMsg modelSettings
         |> updateWith Settings GotSettingsMsg model
@@ -157,21 +167,24 @@ update msg model =
 
 getNavKey : Model -> Nav.Key
 getNavKey model =
-    case model of
-        NotFound navKey ->
-            navKey
+  case model of
+    NotFound navKey ->
+      navKey
 
-        Home modelHome ->
-            Home.getNavKey modelHome
+    Home modelHome ->
+      Home.getNavKey modelHome
 
-        Settings modelSettings ->
-          Settings.getNavKey modelSettings
+    NewGame modelNewGame ->
+      NewGame.getNavKey modelNewGame
 
-        Help modelHelp ->
-          Help.getNavKey modelHelp
+    Settings modelSettings ->
+      Settings.getNavKey modelSettings
 
-        HighScores modelHighScores ->
-          HighScores.getNavKey modelHighScores
+    Help modelHelp ->
+      Help.getNavKey modelHelp
+
+    HighScores modelHighScores ->
+      HighScores.getNavKey modelHighScores
 
 
 -- SUBSCRIPTIONS
@@ -203,6 +216,9 @@ view model =
 
     Home modelHome ->
       viewPage Page.Home GotHomeMsg (Home.view modelHome)
+
+    NewGame modelNewGame ->
+      viewPage Page.NewGame GotNewGameMsg (NewGame.view modelNewGame)
 
     Settings modelSettings ->
       viewPage Page.Settings GotSettingsMsg (Settings.view modelSettings)

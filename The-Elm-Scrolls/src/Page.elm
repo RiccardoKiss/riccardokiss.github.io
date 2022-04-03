@@ -3,6 +3,7 @@ module Page exposing (Page(..), view)
 import Browser exposing (Document)
 import Html exposing (Html)
 
+
 type Page
   = NotFound
   | Home

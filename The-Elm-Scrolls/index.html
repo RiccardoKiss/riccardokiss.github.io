@@ -6357,7 +6357,6 @@ var $elm$html$Html$Attributes$href = function (url) {
 		_VirtualDom_noJavaScriptUri(url));
 };
 var $author$project$Route$routeToPieces = function (page) {
-	var _v0 = A2($elm$core$Debug$log, '[Route.routeToPieces] page', page);
 	switch (page.$) {
 		case 'NotFound':
 			return 'not-found';
@@ -6372,7 +6371,6 @@ var $author$project$Route$routeToPieces = function (page) {
 	}
 };
 var $author$project$Route$href = function (targetRoute) {
-	var _v0 = A2($elm$core$Debug$log, '[Route.href] targetRoute', targetRoute);
 	return $elm$html$Html$Attributes$href(
 		$author$project$Route$routeToPieces(targetRoute));
 };

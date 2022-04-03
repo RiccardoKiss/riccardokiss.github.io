@@ -1,12 +1,11 @@
-module Route exposing (Route(..), parser, replaceUrl, fromUrl, routeToPieces, href, toRoute)
-
+module Route exposing (Route(..), parser, toRoute, href, routeToPieces)
 
 import Browser.Navigation as Nav
 import Html exposing (Attribute)
 import Html.Attributes as Attr
 import Url exposing (Url)
---import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string)
-import Url.Parser as Parser exposing (Parser, parse, int, map, oneOf, s, top)
+import Url.Parser as Parser exposing (Parser, parse, map, oneOf, s)
+
 
 type Route
   = Home
@@ -48,11 +47,12 @@ toRoute string =
 
 href : Route -> Attribute msg
 href targetRoute =
-  let
-    _ = Debug.log "[Route.href] targetRoute" targetRoute
-  in
+  --let
+    --_ = Debug.log "[Route.href] targetRoute" targetRoute
+  --in
   Attr.href (routeToPieces targetRoute)
 
+{-
 replaceUrl : Nav.Key -> Route -> Cmd msg
 replaceUrl key targetRoute =
   Nav.replaceUrl key (routeToPieces targetRoute)
@@ -66,16 +66,16 @@ fromUrl url =
     { url | path = Maybe.withDefault "" url.fragment, fragment = Nothing }
       |> Debug.log "  path"
       |> Parser.parse parser
-
+-}
 
 
 -- INTERNAL
 
 routeToPieces : Route -> String
 routeToPieces page =
-  let
-    _ = Debug.log "[Route.routeToPieces] page" page
-  in
+  --let
+    --_ = Debug.log "[Route.routeToPieces] page" page
+  --in
   case page of
     NotFound ->
       "not-found"

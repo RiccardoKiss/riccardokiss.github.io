@@ -3,112 +3,10 @@ module Home exposing (..)
 import Browser
 import Browser.Navigation as Nav
 import Browser.Events exposing (..)
-import Html exposing (Html, a, button, div, text, img)
-import Html.Attributes exposing (srcdoc, src, width, height, style)
+import Html exposing (Html, a, div, img)
+import Html.Attributes exposing (src, style)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 import Route exposing (Route)
-
-import Playground exposing (..)
-import Player exposing (..)
-
-{-
--- MAIN
-
-main =
-  Browser.sandbox
-  { init = init
-  , update = update
-  , view = view
-  }
-
-
--- MODEL
-
-type alias Model =
-  Int
-
-init : Model
-init =
-  1
-
-
--- UPDATE
-
-type Msg
-  = Increment
-  | Decrement
-
-update : Msg -> Model -> Model
-update msg model =
-  case msg of
-    Increment ->
-      model + 1
-
-    Decrement ->
-      model - 1
-
-
--- VIEW
-
-view : Model -> Html Msg
-view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (String.fromInt model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    , div [style "background-color" "red"] [ img [src "assets/playerIdle1.png"] [] ]
-    , iframe [ heig-- MAIN
-
-    main =
-      Browser.sandbox
-      { init = init
-      , update = update
-      , view = view
-      }
-
-
-    -- MODEL
-
-    type alias Model =
-      Int
-
-    init : Model
-    init =
-      1
-
-
-    -- UPDATE
-
-    type Msg
-      = Increment
-      | Decrement
-
-    update : Msg -> Model -> Model
-    update msg model =
-      case msg of
-        Increment ->
-          model + 1
-
-        Decrement ->
-          model - 1
-
-
-    -- VIEW
-
-    view : Model -> Html Msg
-    view model =
-      div []
-        [ button [ onClick Decrement ] [ text "-" ]
-        , div [] [ text (String.fromInt model) ]
-        , button [ onClick Increment ] [ text "+" ]
-        , div [style "background-color" "red"] [ img [src "assets/playerIdle1.png"] [] ]
-        , iframe [ height 100% ]  -- https://stackoverflow.com/questions/34539606/elm-how-to-use-an-iframe
-        ]ht 100% ]  -- https://stackoverflow.com/questions/34539606/elm-how-to-use-an-iframe
-    ]
--}
--- MAIN
-
-
 
 
 -- MODEL
@@ -121,17 +19,7 @@ type alias Model =
   , button_settings : String
   , button_help : String
   }
-{-
-initModel : Nav.Key -> Model
-initModel navKey =
-  { navKey = navKey
-  , button_newGame = "assets/buttons/button_newGame.png"
-  , button_loadGame = "assets/buttons/button_loadGame.png"
-  , button_highScore = "assets/buttons/button_highScore.png"
-  , button_settings = "assets/buttons/button_settings.png"
-  , button_help = "assets/buttons/button_help.png"
-  }
--}
+
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
@@ -261,32 +149,3 @@ view model =
             ]
         ]
   }
-{-
-main =
-  game view update (0,0)
-
-view computer (x,y) =
-  [ image 32 64 "assets/playerIdle250ms.gif"
-      |> move x y
-  ]
-
-update computer (x,y) =
-  ( x + toX computer.keyboard
-  , y + toY computer.keyboard
-  )
--}
-
-{-
-subscriptions : Model -> Sub Msg
-subscriptions =
-    Sub.none
-
-main =
-  Browser.element
-  { init : init
-  , view : view
-  , update : update
-  , subscriptions : subscriptions
-  ,
-}
--}

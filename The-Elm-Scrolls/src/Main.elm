@@ -40,7 +40,6 @@ main =
     }
 
 
-
 -- MODEL
 
 
@@ -60,6 +59,7 @@ init flags url navKey =
     _ = Debug.log "[init] url" url
   in
     changeRouteTo (Route.toRoute (Url.toString url)) (NotFound navKey)
+
 
 changeRouteTo : Route -> Model -> ( Model, Cmd Msg )
 changeRouteTo route model =
@@ -92,22 +92,13 @@ changeRouteTo route model =
         |> Debug.log "  [changeRouteTo] Help"
         |> updateWith HighScores GotHighScoresMsg model
 
+
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
 updateWith toModel toMsg model ( subModel, subCmd ) =
   ( toModel subModel
   , Cmd.map toMsg subCmd
   )
 
-{-
-type alias Model =
-  { key : Nav.Key
-  , url : Url.Url
-  }
-
-init : Decode.Value -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
-  ( Model key url, Cmd.none )
--}
 
 -- UPDATE
 
@@ -181,6 +172,7 @@ getNavKey model =
         HighScores modelHighScores ->
           HighScores.getNavKey modelHighScores
 
+
 -- SUBSCRIPTIONS
 
 
@@ -189,33 +181,9 @@ subscriptions _ =
   Sub.none
 
 
-
 -- VIEW
 
-{-
-view : Model -> Document Msg
-view model =
-  case model of
-      Blank ->
-          Blank.view
 
-      Home modelHome ->
-          Home.view modelHome
-
-      --NewGame modelNewGame ->
-
-
-      --LoadGame modelLoadGame ->
-
-
-      --Settings modelSettings ->
-
-
-      --HighScore modelHighScore ->
-
-
-      --Help modelHelp ->
--}
 view : Model -> Document Msg
 view model =
   let

@@ -101,6 +101,7 @@ view model =
   , content =
       div []
         [ img [src "assets/mainMenu_background_1920_969.png"
+              , style "display" "block"
               , style "position" "relative"
               , style "left" "0px"
               , style "top" "0px"

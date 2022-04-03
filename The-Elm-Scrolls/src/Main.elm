@@ -16,6 +16,7 @@ import NotFound
 
 import Url.Builder
 import Browser.Events exposing (..)
+import Browser.Dom exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
@@ -56,7 +57,7 @@ type Model
 init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
   let
-    _ = Debug.log "[init] url" url
+    _ = Debug.log "[Main.init] url" url
   in
     changeRouteTo (Route.toRoute (Url.toString url)) (NotFound navKey)
 

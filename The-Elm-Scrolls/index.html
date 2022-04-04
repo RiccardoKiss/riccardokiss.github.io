@@ -5193,6 +5193,9 @@ var $author$project$Main$GotHighScoresMsg = function (a) {
 var $author$project$Main$GotHomeMsg = function (a) {
 	return {$: 'GotHomeMsg', a: a};
 };
+var $author$project$Main$GotLoadGameMsg = function (a) {
+	return {$: 'GotLoadGameMsg', a: a};
+};
 var $author$project$Main$GotNewGameMsg = function (a) {
 	return {$: 'GotNewGameMsg', a: a};
 };
@@ -5208,6 +5211,9 @@ var $author$project$Main$HighScores = function (a) {
 var $author$project$Main$Home = function (a) {
 	return {$: 'Home', a: a};
 };
+var $author$project$Main$LoadGame = function (a) {
+	return {$: 'LoadGame', a: a};
+};
 var $author$project$Main$NewGame = function (a) {
 	return {$: 'NewGame', a: a};
 };
@@ -5221,6 +5227,9 @@ var $author$project$HighScores$getNavKey = function (model) {
 	return model.navKey;
 };
 var $author$project$Home$getNavKey = function (model) {
+	return model.navKey;
+};
+var $author$project$LoadGame$getNavKey = function (model) {
 	return model.navKey;
 };
 var $author$project$NewGame$getNavKey = function (model) {
@@ -5240,6 +5249,9 @@ var $author$project$Main$getNavKey = function (model) {
 		case 'NewGame':
 			var modelNewGame = model.a;
 			return $author$project$NewGame$getNavKey(modelNewGame);
+		case 'LoadGame':
+			var modelLoadGame = model.a;
+			return $author$project$LoadGame$getNavKey(modelLoadGame);
 		case 'Settings':
 			var modelSettings = model.a;
 			return $author$project$Settings$getNavKey(modelSettings);
@@ -5266,6 +5278,11 @@ var $author$project$HighScores$init = function (navKey) {
 var $author$project$Home$init = function (navKey) {
 	return _Utils_Tuple2(
 		{button_help: 'assets/buttons/button_help.png', button_highScore: 'assets/buttons/button_highScore.png', button_loadGame: 'assets/buttons/button_loadGame.png', button_newGame: 'assets/buttons/button_newGame.png', button_settings: 'assets/buttons/button_settings.png', navKey: navKey},
+		$elm$core$Platform$Cmd$none);
+};
+var $author$project$LoadGame$init = function (navKey) {
+	return _Utils_Tuple2(
+		{button_back: 'assets/buttons/button_back.png', button_game1: 'assets/buttons/button_loadGameInstance_empty.png', button_game2: 'assets/buttons/button_loadGameInstance_empty.png', button_game3: 'assets/buttons/button_loadGameInstance_background.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$NewGame$Medium = {$: 'Medium'};
@@ -5319,6 +5336,16 @@ var $author$project$Main$changeRouteTo = F2(
 						$elm$core$Debug$log,
 						'  [changeRouteTo] NewGame',
 						$author$project$NewGame$init(navKey)));
+			case 'LoadGame':
+				return A4(
+					$author$project$Main$updateWith,
+					$author$project$Main$LoadGame,
+					$author$project$Main$GotLoadGameMsg,
+					model,
+					A2(
+						$elm$core$Debug$log,
+						'  [changeRouteTo] LoadGame',
+						$author$project$LoadGame$init(navKey)));
 			case 'Settings':
 				return A4(
 					$author$project$Main$updateWith,
@@ -5989,6 +6016,7 @@ var $elm$url$Url$Parser$parse = F2(
 var $author$project$Route$Help = {$: 'Help'};
 var $author$project$Route$HighScores = {$: 'HighScores'};
 var $author$project$Route$Home = {$: 'Home'};
+var $author$project$Route$LoadGame = {$: 'LoadGame'};
 var $author$project$Route$NewGame = {$: 'NewGame'};
 var $author$project$Route$Settings = {$: 'Settings'};
 var $elm$url$Url$Parser$Parser = function (a) {
@@ -6102,7 +6130,11 @@ var $author$project$Route$parser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$NewGame,
-			$elm$url$Url$Parser$s('new-game'))
+			$elm$url$Url$Parser$s('new-game')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$LoadGame,
+			$elm$url$Url$Parser$s('load-game'))
 		]));
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
@@ -6262,6 +6294,41 @@ var $author$project$Home$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$LoadGame$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'HoverGame1':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{button_game1: 'assets/buttons/button_loadGameInstance_empty_hover.png'}),
+					$elm$core$Platform$Cmd$none);
+			case 'HoverGame2':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{button_game2: 'assets/buttons/button_loadGameInstance_empty_hover.png'}),
+					$elm$core$Platform$Cmd$none);
+			case 'HoverGame3':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{button_game3: 'assets/buttons/button_loadGameInstance_background_hover.png'}),
+					$elm$core$Platform$Cmd$none);
+			case 'HoverBack':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{button_back: 'assets/buttons/button_back_hover.png'}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{button_back: 'assets/buttons/button_back.png', button_game1: 'assets/buttons/button_loadGameInstance_empty.png', button_game2: 'assets/buttons/button_loadGameInstance_empty.png', button_game3: 'assets/buttons/button_loadGameInstance_background.png'}),
+					$elm$core$Platform$Cmd$none);
+		}
+	});
 var $author$project$NewGame$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6319,7 +6386,7 @@ var $author$project$Settings$update = F2(
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple2(msg, model);
-		_v0$7:
+		_v0$8:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'LinkClicked':
@@ -6356,7 +6423,7 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$Home$update, subMsg, modelHome));
 					} else {
-						break _v0$7;
+						break _v0$8;
 					}
 				case 'GotNewGameMsg':
 					if (_v0.b.$ === 'NewGame') {
@@ -6369,7 +6436,20 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$NewGame$update, subMsg, modelNewGame));
 					} else {
-						break _v0$7;
+						break _v0$8;
+					}
+				case 'GotLoadGameMsg':
+					if (_v0.b.$ === 'LoadGame') {
+						var subMsg = _v0.a.a;
+						var modelLoadGame = _v0.b.a;
+						return A4(
+							$author$project$Main$updateWith,
+							$author$project$Main$LoadGame,
+							$author$project$Main$GotLoadGameMsg,
+							model,
+							A2($author$project$LoadGame$update, subMsg, modelLoadGame));
+					} else {
+						break _v0$8;
 					}
 				case 'GotSettingsMsg':
 					if (_v0.b.$ === 'Settings') {
@@ -6382,7 +6462,7 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$Settings$update, subMsg, modelSettings));
 					} else {
-						break _v0$7;
+						break _v0$8;
 					}
 				case 'GotHelpMsg':
 					if (_v0.b.$ === 'Help') {
@@ -6395,7 +6475,7 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$Help$update, subMsg, modelHelp));
 					} else {
-						break _v0$7;
+						break _v0$8;
 					}
 				default:
 					if (_v0.b.$ === 'HighScores') {
@@ -6408,7 +6488,7 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$HighScores$update, subMsg, modelHighScores));
 					} else {
-						break _v0$7;
+						break _v0$8;
 					}
 			}
 		}
@@ -6418,6 +6498,7 @@ var $elm$json$Json$Decode$value = _Json_decodeValue;
 var $author$project$Page$Help = {$: 'Help'};
 var $author$project$Page$HighScores = {$: 'HighScores'};
 var $author$project$Page$Home = {$: 'Home'};
+var $author$project$Page$LoadGame = {$: 'LoadGame'};
 var $author$project$Page$NewGame = {$: 'NewGame'};
 var $author$project$Page$NotFound = {$: 'NotFound'};
 var $author$project$Page$Settings = {$: 'Settings'};
@@ -6454,8 +6535,10 @@ var $author$project$Route$routeToPieces = function (page) {
 			return 'highscores';
 		case 'Settings':
 			return 'settings';
-		default:
+		case 'NewGame':
 			return 'new-game';
+		default:
+			return 'load-game';
 	}
 };
 var $author$project$Route$href = function (targetRoute) {
@@ -6654,17 +6737,26 @@ var $author$project$Home$view = function (model) {
 							_List_Nil)
 						])),
 					A2(
-					$elm$html$Html$img,
+					$elm$html$Html$a,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$src(model.button_loadGame),
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '752px'),
-							A2($elm$html$Html$Attributes$style, 'top', '528px'),
-							$elm$html$Html$Events$onMouseOver($author$project$Home$HoverLoadGame),
-							$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+							$author$project$Route$href($author$project$Route$LoadGame)
 						]),
-					_List_Nil),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(model.button_loadGame),
+									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+									A2($elm$html$Html$Attributes$style, 'left', '752px'),
+									A2($elm$html$Html$Attributes$style, 'top', '528px'),
+									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverLoadGame),
+									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+								]),
+							_List_Nil)
+						])),
 					A2(
 					$elm$html$Html$a,
 					_List_fromArray(
@@ -6730,6 +6822,103 @@ var $author$project$Home$view = function (model) {
 						]))
 				])),
 		title: 'Home'
+	};
+};
+var $author$project$LoadGame$HoverBack = {$: 'HoverBack'};
+var $author$project$LoadGame$HoverGame1 = {$: 'HoverGame1'};
+var $author$project$LoadGame$HoverGame2 = {$: 'HoverGame2'};
+var $author$project$LoadGame$HoverGame3 = {$: 'HoverGame3'};
+var $author$project$LoadGame$MouseOut = {$: 'MouseOut'};
+var $author$project$LoadGame$view = function (model) {
+	return {
+		content: A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
+							A2($elm$html$Html$Attributes$style, 'display', 'block'),
+							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+							A2($elm$html$Html$Attributes$style, 'left', '0px'),
+							A2($elm$html$Html$Attributes$style, 'top', '0px')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$h1,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '800px'),
+							A2($elm$html$Html$Attributes$style, 'top', '100px'),
+							A2($elm$html$Html$Attributes$style, 'font', 'bold 48px Tahoma')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Load Game')
+						])),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src(model.button_game1),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '660px'),
+							A2($elm$html$Html$Attributes$style, 'top', '250px'),
+							$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame1),
+							$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src(model.button_game2),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '660px'),
+							A2($elm$html$Html$Attributes$style, 'top', '428px'),
+							$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame2),
+							$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src(model.button_game3),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '660px'),
+							A2($elm$html$Html$Attributes$style, 'top', '606px'),
+							$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame3),
+							$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$a,
+					_List_fromArray(
+						[
+							$author$project$Route$href($author$project$Route$Home)
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(model.button_back),
+									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+									A2($elm$html$Html$Attributes$style, 'left', '752px'),
+									A2($elm$html$Html$Attributes$style, 'top', '864px'),
+									$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverBack),
+									$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+								]),
+							_List_Nil)
+						]))
+				])),
+		title: 'Load Game'
 	};
 };
 var $author$project$NewGame$DifficultyTo = function (a) {
@@ -7054,6 +7243,13 @@ var $author$project$Main$view = function (model) {
 				$author$project$Page$NewGame,
 				$author$project$Main$GotNewGameMsg,
 				$author$project$NewGame$view(modelNewGame));
+		case 'LoadGame':
+			var modelLoadGame = model.a;
+			return A3(
+				viewPage,
+				$author$project$Page$LoadGame,
+				$author$project$Main$GotLoadGameMsg,
+				$author$project$LoadGame$view(modelLoadGame));
 		case 'Settings':
 			var modelSettings = model.a;
 			return A3(

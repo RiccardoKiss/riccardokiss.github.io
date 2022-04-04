@@ -11,6 +11,7 @@ type Page
   | HighScores
   | Help
   | NewGame
+  | LoadGame
 
 view : Page -> { title : String, content : Html msg } -> Document msg
 view page { title, content } =

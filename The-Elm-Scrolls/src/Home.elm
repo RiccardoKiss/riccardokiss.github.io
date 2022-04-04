@@ -117,13 +117,15 @@ view model =
                   , onMouseOut MouseOut
                   ] []
             ]
-        , img [ src model.button_loadGame
-              , style "position" "absolute"
-              , style "left" "752px"
-              , style "top" "528px"
-              , onMouseOver HoverLoadGame
-              , onMouseOut MouseOut
-              ] []
+        , a [ Route.href Route.LoadGame ]
+            [ img [ src model.button_loadGame
+                  , style "position" "absolute"
+                  , style "left" "752px"
+                  , style "top" "528px"
+                  , onMouseOver HoverLoadGame
+                  , onMouseOut MouseOut
+                  ] []
+            ]
         , a [ Route.href Route.HighScores ]
             [ img [ src model.button_highScore
                   , style "position" "absolute"

@@ -10,6 +10,7 @@ import Debug exposing (..)
 import Page
 import Home
 import NewGame
+import LoadGame
 import Settings
 import Help
 import HighScores
@@ -49,7 +50,7 @@ type Model
   = Home Home.Model
   | NotFound Nav.Key
   | NewGame NewGame.Model
-  --| LoadGame LoadGame.Model
+  | LoadGame LoadGame.Model
   | Settings Settings.Model
   | HighScores HighScores.Model
   | Help Help.Model
@@ -84,6 +85,11 @@ changeRouteTo route model =
         |> Debug.log "  [changeRouteTo] NewGame"
         |> updateWith NewGame GotNewGameMsg model
 
+    Route.LoadGame ->
+      LoadGame.init navKey
+        |> Debug.log "  [changeRouteTo] LoadGame"
+        |> updateWith LoadGame GotLoadGameMsg model
+
     Route.Settings ->
       Settings.init navKey
         |> Debug.log "  [changeRouteTo] Settings"
@@ -115,7 +121,7 @@ type Msg
   | UrlChanged Url.Url
   | GotHomeMsg Home.Msg
   | GotNewGameMsg NewGame.Msg
---  | GotLoadGameMsg
+  | GotLoadGameMsg LoadGame.Msg
   | GotSettingsMsg Settings.Msg
   | GotHelpMsg Help.Msg
   | GotHighScoresMsg HighScores.Msg
@@ -149,6 +155,10 @@ update msg model =
       NewGame.update subMsg modelNewGame
         |> updateWith NewGame GotNewGameMsg model
 
+    ( GotLoadGameMsg subMsg, LoadGame modelLoadGame ) ->
+      LoadGame.update subMsg modelLoadGame
+        |> updateWith LoadGame GotLoadGameMsg model
+
     ( GotSettingsMsg subMsg, Settings modelSettings ) ->
       Settings.update subMsg modelSettings
         |> updateWith Settings GotSettingsMsg model
@@ -176,6 +186,9 @@ getNavKey model =
 
     NewGame modelNewGame ->
       NewGame.getNavKey modelNewGame
+
+    LoadGame modelLoadGame ->
+      LoadGame.getNavKey modelLoadGame
 
     Settings modelSettings ->
       Settings.getNavKey modelSettings
@@ -219,6 +232,9 @@ view model =
 
     NewGame modelNewGame ->
       viewPage Page.NewGame GotNewGameMsg (NewGame.view modelNewGame)
+
+    LoadGame modelLoadGame ->
+      viewPage Page.LoadGame GotLoadGameMsg (LoadGame.view modelLoadGame)
 
     Settings modelSettings ->
       viewPage Page.Settings GotSettingsMsg (Settings.view modelSettings)

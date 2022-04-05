@@ -12,6 +12,7 @@ type Page
   | Help
   | NewGame
   | LoadGame
+  | Game
 
 view : Page -> { title : String, content : Html msg } -> Document msg
 view page { title, content } =

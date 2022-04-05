@@ -127,12 +127,14 @@ view model =
                 , onMouseOut MouseOut
                 ] []
           ]
-      , img [ src model.button_start
-            , style "position" "absolute"
-            , style "left" "980px"
-            , style "top" "864px"
-            , onMouseOver HoverStart
-            , onMouseOut MouseOut
-            ] []
+      , a [ Route.href Route.Game ]
+          [ img [ src model.button_start
+                , style "position" "absolute"
+                , style "left" "980px"
+                , style "top" "864px"
+                , onMouseOver HoverStart
+                , onMouseOut MouseOut
+                ] []
+          ]
       ]
   }

@@ -14,7 +14,7 @@ type Route
   | HighScores
   | NewGame
   | LoadGame
-  --| Game
+  | Game
   | NotFound
 
 
@@ -28,7 +28,7 @@ parser =
     , Parser.map Settings (s "settings")
     , Parser.map NewGame (s "new-game")
     , Parser.map LoadGame (s "load-game")
-    --, Parser.map Game (s "game")
+    , Parser.map Game (s "game")
     ]
 
 toRoute : String -> Route
@@ -93,8 +93,8 @@ routeToPieces page =
     Settings ->
       "settings"
 
-    --Game ->
-      --"game"
+    Game ->
+      "game"
 
     NewGame ->
       "new-game"

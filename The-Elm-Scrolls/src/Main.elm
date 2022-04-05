@@ -10,6 +10,7 @@ import Debug exposing (..)
 import Page
 import Home
 import NewGame
+import Game
 import LoadGame
 import Settings
 import Help
@@ -50,6 +51,7 @@ type Model
   = Home Home.Model
   | NotFound Nav.Key
   | NewGame NewGame.Model
+  | Game Game.Model
   | LoadGame LoadGame.Model
   | Settings Settings.Model
   | HighScores HighScores.Model
@@ -84,6 +86,11 @@ changeRouteTo route model =
       NewGame.init navKey
         |> Debug.log "  [changeRouteTo] NewGame"
         |> updateWith NewGame GotNewGameMsg model
+
+    Route.Game ->
+      Game.init navKey
+        |> Debug.log "  [changeRouteTo] Game"
+        |> updateWith Game GotGameMsg model
 
     Route.LoadGame ->
       LoadGame.init navKey
@@ -121,6 +128,7 @@ type Msg
   | UrlChanged Url.Url
   | GotHomeMsg Home.Msg
   | GotNewGameMsg NewGame.Msg
+  | GotGameMsg Game.Msg
   | GotLoadGameMsg LoadGame.Msg
   | GotSettingsMsg Settings.Msg
   | GotHelpMsg Help.Msg
@@ -155,6 +163,10 @@ update msg model =
       NewGame.update subMsg modelNewGame
         |> updateWith NewGame GotNewGameMsg model
 
+    ( GotGameMsg subMsg, Game modelGame ) ->
+      Game.update subMsg modelGame
+        |> updateWith Game GotGameMsg model
+
     ( GotLoadGameMsg subMsg, LoadGame modelLoadGame ) ->
       LoadGame.update subMsg modelLoadGame
         |> updateWith LoadGame GotLoadGameMsg model
@@ -187,6 +199,9 @@ getNavKey model =
     NewGame modelNewGame ->
       NewGame.getNavKey modelNewGame
 
+    Game modelGame ->
+      Game.getNavKey modelGame
+
     LoadGame modelLoadGame ->
       LoadGame.getNavKey modelLoadGame
 
@@ -204,8 +219,31 @@ getNavKey model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-  Sub.none
+subscriptions model =
+  case model of
+    NotFound _ ->
+      Sub.none
+
+    Home modelHome ->
+      Sub.none
+
+    NewGame modelNewGame ->
+      Sub.none
+
+    Game modelGame ->
+      Sub.map GotGameMsg (Game.subscriptions modelGame)
+
+    LoadGame modelLoadGame ->
+      Sub.none
+
+    Settings modelSettings ->
+      Sub.none
+
+    Help modelHelp ->
+      Sub.none
+
+    HighScores modelHighScores ->
+      Sub.none
 
 
 -- VIEW
@@ -232,6 +270,9 @@ view model =
 
     NewGame modelNewGame ->
       viewPage Page.NewGame GotNewGameMsg (NewGame.view modelNewGame)
+
+    Game modelGame ->
+      viewPage Page.Game GotGameMsg (Game.view modelGame)
 
     LoadGame modelLoadGame ->
       viewPage Page.LoadGame GotLoadGameMsg (LoadGame.view modelLoadGame)

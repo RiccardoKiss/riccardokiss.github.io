@@ -4371,6 +4371,67 @@ function _Browser_load(url)
 }
 
 
+// eslint-disable-next-line no-unused-vars
+var _Texture_load = F6(function (magnify, mininify, horizontalWrap, verticalWrap, flipY, url) {
+  var isMipmap = mininify !== 9728 && mininify !== 9729;
+  return _Scheduler_binding(function (callback) {
+    var img = new Image();
+    function createTexture(gl) {
+      var texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magnify);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, mininify);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, horizontalWrap);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, verticalWrap);
+      if (isMipmap) {
+        gl.generateMipmap(gl.TEXTURE_2D);
+      }
+      gl.bindTexture(gl.TEXTURE_2D, null);
+      return texture;
+    }
+    img.onload = function () {
+      var width = img.width;
+      var height = img.height;
+      var widthPowerOfTwo = (width & (width - 1)) === 0;
+      var heightPowerOfTwo = (height & (height - 1)) === 0;
+      var isSizeValid = (widthPowerOfTwo && heightPowerOfTwo) || (
+        !isMipmap
+        && horizontalWrap === 33071 // clamp to edge
+        && verticalWrap === 33071
+      );
+      if (isSizeValid) {
+        callback(_Scheduler_succeed({
+          $: 0,
+          createTexture: createTexture,
+          a: width,
+          b: height
+        }));
+      } else {
+        callback(_Scheduler_fail(A2(
+          $elm_explorations$webgl$WebGL$Texture$SizeError,
+          width,
+          height
+        )));
+      }
+    };
+    img.onerror = function () {
+      callback(_Scheduler_fail($elm_explorations$webgl$WebGL$Texture$LoadError));
+    };
+    if (url.slice(0, 5) !== 'data:') {
+      img.crossOrigin = 'Anonymous';
+    }
+    img.src = url;
+  });
+});
+
+// eslint-disable-next-line no-unused-vars
+var _Texture_size = function (texture) {
+  return _Utils_Tuple2(texture.a, texture.b);
+};
+
+
 function _Url_percentEncode(string)
 {
 	return encodeURIComponent(string);
@@ -7130,6 +7191,9 @@ var $author$project$Main$getNavKey = function (model) {
 			return $author$project$HighScores$getNavKey(modelHighScores);
 	}
 };
+var $author$project$Game$Resources = function (a) {
+	return {$: 'Resources', a: a};
+};
 var $Zinggi$elm_2d_game$Game$TwoD$Camera$Camera = function (a) {
 	return {$: 'Camera', a: a};
 };
@@ -7150,10 +7214,85 @@ var $Zinggi$elm_game_resources$Game$Resources$R = function (a) {
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
-var $author$project$Game$Right = {$: 'Right'};
-var $author$project$Game$mario = {dir: $author$project$Game$Right, vx: 0, vy: 0, x: 0, y: 0};
+var $author$project$Game$Idle = {$: 'Idle'};
+var $author$project$Game$initPlayer = {dir: $author$project$Game$Idle, vx: 0, vy: 0, x: 0, y: 0};
+var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
+	function (a, b) {
+		return {$: 'LoadedTexture', a: a, b: b};
+	});
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $elm$core$Task$onError = _Scheduler_onError;
+var $elm$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return $elm$core$Task$command(
+			$elm$core$Task$Perform(
+				A2(
+					$elm$core$Task$onError,
+					A2(
+						$elm$core$Basics$composeL,
+						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+						$elm$core$Result$Err),
+					A2(
+						$elm$core$Task$andThen,
+						A2(
+							$elm$core$Basics$composeL,
+							A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+							$elm$core$Result$Ok),
+						task))));
+	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm_explorations$webgl$WebGL$Texture$Resize = function (a) {
+	return {$: 'Resize', a: a};
+};
+var $elm_explorations$webgl$WebGL$Texture$linear = $elm_explorations$webgl$WebGL$Texture$Resize(9729);
+var $elm_explorations$webgl$WebGL$Texture$nearestMipmapLinear = $elm_explorations$webgl$WebGL$Texture$Resize(9986);
+var $elm_explorations$webgl$WebGL$Texture$Wrap = function (a) {
+	return {$: 'Wrap', a: a};
+};
+var $elm_explorations$webgl$WebGL$Texture$repeat = $elm_explorations$webgl$WebGL$Texture$Wrap(10497);
+var $elm_explorations$webgl$WebGL$Texture$defaultOptions = {flipY: true, horizontalWrap: $elm_explorations$webgl$WebGL$Texture$repeat, magnify: $elm_explorations$webgl$WebGL$Texture$linear, minify: $elm_explorations$webgl$WebGL$Texture$nearestMipmapLinear, verticalWrap: $elm_explorations$webgl$WebGL$Texture$repeat};
+var $elm_explorations$webgl$WebGL$Texture$LoadError = {$: 'LoadError'};
+var $elm_explorations$webgl$WebGL$Texture$SizeError = F2(
+	function (a, b) {
+		return {$: 'SizeError', a: a, b: b};
+	});
+var $elm_explorations$webgl$WebGL$Texture$loadWith = F2(
+	function (_v0, url) {
+		var magnify = _v0.magnify;
+		var minify = _v0.minify;
+		var horizontalWrap = _v0.horizontalWrap;
+		var verticalWrap = _v0.verticalWrap;
+		var flipY = _v0.flipY;
+		var expand = F4(
+			function (_v1, _v2, _v3, _v4) {
+				var mag = _v1.a;
+				var min = _v2.a;
+				var hor = _v3.a;
+				var vert = _v4.a;
+				return A6(_Texture_load, mag, min, hor, vert, flipY, url);
+			});
+		return A4(expand, magnify, minify, horizontalWrap, verticalWrap);
+	});
+var $elm_explorations$webgl$WebGL$Texture$load = $elm_explorations$webgl$WebGL$Texture$loadWith($elm_explorations$webgl$WebGL$Texture$defaultOptions);
+var $Zinggi$elm_game_resources$Game$Resources$loadTextures = function (urls) {
+	return $elm$core$Platform$Cmd$batch(
+		A2(
+			$elm$core$List$map,
+			function (url) {
+				return A2(
+					$elm$core$Task$attempt,
+					$Zinggi$elm_game_resources$Game$Resources$LoadedTexture(url),
+					$elm_explorations$webgl$WebGL$Texture$load(url));
+			},
+			urls));
+};
+var $elm$core$Platform$Cmd$map = _Platform_map;
+var $author$project$Game$texturesList = _List_fromArray(
+	['assets/playerIdle.png', 'assets/playerRight.png', 'assets/playerLeft.png', 'assets/playerUp.png', 'assets/playerDown.png']);
 var $author$project$Game$init = function (navKey) {
 	return _Utils_Tuple2(
 		{
@@ -7162,14 +7301,18 @@ var $author$project$Game$init = function (navKey) {
 				8,
 				_Utils_Tuple2(0, 0)),
 			keys: _List_Nil,
-			mario: $author$project$Game$mario,
 			navKey: navKey,
+			player: $author$project$Game$initPlayer,
 			resources: $Zinggi$elm_game_resources$Game$Resources$init,
 			screen: _Utils_Tuple2(800, 600),
 			time: 0
 		},
-		$elm$core$Platform$Cmd$none);
+		A2(
+			$elm$core$Platform$Cmd$map,
+			$author$project$Game$Resources,
+			$Zinggi$elm_game_resources$Game$Resources$loadTextures($author$project$Game$texturesList)));
 };
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Help$init = function (navKey) {
 	return _Utils_Tuple2(
 		{button_back: 'assets/buttons/button_back.png', navKey: navKey},
@@ -7203,7 +7346,6 @@ var $author$project$Settings$init = function (navKey) {
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Debug$log = _Debug_log;
-var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$Main$updateWith = F4(
 	function (toModel, toMsg, model, _v0) {
 		var subModel = _v0.a;
@@ -8256,11 +8398,6 @@ var $elm$browser$Browser$AnimationManager$onSelfMsg = F3(
 var $elm$browser$Browser$AnimationManager$Time = function (a) {
 	return {$: 'Time', a: a};
 };
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
 var $elm$browser$Browser$AnimationManager$subMap = F2(
 	function (func, sub) {
 		if (sub.$ === 'Time') {
@@ -8702,18 +8839,18 @@ var $author$project$Game$physics = F2(
 	function (dt, guy) {
 		return _Utils_update(
 			guy,
-			{
-				x: guy.x + (dt * guy.vx),
-				y: A2($elm$core$Basics$max, 0, guy.y + (dt * guy.vy))
-			});
+			{x: guy.x + (dt * guy.vx), y: guy.y + (dt * guy.vy)});
 	});
+var $author$project$Game$Down = {$: 'Down'};
 var $author$project$Game$Left = {$: 'Left'};
+var $author$project$Game$Right = {$: 'Right'};
+var $author$project$Game$Up = {$: 'Up'};
 var $author$project$Game$walk = F2(
 	function (keys, guy) {
 		return _Utils_update(
 			guy,
 			{
-				dir: (keys.x < 0) ? $author$project$Game$Left : ((keys.x > 0) ? $author$project$Game$Right : guy.dir),
+				dir: (keys.x < 0) ? $author$project$Game$Left : ((keys.x > 0) ? $author$project$Game$Right : ((keys.y < 0) ? $author$project$Game$Down : ((keys.y > 0) ? $author$project$Game$Up : $author$project$Game$Idle))),
 				vx: keys.x
 			});
 	});
@@ -9190,9 +9327,9 @@ var $author$project$Game$update = F2(
 						{
 							camera: A2(
 								$Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo,
-								_Utils_Tuple2(model.mario.x, model.mario.y + 0.75),
+								_Utils_Tuple2(model.player.x, model.player.y + 0.75),
 								model.camera),
-							mario: A3($author$project$Game$tick, dt, model.keys, model.mario),
+							player: A3($author$project$Game$tick, dt, model.keys, model.player),
 							time: dt + model.time
 						}),
 					$elm$core$Platform$Cmd$none);
@@ -9923,22 +10060,34 @@ var $Zinggi$elm_game_resources$Game$Resources$getTexture = F2(
 		var res = _v0.a;
 		return A2($elm$core$Dict$get, url, res);
 	});
-var $author$project$Game$renderMario = F2(
+var $author$project$Game$renderPlayer = F2(
 	function (resources, _v0) {
 		var x = _v0.x;
 		var y = _v0.y;
 		var dir = _v0.dir;
-		var d = _Utils_eq(dir, $author$project$Game$Left) ? (-1) : 1;
 		return $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions(
 			{
 				bottomLeft: _Utils_Tuple2(0, 0),
 				duration: 1,
-				numberOfFrames: 11,
+				numberOfFrames: 2,
 				pivot: _Utils_Tuple2(0.5, 0),
 				position: _Utils_Tuple3(x, y, 0),
 				rotation: 0,
-				size: _Utils_Tuple2(d * 0.3, 0.8),
-				texture: A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerIdle1.png', resources),
+				size: _Utils_Tuple2(0.5, 1),
+				texture: function () {
+					switch (dir.$) {
+						case 'Left':
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerLeft.png', resources);
+						case 'Right':
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerRight.png', resources);
+						case 'Up':
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerUp.png', resources);
+						case 'Down':
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerDown.png', resources);
+						default:
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerIdle.png', resources);
+					}
+				}(),
 				topRight: _Utils_Tuple2(1, 1)
 			});
 	});
@@ -9950,7 +10099,7 @@ var $author$project$Game$render = function (model) {
 			[
 				_List_fromArray(
 				[
-					A2($author$project$Game$renderMario, resources, model.mario)
+					A2($author$project$Game$renderPlayer, resources, model.player)
 				])
 			]));
 };

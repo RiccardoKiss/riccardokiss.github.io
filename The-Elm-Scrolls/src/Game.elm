@@ -4,16 +4,15 @@ import Browser
 import Browser.Navigation as Nav
 import Browser.Dom exposing (getViewport)
 import Browser.Events exposing (onAnimationFrameDelta, onResize)
-import Game.Resources as Resources exposing (Resources)
+import Game.Resources as Resources exposing (..)
 import Game.TwoD as Game2d
-import Game.TwoD.Camera as Camera exposing (Camera)
-import Game.TwoD.Render as Render exposing (Renderable)
-import Html exposing (Html, div)
-import Html.Attributes as Attr
+import Game.TwoD.Camera as Camera exposing (..)
+import Game.TwoD.Render as Render exposing (..)
+import Html exposing (Html, div, img)
+import Html.Attributes exposing (style, src)
 import Keyboard
 import Keyboard.Arrows
 import Task
-
 
 -- MODEL
 
@@ -79,8 +78,8 @@ init navKey =
     , resources = Resources.init
     , keys = []
     , time = 0
-    , screen = ( 800, 600 )
-    , camera = Camera.fixedWidth 8 ( 0, 0 )
+    , screen = ( 1024, 512 )--( 800, 600 )
+    , camera = Camera.fixedArea (16 * 8) ( 0, 0 )
     }
   , Cmd.map Resources (Resources.loadTextures texturesList )
   --, Cmd.batch
@@ -97,6 +96,7 @@ texturesList =
   , "assets/playerLeft.png"
   , "assets/playerUp.png"
   , "assets/playerDown.png"
+  , "assets/sceneTest1024_512.png"
   ]
 
 
@@ -115,7 +115,7 @@ update msg model =
       ( { model
           | player = tick dt model.keys model.player
           , time = dt + model.time
-          , camera = Camera.moveTo ( model.player.x, model.player.y + 0.75 ) model.camera
+          , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
         }
         , Cmd.none
       )
@@ -179,6 +179,7 @@ walk : Input -> Player -> Player
 walk keys guy =
   { guy
     | vx = toFloat keys.x
+    , vy = toFloat keys.y
     , dir =
         if keys.x < 0 then
           Left
@@ -203,39 +204,20 @@ walk keys guy =
 render : Model -> List Renderable
 render ({ resources, camera } as model) =
   List.concat
-    [ [ renderPlayer resources model.player ] ]
-    {-
     [ renderBackground resources
-    , [ Render.spriteWithOptions
-          { position = ( -10, -10, 0 )
-          , size = ( 20, 10 )
-          , texture = Resources.getTexture "images/grass.png" resources
-          , rotation = 0
-          , pivot = ( 0, 0 )
-          , tiling = ( 10, 5 )
-          }
-      , renderMario resources model.mario
-      ]
+    , [ renderPlayer resources model.player ]
     ]
-    -}
 
-{-
+
 renderBackground : Resources -> List Renderable
 renderBackground resources =
-    [ Render.parallaxScroll
-        { z = -0.99
-        , texture = Resources.getTexture "images/cloud_bg.png" resources
-        , tileWH = ( 1, 1 )
-        , scrollSpeed = ( 0.25, 0.25 )
-        }
-    , Render.parallaxScroll
-        { z = -0.98
-        , texture = Resources.getTexture "images/cloud_bg.png" resources
-        , tileWH = ( 1.4, 1.4 )
-        , scrollSpeed = ( 0.5, 0.5 )
+    [ Render.spriteZ
+        { texture = Resources.getTexture "assets/sceneTest1024_512.png" resources
+        , position = ( -1, -1, -0.9 )
+        , size = ( 16, 8 )
         }
     ]
--}
+
 
 renderPlayer : Resources -> Player -> Renderable
 renderPlayer resources { x, y, dir } =
@@ -263,7 +245,7 @@ renderPlayer resources { x, y, dir } =
     , duration = 1
     , numberOfFrames = 2
     , rotation = 0
-    , pivot = ( 0.5, 0 )
+    , pivot = ( 0, 0 )
     }
 
 
@@ -271,13 +253,23 @@ view : Model -> { title : String, content : Html Msg }
 view ({ time, screen } as model) =
   { title = "Game"
   , content =
-    div [ Attr.style "overflow" "hidden", Attr.style "width" "100%", Attr.style "height" "100%" ]
-      [ Game2d.render
-        { camera = model.camera
-        , time = time
-        , size = screen
-        }
-        (render model)
+    div []
+      [ img [ src "assets/default_background_1920_969.png"
+            , style "display" "block"
+            , style "position" "relative"
+            , style "left" "0px"
+            , style "top" "0px"
+            ] []
+      , Game2d.renderWithOptions
+          [ style "position" "absolute"
+          , style "left" "448px"
+          , style "top" "228px"
+          ]
+            { camera = model.camera
+            , time = time
+            , size = screen
+            }
+              (render model)
       ]
   }
 

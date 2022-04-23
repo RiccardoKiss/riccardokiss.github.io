@@ -7194,18 +7194,18 @@ var $author$project$Main$getNavKey = function (model) {
 var $author$project$Game$Resources = function (a) {
 	return {$: 'Resources', a: a};
 };
+var $Zinggi$elm_2d_game$Game$TwoD$Camera$Area = function (a) {
+	return {$: 'Area', a: a};
+};
 var $Zinggi$elm_2d_game$Game$TwoD$Camera$Camera = function (a) {
 	return {$: 'Camera', a: a};
 };
-var $Zinggi$elm_2d_game$Game$TwoD$Camera$Width = function (a) {
-	return {$: 'Width', a: a};
-};
-var $Zinggi$elm_2d_game$Game$TwoD$Camera$fixedWidth = F2(
-	function (w, pos) {
+var $Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea = F2(
+	function (a, pos) {
 		return $Zinggi$elm_2d_game$Game$TwoD$Camera$Camera(
 			{
 				position: pos,
-				size: $Zinggi$elm_2d_game$Game$TwoD$Camera$Width(w)
+				size: $Zinggi$elm_2d_game$Game$TwoD$Camera$Area(a)
 			});
 	});
 var $Zinggi$elm_game_resources$Game$Resources$R = function (a) {
@@ -7292,19 +7292,19 @@ var $Zinggi$elm_game_resources$Game$Resources$loadTextures = function (urls) {
 };
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$Game$texturesList = _List_fromArray(
-	['assets/playerIdle.png', 'assets/playerRight.png', 'assets/playerLeft.png', 'assets/playerUp.png', 'assets/playerDown.png']);
+	['assets/playerIdle.png', 'assets/playerRight.png', 'assets/playerLeft.png', 'assets/playerUp.png', 'assets/playerDown.png', 'assets/sceneTest1024_512.png']);
 var $author$project$Game$init = function (navKey) {
 	return _Utils_Tuple2(
 		{
 			camera: A2(
-				$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedWidth,
-				8,
+				$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
+				16 * 8,
 				_Utils_Tuple2(0, 0)),
 			keys: _List_Nil,
 			navKey: navKey,
 			player: $author$project$Game$initPlayer,
 			resources: $Zinggi$elm_game_resources$Game$Resources$init,
-			screen: _Utils_Tuple2(800, 600),
+			screen: _Utils_Tuple2(1024, 512),
 			time: 0
 		},
 		A2(
@@ -8851,7 +8851,8 @@ var $author$project$Game$walk = F2(
 			guy,
 			{
 				dir: (keys.x < 0) ? $author$project$Game$Left : ((keys.x > 0) ? $author$project$Game$Right : ((keys.y < 0) ? $author$project$Game$Down : ((keys.y > 0) ? $author$project$Game$Up : $author$project$Game$Idle))),
-				vx: keys.x
+				vx: keys.x,
+				vy: keys.y
 			});
 	});
 var $author$project$Game$tick = F3(
@@ -9327,7 +9328,7 @@ var $author$project$Game$update = F2(
 						{
 							camera: A2(
 								$Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo,
-								_Utils_Tuple2(model.player.x, model.player.y + 0.75),
+								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
 							player: A3($author$project$Game$tick, dt, model.keys, model.player),
 							time: dt + model.time
@@ -9650,11 +9651,20 @@ var $author$project$Page$Settings = {$: 'Settings'};
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $Zinggi$elm_game_resources$Game$Resources$getTexture = F2(
+	function (url, _v0) {
+		var res = _v0.a;
+		return A2($elm$core$Dict$get, url, res);
+	});
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
 var $Zinggi$elm_2d_game$Game$TwoD$Render$Rectangle = {$: 'Rectangle'};
-var $Zinggi$elm_2d_game$Game$TwoD$Shaders$fragAnimTextured = {
-	src: '\n\nprecision mediump float;\n\nuniform sampler2D texture;\nuniform vec2 bottomLeft;\nuniform vec2 topRight;\nuniform int numberOfFrames;\nuniform float duration;\nuniform float time;\nvarying vec2 vcoord;\n\nvoid main () {\n    float n = float(numberOfFrames);\n    float framePos = floor((mod(time, duration) / duration) * n );\n    vec2 stripSize = topRight - bottomLeft;\n    vec2 frameSize = vec2(stripSize.x / n, stripSize.y);\n    vec2 texCoord = bottomLeft + vec2(frameSize.x * framePos, 0) + vcoord * frameSize;\n\n    gl_FragColor = texture2D(texture, texCoord.xy);\n}\n',
+var $Zinggi$elm_2d_game$Game$TwoD$Shaders$fragTextured = {
+	src: '\n\nprecision mediump float;\n\nuniform sampler2D texture;\nuniform vec2 tileWH;\nvarying vec2 vcoord;\n\nvoid main () {\n    gl_FragColor = texture2D(texture, vcoord*tileWH);\n}\n',
 	attributes: {},
-	uniforms: {bottomLeft: 'bottomLeft', duration: 'duration', numberOfFrames: 'numberOfFrames', texture: 'texture', time: 'time', topRight: 'topRight'}
+	uniforms: {texture: 'texture', tileWH: 'tileWH'}
 };
 var $avh4$elm_color$Color$RgbaSpace = F4(
 	function (a, b, c, d) {
@@ -9665,9 +9675,6 @@ var $elm_explorations$linear_algebra$Math$Matrix4$makeRotate = _MJS_m4x4makeRota
 var $elm_explorations$linear_algebra$Math$Matrix4$makeScale = _MJS_m4x4makeScale;
 var $elm_explorations$linear_algebra$Math$Matrix4$makeTranslate = _MJS_m4x4makeTranslate;
 var $elm_explorations$linear_algebra$Math$Matrix4$mul = _MJS_m4x4mul;
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
 var $elm_explorations$linear_algebra$Math$Vector3$vec3 = _MJS_v3;
 var $Zinggi$elm_2d_game$Game$TwoD$Shaders$makeTransform = F4(
 	function (_v0, rotation, _v1, _v2) {
@@ -10017,6 +10024,66 @@ var $Zinggi$elm_2d_game$Game$Helpers$v2FromTuple = function (_v0) {
 	var y = _v0.b;
 	return A2($elm_explorations$linear_algebra$Math$Vector2$vec2, x, y);
 };
+var $Zinggi$elm_2d_game$Game$TwoD$Render$spriteWithOptions = function (args) {
+	var texture = args.texture;
+	var position = args.position;
+	var size = args.size;
+	var tiling = args.tiling;
+	var rotation = args.rotation;
+	var pivot = args.pivot;
+	if (texture.$ === 'Just') {
+		var t = texture.a;
+		return $Zinggi$elm_2d_game$Game$TwoD$Render$veryCustom(
+			function (_v1) {
+				var camera = _v1.camera;
+				var screenSize = _v1.screenSize;
+				return A2(
+					$Zinggi$elm_2d_game$Game$TwoD$Render$rectWithFragment,
+					$Zinggi$elm_2d_game$Game$TwoD$Shaders$fragTextured,
+					{
+						cameraProj: A2($Zinggi$elm_2d_game$Game$TwoD$Camera$view, camera, screenSize),
+						texture: t,
+						tileWH: $Zinggi$elm_2d_game$Game$Helpers$v2FromTuple(tiling),
+						transform: A4($Zinggi$elm_2d_game$Game$TwoD$Shaders$makeTransform, position, rotation, size, pivot)
+					});
+			});
+	} else {
+		return A2(
+			$Zinggi$elm_2d_game$Game$TwoD$Render$shapeZ,
+			$Zinggi$elm_2d_game$Game$TwoD$Render$Rectangle,
+			{color: $avh4$elm_color$Color$grey, position: position, size: size});
+	}
+};
+var $Zinggi$elm_2d_game$Game$TwoD$Render$spriteZ = function (_v0) {
+	var texture = _v0.texture;
+	var position = _v0.position;
+	var size = _v0.size;
+	return $Zinggi$elm_2d_game$Game$TwoD$Render$spriteWithOptions(
+		{
+			pivot: _Utils_Tuple2(0, 0),
+			position: position,
+			rotation: 0,
+			size: size,
+			texture: texture,
+			tiling: _Utils_Tuple2(1, 1)
+		});
+};
+var $author$project$Game$renderBackground = function (resources) {
+	return _List_fromArray(
+		[
+			$Zinggi$elm_2d_game$Game$TwoD$Render$spriteZ(
+			{
+				position: _Utils_Tuple3(-1, -1, -0.9),
+				size: _Utils_Tuple2(16, 8),
+				texture: A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/sceneTest1024_512.png', resources)
+			})
+		]);
+};
+var $Zinggi$elm_2d_game$Game$TwoD$Shaders$fragAnimTextured = {
+	src: '\n\nprecision mediump float;\n\nuniform sampler2D texture;\nuniform vec2 bottomLeft;\nuniform vec2 topRight;\nuniform int numberOfFrames;\nuniform float duration;\nuniform float time;\nvarying vec2 vcoord;\n\nvoid main () {\n    float n = float(numberOfFrames);\n    float framePos = floor((mod(time, duration) / duration) * n );\n    vec2 stripSize = topRight - bottomLeft;\n    vec2 frameSize = vec2(stripSize.x / n, stripSize.y);\n    vec2 texCoord = bottomLeft + vec2(frameSize.x * framePos, 0) + vcoord * frameSize;\n\n    gl_FragColor = texture2D(texture, texCoord.xy);\n}\n',
+	attributes: {},
+	uniforms: {bottomLeft: 'bottomLeft', duration: 'duration', numberOfFrames: 'numberOfFrames', texture: 'texture', time: 'time', topRight: 'topRight'}
+};
 var $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions = function (_v0) {
 	var texture = _v0.texture;
 	var position = _v0.position;
@@ -10055,11 +10122,6 @@ var $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions = function (_
 			{color: $avh4$elm_color$Color$grey, position: position, size: size});
 	}
 };
-var $Zinggi$elm_game_resources$Game$Resources$getTexture = F2(
-	function (url, _v0) {
-		var res = _v0.a;
-		return A2($elm$core$Dict$get, url, res);
-	});
 var $author$project$Game$renderPlayer = F2(
 	function (resources, _v0) {
 		var x = _v0.x;
@@ -10070,7 +10132,7 @@ var $author$project$Game$renderPlayer = F2(
 				bottomLeft: _Utils_Tuple2(0, 0),
 				duration: 1,
 				numberOfFrames: 2,
-				pivot: _Utils_Tuple2(0.5, 0),
+				pivot: _Utils_Tuple2(0, 0),
 				position: _Utils_Tuple3(x, y, 0),
 				rotation: 0,
 				size: _Utils_Tuple2(0.5, 1),
@@ -10097,6 +10159,7 @@ var $author$project$Game$render = function (model) {
 	return $elm$core$List$concat(
 		_List_fromArray(
 			[
+				$author$project$Game$renderBackground(resources),
 				_List_fromArray(
 				[
 					A2($author$project$Game$renderPlayer, resources, model.player)
@@ -10170,7 +10233,20 @@ var $Zinggi$elm_2d_game$Game$TwoD$renderWithOptions = F3(
 					_Utils_Tuple2(wf, hf)),
 				objects));
 	});
-var $Zinggi$elm_2d_game$Game$TwoD$render = $Zinggi$elm_2d_game$Game$TwoD$renderWithOptions(_List_Nil);
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$Game$view = function (model) {
@@ -10179,16 +10255,28 @@ var $author$project$Game$view = function (model) {
 	return {
 		content: A2(
 			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
-					A2($elm$html$Html$Attributes$style, 'width', '100%'),
-					A2($elm$html$Html$Attributes$style, 'height', '100%')
-				]),
+			_List_Nil,
 			_List_fromArray(
 				[
 					A2(
-					$Zinggi$elm_2d_game$Game$TwoD$render,
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
+							A2($elm$html$Html$Attributes$style, 'display', 'block'),
+							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+							A2($elm$html$Html$Attributes$style, 'left', '0px'),
+							A2($elm$html$Html$Attributes$style, 'top', '0px')
+						]),
+					_List_Nil),
+					A3(
+					$Zinggi$elm_2d_game$Game$TwoD$renderWithOptions,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '448px'),
+							A2($elm$html$Html$Attributes$style, 'top', '228px')
+						]),
 					{camera: model.camera, size: screen, time: time},
 					$author$project$Game$render(model))
 				])),
@@ -10199,14 +10287,6 @@ var $author$project$Help$HoverBack = {$: 'HoverBack'};
 var $author$project$Help$MouseOut = {$: 'MouseOut'};
 var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
 var $elm$html$Html$Attributes$href = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
@@ -10237,7 +10317,6 @@ var $author$project$Route$href = function (targetRoute) {
 	return $elm$html$Html$Attributes$href(
 		$author$project$Route$routeToPieces(targetRoute));
 };
-var $elm$html$Html$img = _VirtualDom_node('img');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -10260,12 +10339,6 @@ var $elm$html$Html$Events$onMouseOver = function (msg) {
 		$elm$html$Html$Events$on,
 		'mouseover',
 		$elm$json$Json$Decode$succeed(msg));
-};
-var $elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;

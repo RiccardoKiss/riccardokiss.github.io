@@ -63,8 +63,8 @@ getNavKey model =
 
 initPlayer : Player
 initPlayer =
-  { x = 0
-  , y = 0
+  { x = 53
+  , y = 9
   , vx = 0
   , vy = 0
   , dir = Idle
@@ -78,8 +78,8 @@ init navKey =
     , resources = Resources.init
     , keys = []
     , time = 0
-    , screen = ( 1024, 512 )--( 800, 600 )
-    , camera = Camera.fixedArea (16 * 8) ( 0, 0 )
+    , screen = ( 1024, 512 )
+    , camera = Camera.fixedArea (32 * 16) ( 0, 0 )
     }
   , Cmd.map Resources (Resources.loadTextures texturesList )
   --, Cmd.batch
@@ -91,12 +91,13 @@ init navKey =
 
 texturesList : List String
 texturesList =
-  [ "assets/playerIdle.png"
-  , "assets/playerRight.png"
-  , "assets/playerLeft.png"
-  , "assets/playerUp.png"
-  , "assets/playerDown.png"
+  [ "assets/player/playerIdle.png"
+  , "assets/player/playerRight.png"
+  , "assets/player/playerLeft.png"
+  , "assets/player/playerUp.png"
+  , "assets/player/playerDown.png"
   , "assets/sceneTest1024_512.png"
+  , "assets/level/level_2.png"
   ]
 
 
@@ -212,9 +213,9 @@ render ({ resources, camera } as model) =
 renderBackground : Resources -> List Renderable
 renderBackground resources =
     [ Render.spriteZ
-        { texture = Resources.getTexture "assets/sceneTest1024_512.png" resources
-        , position = ( -1, -1, -0.9 )
-        , size = ( 16, 8 )
+        { texture = Resources.getTexture "assets/level/level_2.png" resources
+        , position = ( 0, 0, -0.9 )
+        , size = ( 128, 128 )
         }
     ]
 
@@ -223,23 +224,23 @@ renderPlayer : Resources -> Player -> Renderable
 renderPlayer resources { x, y, dir } =
   Render.animatedSpriteWithOptions
     { position = ( x, y, 0 )
-    , size = ( 0.5, 1 )
+    , size = ( 1, 2 )
     , texture =
         case dir of
           Left ->
-            Resources.getTexture "assets/playerLeft.png" resources
+            Resources.getTexture "assets/player/playerLeft.png" resources
 
           Right ->
-            Resources.getTexture "assets/playerRight.png" resources
+            Resources.getTexture "assets/player/playerRight.png" resources
 
           Up ->
-            Resources.getTexture "assets/playerUp.png" resources
+            Resources.getTexture "assets/player/playerUp.png" resources
 
           Down ->
-            Resources.getTexture "assets/playerDown.png" resources
+            Resources.getTexture "assets/player/playerDown.png" resources
 
           Idle ->
-            Resources.getTexture "assets/playerIdle.png" resources
+            Resources.getTexture "assets/player/playerIdle.png" resources
     , bottomLeft = ( 0, 0 )
     , topRight = ( 1, 1 )
     , duration = 1
@@ -264,6 +265,7 @@ view ({ time, screen } as model) =
           [ style "position" "absolute"
           , style "left" "448px"
           , style "top" "228px"
+          , style "border" "solid 1px #FFF"
           ]
             { camera = model.camera
             , time = time

@@ -7215,7 +7215,7 @@ var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
 var $author$project$Game$Idle = {$: 'Idle'};
-var $author$project$Game$initPlayer = {dir: $author$project$Game$Idle, vx: 0, vy: 0, x: 0, y: 0};
+var $author$project$Game$initPlayer = {dir: $author$project$Game$Idle, vx: 0, vy: 0, x: 53, y: 9};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -7292,13 +7292,13 @@ var $Zinggi$elm_game_resources$Game$Resources$loadTextures = function (urls) {
 };
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$Game$texturesList = _List_fromArray(
-	['assets/playerIdle.png', 'assets/playerRight.png', 'assets/playerLeft.png', 'assets/playerUp.png', 'assets/playerDown.png', 'assets/sceneTest1024_512.png']);
+	['assets/player/playerIdle.png', 'assets/player/playerRight.png', 'assets/player/playerLeft.png', 'assets/player/playerUp.png', 'assets/player/playerDown.png', 'assets/sceneTest1024_512.png', 'assets/level/level_2.png']);
 var $author$project$Game$init = function (navKey) {
 	return _Utils_Tuple2(
 		{
 			camera: A2(
 				$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
-				16 * 8,
+				32 * 16,
 				_Utils_Tuple2(0, 0)),
 			keys: _List_Nil,
 			navKey: navKey,
@@ -10073,9 +10073,9 @@ var $author$project$Game$renderBackground = function (resources) {
 		[
 			$Zinggi$elm_2d_game$Game$TwoD$Render$spriteZ(
 			{
-				position: _Utils_Tuple3(-1, -1, -0.9),
-				size: _Utils_Tuple2(16, 8),
-				texture: A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/sceneTest1024_512.png', resources)
+				position: _Utils_Tuple3(0, 0, -0.9),
+				size: _Utils_Tuple2(128, 128),
+				texture: A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/level/level_2.png', resources)
 			})
 		]);
 };
@@ -10135,19 +10135,19 @@ var $author$project$Game$renderPlayer = F2(
 				pivot: _Utils_Tuple2(0, 0),
 				position: _Utils_Tuple3(x, y, 0),
 				rotation: 0,
-				size: _Utils_Tuple2(0.5, 1),
+				size: _Utils_Tuple2(1, 2),
 				texture: function () {
 					switch (dir.$) {
 						case 'Left':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerLeft.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerLeft.png', resources);
 						case 'Right':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerRight.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerRight.png', resources);
 						case 'Up':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerUp.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerUp.png', resources);
 						case 'Down':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerDown.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerDown.png', resources);
 						default:
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/playerIdle.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerIdle.png', resources);
 					}
 				}(),
 				topRight: _Utils_Tuple2(1, 1)
@@ -10275,7 +10275,8 @@ var $author$project$Game$view = function (model) {
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 							A2($elm$html$Html$Attributes$style, 'left', '448px'),
-							A2($elm$html$Html$Attributes$style, 'top', '228px')
+							A2($elm$html$Html$Attributes$style, 'top', '228px'),
+							A2($elm$html$Html$Attributes$style, 'border', 'solid 1px #FFF')
 						]),
 					{camera: model.camera, size: screen, time: time},
 					$author$project$Game$render(model))

@@ -192,6 +192,11 @@ level2Tilemap =
 
 getTileTypeFromTileMap : Array.Array ( Array.Array Char ) -> Float -> Float -> Maybe Char
 getTileTypeFromTileMap array x y =
+    let
+        _ = Debug.log "[getTileTypeFromTileMap] x" (floor x)
+        _ = Debug.log "[getTileTypeFromTileMap] y" (floor y)
+    in
+
     Array.get (127 - (floor y)) array
     |> Maybe.andThen (Array.get (floor x))
     |> Debug.log "[getTileTypeFromTileMap] tile"
@@ -275,12 +280,12 @@ update msg model =
 
 
 tick : Float -> List Keyboard.Key -> Player -> Player
-tick dt keys guy =
+tick dt keys player =
   let
     arrows =
       Keyboard.Arrows.arrows keys
   in
-  guy
+  player
     --|> gravity dt
     --|> jump arrows
     |> walk arrows
@@ -309,19 +314,35 @@ gravity dt guy =
 -}
 
 physics : Float -> Player -> Player
-physics dt guy =
+physics dt player =
   let
-    tileType = getTileTypeFromTileMap level2Tilemap guy.x guy.y
+    newX = player.x + dt * player.vx
+    newY = player.y + dt * player.vy
+    tileType = getTileTypeFromTileMap level2Tilemap newX newY--player.x player.y
   in
-  { guy
-    | x = guy.x + dt * guy.vx--if tileType == Maybe 'T' then guy.x + dt * guy.vx else guy.x
-    , y = guy.y + dt * guy.vy--if tileType == Maybe 'T' then guy.y + dt * guy.vy else guy.y
+  { player
+    | x =
+        case tileType of
+          Just tile ->
+            if tile == 'T'
+              then newX
+            else player.x --(toFloat (floor player.x) - 0.1)
+          Nothing ->
+            player.x
+    , y =
+      case tileType of
+        Just tile ->
+          if tile == 'T'
+            then newY
+          else player.y --(toFloat (floor player.x) - 0.1)
+        Nothing ->
+          player.y
   }
 
 
 walk : Input -> Player -> Player
-walk keys guy =
-  { guy
+walk keys player =
+  { player
     | vx = 3 * toFloat keys.x
     , vy = 3 * toFloat keys.y
     , dir =

@@ -8925,6 +8925,14 @@ var $elm$core$Array$get = F2(
 	});
 var $author$project$Game$getTileTypeFromTileMap = F3(
 	function (array, x, y) {
+		var _v0 = A2(
+			$elm$core$Debug$log,
+			'[getTileTypeFromTileMap] x',
+			$elm$core$Basics$floor(x));
+		var _v1 = A2(
+			$elm$core$Debug$log,
+			'[getTileTypeFromTileMap] y',
+			$elm$core$Basics$floor(y));
 		return A2(
 			$elm$core$Debug$log,
 			'[getTileTypeFromTileMap] tile',
@@ -9237,20 +9245,43 @@ var $author$project$Game$level2Tilemap = $elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'))
 		]));
 var $author$project$Game$physics = F2(
-	function (dt, guy) {
-		var tileType = A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, guy.x, guy.y);
+	function (dt, player) {
+		var newY = player.y + (dt * player.vy);
+		var newX = player.x + (dt * player.vx);
+		var tileType = A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX, newY);
 		return _Utils_update(
-			guy,
-			{x: guy.x + (dt * guy.vx), y: guy.y + (dt * guy.vy)});
+			player,
+			{
+				x: function () {
+					if (tileType.$ === 'Just') {
+						var tile = tileType.a;
+						return _Utils_eq(
+							tile,
+							_Utils_chr('T')) ? newX : player.x;
+					} else {
+						return player.x;
+					}
+				}(),
+				y: function () {
+					if (tileType.$ === 'Just') {
+						var tile = tileType.a;
+						return _Utils_eq(
+							tile,
+							_Utils_chr('T')) ? newY : player.y;
+					} else {
+						return player.y;
+					}
+				}()
+			});
 	});
 var $author$project$Game$Down = {$: 'Down'};
 var $author$project$Game$Left = {$: 'Left'};
 var $author$project$Game$Right = {$: 'Right'};
 var $author$project$Game$Up = {$: 'Up'};
 var $author$project$Game$walk = F2(
-	function (keys, guy) {
+	function (keys, player) {
 		return _Utils_update(
-			guy,
+			player,
 			{
 				dir: (keys.x < 0) ? $author$project$Game$Left : ((keys.x > 0) ? $author$project$Game$Right : ((keys.y < 0) ? $author$project$Game$Down : ((keys.y > 0) ? $author$project$Game$Up : $author$project$Game$Idle))),
 				vx: 3 * keys.x,
@@ -9258,12 +9289,12 @@ var $author$project$Game$walk = F2(
 			});
 	});
 var $author$project$Game$tick = F3(
-	function (dt, keys, guy) {
+	function (dt, keys, player) {
 		var arrows = $ohanhi$keyboard$Keyboard$Arrows$arrows(keys);
 		return A2(
 			$author$project$Game$physics,
 			dt,
-			A2($author$project$Game$walk, arrows, guy));
+			A2($author$project$Game$walk, arrows, player));
 	});
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {

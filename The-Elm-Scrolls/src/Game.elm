@@ -21,6 +21,7 @@ import Array
 type alias Model =
   { navKey : Nav.Key
   , player : Player
+  , enemy : Player
   , resources : Resources
   , keys : List Keyboard.Key
   , time : Float
@@ -215,11 +216,20 @@ initPlayer =
   , dir = Idle
   }
 
+initEnemy : Player
+initEnemy =
+  { x = 57
+  , y = 9
+  , vx = 0
+  , vy = 3
+  , dir = Up
+  }
 
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
     , player = initPlayer
+    , enemy = initEnemy
     , resources = Resources.init
     , keys = []
     , time = 0
@@ -243,6 +253,11 @@ texturesList =
   , "assets/player/playerDown.png"
   , "assets/sceneTest1024_512.png"
   , "assets/level/level_2.png"
+  , "assets/enemy/enemyIdle.png"
+  , "assets/enemy/enemyRight.png"
+  , "assets/enemy/enemyLeft.png"
+  , "assets/enemy/enemyUp.png"
+  , "assets/enemy/enemyDown.png"
   ]
 
 
@@ -260,6 +275,7 @@ update msg model =
     Tick dt ->
       ( { model
           | player = tick dt model.keys model.player
+          , enemy = physics dt model.enemy
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
         }
@@ -318,22 +334,31 @@ physics dt player =
   let
     newX = player.x + dt * player.vx
     newY = player.y + dt * player.vy
-    tileType = getTileTypeFromTileMap level2Tilemap newX newY--player.x player.y
+    tileType = --getTileTypeFromTileMap level2Tilemap newX newY--player.x player.y
+      if player.dir == Left then
+        getTileTypeFromTileMap level2Tilemap (newX - 1) newY
+      else if player.dir == Up then
+        getTileTypeFromTileMap level2Tilemap newX (newY + 1)
+      else
+        getTileTypeFromTileMap level2Tilemap newX newY
+
+    --_ = Debug.log "[physics] newX" newX
+    --_ = Debug.log "[physics] newY" newY
   in
   { player
     | x =
         case tileType of
           Just tile ->
-            if tile == 'T'
-              then newX
+            if tile == 'T' then
+              newX
             else player.x --(toFloat (floor player.x) - 0.1)
           Nothing ->
             player.x
     , y =
       case tileType of
         Just tile ->
-          if tile == 'T'
-            then newY
+          if tile == 'T' then
+            newY
           else player.y --(toFloat (floor player.x) - 0.1)
         Nothing ->
           player.y
@@ -370,7 +395,9 @@ render : Model -> List Renderable
 render ({ resources, camera } as model) =
   List.concat
     [ renderBackground resources
-    , [ renderPlayer resources model.player ]
+    , [ renderPlayer resources model.player
+      , renderEnemy resources model.enemy
+      ]
     ]
 
 
@@ -383,6 +410,34 @@ renderBackground resources =
         }
     ]
 
+renderEnemy : Resources -> Player -> Renderable
+renderEnemy resources { x, y, dir } =
+  Render.animatedSpriteWithOptions
+    { position = ( x, y, -0.1 )
+    , size = ( 1, 2 )
+    , texture =
+        case dir of
+          Left ->
+            Resources.getTexture "assets/enemy/enemyLeft.png" resources
+
+          Right ->
+            Resources.getTexture "assets/enemy/enemyRight.png" resources
+
+          Up ->
+            Resources.getTexture "assets/enemy/enemyUp.png" resources
+
+          Down ->
+            Resources.getTexture "assets/enemy/enemyDown.png" resources
+
+          Idle ->
+            Resources.getTexture "assets/enemy/enemyIdle.png" resources
+    , bottomLeft = ( 0, 0 )
+    , topRight = ( 1, 1 )
+    , duration = 1
+    , numberOfFrames = 2
+    , rotation = 0
+    , pivot = ( 0, 0 )
+    }
 
 renderPlayer : Resources -> Player -> Renderable
 renderPlayer resources { x, y, dir } =

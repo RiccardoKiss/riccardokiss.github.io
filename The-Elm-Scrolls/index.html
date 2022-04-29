@@ -8821,6 +8821,19 @@ var $author$project$Main$subscriptions = function (model) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $author$project$Game$Down = {$: 'Down'};
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $author$project$Game$enemyMovement = function (player) {
+	return _Utils_eq(
+		$elm$core$Basics$floor(player.y),
+		9.0 + 5.0) ? _Utils_update(
+		player,
+		{dir: $author$project$Game$Down, vy: -3}) : (($elm$core$Basics$floor(player.y) === 9.0) ? _Utils_update(
+		player,
+		{dir: $author$project$Game$Up, vy: 3}) : player);
+};
 var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
 	function (pos, _v0) {
 		var camera = _v0.a;
@@ -8883,14 +8896,6 @@ var $elm$core$Array$get = F2(
 	});
 var $author$project$Game$getTileTypeFromTileMap = F3(
 	function (array, x, y) {
-		var _v0 = A2(
-			$elm$core$Debug$log,
-			'[getTileTypeFromTileMap] x',
-			$elm$core$Basics$floor(x));
-		var _v1 = A2(
-			$elm$core$Debug$log,
-			'[getTileTypeFromTileMap] y',
-			$elm$core$Basics$floor(y));
 		return A2(
 			$elm$core$Debug$log,
 			'[getTileTypeFromTileMap] tile',
@@ -9207,8 +9212,6 @@ var $author$project$Game$physics = F2(
 		var newY = player.y + (dt * player.vy);
 		var newX = player.x + (dt * player.vx);
 		var tileType = _Utils_eq(player.dir, $author$project$Game$Left) ? A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX - 1, newY) : (_Utils_eq(player.dir, $author$project$Game$Up) ? A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX, newY + 1) : A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX, newY));
-		var _v0 = A2($elm$core$Debug$log, '[physics] newX', newX);
-		var _v1 = A2($elm$core$Debug$log, '[physics] newY', newY);
 		return _Utils_update(
 			player,
 			{
@@ -9280,7 +9283,6 @@ var $ohanhi$keyboard$Keyboard$Arrows$arrows = function (keys) {
 	var y = toInt($ohanhi$keyboard$Keyboard$ArrowUp) - toInt($ohanhi$keyboard$Keyboard$ArrowDown);
 	return {x: x, y: y};
 };
-var $author$project$Game$Down = {$: 'Down'};
 var $author$project$Game$Right = {$: 'Right'};
 var $author$project$Game$walk = F2(
 	function (keys, player) {
@@ -9767,7 +9769,10 @@ var $author$project$Game$update = F2(
 								$Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo,
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
-							enemy: A2($author$project$Game$physics, dt, model.enemy),
+							enemy: A2(
+								$author$project$Game$physics,
+								dt,
+								$author$project$Game$enemyMovement(model.enemy)),
 							player: A3($author$project$Game$tick, dt, model.keys, model.player),
 							time: dt + model.time
 						}),
@@ -10095,9 +10100,6 @@ var $Zinggi$elm_game_resources$Game$Resources$getTexture = F2(
 		var res = _v0.a;
 		return A2($elm$core$Dict$get, url, res);
 	});
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
 var $Zinggi$elm_2d_game$Game$TwoD$Render$Rectangle = {$: 'Rectangle'};
 var $Zinggi$elm_2d_game$Game$TwoD$Shaders$fragTextured = {
 	src: '\n\nprecision mediump float;\n\nuniform sampler2D texture;\nuniform vec2 tileWH;\nvarying vec2 vcoord;\n\nvoid main () {\n    gl_FragColor = texture2D(texture, vcoord*tileWH);\n}\n',

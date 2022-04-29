@@ -193,11 +193,11 @@ level2Tilemap =
 
 getTileTypeFromTileMap : Array.Array ( Array.Array Char ) -> Float -> Float -> Maybe Char
 getTileTypeFromTileMap array x y =
+    {-
     let
         _ = Debug.log "[getTileTypeFromTileMap] x" (floor x)
         _ = Debug.log "[getTileTypeFromTileMap] y" (floor y)
-    in
-
+    in-}
     Array.get (127 - (floor y)) array
     |> Maybe.andThen (Array.get (floor x))
     |> Debug.log "[getTileTypeFromTileMap] tile"
@@ -237,10 +237,6 @@ init navKey =
     , camera = Camera.fixedArea (32 * 16) ( 0, 0 )
     }
   , Cmd.map Resources (Resources.loadTextures texturesList )
-  --, Cmd.batch
-    --  [ Cmd.map Resources (Resources.loadTextures [ "images/guy.png", "images/grass.png", "images/cloud_bg.png" ])
-      --, Task.perform (\{ viewport } -> ScreenSize (round viewport.width) (round viewport.height)) getViewport
-      --]
   )
 
 
@@ -258,6 +254,7 @@ texturesList =
   , "assets/enemy/enemyLeft.png"
   , "assets/enemy/enemyUp.png"
   , "assets/enemy/enemyDown.png"
+  , "assets/sword_stone.png"
   ]
 
 
@@ -267,15 +264,10 @@ texturesList =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    --ScreenSize width height ->
-      --  ( { model | screen = ( width, height ) }
-        --, Cmd.none
-        --)
-
     Tick dt ->
       ( { model
           | player = tick dt model.keys model.player
-          , enemy = physics dt model.enemy
+          , enemy = enemyMovement model.enemy |> physics dt
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
         }
@@ -302,39 +294,31 @@ tick dt keys player =
       Keyboard.Arrows.arrows keys
   in
   player
-    --|> gravity dt
-    --|> jump arrows
     |> walk arrows
     |> physics dt
 
-{-
-jump : Input -> Mario -> Mario
-jump keys guy =
-    if keys.y > 0 && guy.vy == 0 then
-        { guy | vy = 4.0 }
 
-    else
-        guy
+enemyMovement : Player -> Player
+enemyMovement player =
+    if (toFloat (floor player.y)) == (9.0 + 5.0) then
+      { player
+        | dir = Down
+        , vy = -3 -- -1 * player.vy
+      }
+    else if (toFloat (floor player.y)) == 9.0 then
+      { player
+        | dir = Up
+        , vy = 3 -- -1 * player.vy
+      }
+    else player
 
-
-gravity : Float -> Mario -> Mario
-gravity dt guy =
-    { guy
-        | vy =
-            if guy.y > 0 then
-                guy.vy - 9.81 * dt
-
-            else
-                0
-    }
--}
 
 physics : Float -> Player -> Player
 physics dt player =
   let
     newX = player.x + dt * player.vx
     newY = player.y + dt * player.vy
-    tileType = --getTileTypeFromTileMap level2Tilemap newX newY--player.x player.y
+    tileType =
       if player.dir == Left then
         getTileTypeFromTileMap level2Tilemap (newX - 1) newY
       else if player.dir == Up then
@@ -507,22 +491,9 @@ view ({ time, screen } as model) =
       ]
   }
 
-{-
-main : Program () Model Msg
-main =
-    Browser.element
-        { update = update
-        , init = init
-        , view = view
-        , subscriptions = subs
-        }
--}
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-    [ --onResize ScreenSize
-    Sub.map Keys Keyboard.subscriptions
+    [ Sub.map Keys Keyboard.subscriptions
     , onAnimationFrameDelta ((\dt -> dt / 1000) >> Tick)
     ]

@@ -3,7 +3,7 @@ module Game exposing  (..)
 import Browser
 import Browser.Navigation as Nav
 import Browser.Dom exposing (getViewport)
-import Browser.Events exposing (onAnimationFrameDelta, onResize)
+import Browser.Events exposing (onAnimationFrameDelta)
 import Game.Resources as Resources exposing (..)
 import Game.TwoD as Game2d
 import Game.TwoD.Camera as Camera exposing (..)
@@ -21,6 +21,7 @@ import Array
 type alias Model =
   { navKey : Nav.Key
   , player : Player
+  , sword : Sword
   , enemy : Player
   , resources : Resources
   , keys : List Keyboard.Key
@@ -45,6 +46,14 @@ type alias Player =
   , dir : Direction
   }
 
+type alias Sword =
+  { x : Float
+  , y : Float
+  --, vx : Float
+  --, vy : Float
+  , dir : Direction
+  , action : Action
+  }
 
 type Direction
   = Left
@@ -53,6 +62,9 @@ type Direction
   | Down
   | Idle
 
+type Action
+  = NotAttack
+  | Attack
 
 type alias Input =
   { x : Int, y : Int }
@@ -216,6 +228,16 @@ initPlayer =
   , dir = Idle
   }
 
+initSword : Player -> Sword
+initSword player =
+  { x = player.x + 0.75
+  , y = player.y + 0.5
+  --, vx = player.vx
+  --, vy = player.vy
+  , dir = Idle
+  , action = NotAttack
+  }
+
 initEnemy : Player
 initEnemy =
   { x = 57
@@ -229,6 +251,7 @@ init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
     , player = initPlayer
+    , sword = initSword initPlayer
     , enemy = initEnemy
     , resources = Resources.init
     , keys = []
@@ -267,6 +290,7 @@ update msg model =
     Tick dt ->
       ( { model
           | player = tick dt model.keys model.player
+          , sword = swordPhysics dt model.player model.sword
           , enemy = enemyMovement model.enemy |> physics dt
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
@@ -312,6 +336,12 @@ enemyMovement player =
       }
     else player
 
+swordPhysics : Float -> Player -> Sword -> Sword
+swordPhysics dt player sword =
+  { sword
+  | x = player.x + 0.75
+  , y = player.y + 0.5
+  }
 
 physics : Float -> Player -> Player
 physics dt player =
@@ -380,6 +410,7 @@ render ({ resources, camera } as model) =
   List.concat
     [ renderBackground resources
     , [ renderPlayer resources model.player
+      , renderSword resources model.sword
       , renderEnemy resources model.enemy
       ]
     ]
@@ -387,12 +418,24 @@ render ({ resources, camera } as model) =
 
 renderBackground : Resources -> List Renderable
 renderBackground resources =
-    [ Render.spriteZ
-        { texture = Resources.getTexture "assets/level/level_2.png" resources
-        , position = ( 0, 0, -0.9 )
-        , size = ( 128, 128 )
-        }
-    ]
+  [ Render.spriteZ
+    { texture = Resources.getTexture "assets/level/level_2.png" resources
+    , position = ( 0, 0, -0.9 )
+    , size = ( 128, 128 )
+    }
+  ]
+
+renderSword : Resources -> Sword -> Renderable
+renderSword resources { x, y } =
+  Render.spriteWithOptions
+    { texture = Resources.getTexture "assets/sword_stone.png" resources
+    , position = ( x, y, 0.1 )
+    , size = ( 0.5, 1 )
+    , tiling = ( 1, 1 )
+    , rotation = -1
+    , pivot = ( 0, 0)
+    }
+
 
 renderEnemy : Resources -> Player -> Renderable
 renderEnemy resources { x, y, dir } =

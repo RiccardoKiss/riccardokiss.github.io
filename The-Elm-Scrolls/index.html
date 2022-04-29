@@ -7255,6 +7255,10 @@ var $author$project$Game$Up = {$: 'Up'};
 var $author$project$Game$initEnemy = {dir: $author$project$Game$Up, vx: 0, vy: 3, x: 57, y: 9};
 var $author$project$Game$Idle = {$: 'Idle'};
 var $author$project$Game$initPlayer = {dir: $author$project$Game$Idle, vx: 0, vy: 0, x: 56, y: 10};
+var $author$project$Game$NotAttack = {$: 'NotAttack'};
+var $author$project$Game$initSword = function (player) {
+	return {action: $author$project$Game$NotAttack, dir: $author$project$Game$Idle, x: player.x + 0.75, y: player.y + 0.5};
+};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -7331,7 +7335,7 @@ var $Zinggi$elm_game_resources$Game$Resources$loadTextures = function (urls) {
 };
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$Game$texturesList = _List_fromArray(
-	['assets/player/playerIdle.png', 'assets/player/playerRight.png', 'assets/player/playerLeft.png', 'assets/player/playerUp.png', 'assets/player/playerDown.png', 'assets/sceneTest1024_512.png', 'assets/level/level_2.png', 'assets/enemy/enemyIdle.png', 'assets/enemy/enemyRight.png', 'assets/enemy/enemyLeft.png', 'assets/enemy/enemyUp.png', 'assets/enemy/enemyDown.png']);
+	['assets/player/playerIdle.png', 'assets/player/playerRight.png', 'assets/player/playerLeft.png', 'assets/player/playerUp.png', 'assets/player/playerDown.png', 'assets/sceneTest1024_512.png', 'assets/level/level_2.png', 'assets/enemy/enemyIdle.png', 'assets/enemy/enemyRight.png', 'assets/enemy/enemyLeft.png', 'assets/enemy/enemyUp.png', 'assets/enemy/enemyDown.png', 'assets/sword_stone.png']);
 var $author$project$Game$init = function (navKey) {
 	return _Utils_Tuple2(
 		{
@@ -7345,6 +7349,7 @@ var $author$project$Game$init = function (navKey) {
 			player: $author$project$Game$initPlayer,
 			resources: $Zinggi$elm_game_resources$Game$Resources$init,
 			screen: _Utils_Tuple2(1024, 512),
+			sword: $author$project$Game$initSword($author$project$Game$initPlayer),
 			time: 0
 		},
 		A2(
@@ -9237,6 +9242,12 @@ var $author$project$Game$physics = F2(
 				}()
 			});
 	});
+var $author$project$Game$swordPhysics = F3(
+	function (dt, player, sword) {
+		return _Utils_update(
+			sword,
+			{x: player.x + 0.75, y: player.y + 0.5});
+	});
 var $ohanhi$keyboard$Keyboard$ArrowDown = {$: 'ArrowDown'};
 var $ohanhi$keyboard$Keyboard$ArrowLeft = {$: 'ArrowLeft'};
 var $ohanhi$keyboard$Keyboard$ArrowRight = {$: 'ArrowRight'};
@@ -9774,6 +9785,7 @@ var $author$project$Game$update = F2(
 								dt,
 								$author$project$Game$enemyMovement(model.enemy)),
 							player: A3($author$project$Game$tick, dt, model.keys, model.player),
+							sword: A3($author$project$Game$swordPhysics, dt, model.player, model.sword),
 							time: dt + model.time
 						}),
 					$elm$core$Platform$Cmd$none);
@@ -10624,6 +10636,20 @@ var $author$project$Game$renderPlayer = F2(
 				topRight: _Utils_Tuple2(1, 1)
 			});
 	});
+var $author$project$Game$renderSword = F2(
+	function (resources, _v0) {
+		var x = _v0.x;
+		var y = _v0.y;
+		return $Zinggi$elm_2d_game$Game$TwoD$Render$spriteWithOptions(
+			{
+				pivot: _Utils_Tuple2(0, 0),
+				position: _Utils_Tuple3(x, y, 0.1),
+				rotation: -1,
+				size: _Utils_Tuple2(0.5, 1),
+				texture: A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/sword_stone.png', resources),
+				tiling: _Utils_Tuple2(1, 1)
+			});
+	});
 var $author$project$Game$render = function (model) {
 	var resources = model.resources;
 	var camera = model.camera;
@@ -10634,6 +10660,7 @@ var $author$project$Game$render = function (model) {
 				_List_fromArray(
 				[
 					A2($author$project$Game$renderPlayer, resources, model.player),
+					A2($author$project$Game$renderSword, resources, model.sword),
 					A2($author$project$Game$renderEnemy, resources, model.enemy)
 				])
 			]));

@@ -33,7 +33,6 @@ type alias Model =
 
 type Msg
   = Tick Float
-  --| ScreenSize Int Int
   | Resources Resources.Msg
   | Keys Keyboard.Msg
 
@@ -49,8 +48,6 @@ type alias Player =
 type alias Sword =
   { x : Float
   , y : Float
-  --, vx : Float
-  --, vy : Float
   , dir : Direction
   , action : Action
   }
@@ -212,7 +209,7 @@ getTileTypeFromTileMap array x y =
     in-}
     Array.get (127 - (floor y)) array
     |> Maybe.andThen (Array.get (floor x))
-    |> Debug.log "[getTileTypeFromTileMap] tile"
+    --|> Debug.log "[getTileTypeFromTileMap] tile"
 
 getNavKey : Model -> Nav.Key
 getNavKey model =
@@ -232,8 +229,6 @@ initSword : Player -> Sword
 initSword player =
   { x = player.x + 0.75
   , y = player.y + 0.5
-  --, vx = player.vx
-  --, vy = player.vy
   , dir = Idle
   , action = NotAttack
   }
@@ -270,7 +265,6 @@ texturesList =
   , "assets/player/playerLeft.png"
   , "assets/player/playerUp.png"
   , "assets/player/playerDown.png"
-  , "assets/sceneTest1024_512.png"
   , "assets/level/level_2.png"
   , "assets/enemy/enemyIdle.png"
   , "assets/enemy/enemyRight.png"
@@ -278,6 +272,7 @@ texturesList =
   , "assets/enemy/enemyUp.png"
   , "assets/enemy/enemyDown.png"
   , "assets/sword_stone.png"
+  , "assets/sword_stone_attack.png"
   ]
 
 
@@ -307,6 +302,7 @@ update msg model =
       let
         keys =
           Keyboard.update keyMsg model.keys
+        _ = Debug.log "[model.keys]" keys
       in
         ( { model | keys = keys }, Cmd.none )
 
@@ -314,11 +310,12 @@ update msg model =
 tick : Float -> List Keyboard.Key -> Player -> Player
 tick dt keys player =
   let
-    arrows =
-      Keyboard.Arrows.arrows keys
+    moveInput =
+      Keyboard.Arrows.wasd keys
+      --Keyboard.Arrows.arrows keys
   in
   player
-    |> walk arrows
+    |> walk moveInput
     |> physics dt
 
 
@@ -410,7 +407,7 @@ render ({ resources, camera } as model) =
   List.concat
     [ renderBackground resources
     , [ renderPlayer resources model.player
-      , renderSword resources model.sword
+      , renderSword resources model.sword model.keys
       , renderEnemy resources model.enemy
       ]
     ]
@@ -425,14 +422,22 @@ renderBackground resources =
     }
   ]
 
-renderSword : Resources -> Sword -> Renderable
-renderSword resources { x, y } =
+renderSword : Resources -> Sword -> List Keyboard.Key -> Renderable
+renderSword resources { x, y } keys =
   Render.spriteWithOptions
-    { texture = Resources.getTexture "assets/sword_stone.png" resources
+    { texture =
+        if List.member Keyboard.Spacebar keys then
+          Resources.getTexture "assets/sword_stone_attack.png" resources
+        else
+          Resources.getTexture "assets/sword_stone.png" resources
     , position = ( x, y, 0.1 )
-    , size = ( 0.5, 1 )
+    , size =
+      if List.member Keyboard.Spacebar keys then
+        ( 1, 0.5 )
+      else
+        ( 0.5, 1 )
     , tiling = ( 1, 1 )
-    , rotation = -1
+    , rotation = 0 -- -1
     , pivot = ( 0, 0)
     }
 

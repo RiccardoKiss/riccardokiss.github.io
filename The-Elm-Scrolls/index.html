@@ -7335,7 +7335,7 @@ var $Zinggi$elm_game_resources$Game$Resources$loadTextures = function (urls) {
 };
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$Game$texturesList = _List_fromArray(
-	['assets/player/playerIdle.png', 'assets/player/playerRight.png', 'assets/player/playerLeft.png', 'assets/player/playerUp.png', 'assets/player/playerDown.png', 'assets/sceneTest1024_512.png', 'assets/level/level_2.png', 'assets/enemy/enemyIdle.png', 'assets/enemy/enemyRight.png', 'assets/enemy/enemyLeft.png', 'assets/enemy/enemyUp.png', 'assets/enemy/enemyDown.png', 'assets/sword_stone.png']);
+	['assets/player/playerIdle.png', 'assets/player/playerRight.png', 'assets/player/playerLeft.png', 'assets/player/playerUp.png', 'assets/player/playerDown.png', 'assets/level/level_2.png', 'assets/enemy/enemyIdle.png', 'assets/enemy/enemyRight.png', 'assets/enemy/enemyLeft.png', 'assets/enemy/enemyUp.png', 'assets/enemy/enemyDown.png', 'assets/sword_stone.png', 'assets/sword_stone_attack.png']);
 var $author$project$Game$init = function (navKey) {
 	return _Utils_Tuple2(
 		{
@@ -8902,16 +8902,13 @@ var $elm$core$Array$get = F2(
 var $author$project$Game$getTileTypeFromTileMap = F3(
 	function (array, x, y) {
 		return A2(
-			$elm$core$Debug$log,
-			'[getTileTypeFromTileMap] tile',
+			$elm$core$Maybe$andThen,
+			$elm$core$Array$get(
+				$elm$core$Basics$floor(x)),
 			A2(
-				$elm$core$Maybe$andThen,
-				$elm$core$Array$get(
-					$elm$core$Basics$floor(x)),
-				A2(
-					$elm$core$Array$get,
-					127 - $elm$core$Basics$floor(y),
-					array)));
+				$elm$core$Array$get,
+				127 - $elm$core$Basics$floor(y),
+				array));
 	});
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
@@ -9248,10 +9245,20 @@ var $author$project$Game$swordPhysics = F3(
 			sword,
 			{x: player.x + 0.75, y: player.y + 0.5});
 	});
-var $ohanhi$keyboard$Keyboard$ArrowDown = {$: 'ArrowDown'};
-var $ohanhi$keyboard$Keyboard$ArrowLeft = {$: 'ArrowLeft'};
-var $ohanhi$keyboard$Keyboard$ArrowRight = {$: 'ArrowRight'};
-var $ohanhi$keyboard$Keyboard$ArrowUp = {$: 'ArrowUp'};
+var $author$project$Game$Right = {$: 'Right'};
+var $author$project$Game$walk = F2(
+	function (keys, player) {
+		return _Utils_update(
+			player,
+			{
+				dir: (keys.x < 0) ? $author$project$Game$Left : ((keys.x > 0) ? $author$project$Game$Right : ((keys.y < 0) ? $author$project$Game$Down : ((keys.y > 0) ? $author$project$Game$Up : $author$project$Game$Idle))),
+				vx: 3 * keys.x,
+				vy: 3 * keys.y
+			});
+	});
+var $ohanhi$keyboard$Keyboard$Character = function (a) {
+	return {$: 'Character', a: a};
+};
 var $ohanhi$keyboard$Keyboard$Arrows$boolToInt = function (bool) {
 	return bool ? 1 : 0;
 };
@@ -9285,33 +9292,25 @@ var $elm$core$List$member = F2(
 			},
 			xs);
 	});
-var $ohanhi$keyboard$Keyboard$Arrows$arrows = function (keys) {
-	var toInt = function (key) {
+var $ohanhi$keyboard$Keyboard$Arrows$wasd = function (keys) {
+	var toInt = function (_char) {
 		return $ohanhi$keyboard$Keyboard$Arrows$boolToInt(
-			A2($elm$core$List$member, key, keys));
+			A2(
+				$elm$core$List$member,
+				$ohanhi$keyboard$Keyboard$Character(_char),
+				keys));
 	};
-	var x = toInt($ohanhi$keyboard$Keyboard$ArrowRight) - toInt($ohanhi$keyboard$Keyboard$ArrowLeft);
-	var y = toInt($ohanhi$keyboard$Keyboard$ArrowUp) - toInt($ohanhi$keyboard$Keyboard$ArrowDown);
+	var x = toInt('D') - toInt('A');
+	var y = toInt('W') - toInt('S');
 	return {x: x, y: y};
 };
-var $author$project$Game$Right = {$: 'Right'};
-var $author$project$Game$walk = F2(
-	function (keys, player) {
-		return _Utils_update(
-			player,
-			{
-				dir: (keys.x < 0) ? $author$project$Game$Left : ((keys.x > 0) ? $author$project$Game$Right : ((keys.y < 0) ? $author$project$Game$Down : ((keys.y > 0) ? $author$project$Game$Up : $author$project$Game$Idle))),
-				vx: 3 * keys.x,
-				vy: 3 * keys.y
-			});
-	});
 var $author$project$Game$tick = F3(
 	function (dt, keys, player) {
-		var arrows = $ohanhi$keyboard$Keyboard$Arrows$arrows(keys);
+		var moveInput = $ohanhi$keyboard$Keyboard$Arrows$wasd(keys);
 		return A2(
 			$author$project$Game$physics,
 			dt,
-			A2($author$project$Game$walk, arrows, player));
+			A2($author$project$Game$walk, moveInput, player));
 	});
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {
@@ -9528,6 +9527,10 @@ var $ohanhi$keyboard$Keyboard$modifierKey = function (_v0) {
 			return $elm$core$Maybe$Nothing;
 	}
 };
+var $ohanhi$keyboard$Keyboard$ArrowDown = {$: 'ArrowDown'};
+var $ohanhi$keyboard$Keyboard$ArrowLeft = {$: 'ArrowLeft'};
+var $ohanhi$keyboard$Keyboard$ArrowRight = {$: 'ArrowRight'};
+var $ohanhi$keyboard$Keyboard$ArrowUp = {$: 'ArrowUp'};
 var $ohanhi$keyboard$Keyboard$End = {$: 'End'};
 var $ohanhi$keyboard$Keyboard$Home = {$: 'Home'};
 var $ohanhi$keyboard$Keyboard$PageDown = {$: 'PageDown'};
@@ -9704,9 +9707,6 @@ var $ohanhi$keyboard$Keyboard$anyKeyWith = function (charParser) {
 		_List_fromArray(
 			[$ohanhi$keyboard$Keyboard$whitespaceKey, charParser, $ohanhi$keyboard$Keyboard$modifierKey, $ohanhi$keyboard$Keyboard$navigationKey, $ohanhi$keyboard$Keyboard$editingKey, $ohanhi$keyboard$Keyboard$functionKey, $ohanhi$keyboard$Keyboard$uiKey, $ohanhi$keyboard$Keyboard$phoneKey, $ohanhi$keyboard$Keyboard$mediaKey]));
 };
-var $ohanhi$keyboard$Keyboard$Character = function (a) {
-	return {$: 'Character', a: a};
-};
 var $elm$core$String$toUpper = _String_toUpper;
 var $ohanhi$keyboard$Keyboard$characterKeyUpper = function (_v0) {
 	var value = _v0.a;
@@ -9801,6 +9801,7 @@ var $author$project$Game$update = F2(
 			default:
 				var keyMsg = msg.a;
 				var keys = A2($ohanhi$keyboard$Keyboard$update, keyMsg, model.keys);
+				var _v1 = A2($elm$core$Debug$log, '[model.keys]', keys);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -10636,17 +10637,17 @@ var $author$project$Game$renderPlayer = F2(
 				topRight: _Utils_Tuple2(1, 1)
 			});
 	});
-var $author$project$Game$renderSword = F2(
-	function (resources, _v0) {
+var $author$project$Game$renderSword = F3(
+	function (resources, _v0, keys) {
 		var x = _v0.x;
 		var y = _v0.y;
 		return $Zinggi$elm_2d_game$Game$TwoD$Render$spriteWithOptions(
 			{
 				pivot: _Utils_Tuple2(0, 0),
 				position: _Utils_Tuple3(x, y, 0.1),
-				rotation: -1,
-				size: _Utils_Tuple2(0.5, 1),
-				texture: A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/sword_stone.png', resources),
+				rotation: 0,
+				size: A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? _Utils_Tuple2(1, 0.5) : _Utils_Tuple2(0.5, 1),
+				texture: A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/sword_stone_attack.png', resources) : A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/sword_stone.png', resources),
 				tiling: _Utils_Tuple2(1, 1)
 			});
 	});
@@ -10660,7 +10661,7 @@ var $author$project$Game$render = function (model) {
 				_List_fromArray(
 				[
 					A2($author$project$Game$renderPlayer, resources, model.player),
-					A2($author$project$Game$renderSword, resources, model.sword),
+					A3($author$project$Game$renderSword, resources, model.sword, model.keys),
 					A2($author$project$Game$renderEnemy, resources, model.enemy)
 				])
 			]));

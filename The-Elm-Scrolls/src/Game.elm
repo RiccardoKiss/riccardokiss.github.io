@@ -12,8 +12,12 @@ import Html exposing (Html, div, img, text, pre)
 import Html.Attributes exposing (style, src)
 import Keyboard
 import Keyboard.Arrows
+import Player exposing (..)
+import Sword exposing (..)
+import Enemy exposing (..)
 import Task
 import Array
+
 
 -- MODEL
 
@@ -21,8 +25,7 @@ import Array
 type alias Model =
   { navKey : Nav.Key
   , player : Player
-  , sword : Sword
-  , enemy : Player
+  , enemy : Enemy
   , resources : Resources
   , keys : List Keyboard.Key
   , time : Float
@@ -30,41 +33,17 @@ type alias Model =
   , camera : Camera
   }
 
-
 type Msg
   = Tick Float
   | Resources Resources.Msg
   | Keys Keyboard.Msg
 
-
-type alias Player =
-  { x : Float
-  , y : Float
-  , vx : Float
-  , vy : Float
-  , dir : Direction
-  }
-
-type alias Sword =
-  { x : Float
-  , y : Float
-  , dir : Direction
-  , action : Action
-  }
-
-type Direction
-  = Left
-  | Right
-  | Up
-  | Down
-  | Idle
-
-type Action
-  = NotAttack
-  | Attack
-
 type alias Input =
   { x : Int, y : Int }
+
+getNavKey : Model -> Nav.Key
+getNavKey model =
+  model.navKey
 
 -- https://stackoverflow.com/questions/52350505/accessing-elements-in-2-dimensional-array-elm
 level2Tilemap : Array.Array ( Array.Array Char )
@@ -201,20 +180,23 @@ level2Tilemap =
   ]
 
 getTileTypeFromTileMap : Array.Array ( Array.Array Char ) -> Float -> Float -> Maybe Char
-getTileTypeFromTileMap array x y =
+getTileTypeFromTileMap tilemap x y =
     {-
     let
         _ = Debug.log "[getTileTypeFromTileMap] x" (floor x)
         _ = Debug.log "[getTileTypeFromTileMap] y" (floor y)
     in-}
-    Array.get (127 - (floor y)) array
+    Array.get (127 - (floor y)) tilemap
     |> Maybe.andThen (Array.get (floor x))
     --|> Debug.log "[getTileTypeFromTileMap] tile"
 
-getNavKey : Model -> Nav.Key
-getNavKey model =
-  model.navKey
-
+initSword : Sword
+initSword =
+  { x = 0
+  , y = 0
+  , action = NotAttack
+  , sword_type = Stone
+  }
 
 initPlayer : Player
 initPlayer =
@@ -222,31 +204,25 @@ initPlayer =
   , y = 10
   , vx = 0
   , vy = 0
-  , dir = Idle
+  , dir = Player.Idle
+  , sword = initSword
   }
 
-initSword : Player -> Sword
-initSword player =
-  { x = player.x + 0.75
-  , y = player.y + 0.5
-  , dir = Idle
-  , action = NotAttack
-  }
-
-initEnemy : Player
+initEnemy : Enemy
 initEnemy =
   { x = 57
   , y = 9
   , vx = 0
   , vy = 3
-  , dir = Up
+  , dir = Enemy.Up
+  , enemy_type = Prototype
+  , speed = 3.0
   }
 
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
     , player = initPlayer
-    , sword = initSword initPlayer
     , enemy = initEnemy
     , resources = Resources.init
     , keys = []
@@ -257,23 +233,14 @@ init navKey =
   , Cmd.map Resources (Resources.loadTextures texturesList )
   )
 
-
 texturesList : List String
 texturesList =
-  [ "assets/player/playerIdle.png"
-  , "assets/player/playerRight.png"
-  , "assets/player/playerLeft.png"
-  , "assets/player/playerUp.png"
-  , "assets/player/playerDown.png"
-  , "assets/level/level_2.png"
-  , "assets/enemy/enemyIdle.png"
-  , "assets/enemy/enemyRight.png"
-  , "assets/enemy/enemyLeft.png"
-  , "assets/enemy/enemyUp.png"
-  , "assets/enemy/enemyDown.png"
-  , "assets/sword_stone.png"
-  , "assets/sword_stone_attack.png"
-  ]
+  List.concat
+    [ [ "assets/level/level_2.png" ]
+    , Player.textures
+    , Enemy.textures
+    , Sword.textures
+    ]
 
 
 -- UPDATE
@@ -284,9 +251,8 @@ update msg model =
   case msg of
     Tick dt ->
       ( { model
-          | player = tick dt model.keys model.player
-          , sword = swordPhysics dt model.player model.sword
-          , enemy = enemyMovement model.enemy |> physics dt
+          | player = tick dt level2Tilemap model.keys model.player
+          , enemy = enemyMovement initEnemy model.enemy 5.0 |> enemyPhysics dt
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
         }
@@ -307,8 +273,8 @@ update msg model =
         ( { model | keys = keys }, Cmd.none )
 
 
-tick : Float -> List Keyboard.Key -> Player -> Player
-tick dt keys player =
+tick : Float -> Array.Array ( Array.Array Char ) -> List Keyboard.Key -> Player -> Player
+tick dt tilemap keys player =
   let
     moveInput =
       Keyboard.Arrows.wasd keys
@@ -316,39 +282,18 @@ tick dt keys player =
   in
   player
     |> walk moveInput
-    |> physics dt
+    |> playerPhysics dt
+    |> swordPhysics player.sword
 
-
-enemyMovement : Player -> Player
-enemyMovement player =
-    if (toFloat (floor player.y)) == (9.0 + 5.0) then
-      { player
-        | dir = Down
-        , vy = -3 -- -1 * player.vy
-      }
-    else if (toFloat (floor player.y)) == 9.0 then
-      { player
-        | dir = Up
-        , vy = 3 -- -1 * player.vy
-      }
-    else player
-
-swordPhysics : Float -> Player -> Sword -> Sword
-swordPhysics dt player sword =
-  { sword
-  | x = player.x + 0.75
-  , y = player.y + 0.5
-  }
-
-physics : Float -> Player -> Player
-physics dt player =
+playerPhysics : Float -> Player -> Player
+playerPhysics dt player =
   let
     newX = player.x + dt * player.vx
     newY = player.y + dt * player.vy
     tileType =
-      if player.dir == Left then
+      if player.dir == Player.Left then
         getTileTypeFromTileMap level2Tilemap (newX - 1) newY
-      else if player.dir == Up then
+      else if player.dir == Player.Up then
         getTileTypeFromTileMap level2Tilemap newX (newY + 1)
       else
         getTileTypeFromTileMap level2Tilemap newX newY
@@ -362,7 +307,7 @@ physics dt player =
           Just tile ->
             if tile == 'T' then
               newX
-            else player.x --(toFloat (floor player.x) - 0.1)
+            else player.x
           Nothing ->
             player.x
     , y =
@@ -370,32 +315,41 @@ physics dt player =
         Just tile ->
           if tile == 'T' then
             newY
-          else player.y --(toFloat (floor player.x) - 0.1)
+          else player.y
         Nothing ->
           player.y
   }
 
-
-walk : Input -> Player -> Player
-walk keys player =
-  { player
-    | vx = 3 * toFloat keys.x
-    , vy = 3 * toFloat keys.y
-    , dir =
-        if keys.x < 0 then
-          Left
-
-        else if keys.x > 0 then
-          Right
-
-        else if keys.y < 0 then
-          Down
-
-        else if keys.y > 0 then
-          Up
-
-        else
-          Idle --guy.dir
+enemyPhysics : Float -> Enemy -> Enemy
+enemyPhysics dt enemy =
+  let
+    newX = enemy.x + dt * enemy.vx
+    newY = enemy.y + dt * enemy.vy
+    tileType =
+      if enemy.dir == Enemy.Left then
+        getTileTypeFromTileMap level2Tilemap (newX - 1) newY
+      else if enemy.dir == Enemy.Up then
+        getTileTypeFromTileMap level2Tilemap newX (newY + 1)
+      else
+        getTileTypeFromTileMap level2Tilemap newX newY
+  in
+  { enemy
+    | x =
+        case tileType of
+          Just tile ->
+            if tile == 'T' then
+              newX
+            else enemy.x
+          Nothing ->
+            enemy.x
+    , y =
+      case tileType of
+        Just tile ->
+          if tile == 'T' then
+            newY
+          else enemy.y
+        Nothing ->
+          enemy.y
   }
 
 
@@ -406,12 +360,11 @@ render : Model -> List Renderable
 render ({ resources, camera } as model) =
   List.concat
     [ renderBackground resources
-    , [ renderPlayer resources model.player
-      , renderSword resources model.sword model.keys
-      , renderEnemy resources model.enemy
+    , [ Player.renderPlayer resources model.player
+      , renderSword resources model.player.sword model.keys
+      , Enemy.renderEnemy resources model.enemy
       ]
     ]
-
 
 renderBackground : Resources -> List Renderable
 renderBackground resources =
@@ -423,82 +376,11 @@ renderBackground resources =
   ]
 
 renderSword : Resources -> Sword -> List Keyboard.Key -> Renderable
-renderSword resources { x, y } keys =
-  Render.spriteWithOptions
-    { texture =
-        if List.member Keyboard.Spacebar keys then
-          Resources.getTexture "assets/sword_stone_attack.png" resources
-        else
-          Resources.getTexture "assets/sword_stone.png" resources
-    , position = ( x, y, 0.1 )
-    , size =
-      if List.member Keyboard.Spacebar keys then
-        ( 1, 0.5 )
-      else
-        ( 0.5, 1 )
-    , tiling = ( 1, 1 )
-    , rotation = 0 -- -1
-    , pivot = ( 0, 0)
-    }
-
-
-renderEnemy : Resources -> Player -> Renderable
-renderEnemy resources { x, y, dir } =
-  Render.animatedSpriteWithOptions
-    { position = ( x, y, -0.1 )
-    , size = ( 1, 2 )
-    , texture =
-        case dir of
-          Left ->
-            Resources.getTexture "assets/enemy/enemyLeft.png" resources
-
-          Right ->
-            Resources.getTexture "assets/enemy/enemyRight.png" resources
-
-          Up ->
-            Resources.getTexture "assets/enemy/enemyUp.png" resources
-
-          Down ->
-            Resources.getTexture "assets/enemy/enemyDown.png" resources
-
-          Idle ->
-            Resources.getTexture "assets/enemy/enemyIdle.png" resources
-    , bottomLeft = ( 0, 0 )
-    , topRight = ( 1, 1 )
-    , duration = 1
-    , numberOfFrames = 2
-    , rotation = 0
-    , pivot = ( 0, 0 )
-    }
-
-renderPlayer : Resources -> Player -> Renderable
-renderPlayer resources { x, y, dir } =
-  Render.animatedSpriteWithOptions
-    { position = ( x, y, 0 )
-    , size = ( 1, 2 )
-    , texture =
-        case dir of
-          Left ->
-            Resources.getTexture "assets/player/playerLeft.png" resources
-
-          Right ->
-            Resources.getTexture "assets/player/playerRight.png" resources
-
-          Up ->
-            Resources.getTexture "assets/player/playerUp.png" resources
-
-          Down ->
-            Resources.getTexture "assets/player/playerDown.png" resources
-
-          Idle ->
-            Resources.getTexture "assets/player/playerIdle.png" resources
-    , bottomLeft = ( 0, 0 )
-    , topRight = ( 1, 1 )
-    , duration = 1
-    , numberOfFrames = 2
-    , rotation = 0
-    , pivot = ( 0, 0 )
-    }
+renderSword resources sword keys =
+  if List.member Keyboard.Spacebar keys then
+    Sword.renderSwordAttack resources sword
+  else
+    Sword.renderSwordIdle resources sword
 
 viewPlayerCoordinates : Model -> Html Msg
 viewPlayerCoordinates model =
@@ -538,6 +420,10 @@ view ({ time, screen } as model) =
       , viewPlayerCoordinates model
       ]
   }
+
+
+-- SUBSCRIPTIONS
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

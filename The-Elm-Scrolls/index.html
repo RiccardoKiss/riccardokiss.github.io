@@ -7251,14 +7251,14 @@ var $Zinggi$elm_game_resources$Game$Resources$R = function (a) {
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
-var $author$project$Game$Up = {$: 'Up'};
-var $author$project$Game$initEnemy = {dir: $author$project$Game$Up, vx: 0, vy: 3, x: 57, y: 9};
-var $author$project$Game$Idle = {$: 'Idle'};
-var $author$project$Game$initPlayer = {dir: $author$project$Game$Idle, vx: 0, vy: 0, x: 56, y: 10};
-var $author$project$Game$NotAttack = {$: 'NotAttack'};
-var $author$project$Game$initSword = function (player) {
-	return {action: $author$project$Game$NotAttack, dir: $author$project$Game$Idle, x: player.x + 0.75, y: player.y + 0.5};
-};
+var $author$project$Enemy$Prototype = {$: 'Prototype'};
+var $author$project$Enemy$Up = {$: 'Up'};
+var $author$project$Game$initEnemy = {dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, speed: 3.0, vx: 0, vy: 3, x: 57, y: 9};
+var $author$project$Player$Idle = {$: 'Idle'};
+var $author$project$Sword$NotAttack = {$: 'NotAttack'};
+var $author$project$Sword$Stone = {$: 'Stone'};
+var $author$project$Game$initSword = {action: $author$project$Sword$NotAttack, sword_type: $author$project$Sword$Stone, x: 0, y: 0};
+var $author$project$Game$initPlayer = {dir: $author$project$Player$Idle, sword: $author$project$Game$initSword, vx: 0, vy: 0, x: 56, y: 10};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -7334,8 +7334,32 @@ var $Zinggi$elm_game_resources$Game$Resources$loadTextures = function (urls) {
 			urls));
 };
 var $elm$core$Platform$Cmd$map = _Platform_map;
-var $author$project$Game$texturesList = _List_fromArray(
-	['assets/player/playerIdle.png', 'assets/player/playerRight.png', 'assets/player/playerLeft.png', 'assets/player/playerUp.png', 'assets/player/playerDown.png', 'assets/level/level_2.png', 'assets/enemy/enemyIdle.png', 'assets/enemy/enemyRight.png', 'assets/enemy/enemyLeft.png', 'assets/enemy/enemyUp.png', 'assets/enemy/enemyDown.png', 'assets/sword_stone.png', 'assets/sword_stone_attack.png']);
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
+var $author$project$Enemy$textures = _List_fromArray(
+	['assets/enemy/enemyRight.png', 'assets/enemy/enemyLeft.png', 'assets/enemy/enemyUp.png', 'assets/enemy/enemyDown.png']);
+var $author$project$Player$textures = _List_fromArray(
+	['assets/player/playerIdle.png', 'assets/player/playerRight.png', 'assets/player/playerLeft.png', 'assets/player/playerUp.png', 'assets/player/playerDown.png']);
+var $author$project$Sword$textures = _List_fromArray(
+	['assets/sword_wood.png', 'assets/sword_wood_attack.png', 'assets/sword_stone.png', 'assets/sword_stone_attack.png', 'assets/sword_iron.png', 'assets/sword_iron_attack.png', 'assets/sword_dark.png', 'assets/sword_dark_attack.png']);
+var $author$project$Game$texturesList = $elm$core$List$concat(
+	_List_fromArray(
+		[
+			_List_fromArray(
+			['assets/level/level_2.png']),
+			$author$project$Player$textures,
+			$author$project$Enemy$textures,
+			$author$project$Sword$textures
+		]));
 var $author$project$Game$init = function (navKey) {
 	return _Utils_Tuple2(
 		{
@@ -7349,7 +7373,6 @@ var $author$project$Game$init = function (navKey) {
 			player: $author$project$Game$initPlayer,
 			resources: $Zinggi$elm_game_resources$Game$Resources$init,
 			screen: _Utils_Tuple2(1024, 512),
-			sword: $author$project$Game$initSword($author$project$Game$initPlayer),
 			time: 0
 		},
 		A2(
@@ -8155,17 +8178,6 @@ var $elm$url$Url$Parser$map = F2(
 						A5($elm$url$Url$Parser$State, visited, unvisited, params, frag, subValue)));
 			});
 	});
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $elm$core$List$concat = function (lists) {
-	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
-};
 var $elm$core$List$concatMap = F2(
 	function (f, list) {
 		return $elm$core$List$concat(
@@ -8826,28 +8838,58 @@ var $author$project$Main$subscriptions = function (model) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
-var $author$project$Game$Down = {$: 'Down'};
+var $author$project$Enemy$Down = {$: 'Down'};
+var $author$project$Enemy$Left = {$: 'Left'};
+var $author$project$Enemy$Right = {$: 'Right'};
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var $author$project$Game$enemyMovement = function (player) {
-	return _Utils_eq(
-		$elm$core$Basics$floor(player.y),
-		9.0 + 5.0) ? _Utils_update(
-		player,
-		{dir: $author$project$Game$Down, vy: -3}) : (($elm$core$Basics$floor(player.y) === 9.0) ? _Utils_update(
-		player,
-		{dir: $author$project$Game$Up, vy: 3}) : player);
-};
-var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
-	function (pos, _v0) {
-		var camera = _v0.a;
-		return $Zinggi$elm_2d_game$Game$TwoD$Camera$Camera(
-			_Utils_update(
-				camera,
-				{position: pos}));
+var $author$project$Enemy$enemyMovement = F3(
+	function (initEnemy, enemy, distance) {
+		var _v0 = initEnemy.dir;
+		switch (_v0.$) {
+			case 'Left':
+				return _Utils_eq(
+					$elm$core$Basics$floor(enemy.x),
+					initEnemy.x - distance) ? _Utils_update(
+					enemy,
+					{dir: $author$project$Enemy$Right, vx: enemy.speed}) : (_Utils_eq(
+					$elm$core$Basics$floor(enemy.x),
+					initEnemy.x) ? _Utils_update(
+					enemy,
+					{dir: $author$project$Enemy$Left, vx: (-1) * enemy.speed}) : enemy);
+			case 'Right':
+				return _Utils_eq(
+					$elm$core$Basics$floor(enemy.x),
+					initEnemy.x + distance) ? _Utils_update(
+					enemy,
+					{dir: $author$project$Enemy$Left, vx: (-1) * enemy.speed}) : (_Utils_eq(
+					$elm$core$Basics$floor(enemy.x),
+					initEnemy.x) ? _Utils_update(
+					enemy,
+					{dir: $author$project$Enemy$Right, vx: enemy.speed}) : enemy);
+			case 'Up':
+				return _Utils_eq(
+					$elm$core$Basics$floor(enemy.y),
+					initEnemy.y + distance) ? _Utils_update(
+					enemy,
+					{dir: $author$project$Enemy$Down, vy: (-1) * enemy.speed}) : (_Utils_eq(
+					$elm$core$Basics$floor(enemy.y),
+					initEnemy.y) ? _Utils_update(
+					enemy,
+					{dir: $author$project$Enemy$Up, vy: enemy.speed}) : enemy);
+			default:
+				return _Utils_eq(
+					$elm$core$Basics$floor(enemy.y),
+					initEnemy.y - distance) ? _Utils_update(
+					enemy,
+					{dir: $author$project$Enemy$Up, vy: enemy.speed}) : (_Utils_eq(
+					$elm$core$Basics$floor(enemy.y),
+					initEnemy.y) ? _Utils_update(
+					enemy,
+					{dir: $author$project$Enemy$Down, vy: (-1) * enemy.speed}) : enemy);
+		}
 	});
-var $author$project$Game$Left = {$: 'Left'};
 var $elm$core$Maybe$andThen = F2(
 	function (callback, maybeValue) {
 		if (maybeValue.$ === 'Just') {
@@ -8900,7 +8942,7 @@ var $elm$core$Array$get = F2(
 			A3($elm$core$Array$getHelp, startShift, index, tree)));
 	});
 var $author$project$Game$getTileTypeFromTileMap = F3(
-	function (array, x, y) {
+	function (tilemap, x, y) {
 		return A2(
 			$elm$core$Maybe$andThen,
 			$elm$core$Array$get(
@@ -8908,7 +8950,7 @@ var $author$project$Game$getTileTypeFromTileMap = F3(
 			A2(
 				$elm$core$Array$get,
 				127 - $elm$core$Basics$floor(y),
-				array));
+				tilemap));
 	});
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
@@ -9209,11 +9251,51 @@ var $author$project$Game$level2Tilemap = $elm$core$Array$fromList(
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'))
 		]));
-var $author$project$Game$physics = F2(
+var $author$project$Game$enemyPhysics = F2(
+	function (dt, enemy) {
+		var newY = enemy.y + (dt * enemy.vy);
+		var newX = enemy.x + (dt * enemy.vx);
+		var tileType = _Utils_eq(enemy.dir, $author$project$Enemy$Left) ? A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX - 1, newY) : (_Utils_eq(enemy.dir, $author$project$Enemy$Up) ? A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX, newY + 1) : A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX, newY));
+		return _Utils_update(
+			enemy,
+			{
+				x: function () {
+					if (tileType.$ === 'Just') {
+						var tile = tileType.a;
+						return _Utils_eq(
+							tile,
+							_Utils_chr('T')) ? newX : enemy.x;
+					} else {
+						return enemy.x;
+					}
+				}(),
+				y: function () {
+					if (tileType.$ === 'Just') {
+						var tile = tileType.a;
+						return _Utils_eq(
+							tile,
+							_Utils_chr('T')) ? newY : enemy.y;
+					} else {
+						return enemy.y;
+					}
+				}()
+			});
+	});
+var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
+	function (pos, _v0) {
+		var camera = _v0.a;
+		return $Zinggi$elm_2d_game$Game$TwoD$Camera$Camera(
+			_Utils_update(
+				camera,
+				{position: pos}));
+	});
+var $author$project$Player$Left = {$: 'Left'};
+var $author$project$Player$Up = {$: 'Up'};
+var $author$project$Game$playerPhysics = F2(
 	function (dt, player) {
 		var newY = player.y + (dt * player.vy);
 		var newX = player.x + (dt * player.vx);
-		var tileType = _Utils_eq(player.dir, $author$project$Game$Left) ? A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX - 1, newY) : (_Utils_eq(player.dir, $author$project$Game$Up) ? A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX, newY + 1) : A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX, newY));
+		var tileType = _Utils_eq(player.dir, $author$project$Player$Left) ? A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX - 1, newY) : (_Utils_eq(player.dir, $author$project$Player$Up) ? A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX, newY + 1) : A3($author$project$Game$getTileTypeFromTileMap, $author$project$Game$level2Tilemap, newX, newY));
 		return _Utils_update(
 			player,
 			{
@@ -9239,21 +9321,32 @@ var $author$project$Game$physics = F2(
 				}()
 			});
 	});
-var $author$project$Game$swordPhysics = F3(
-	function (dt, player, sword) {
+var $author$project$Sword$updateSwordCoordinates = F3(
+	function (sword, playerX, playerY) {
 		return _Utils_update(
 			sword,
-			{x: player.x + 0.75, y: player.y + 0.5});
+			{x: playerX + 0.75, y: playerY + 0.5});
 	});
-var $author$project$Game$Right = {$: 'Right'};
-var $author$project$Game$walk = F2(
-	function (keys, player) {
+var $author$project$Player$swordPhysics = F2(
+	function (sword, player) {
 		return _Utils_update(
 			player,
 			{
-				dir: (keys.x < 0) ? $author$project$Game$Left : ((keys.x > 0) ? $author$project$Game$Right : ((keys.y < 0) ? $author$project$Game$Down : ((keys.y > 0) ? $author$project$Game$Up : $author$project$Game$Idle))),
-				vx: 3 * keys.x,
-				vy: 3 * keys.y
+				sword: A3($author$project$Sword$updateSwordCoordinates, sword, player.x, player.y)
+			});
+	});
+var $author$project$Player$Down = {$: 'Down'};
+var $author$project$Player$Right = {$: 'Right'};
+var $author$project$Player$walk = F2(
+	function (_v0, player) {
+		var x = _v0.x;
+		var y = _v0.y;
+		return _Utils_update(
+			player,
+			{
+				dir: (x < 0) ? $author$project$Player$Left : ((x > 0) ? $author$project$Player$Right : ((y < 0) ? $author$project$Player$Down : ((y > 0) ? $author$project$Player$Up : $author$project$Player$Idle))),
+				vx: 3 * x,
+				vy: 3 * y
 			});
 	});
 var $ohanhi$keyboard$Keyboard$Character = function (a) {
@@ -9304,13 +9397,16 @@ var $ohanhi$keyboard$Keyboard$Arrows$wasd = function (keys) {
 	var y = toInt('W') - toInt('S');
 	return {x: x, y: y};
 };
-var $author$project$Game$tick = F3(
-	function (dt, keys, player) {
+var $author$project$Game$tick = F4(
+	function (dt, tilemap, keys, player) {
 		var moveInput = $ohanhi$keyboard$Keyboard$Arrows$wasd(keys);
 		return A2(
-			$author$project$Game$physics,
-			dt,
-			A2($author$project$Game$walk, moveInput, player));
+			$author$project$Player$swordPhysics,
+			player.sword,
+			A2(
+				$author$project$Game$playerPhysics,
+				dt,
+				A2($author$project$Player$walk, moveInput, player)));
 	});
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {
@@ -9781,11 +9877,10 @@ var $author$project$Game$update = F2(
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
 							enemy: A2(
-								$author$project$Game$physics,
+								$author$project$Game$enemyPhysics,
 								dt,
-								$author$project$Game$enemyMovement(model.enemy)),
-							player: A3($author$project$Game$tick, dt, model.keys, model.player),
-							sword: A3($author$project$Game$swordPhysics, dt, model.player, model.sword),
+								A3($author$project$Enemy$enemyMovement, $author$project$Game$initEnemy, model.enemy, 5.0)),
+							player: A4($author$project$Game$tick, dt, $author$project$Game$level2Tilemap, model.keys, model.player),
 							time: dt + model.time
 						}),
 					$elm$core$Platform$Cmd$none);
@@ -10575,53 +10670,72 @@ var $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions = function (_
 			{color: $avh4$elm_color$Color$grey, position: position, size: size});
 	}
 };
-var $author$project$Game$renderEnemy = F2(
-	function (resources, _v0) {
-		var x = _v0.x;
-		var y = _v0.y;
-		var dir = _v0.dir;
+var $author$project$Enemy$enemyTypeToString = function (enemy) {
+	var _v0 = enemy.enemy_type;
+	switch (_v0.$) {
+		case 'Bandit':
+			return 'bandit';
+		case 'Zombie':
+			return 'zombie';
+		case 'Skeleton':
+			return 'skeleton';
+		default:
+			return 'enemy';
+	}
+};
+var $author$project$Enemy$renderEnemy = F2(
+	function (resources, enemy) {
 		return $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions(
 			{
 				bottomLeft: _Utils_Tuple2(0, 0),
 				duration: 1,
 				numberOfFrames: 2,
 				pivot: _Utils_Tuple2(0, 0),
-				position: _Utils_Tuple3(x, y, -0.1),
+				position: _Utils_Tuple3(enemy.x, enemy.y, -0.1),
 				rotation: 0,
 				size: _Utils_Tuple2(1, 2),
 				texture: function () {
-					switch (dir.$) {
+					var _v0 = enemy.dir;
+					switch (_v0.$) {
 						case 'Left':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/enemy/enemyLeft.png', resources);
+							return A2(
+								$Zinggi$elm_game_resources$Game$Resources$getTexture,
+								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + 'Left.png'),
+								resources);
 						case 'Right':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/enemy/enemyRight.png', resources);
+							return A2(
+								$Zinggi$elm_game_resources$Game$Resources$getTexture,
+								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + 'Right.png'),
+								resources);
 						case 'Up':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/enemy/enemyUp.png', resources);
-						case 'Down':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/enemy/enemyDown.png', resources);
+							return A2(
+								$Zinggi$elm_game_resources$Game$Resources$getTexture,
+								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + 'Up.png'),
+								resources);
 						default:
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/enemy/enemyIdle.png', resources);
+							return A2(
+								$Zinggi$elm_game_resources$Game$Resources$getTexture,
+								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + 'Down.png'),
+								resources);
 					}
 				}(),
 				topRight: _Utils_Tuple2(1, 1)
 			});
 	});
-var $author$project$Game$renderPlayer = F2(
-	function (resources, _v0) {
-		var x = _v0.x;
-		var y = _v0.y;
-		var dir = _v0.dir;
+var $author$project$Player$renderPlayer = F2(
+	function (resources, player) {
 		return $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions(
 			{
 				bottomLeft: _Utils_Tuple2(0, 0),
 				duration: 1,
 				numberOfFrames: 2,
 				pivot: _Utils_Tuple2(0, 0),
-				position: _Utils_Tuple3(x, y, 0),
+				position: _Utils_Tuple3(player.x, player.y, -0.1),
 				rotation: 0,
 				size: _Utils_Tuple2(1, 2),
 				texture: function () {
-					switch (dir.$) {
+					var _v0 = player.dir;
+					switch (_v0.$) {
 						case 'Left':
 							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerLeft.png', resources);
 						case 'Right':
@@ -10637,19 +10751,52 @@ var $author$project$Game$renderPlayer = F2(
 				topRight: _Utils_Tuple2(1, 1)
 			});
 	});
-var $author$project$Game$renderSword = F3(
-	function (resources, _v0, keys) {
-		var x = _v0.x;
-		var y = _v0.y;
+var $author$project$Sword$swordTypeToString = function (sword) {
+	var _v0 = sword.sword_type;
+	switch (_v0.$) {
+		case 'Wood':
+			return 'wood';
+		case 'Stone':
+			return 'stone';
+		case 'Iron':
+			return 'iron';
+		default:
+			return 'dark';
+	}
+};
+var $author$project$Sword$renderSwordAttack = F2(
+	function (resources, sword) {
 		return $Zinggi$elm_2d_game$Game$TwoD$Render$spriteWithOptions(
 			{
 				pivot: _Utils_Tuple2(0, 0),
-				position: _Utils_Tuple3(x, y, 0.1),
+				position: _Utils_Tuple3(sword.x, sword.y, 0.1),
 				rotation: 0,
-				size: A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? _Utils_Tuple2(1, 0.5) : _Utils_Tuple2(0.5, 1),
-				texture: A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/sword_stone_attack.png', resources) : A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/sword_stone.png', resources),
+				size: _Utils_Tuple2(1, 0.5),
+				texture: A2(
+					$Zinggi$elm_game_resources$Game$Resources$getTexture,
+					'assets/sword_' + ($author$project$Sword$swordTypeToString(sword) + '_attack.png'),
+					resources),
 				tiling: _Utils_Tuple2(1, 1)
 			});
+	});
+var $author$project$Sword$renderSwordIdle = F2(
+	function (resources, sword) {
+		return $Zinggi$elm_2d_game$Game$TwoD$Render$spriteWithOptions(
+			{
+				pivot: _Utils_Tuple2(0, 0),
+				position: _Utils_Tuple3(sword.x, sword.y, 0.1),
+				rotation: 0,
+				size: _Utils_Tuple2(0.5, 1),
+				texture: A2(
+					$Zinggi$elm_game_resources$Game$Resources$getTexture,
+					'assets/sword_' + ($author$project$Sword$swordTypeToString(sword) + '.png'),
+					resources),
+				tiling: _Utils_Tuple2(1, 1)
+			});
+	});
+var $author$project$Game$renderSword = F3(
+	function (resources, sword, keys) {
+		return A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? A2($author$project$Sword$renderSwordAttack, resources, sword) : A2($author$project$Sword$renderSwordIdle, resources, sword);
 	});
 var $author$project$Game$render = function (model) {
 	var resources = model.resources;
@@ -10660,9 +10807,9 @@ var $author$project$Game$render = function (model) {
 				$author$project$Game$renderBackground(resources),
 				_List_fromArray(
 				[
-					A2($author$project$Game$renderPlayer, resources, model.player),
-					A3($author$project$Game$renderSword, resources, model.sword, model.keys),
-					A2($author$project$Game$renderEnemy, resources, model.enemy)
+					A2($author$project$Player$renderPlayer, resources, model.player),
+					A3($author$project$Game$renderSword, resources, model.player.sword, model.keys),
+					A2($author$project$Enemy$renderEnemy, resources, model.enemy)
 				])
 			]));
 };

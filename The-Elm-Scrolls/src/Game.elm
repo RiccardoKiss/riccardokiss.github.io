@@ -25,7 +25,7 @@ import Array
 type alias Model =
   { navKey : Nav.Key
   , player : Player
-  , enemy : Enemy
+  , enemy : List Enemy
   , resources : Resources
   , keys : List Keyboard.Key
   , time : Float
@@ -210,20 +210,37 @@ initPlayer =
 
 initEnemy : Enemy
 initEnemy =
-  { x = 57
+  { initX = 57
+  , initY = 9
+  , initDir = Enemy.Up
+  , x = 57
   , y = 9
   , vx = 0
-  , vy = 3
+  , vy = 0
   , dir = Enemy.Up
   , enemy_type = Prototype
   , speed = 3.0
+  }
+
+initEnemy2 : Enemy
+initEnemy2 =
+  { initX = 55
+  , initY = 10
+  , initDir = Enemy.Up
+  , x = 55
+  , y = 10
+  , vx = 0
+  , vy = 0
+  , dir = Enemy.Up
+  , enemy_type = Prototype
+  , speed = 5.0
   }
 
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
     , player = initPlayer
-    , enemy = initEnemy
+    , enemy = [ initEnemy, initEnemy2 ]
     , resources = Resources.init
     , keys = []
     , time = 0
@@ -252,7 +269,8 @@ update msg model =
     Tick dt ->
       ( { model
           | player = tick dt level2Tilemap model.keys model.player
-          , enemy = enemyMovement initEnemy model.enemy 5.0 |> enemyPhysics dt
+          , enemy = List.map (enemyMovement 5.0) model.enemy 
+                    |> List.map (enemyPhysics dt)
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
         }
@@ -362,8 +380,8 @@ render ({ resources, camera } as model) =
     [ renderBackground resources
     , [ Player.renderPlayer resources model.player
       , renderSword resources model.player.sword model.keys
-      , Enemy.renderEnemy resources model.enemy
       ]
+    , List.map (Enemy.renderEnemy resources) model.enemy
     ]
 
 renderBackground : Resources -> List Renderable

@@ -5,7 +5,10 @@ import Game.Resources as Resources exposing (..)
 
 
 type alias Enemy =
-  { x : Float
+  { initX : Float
+  , initY : Float
+  , initDir : Direction
+  , x : Float
   , y : Float
   , vx : Float
   , vy : Float
@@ -57,16 +60,16 @@ enemyTypeToString enemy =
     Prototype ->
       "enemy"
 
-enemyMovement : Enemy -> Enemy -> Float -> Enemy
-enemyMovement initEnemy enemy distance =
-  case initEnemy.dir of
+enemyMovement : Float -> Enemy -> Enemy
+enemyMovement distance enemy  =
+  case enemy.initDir of
     Left ->
-      if (toFloat (floor enemy.x)) == (initEnemy.x - distance) then
+      if (toFloat (floor enemy.x)) == (enemy.initX - distance) then
         { enemy
           | dir = Right
           , vx = enemy.speed
         }
-      else if (toFloat (floor enemy.x)) == initEnemy.x then
+      else if (toFloat (floor enemy.x)) == enemy.initX then
         { enemy
           | dir = Left
           , vx = -1 * enemy.speed
@@ -74,12 +77,12 @@ enemyMovement initEnemy enemy distance =
       else enemy
 
     Right ->
-      if (toFloat (floor enemy.x)) == (initEnemy.x + distance) then
+      if (toFloat (floor enemy.x)) == (enemy.initX + distance) then
         { enemy
           | dir = Left
           , vx = -1 * enemy.speed
         }
-      else if (toFloat (floor enemy.x)) == initEnemy.x then
+      else if (toFloat (floor enemy.x)) == enemy.initX then
         { enemy
           | dir = Right
           , vx = enemy.speed
@@ -87,12 +90,12 @@ enemyMovement initEnemy enemy distance =
       else enemy
 
     Up ->
-      if (toFloat (floor enemy.y)) == (initEnemy.y + distance) then
+      if (toFloat (floor enemy.y)) == (enemy.initY + distance) then
         { enemy
           | dir = Down
           , vy = -1 * enemy.speed
         }
-      else if (toFloat (floor enemy.y)) == initEnemy.y then
+      else if (toFloat (floor enemy.y)) == enemy.initY then
         { enemy
           | dir = Up
           , vy = enemy.speed
@@ -100,12 +103,12 @@ enemyMovement initEnemy enemy distance =
       else enemy
 
     Down ->
-      if (toFloat (floor enemy.y)) == (initEnemy.y - distance) then
+      if (toFloat (floor enemy.y)) == (enemy.initY - distance) then
         { enemy
           | dir = Up
           , vy = enemy.speed
         }
-      else if (toFloat (floor enemy.y)) == initEnemy.y then
+      else if (toFloat (floor enemy.y)) == enemy.initY then
         { enemy
           | dir = Down
           , vy = -1 * enemy.speed

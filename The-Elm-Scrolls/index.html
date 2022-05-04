@@ -7253,7 +7253,8 @@ var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
 var $author$project$Enemy$Prototype = {$: 'Prototype'};
 var $author$project$Enemy$Up = {$: 'Up'};
-var $author$project$Game$initEnemy = {dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, speed: 3.0, vx: 0, vy: 3, x: 57, y: 9};
+var $author$project$Game$initEnemy = {dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, initDir: $author$project$Enemy$Up, initX: 57, initY: 9, speed: 3.0, vx: 0, vy: 0, x: 57, y: 9};
+var $author$project$Game$initEnemy2 = {dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, initDir: $author$project$Enemy$Up, initX: 55, initY: 10, speed: 5.0, vx: 0, vy: 0, x: 55, y: 10};
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Stone = {$: 'Stone'};
@@ -7367,7 +7368,8 @@ var $author$project$Game$init = function (navKey) {
 				$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
 				32 * 16,
 				_Utils_Tuple2(0, 0)),
-			enemy: $author$project$Game$initEnemy,
+			enemy: _List_fromArray(
+				[$author$project$Game$initEnemy, $author$project$Game$initEnemy2]),
 			keys: _List_Nil,
 			navKey: navKey,
 			player: $author$project$Game$initPlayer,
@@ -8844,48 +8846,48 @@ var $author$project$Enemy$Right = {$: 'Right'};
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var $author$project$Enemy$enemyMovement = F3(
-	function (initEnemy, enemy, distance) {
-		var _v0 = initEnemy.dir;
+var $author$project$Enemy$enemyMovement = F2(
+	function (distance, enemy) {
+		var _v0 = enemy.initDir;
 		switch (_v0.$) {
 			case 'Left':
 				return _Utils_eq(
 					$elm$core$Basics$floor(enemy.x),
-					initEnemy.x - distance) ? _Utils_update(
+					enemy.initX - distance) ? _Utils_update(
 					enemy,
 					{dir: $author$project$Enemy$Right, vx: enemy.speed}) : (_Utils_eq(
 					$elm$core$Basics$floor(enemy.x),
-					initEnemy.x) ? _Utils_update(
+					enemy.initX) ? _Utils_update(
 					enemy,
 					{dir: $author$project$Enemy$Left, vx: (-1) * enemy.speed}) : enemy);
 			case 'Right':
 				return _Utils_eq(
 					$elm$core$Basics$floor(enemy.x),
-					initEnemy.x + distance) ? _Utils_update(
+					enemy.initX + distance) ? _Utils_update(
 					enemy,
 					{dir: $author$project$Enemy$Left, vx: (-1) * enemy.speed}) : (_Utils_eq(
 					$elm$core$Basics$floor(enemy.x),
-					initEnemy.x) ? _Utils_update(
+					enemy.initX) ? _Utils_update(
 					enemy,
 					{dir: $author$project$Enemy$Right, vx: enemy.speed}) : enemy);
 			case 'Up':
 				return _Utils_eq(
 					$elm$core$Basics$floor(enemy.y),
-					initEnemy.y + distance) ? _Utils_update(
+					enemy.initY + distance) ? _Utils_update(
 					enemy,
 					{dir: $author$project$Enemy$Down, vy: (-1) * enemy.speed}) : (_Utils_eq(
 					$elm$core$Basics$floor(enemy.y),
-					initEnemy.y) ? _Utils_update(
+					enemy.initY) ? _Utils_update(
 					enemy,
 					{dir: $author$project$Enemy$Up, vy: enemy.speed}) : enemy);
 			default:
 				return _Utils_eq(
 					$elm$core$Basics$floor(enemy.y),
-					initEnemy.y - distance) ? _Utils_update(
+					enemy.initY - distance) ? _Utils_update(
 					enemy,
 					{dir: $author$project$Enemy$Up, vy: enemy.speed}) : (_Utils_eq(
 					$elm$core$Basics$floor(enemy.y),
-					initEnemy.y) ? _Utils_update(
+					enemy.initY) ? _Utils_update(
 					enemy,
 					{dir: $author$project$Enemy$Down, vy: (-1) * enemy.speed}) : enemy);
 		}
@@ -9877,9 +9879,12 @@ var $author$project$Game$update = F2(
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
 							enemy: A2(
-								$author$project$Game$enemyPhysics,
-								dt,
-								A3($author$project$Enemy$enemyMovement, $author$project$Game$initEnemy, model.enemy, 5.0)),
+								$elm$core$List$map,
+								$author$project$Game$enemyPhysics(dt),
+								A2(
+									$elm$core$List$map,
+									$author$project$Enemy$enemyMovement(5.0),
+									model.enemy)),
 							player: A4($author$project$Game$tick, dt, $author$project$Game$level2Tilemap, model.keys, model.player),
 							time: dt + model.time
 						}),
@@ -10808,9 +10813,12 @@ var $author$project$Game$render = function (model) {
 				_List_fromArray(
 				[
 					A2($author$project$Player$renderPlayer, resources, model.player),
-					A3($author$project$Game$renderSword, resources, model.player.sword, model.keys),
-					A2($author$project$Enemy$renderEnemy, resources, model.enemy)
-				])
+					A3($author$project$Game$renderSword, resources, model.player.sword, model.keys)
+				]),
+				A2(
+				$elm$core$List$map,
+				$author$project$Enemy$renderEnemy(resources),
+				model.enemy)
 			]));
 };
 var $elm_explorations$webgl$WebGL$Internal$Alpha = function (a) {

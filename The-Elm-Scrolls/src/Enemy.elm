@@ -13,14 +13,16 @@ type alias Enemy =
   , vx : Float
   , vy : Float
   , dir : Direction
+  , width : Float
+  , height : Float
   , enemy_type : Enemy_Type
-  --, health : Int
-  --, attack : Int
+  , health : Int
+  , attack : Int
   --, defense : Int
   , speed : Float
   --, exp_drop : Int
   --, detect_player_radius : Float
-  --, alive : Bool
+  , alive : Bool
   }
 
 type Direction
@@ -44,6 +46,14 @@ textures =
   , "assets/enemy/enemyDown.png"
   --, "assets/enemy/enemyIdle.png"
   ]
+
+isAlive : Enemy -> Bool
+isAlive enemy =
+  if enemy.alive then True else False
+
+getAttack : Enemy -> Int
+getAttack enemy =
+    enemy.attack
 
 enemyTypeToString : Enemy -> String
 enemyTypeToString enemy =

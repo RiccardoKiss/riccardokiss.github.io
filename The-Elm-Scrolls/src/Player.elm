@@ -2,6 +2,7 @@ module Player exposing (..)
 
 import Game.TwoD.Render as Render exposing (..)
 import Game.Resources as Resources exposing (..)
+import Keyboard
 
 import Sword exposing (..)
 
@@ -11,12 +12,14 @@ type alias Player =
   , y : Float
   , vx : Float
   , vy : Float
+  , speed : Float
+  , width : Float
+  , height : Float
   , dir : Direction
   , sword : Sword
   --, level : Int
   --, exp : Int
-  --, health : Int
-  --, attack : Int
+  , health : Int
   --, defense : Int
   }
 
@@ -54,8 +57,8 @@ textures =
 walk : { x : Int, y : Int } -> Player -> Player
 walk { x, y } player =
   { player
-    | vx = 3 * toFloat x
-    , vy = 3 * toFloat y
+    | vx = player.speed * toFloat x
+    , vy = player.speed * toFloat y
     , dir =
         if x < 0 then
           Left
@@ -73,10 +76,21 @@ walk { x, y } player =
           Idle
   }
 
-swordPhysics : Sword -> Player -> Player
-swordPhysics sword player =
+swordPhysics : List Keyboard.Key -> Sword -> Player -> Player
+swordPhysics keys sword player =
   { player
-    | sword = updateSwordCoordinates sword player.x player.y
+    | sword = Sword.updateSwordCoordinates sword player.x player.y
+              |> swordAttack keys
+  }
+
+swordAttack : List Keyboard.Key -> Sword -> Sword
+swordAttack keys sword =
+  { sword
+    | action =
+        if List.member Keyboard.Spacebar keys then
+          Attack
+        else
+          NotAttack
   }
 
 renderPlayer : Resources -> Player -> Renderable

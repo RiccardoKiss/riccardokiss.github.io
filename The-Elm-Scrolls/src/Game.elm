@@ -25,7 +25,7 @@ import Array
 type alias Model =
   { navKey : Nav.Key
   , player : Player
-  , enemy : List Enemy
+  , enemies : List Enemy
   , resources : Resources
   , keys : List Keyboard.Key
   , time : Float
@@ -33,13 +33,17 @@ type alias Model =
   , camera : Camera
   }
 
+type alias Input =
+  { x : Int, y : Int }
+
+type Attacker
+  = Player
+  | Enemy
+
 type Msg
   = Tick Float
   | Resources Resources.Msg
   | Keys Keyboard.Msg
-
-type alias Input =
-  { x : Int, y : Int }
 
 getNavKey : Model -> Nav.Key
 getNavKey model =
@@ -194,8 +198,11 @@ initSword : Sword
 initSword =
   { x = 0
   , y = 0
+  , width = 1
+  , height = 0.5
   , action = NotAttack
   , sword_type = Stone
+  , attack = 5
   }
 
 initPlayer : Player
@@ -204,43 +211,57 @@ initPlayer =
   , y = 10
   , vx = 0
   , vy = 0
+  , speed = 3.0
+  , width = 1
+  , height = 2
   , dir = Player.Idle
   , sword = initSword
+  , health = 100
   }
 
 initEnemy : Enemy
 initEnemy =
   { initX = 57
-  , initY = 9
+  , initY = 11
   , initDir = Enemy.Up
   , x = 57
-  , y = 9
+  , y = 11
   , vx = 0
   , vy = 0
+  , width = 1
+  , height = 2
   , dir = Enemy.Up
   , enemy_type = Prototype
   , speed = 3.0
+  , health = 10
+  , attack = 5
+  , alive = True
   }
 
 initEnemy2 : Enemy
 initEnemy2 =
   { initX = 55
-  , initY = 10
+  , initY = 12
   , initDir = Enemy.Up
   , x = 55
-  , y = 10
+  , y = 12
   , vx = 0
   , vy = 0
+  , width = 1
+  , height = 2
   , dir = Enemy.Up
   , enemy_type = Prototype
   , speed = 5.0
+  , health = 10
+  , attack = 5
+  , alive = True
   }
 
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
     , player = initPlayer
-    , enemy = [ initEnemy, initEnemy2 ]
+    , enemies = [ initEnemy, initEnemy2 ]
     , resources = Resources.init
     , keys = []
     , time = 0
@@ -268,9 +289,10 @@ update msg model =
   case msg of
     Tick dt ->
       ( { model
-          | player = tick dt level2Tilemap model.keys model.player
-          , enemy = List.map (enemyMovement 5.0) model.enemy 
-                    |> List.map (enemyPhysics dt)
+          | player = tick dt level2Tilemap model.keys model.enemies model.player
+          , enemies = List.map (enemyMovement 5.0) model.enemies
+                      |> List.map (enemyPhysics dt)
+                      |> List.map (enemyAttacked model.player)
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
         }
@@ -284,24 +306,32 @@ update msg model =
 
     Keys keyMsg ->
       let
-        keys =
-          Keyboard.update keyMsg model.keys
+        keys = Keyboard.update keyMsg model.keys
         _ = Debug.log "[model.keys]" keys
       in
-        ( { model | keys = keys }, Cmd.none )
+        ( { model | keys = keys }
+        , Cmd.none
+        )
 
 
-tick : Float -> Array.Array ( Array.Array Char ) -> List Keyboard.Key -> Player -> Player
-tick dt tilemap keys player =
+tick :
+  Float ->
+  Array.Array ( Array.Array Char ) ->
+  List Keyboard.Key ->
+  List Enemy ->
+  Player ->
+  Player
+tick dt tilemap keys enemyList player =
   let
     moveInput =
       Keyboard.Arrows.wasd keys
       --Keyboard.Arrows.arrows keys
   in
   player
-    |> walk moveInput
+    |> Player.walk moveInput
     |> playerPhysics dt
-    |> swordPhysics player.sword
+    |> Player.swordPhysics keys player.sword
+    |> playerAttacked enemyList
 
 playerPhysics : Float -> Player -> Player
 playerPhysics dt player =
@@ -370,6 +400,58 @@ enemyPhysics dt enemy =
           enemy.y
   }
 
+playerAttacked : List Enemy -> Player -> Player
+playerAttacked enemyList player =
+  let
+    dmgTaken = List.filter (dmgDoneToPlayer player) enemyList
+               |> List.map getAttack
+               |> List.sum
+    newHp = player.health - dmgTaken
+  in
+  { player | health = if newHp <= 0 then 0 else newHp }
+
+enemyAttacked : Player -> Enemy -> Enemy
+enemyAttacked player enemy =
+  let
+    dmgTaken = dmgDoneToEnemy player.sword enemy
+    newHp = enemy.health - dmgTaken
+  in
+  { enemy
+    | health = if newHp <= 0 then 0 else newHp
+    , alive = if newHp <= 0 then False else True
+  }
+
+dmgDoneToPlayer : Player -> Enemy -> Bool
+dmgDoneToPlayer player enemy =
+  if player.x + player.width >= enemy.x &&
+     player.x <= enemy.x + enemy.width &&
+     player.y + player.height >= enemy.y &&
+     player.y <= enemy.y + enemy.height
+  then True --enemy.attack
+  else False --0
+
+dmgDoneToEnemy : Sword -> Enemy -> Int
+dmgDoneToEnemy sword enemy =
+  if sword.action == Attack then
+    if sword.x + sword.width >= enemy.x &&
+       sword.x <= enemy.x + enemy.width &&
+       sword.y + sword.height >= enemy.y &&
+       sword.y <= enemy.y + enemy.height
+    then sword.attack
+    else 0
+  else 0
+
+{-
+rectangularCollision :
+  { x : Float, y : Float, width : Float, height : Float} ->
+  { x : Float, y : Float, width : Float, height : Float} ->
+  Bool
+rectangularCollision rect1 rect2 =
+  rect1.x + rect1.width >= rect2.x &&
+  rect1.x <= rect2.x + rect2.width &&
+  rect1.y + rect1.height >= rect2.y &&
+  rect1.y <= rect2.y + rect2.height
+-}
 
 -- VIEW
 
@@ -381,7 +463,8 @@ render ({ resources, camera } as model) =
     , [ Player.renderPlayer resources model.player
       , renderSword resources model.player.sword model.keys
       ]
-    , List.map (Enemy.renderEnemy resources) model.enemy
+    , List.filter Enemy.isAlive model.enemies
+      |> List.map (Enemy.renderEnemy resources)
     ]
 
 renderBackground : Resources -> List Renderable
@@ -411,6 +494,7 @@ viewPlayerCoordinates model =
       , text ("\ny: " ++ String.fromFloat model.player.y)
       , text ("\nvx: " ++ String.fromFloat model.player.vx)
       , text ("\nvy: " ++ String.fromFloat model.player.vy)
+      , text ("\nhp: " ++ String.fromInt model.player.health)
       ]
 
 view : Model -> { title : String, content : Html Msg }

@@ -7,8 +7,11 @@ import Game.Resources as Resources exposing (..)
 type alias Sword =
   { x : Float
   , y : Float
+  , width : Float
+  , height : Float
   , action : Action
   , sword_type : Sword_Type
+  , attack : Int
   }
 
 type Action

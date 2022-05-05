@@ -7253,13 +7253,13 @@ var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
 var $author$project$Enemy$Prototype = {$: 'Prototype'};
 var $author$project$Enemy$Up = {$: 'Up'};
-var $author$project$Game$initEnemy = {dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, initDir: $author$project$Enemy$Up, initX: 57, initY: 9, speed: 3.0, vx: 0, vy: 0, x: 57, y: 9};
-var $author$project$Game$initEnemy2 = {dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, initDir: $author$project$Enemy$Up, initX: 55, initY: 10, speed: 5.0, vx: 0, vy: 0, x: 55, y: 10};
+var $author$project$Game$initEnemy = {alive: true, attack: 5, dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 57, initY: 11, speed: 3.0, vx: 0, vy: 0, width: 1, x: 57, y: 11};
+var $author$project$Game$initEnemy2 = {alive: true, attack: 5, dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 55, initY: 12, speed: 5.0, vx: 0, vy: 0, width: 1, x: 55, y: 12};
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Stone = {$: 'Stone'};
-var $author$project$Game$initSword = {action: $author$project$Sword$NotAttack, sword_type: $author$project$Sword$Stone, x: 0, y: 0};
-var $author$project$Game$initPlayer = {dir: $author$project$Player$Idle, sword: $author$project$Game$initSword, vx: 0, vy: 0, x: 56, y: 10};
+var $author$project$Game$initSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, sword_type: $author$project$Sword$Stone, width: 1, x: 0, y: 0};
+var $author$project$Game$initPlayer = {dir: $author$project$Player$Idle, health: 100, height: 2, speed: 3.0, sword: $author$project$Game$initSword, vx: 0, vy: 0, width: 1, x: 56, y: 10};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -7368,7 +7368,7 @@ var $author$project$Game$init = function (navKey) {
 				$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
 				32 * 16,
 				_Utils_Tuple2(0, 0)),
-			enemy: _List_fromArray(
+			enemies: _List_fromArray(
 				[$author$project$Game$initEnemy, $author$project$Game$initEnemy2]),
 			keys: _List_Nil,
 			navKey: navKey,
@@ -8840,6 +8840,23 @@ var $author$project$Main$subscriptions = function (model) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $author$project$Sword$Attack = {$: 'Attack'};
+var $elm$core$Basics$ge = _Utils_ge;
+var $author$project$Game$dmgDoneToEnemy = F2(
+	function (sword, enemy) {
+		return _Utils_eq(sword.action, $author$project$Sword$Attack) ? (((_Utils_cmp(sword.x + sword.width, enemy.x) > -1) && ((_Utils_cmp(sword.x, enemy.x + enemy.width) < 1) && ((_Utils_cmp(sword.y + sword.height, enemy.y) > -1) && (_Utils_cmp(sword.y, enemy.y + enemy.height) < 1)))) ? sword.attack : 0) : 0;
+	});
+var $author$project$Game$enemyAttacked = F2(
+	function (player, enemy) {
+		var dmgTaken = A2($author$project$Game$dmgDoneToEnemy, player.sword, enemy);
+		var newHp = enemy.health - dmgTaken;
+		return _Utils_update(
+			enemy,
+			{
+				alive: (newHp <= 0) ? false : true,
+				health: (newHp <= 0) ? 0 : newHp
+			});
+	});
 var $author$project$Enemy$Down = {$: 'Down'};
 var $author$project$Enemy$Left = {$: 'Left'};
 var $author$project$Enemy$Right = {$: 'Right'};
@@ -8904,7 +8921,6 @@ var $elm$core$Maybe$andThen = F2(
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
-var $elm$core$Basics$ge = _Utils_ge;
 var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
 var $elm$core$Array$getHelp = F3(
 	function (shift, index, tree) {
@@ -9291,6 +9307,44 @@ var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
 				camera,
 				{position: pos}));
 	});
+var $author$project$Game$dmgDoneToPlayer = F2(
+	function (player, enemy) {
+		return ((_Utils_cmp(player.x + player.width, enemy.x) > -1) && ((_Utils_cmp(player.x, enemy.x + enemy.width) < 1) && ((_Utils_cmp(player.y + player.height, enemy.y) > -1) && (_Utils_cmp(player.y, enemy.y + enemy.height) < 1)))) ? true : false;
+	});
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $author$project$Enemy$getAttack = function (enemy) {
+	return enemy.attack;
+};
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $author$project$Game$playerAttacked = F2(
+	function (enemyList, player) {
+		var dmgTaken = $elm$core$List$sum(
+			A2(
+				$elm$core$List$map,
+				$author$project$Enemy$getAttack,
+				A2(
+					$elm$core$List$filter,
+					$author$project$Game$dmgDoneToPlayer(player),
+					enemyList)));
+		var newHp = player.health - dmgTaken;
+		return _Utils_update(
+			player,
+			{
+				health: (newHp <= 0) ? 0 : newHp
+			});
+	});
 var $author$project$Player$Left = {$: 'Left'};
 var $author$project$Player$Up = {$: 'Up'};
 var $author$project$Game$playerPhysics = F2(
@@ -9323,40 +9377,7 @@ var $author$project$Game$playerPhysics = F2(
 				}()
 			});
 	});
-var $author$project$Sword$updateSwordCoordinates = F3(
-	function (sword, playerX, playerY) {
-		return _Utils_update(
-			sword,
-			{x: playerX + 0.75, y: playerY + 0.5});
-	});
-var $author$project$Player$swordPhysics = F2(
-	function (sword, player) {
-		return _Utils_update(
-			player,
-			{
-				sword: A3($author$project$Sword$updateSwordCoordinates, sword, player.x, player.y)
-			});
-	});
-var $author$project$Player$Down = {$: 'Down'};
-var $author$project$Player$Right = {$: 'Right'};
-var $author$project$Player$walk = F2(
-	function (_v0, player) {
-		var x = _v0.x;
-		var y = _v0.y;
-		return _Utils_update(
-			player,
-			{
-				dir: (x < 0) ? $author$project$Player$Left : ((x > 0) ? $author$project$Player$Right : ((y < 0) ? $author$project$Player$Down : ((y > 0) ? $author$project$Player$Up : $author$project$Player$Idle))),
-				vx: 3 * x,
-				vy: 3 * y
-			});
-	});
-var $ohanhi$keyboard$Keyboard$Character = function (a) {
-	return {$: 'Character', a: a};
-};
-var $ohanhi$keyboard$Keyboard$Arrows$boolToInt = function (bool) {
-	return bool ? 1 : 0;
-};
+var $ohanhi$keyboard$Keyboard$Spacebar = {$: 'Spacebar'};
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -9387,6 +9408,51 @@ var $elm$core$List$member = F2(
 			},
 			xs);
 	});
+var $author$project$Player$swordAttack = F2(
+	function (keys, sword) {
+		return _Utils_update(
+			sword,
+			{
+				action: A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? $author$project$Sword$Attack : $author$project$Sword$NotAttack
+			});
+	});
+var $author$project$Sword$updateSwordCoordinates = F3(
+	function (sword, playerX, playerY) {
+		return _Utils_update(
+			sword,
+			{x: playerX + 0.75, y: playerY + 0.5});
+	});
+var $author$project$Player$swordPhysics = F3(
+	function (keys, sword, player) {
+		return _Utils_update(
+			player,
+			{
+				sword: A2(
+					$author$project$Player$swordAttack,
+					keys,
+					A3($author$project$Sword$updateSwordCoordinates, sword, player.x, player.y))
+			});
+	});
+var $author$project$Player$Down = {$: 'Down'};
+var $author$project$Player$Right = {$: 'Right'};
+var $author$project$Player$walk = F2(
+	function (_v0, player) {
+		var x = _v0.x;
+		var y = _v0.y;
+		return _Utils_update(
+			player,
+			{
+				dir: (x < 0) ? $author$project$Player$Left : ((x > 0) ? $author$project$Player$Right : ((y < 0) ? $author$project$Player$Down : ((y > 0) ? $author$project$Player$Up : $author$project$Player$Idle))),
+				vx: player.speed * x,
+				vy: player.speed * y
+			});
+	});
+var $ohanhi$keyboard$Keyboard$Character = function (a) {
+	return {$: 'Character', a: a};
+};
+var $ohanhi$keyboard$Keyboard$Arrows$boolToInt = function (bool) {
+	return bool ? 1 : 0;
+};
 var $ohanhi$keyboard$Keyboard$Arrows$wasd = function (keys) {
 	var toInt = function (_char) {
 		return $ohanhi$keyboard$Keyboard$Arrows$boolToInt(
@@ -9399,16 +9465,20 @@ var $ohanhi$keyboard$Keyboard$Arrows$wasd = function (keys) {
 	var y = toInt('W') - toInt('S');
 	return {x: x, y: y};
 };
-var $author$project$Game$tick = F4(
-	function (dt, tilemap, keys, player) {
+var $author$project$Game$tick = F5(
+	function (dt, tilemap, keys, enemyList, player) {
 		var moveInput = $ohanhi$keyboard$Keyboard$Arrows$wasd(keys);
 		return A2(
-			$author$project$Player$swordPhysics,
-			player.sword,
-			A2(
-				$author$project$Game$playerPhysics,
-				dt,
-				A2($author$project$Player$walk, moveInput, player)));
+			$author$project$Game$playerAttacked,
+			enemyList,
+			A3(
+				$author$project$Player$swordPhysics,
+				keys,
+				player.sword,
+				A2(
+					$author$project$Game$playerPhysics,
+					dt,
+					A2($author$project$Player$walk, moveInput, player))));
 	});
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {
@@ -9783,7 +9853,6 @@ var $ohanhi$keyboard$Keyboard$uiKey = function (_v0) {
 	}
 };
 var $ohanhi$keyboard$Keyboard$Enter = {$: 'Enter'};
-var $ohanhi$keyboard$Keyboard$Spacebar = {$: 'Spacebar'};
 var $ohanhi$keyboard$Keyboard$Tab = {$: 'Tab'};
 var $ohanhi$keyboard$Keyboard$whitespaceKey = function (_v0) {
 	var value = _v0.a;
@@ -9813,17 +9882,6 @@ var $ohanhi$keyboard$Keyboard$characterKeyUpper = function (_v0) {
 			$elm$core$String$toUpper(value))) : $elm$core$Maybe$Nothing;
 };
 var $ohanhi$keyboard$Keyboard$anyKeyUpper = $ohanhi$keyboard$Keyboard$anyKeyWith($ohanhi$keyboard$Keyboard$characterKeyUpper);
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $ohanhi$keyboard$Keyboard$insert = F3(
 	function (keyParser, rawKey, list) {
@@ -9878,14 +9936,17 @@ var $author$project$Game$update = F2(
 								$Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo,
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
-							enemy: A2(
+							enemies: A2(
 								$elm$core$List$map,
-								$author$project$Game$enemyPhysics(dt),
+								$author$project$Game$enemyAttacked(model.player),
 								A2(
 									$elm$core$List$map,
-									$author$project$Enemy$enemyMovement(5.0),
-									model.enemy)),
-							player: A4($author$project$Game$tick, dt, $author$project$Game$level2Tilemap, model.keys, model.player),
+									$author$project$Game$enemyPhysics(dt),
+									A2(
+										$elm$core$List$map,
+										$author$project$Enemy$enemyMovement(5.0),
+										model.enemies))),
+							player: A5($author$project$Game$tick, dt, $author$project$Game$level2Tilemap, model.keys, model.enemies, model.player),
 							time: dt + model.time
 						}),
 					$elm$core$Platform$Cmd$none);
@@ -10208,6 +10269,9 @@ var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$img = _VirtualDom_node('img');
+var $author$project$Enemy$isAlive = function (enemy) {
+	return enemy.alive ? true : false;
+};
 var $Zinggi$elm_game_resources$Game$Resources$getTexture = F2(
 	function (url, _v0) {
 		var res = _v0.a;
@@ -10818,7 +10882,7 @@ var $author$project$Game$render = function (model) {
 				A2(
 				$elm$core$List$map,
 				$author$project$Enemy$renderEnemy(resources),
-				model.enemy)
+				A2($elm$core$List$filter, $author$project$Enemy$isAlive, model.enemies))
 			]));
 };
 var $elm_explorations$webgl$WebGL$Internal$Alpha = function (a) {
@@ -10927,7 +10991,9 @@ var $author$project$Game$viewPlayerCoordinates = function (model) {
 				$elm$html$Html$text(
 				'\nvx: ' + $elm$core$String$fromFloat(model.player.vx)),
 				$elm$html$Html$text(
-				'\nvy: ' + $elm$core$String$fromFloat(model.player.vy))
+				'\nvy: ' + $elm$core$String$fromFloat(model.player.vy)),
+				$elm$html$Html$text(
+				'\nhp: ' + $elm$core$String$fromInt(model.player.health))
 			]));
 };
 var $author$project$Game$view = function (model) {

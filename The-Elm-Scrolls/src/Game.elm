@@ -36,10 +36,6 @@ type alias Model =
 type alias Input =
   { x : Int, y : Int }
 
-type Attacker
-  = Player
-  | Enemy
-
 type Msg
   = Tick Float
   | Resources Resources.Msg
@@ -216,7 +212,8 @@ initPlayer =
   , height = 2
   , dir = Player.Idle
   , sword = initSword
-  , health = 100
+  , maxHealth = 100
+  , currentHealth = 100
   }
 
 initEnemy : Enemy
@@ -234,7 +231,7 @@ initEnemy =
   , enemy_type = Prototype
   , speed = 3.0
   , health = 10
-  , attack = 5
+  , attack = 1
   , alive = True
   }
 
@@ -253,7 +250,7 @@ initEnemy2 =
   , enemy_type = Prototype
   , speed = 5.0
   , health = 10
-  , attack = 5
+  , attack = 1
   , alive = True
   }
 
@@ -312,7 +309,6 @@ update msg model =
         ( { model | keys = keys }
         , Cmd.none
         )
-
 
 tick :
   Float ->
@@ -406,9 +402,9 @@ playerAttacked enemyList player =
     dmgTaken = List.filter (dmgDoneToPlayer player) enemyList
                |> List.map getAttack
                |> List.sum
-    newHp = player.health - dmgTaken
+    newHp = player.currentHealth - dmgTaken
   in
-  { player | health = if newHp <= 0 then 0 else newHp }
+  { player | currentHealth = if newHp <= 0 then 0 else newHp }
 
 enemyAttacked : Player -> Enemy -> Enemy
 enemyAttacked player enemy =
@@ -453,6 +449,7 @@ rectangularCollision rect1 rect2 =
   rect1.y <= rect2.y + rect2.height
 -}
 
+
 -- VIEW
 
 
@@ -483,18 +480,46 @@ renderSword resources sword keys =
   else
     Sword.renderSwordIdle resources sword
 
-viewPlayerCoordinates : Model -> Html Msg
-viewPlayerCoordinates model =
-  pre [ style "position" "absolute"
+viewHealthInfo : Int -> Int -> Html Msg
+viewHealthInfo maxHp currHp =
+  div [ style "position" "absolute"
+      , style "font-family" "monospace"
+      , style "color" "white"
+      , style "top" "30%"
+      , style "left" "50%"
+      ]
+      [ text (String.fromInt currHp ++ " / " ++ String.fromInt maxHp)]
+
+viewHealthBar : Int -> Int -> Html Msg
+viewHealthBar maxHp currHp =
+  div [ style "position" "absolute"
       , style "left" "448px"
       , style "top" "750px"
       ]
+      [ img [ src "assets/health_bar.png"] []
+      , img [ src "assets/health_bar_current.png"
+            , style "position" "absolute"
+            , style "left" "16px"
+            , style "top" "12px"
+            , style "height" "24px"
+            , style "width" (String.fromInt currHp ++ "%")
+            ] []
+      , viewHealthInfo maxHp currHp
+      ]
+
+viewPlayerCoordinates : Player -> Html Msg
+viewPlayerCoordinates player =
+  pre [ style "position" "absolute"
+      , style "left" "448px"
+      , style "top" "800px"
+      ]
       [ text "Player"
-      , text ("\nx: " ++ String.fromFloat model.player.x)
-      , text ("\ny: " ++ String.fromFloat model.player.y)
-      , text ("\nvx: " ++ String.fromFloat model.player.vx)
-      , text ("\nvy: " ++ String.fromFloat model.player.vy)
-      , text ("\nhp: " ++ String.fromInt model.player.health)
+      , text ("\nx: " ++ String.fromFloat player.x)
+      , text ("\ny: " ++ String.fromFloat player.y)
+      , text ("\nvx: " ++ String.fromFloat player.vx)
+      , text ("\nvy: " ++ String.fromFloat player.vy)
+      , text ("\nhp: " ++ String.fromInt player.currentHealth
+              ++ " / " ++ String.fromInt player.maxHealth)
       ]
 
 view : Model -> { title : String, content : Html Msg }
@@ -519,7 +544,8 @@ view ({ time, screen } as model) =
             , size = screen
             }
               (render model)
-      , viewPlayerCoordinates model
+      , viewHealthBar model.player.maxHealth model.player.currentHealth
+      , viewPlayerCoordinates model.player
       ]
   }
 

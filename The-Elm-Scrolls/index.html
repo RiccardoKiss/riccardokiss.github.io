@@ -7253,13 +7253,13 @@ var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
 var $author$project$Enemy$Prototype = {$: 'Prototype'};
 var $author$project$Enemy$Up = {$: 'Up'};
-var $author$project$Game$initEnemy = {alive: true, attack: 5, dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 57, initY: 11, speed: 3.0, vx: 0, vy: 0, width: 1, x: 57, y: 11};
-var $author$project$Game$initEnemy2 = {alive: true, attack: 5, dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 55, initY: 12, speed: 5.0, vx: 0, vy: 0, width: 1, x: 55, y: 12};
+var $author$project$Game$initEnemy = {alive: true, attack: 1, dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 57, initY: 11, speed: 3.0, vx: 0, vy: 0, width: 1, x: 57, y: 11};
+var $author$project$Game$initEnemy2 = {alive: true, attack: 1, dir: $author$project$Enemy$Up, enemy_type: $author$project$Enemy$Prototype, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 55, initY: 12, speed: 5.0, vx: 0, vy: 0, width: 1, x: 55, y: 12};
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Stone = {$: 'Stone'};
 var $author$project$Game$initSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, sword_type: $author$project$Sword$Stone, width: 1, x: 0, y: 0};
-var $author$project$Game$initPlayer = {dir: $author$project$Player$Idle, health: 100, height: 2, speed: 3.0, sword: $author$project$Game$initSword, vx: 0, vy: 0, width: 1, x: 56, y: 10};
+var $author$project$Game$initPlayer = {currentHealth: 100, dir: $author$project$Player$Idle, height: 2, maxHealth: 100, speed: 3.0, sword: $author$project$Game$initSword, vx: 0, vy: 0, width: 1, x: 56, y: 10};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -9338,11 +9338,11 @@ var $author$project$Game$playerAttacked = F2(
 					$elm$core$List$filter,
 					$author$project$Game$dmgDoneToPlayer(player),
 					enemyList)));
-		var newHp = player.health - dmgTaken;
+		var newHp = player.currentHealth - dmgTaken;
 		return _Utils_update(
 			player,
 			{
-				health: (newHp <= 0) ? 0 : newHp
+				currentHealth: (newHp <= 0) ? 0 : newHp
 			});
 	});
 var $author$project$Player$Left = {$: 'Left'};
@@ -10968,32 +10968,87 @@ var $elm$html$Html$Attributes$src = function (url) {
 };
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $elm$core$String$fromFloat = _String_fromNumber;
-var $elm$html$Html$pre = _VirtualDom_node('pre');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$Game$viewPlayerCoordinates = function (model) {
+var $author$project$Game$viewHealthInfo = F2(
+	function (maxHp, currHp) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace'),
+					A2($elm$html$Html$Attributes$style, 'color', 'white'),
+					A2($elm$html$Html$Attributes$style, 'top', '30%'),
+					A2($elm$html$Html$Attributes$style, 'left', '50%')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(
+					$elm$core$String$fromInt(currHp) + (' / ' + $elm$core$String$fromInt(maxHp)))
+				]));
+	});
+var $author$project$Game$viewHealthBar = F2(
+	function (maxHp, currHp) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'left', '448px'),
+					A2($elm$html$Html$Attributes$style, 'top', '750px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/health_bar.png')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/health_bar_current.png'),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '16px'),
+							A2($elm$html$Html$Attributes$style, 'top', '12px'),
+							A2($elm$html$Html$Attributes$style, 'height', '24px'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'width',
+							$elm$core$String$fromInt(currHp) + '%')
+						]),
+					_List_Nil),
+					A2($author$project$Game$viewHealthInfo, maxHp, currHp)
+				]));
+	});
+var $elm$core$String$fromFloat = _String_fromNumber;
+var $elm$html$Html$pre = _VirtualDom_node('pre');
+var $author$project$Game$viewPlayerCoordinates = function (player) {
 	return A2(
 		$elm$html$Html$pre,
 		_List_fromArray(
 			[
 				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 				A2($elm$html$Html$Attributes$style, 'left', '448px'),
-				A2($elm$html$Html$Attributes$style, 'top', '750px')
+				A2($elm$html$Html$Attributes$style, 'top', '800px')
 			]),
 		_List_fromArray(
 			[
 				$elm$html$Html$text('Player'),
 				$elm$html$Html$text(
-				'\nx: ' + $elm$core$String$fromFloat(model.player.x)),
+				'\nx: ' + $elm$core$String$fromFloat(player.x)),
 				$elm$html$Html$text(
-				'\ny: ' + $elm$core$String$fromFloat(model.player.y)),
+				'\ny: ' + $elm$core$String$fromFloat(player.y)),
 				$elm$html$Html$text(
-				'\nvx: ' + $elm$core$String$fromFloat(model.player.vx)),
+				'\nvx: ' + $elm$core$String$fromFloat(player.vx)),
 				$elm$html$Html$text(
-				'\nvy: ' + $elm$core$String$fromFloat(model.player.vy)),
+				'\nvy: ' + $elm$core$String$fromFloat(player.vy)),
 				$elm$html$Html$text(
-				'\nhp: ' + $elm$core$String$fromInt(model.player.health))
+				'\nhp: ' + ($elm$core$String$fromInt(player.currentHealth) + (' / ' + $elm$core$String$fromInt(player.maxHealth))))
 			]));
 };
 var $author$project$Game$view = function (model) {
@@ -11027,7 +11082,8 @@ var $author$project$Game$view = function (model) {
 						]),
 					{camera: model.camera, size: screen, time: time},
 					$author$project$Game$render(model)),
-					$author$project$Game$viewPlayerCoordinates(model)
+					A2($author$project$Game$viewHealthBar, model.player.maxHealth, model.player.currentHealth),
+					$author$project$Game$viewPlayerCoordinates(model.player)
 				])),
 		title: 'Game'
 	};

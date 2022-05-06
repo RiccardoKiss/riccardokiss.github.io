@@ -212,8 +212,11 @@ initPlayer =
   , height = 2
   , dir = Player.Idle
   , sword = initSword
+  , level = 1
   , maxHealth = 100
   , currentHealth = 100
+  , maxExp = 5
+  , currentExp = 0
   }
 
 initEnemy : Enemy
@@ -228,10 +231,11 @@ initEnemy =
   , width = 1
   , height = 2
   , dir = Enemy.Up
-  , enemy_type = Prototype
+  , enemyType = Prototype
   , speed = 3.0
-  , health = 10
   , attack = 1
+  , health = 10
+  , expDrop = 2
   , alive = True
   }
 
@@ -247,10 +251,11 @@ initEnemy2 =
   , width = 1
   , height = 2
   , dir = Enemy.Up
-  , enemy_type = Prototype
+  , enemyType = Prototype
   , speed = 5.0
-  , health = 10
   , attack = 1
+  , health = 10
+  , expDrop = 2
   , alive = True
   }
 
@@ -492,34 +497,67 @@ viewHealthInfo maxHp currHp =
 
 viewHealthBar : Int -> Int -> Html Msg
 viewHealthBar maxHp currHp =
+  let
+    healthPercentage =  (toFloat currHp / toFloat maxHp) * 100.0
+  in
   div [ style "position" "absolute"
       , style "left" "448px"
       , style "top" "750px"
       ]
       [ img [ src "assets/health_bar.png"] []
-      , img [ src "assets/health_bar_current.png"
+      , img [ src "assets/health_bar_current.svg"
             , style "position" "absolute"
             , style "left" "16px"
             , style "top" "12px"
             , style "height" "24px"
-            , style "width" (String.fromInt currHp ++ "%")
+            , style "width" (String.fromFloat healthPercentage ++ "%")
             ] []
       , viewHealthInfo maxHp currHp
+      ]
+
+viewExpInfo : Int -> Int -> Html Msg
+viewExpInfo maxExp currExp =
+  div [ style "position" "absolute"
+      , style "font-family" "monospace"
+      , style "color" "white"
+      , style "top" "30%"
+      , style "left" "50%"
+      ]
+      [ text (String.fromInt currExp ++ " / " ++ String.fromInt maxExp)]
+
+viewExpBar : Int -> Int -> Html Msg
+viewExpBar maxExp currExp =
+  let
+    expPercentage =  (toFloat currExp / toFloat maxExp) * 100.0
+  in
+  div [ style "position" "absolute"
+      , style "left" "448px"
+      , style "top" "800px"
+      ]
+      [ img [ src "assets/exp_bar.png"] []
+      , img [ src "assets/exp_bar_current.png"
+            , style "position" "absolute"
+            , style "left" "16px"
+            , style "top" "12px"
+            , style "height" "24px"
+            , style "width" (String.fromFloat expPercentage ++ "%")
+            ] []
+      , viewExpInfo maxExp currExp
       ]
 
 viewPlayerCoordinates : Player -> Html Msg
 viewPlayerCoordinates player =
   pre [ style "position" "absolute"
       , style "left" "448px"
-      , style "top" "800px"
+      , style "top" "850px"
       ]
       [ text "Player"
       , text ("\nx: " ++ String.fromFloat player.x)
       , text ("\ny: " ++ String.fromFloat player.y)
       , text ("\nvx: " ++ String.fromFloat player.vx)
       , text ("\nvy: " ++ String.fromFloat player.vy)
-      , text ("\nhp: " ++ String.fromInt player.currentHealth
-              ++ " / " ++ String.fromInt player.maxHealth)
+      --, text ("\nhp: " ++ String.fromInt player.currentHealth
+      --        ++ " / " ++ String.fromInt player.maxHealth)
       ]
 
 view : Model -> { title : String, content : Html Msg }
@@ -545,6 +583,7 @@ view ({ time, screen } as model) =
             }
               (render model)
       , viewHealthBar model.player.maxHealth model.player.currentHealth
+      , viewExpBar model.player.maxExp model.player.currentExp
       , viewPlayerCoordinates model.player
       ]
   }

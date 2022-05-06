@@ -15,12 +15,12 @@ type alias Enemy =
   , dir : Direction
   , width : Float
   , height : Float
-  , enemy_type : Enemy_Type
-  , health : Int
-  , attack : Int
-  --, defense : Int
+  , enemyType : EnemyType
   , speed : Float
-  --, exp_drop : Int
+  , attack : Int
+  , health : Int
+  --, defense : Int
+  , expDrop : Int
   --, detect_player_radius : Float
   , alive : Bool
   }
@@ -32,7 +32,7 @@ type Direction
   | Down
   --| Idle
 
-type Enemy_Type
+type EnemyType
   = Bandit
   | Zombie
   | Skeleton
@@ -57,7 +57,7 @@ getAttack enemy =
 
 enemyTypeToString : Enemy -> String
 enemyTypeToString enemy =
-  case enemy.enemy_type of
+  case enemy.enemyType of
     Bandit ->
       "bandit"
 

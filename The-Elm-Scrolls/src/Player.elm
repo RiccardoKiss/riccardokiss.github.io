@@ -18,11 +18,12 @@ type alias Player =
   , dir : Direction
   , sword : Sword
   , level : Int
+  , maxDefense : Int
+  , currentDefense : Int
   , maxHealth : Int
   , currentHealth : Int
   , maxExp : Int
   , currentExp : Int
-  --, defense : Int
   }
 
 type Direction

@@ -7253,13 +7253,13 @@ var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
 var $author$project$Enemy$Prototype = {$: 'Prototype'};
 var $author$project$Enemy$Up = {$: 'Up'};
-var $author$project$Game$initEnemy = {alive: true, attack: 1, dir: $author$project$Enemy$Up, enemyType: $author$project$Enemy$Prototype, expDrop: 1, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 57, initY: 11, speed: 3.0, vx: 0, vy: 0, width: 1, x: 57, y: 11};
-var $author$project$Game$initEnemy2 = {alive: true, attack: 1, dir: $author$project$Enemy$Up, enemyType: $author$project$Enemy$Prototype, expDrop: 1, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 55, initY: 12, speed: 5.0, vx: 0, vy: 0, width: 1, x: 55, y: 12};
+var $author$project$Game$initEnemy = {alive: true, attack: 1, dir: $author$project$Enemy$Up, enemyType: $author$project$Enemy$Prototype, expDrop: 2, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 57, initY: 11, speed: 3.0, vx: 0, vy: 0, width: 1, x: 57, y: 11};
+var $author$project$Game$initEnemy2 = {alive: true, attack: 1, dir: $author$project$Enemy$Up, enemyType: $author$project$Enemy$Prototype, expDrop: 2, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 55, initY: 12, speed: 5.0, vx: 0, vy: 0, width: 1, x: 55, y: 12};
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Stone = {$: 'Stone'};
 var $author$project$Game$initSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, sword_type: $author$project$Sword$Stone, width: 1, x: 0, y: 0};
-var $author$project$Game$initPlayer = {currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, height: 2, level: 1, maxExp: 5, maxHealth: 100, speed: 3.0, sword: $author$project$Game$initSword, vx: 0, vy: 0, width: 1, x: 56, y: 10};
+var $author$project$Game$initPlayer = {currentDefense: 10, currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, height: 2, level: 1, maxDefense: 100, maxExp: 5, maxHealth: 100, speed: 3.0, sword: $author$project$Game$initSword, vx: 0, vy: 0, width: 1, x: 56, y: 9};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -10971,6 +10971,70 @@ var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Game$viewDefenseInfo = F2(
+	function (maxDef, currDef) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace'),
+					A2($elm$html$Html$Attributes$style, 'color', 'white'),
+					A2($elm$html$Html$Attributes$style, 'top', '30%'),
+					A2($elm$html$Html$Attributes$style, 'left', '47.5%')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(
+					$elm$core$String$fromInt(currDef) + (' / ' + $elm$core$String$fromInt(maxDef)))
+				]));
+	});
+var $author$project$Game$viewDefenseBar = F2(
+	function (maxDef, currDef) {
+		var defensePercentage = (currDef / maxDef) * 100.0;
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'left', '448px'),
+					A2($elm$html$Html$Attributes$style, 'top', '750px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/defense_bar.png')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '16px'),
+							A2($elm$html$Html$Attributes$style, 'top', '16px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/defense_bar_current.svg'),
+									A2($elm$html$Html$Attributes$style, 'height', '16px'),
+									A2(
+									$elm$html$Html$Attributes$style,
+									'width',
+									$elm$core$String$fromFloat(defensePercentage) + '%')
+								]),
+							_List_Nil)
+						])),
+					A2($author$project$Game$viewDefenseInfo, maxDef, currDef)
+				]));
+	});
 var $author$project$Game$viewExpInfo = F2(
 	function (maxExp, currExp) {
 		return A2(
@@ -10981,7 +11045,7 @@ var $author$project$Game$viewExpInfo = F2(
 					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace'),
 					A2($elm$html$Html$Attributes$style, 'color', 'white'),
 					A2($elm$html$Html$Attributes$style, 'top', '30%'),
-					A2($elm$html$Html$Attributes$style, 'left', '50%')
+					A2($elm$html$Html$Attributes$style, 'left', '47.5%')
 				]),
 			_List_fromArray(
 				[
@@ -10998,7 +11062,7 @@ var $author$project$Game$viewExpBar = F2(
 				[
 					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 					A2($elm$html$Html$Attributes$style, 'left', '448px'),
-					A2($elm$html$Html$Attributes$style, 'top', '800px')
+					A2($elm$html$Html$Attributes$style, 'top', '850px')
 				]),
 			_List_fromArray(
 				[
@@ -11010,20 +11074,28 @@ var $author$project$Game$viewExpBar = F2(
 						]),
 					_List_Nil),
 					A2(
-					$elm$html$Html$img,
+					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$src('assets/exp_bar_current.png'),
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 							A2($elm$html$Html$Attributes$style, 'left', '16px'),
-							A2($elm$html$Html$Attributes$style, 'top', '12px'),
-							A2($elm$html$Html$Attributes$style, 'height', '24px'),
-							A2(
-							$elm$html$Html$Attributes$style,
-							'width',
-							$elm$core$String$fromFloat(expPercentage) + '%')
+							A2($elm$html$Html$Attributes$style, 'top', '16px')
 						]),
-					_List_Nil),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/exp_bar_current.svg'),
+									A2($elm$html$Html$Attributes$style, 'height', '16px'),
+									A2(
+									$elm$html$Html$Attributes$style,
+									'width',
+									$elm$core$String$fromFloat(expPercentage) + '%')
+								]),
+							_List_Nil)
+						])),
 					A2($author$project$Game$viewExpInfo, maxExp, currExp)
 				]));
 	});
@@ -11037,7 +11109,7 @@ var $author$project$Game$viewHealthInfo = F2(
 					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace'),
 					A2($elm$html$Html$Attributes$style, 'color', 'white'),
 					A2($elm$html$Html$Attributes$style, 'top', '30%'),
-					A2($elm$html$Html$Attributes$style, 'left', '50%')
+					A2($elm$html$Html$Attributes$style, 'left', '47.5%')
 				]),
 			_List_fromArray(
 				[
@@ -11054,7 +11126,7 @@ var $author$project$Game$viewHealthBar = F2(
 				[
 					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 					A2($elm$html$Html$Attributes$style, 'left', '448px'),
-					A2($elm$html$Html$Attributes$style, 'top', '750px')
+					A2($elm$html$Html$Attributes$style, 'top', '800px')
 				]),
 			_List_fromArray(
 				[
@@ -11066,20 +11138,28 @@ var $author$project$Game$viewHealthBar = F2(
 						]),
 					_List_Nil),
 					A2(
-					$elm$html$Html$img,
+					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$src('assets/health_bar_current.svg'),
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 							A2($elm$html$Html$Attributes$style, 'left', '16px'),
-							A2($elm$html$Html$Attributes$style, 'top', '12px'),
-							A2($elm$html$Html$Attributes$style, 'height', '24px'),
-							A2(
-							$elm$html$Html$Attributes$style,
-							'width',
-							$elm$core$String$fromFloat(healthPercentage) + '%')
+							A2($elm$html$Html$Attributes$style, 'top', '12px')
 						]),
-					_List_Nil),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/health_bar_current.svg'),
+									A2($elm$html$Html$Attributes$style, 'height', '24px'),
+									A2(
+									$elm$html$Html$Attributes$style,
+									'width',
+									$elm$core$String$fromFloat(healthPercentage) + '%')
+								]),
+							_List_Nil)
+						])),
 					A2($author$project$Game$viewHealthInfo, maxHp, currHp)
 				]));
 	});
@@ -11091,7 +11171,7 @@ var $author$project$Game$viewPlayerCoordinates = function (player) {
 			[
 				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 				A2($elm$html$Html$Attributes$style, 'left', '448px'),
-				A2($elm$html$Html$Attributes$style, 'top', '850px')
+				A2($elm$html$Html$Attributes$style, 'top', '100px')
 			]),
 		_List_fromArray(
 			[
@@ -11137,6 +11217,7 @@ var $author$project$Game$view = function (model) {
 						]),
 					{camera: model.camera, size: screen, time: time},
 					$author$project$Game$render(model)),
+					A2($author$project$Game$viewDefenseBar, model.player.maxDefense, model.player.currentDefense),
 					A2($author$project$Game$viewHealthBar, model.player.maxHealth, model.player.currentHealth),
 					A2($author$project$Game$viewExpBar, model.player.maxExp, model.player.currentExp),
 					$author$project$Game$viewPlayerCoordinates(model.player)

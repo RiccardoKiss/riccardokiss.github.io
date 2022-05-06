@@ -204,7 +204,7 @@ initSword =
 initPlayer : Player
 initPlayer =
   { x = 56
-  , y = 10
+  , y = 9
   , vx = 0
   , vy = 0
   , speed = 3.0
@@ -213,6 +213,8 @@ initPlayer =
   , dir = Player.Idle
   , sword = initSword
   , level = 1
+  , maxDefense = 100
+  , currentDefense = 10
   , maxHealth = 100
   , currentHealth = 100
   , maxExp = 5
@@ -485,13 +487,45 @@ renderSword resources sword keys =
   else
     Sword.renderSwordIdle resources sword
 
+viewDefenseInfo : Int -> Int -> Html Msg
+viewDefenseInfo maxDef currDef =
+  div [ style "position" "absolute"
+      , style "font-family" "monospace"
+      , style "color" "white"
+      , style "top" "30%"
+      , style "left" "47.5%"
+      ]
+      [ text (String.fromInt currDef ++ " / " ++ String.fromInt maxDef)]
+
+viewDefenseBar : Int -> Int -> Html Msg
+viewDefenseBar maxDef currDef =
+  let
+    defensePercentage =  (toFloat currDef / toFloat maxDef) * 100.0
+  in
+  div [ style "position" "absolute"
+      , style "left" "448px"
+      , style "top" "750px"
+      ]
+      [ img [ src "assets/defense_bar.png" ] []
+      , div [style "position" "absolute"
+            , style "left" "16px"
+            , style "top" "16px"
+            ]
+            [ img [ src "assets/defense_bar_current.svg"
+                  , style "height" "16px"
+                  , style "width" (String.fromFloat defensePercentage ++ "%")
+                  ] []
+            ]
+      , viewDefenseInfo maxDef currDef
+      ]
+
 viewHealthInfo : Int -> Int -> Html Msg
 viewHealthInfo maxHp currHp =
   div [ style "position" "absolute"
       , style "font-family" "monospace"
       , style "color" "white"
       , style "top" "30%"
-      , style "left" "50%"
+      , style "left" "47.5%"
       ]
       [ text (String.fromInt currHp ++ " / " ++ String.fromInt maxHp)]
 
@@ -502,16 +536,18 @@ viewHealthBar maxHp currHp =
   in
   div [ style "position" "absolute"
       , style "left" "448px"
-      , style "top" "750px"
+      , style "top" "800px"
       ]
-      [ img [ src "assets/health_bar.png"] []
-      , img [ src "assets/health_bar_current.svg"
-            , style "position" "absolute"
+      [ img [ src "assets/health_bar.png" ] []
+      , div [style "position" "absolute"
             , style "left" "16px"
             , style "top" "12px"
-            , style "height" "24px"
-            , style "width" (String.fromFloat healthPercentage ++ "%")
-            ] []
+            ]
+            [ img [ src "assets/health_bar_current.svg"
+                  , style "height" "24px"
+                  , style "width" (String.fromFloat healthPercentage ++ "%")
+                  ] []
+            ]
       , viewHealthInfo maxHp currHp
       ]
 
@@ -521,7 +557,7 @@ viewExpInfo maxExp currExp =
       , style "font-family" "monospace"
       , style "color" "white"
       , style "top" "30%"
-      , style "left" "50%"
+      , style "left" "47.5%"
       ]
       [ text (String.fromInt currExp ++ " / " ++ String.fromInt maxExp)]
 
@@ -532,16 +568,18 @@ viewExpBar maxExp currExp =
   in
   div [ style "position" "absolute"
       , style "left" "448px"
-      , style "top" "800px"
+      , style "top" "850px"
       ]
-      [ img [ src "assets/exp_bar.png"] []
-      , img [ src "assets/exp_bar_current.png"
-            , style "position" "absolute"
+      [ img [ src "assets/exp_bar.png" ] []
+      , div [style "position" "absolute"
             , style "left" "16px"
-            , style "top" "12px"
-            , style "height" "24px"
-            , style "width" (String.fromFloat expPercentage ++ "%")
-            ] []
+            , style "top" "16px"
+            ]
+            [ img [ src "assets/exp_bar_current.svg"
+                  , style "height" "16px"
+                  , style "width" (String.fromFloat expPercentage ++ "%")
+                  ] []
+            ]
       , viewExpInfo maxExp currExp
       ]
 
@@ -549,7 +587,7 @@ viewPlayerCoordinates : Player -> Html Msg
 viewPlayerCoordinates player =
   pre [ style "position" "absolute"
       , style "left" "448px"
-      , style "top" "850px"
+      , style "top" "100px"
       ]
       [ text "Player"
       , text ("\nx: " ++ String.fromFloat player.x)
@@ -582,6 +620,7 @@ view ({ time, screen } as model) =
             , size = screen
             }
               (render model)
+      , viewDefenseBar model.player.maxDefense model.player.currentDefense
       , viewHealthBar model.player.maxHealth model.player.currentHealth
       , viewExpBar model.player.maxExp model.player.currentExp
       , viewPlayerCoordinates model.player

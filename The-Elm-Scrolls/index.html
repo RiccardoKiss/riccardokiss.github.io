@@ -7347,11 +7347,11 @@ var $elm$core$List$concat = function (lists) {
 	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
 };
 var $author$project$Enemy$textures = _List_fromArray(
-	['assets/enemy/enemyRight.png', 'assets/enemy/enemyLeft.png', 'assets/enemy/enemyUp.png', 'assets/enemy/enemyDown.png']);
+	['assets/enemy/enemy_right.png', 'assets/enemy/enemy_left.png', 'assets/enemy/enemy_up.png', 'assets/enemy/enemy_down.png']);
 var $author$project$Player$textures = _List_fromArray(
-	['assets/player/playerIdle.png', 'assets/player/playerRight.png', 'assets/player/playerLeft.png', 'assets/player/playerUp.png', 'assets/player/playerDown.png']);
+	['assets/player/player_idle.png', 'assets/player/player_right.png', 'assets/player/player_left.png', 'assets/player/player_up.png', 'assets/player/player_down.png']);
 var $author$project$Sword$textures = _List_fromArray(
-	['assets/sword_wood.png', 'assets/sword_wood_attack.png', 'assets/sword_stone.png', 'assets/sword_stone_attack.png', 'assets/sword_iron.png', 'assets/sword_iron_attack.png', 'assets/sword_dark.png', 'assets/sword_dark_attack.png']);
+	['assets/sword/sword_wood.png', 'assets/sword/sword_wood_attack.png', 'assets/sword/sword_stone.png', 'assets/sword/sword_stone_attack.png', 'assets/sword/sword_iron.png', 'assets/sword/sword_iron_attack.png', 'assets/sword/sword_dark.png', 'assets/sword/sword_dark_attack.png']);
 var $author$project$Game$texturesList = $elm$core$List$concat(
 	_List_fromArray(
 		[
@@ -10769,22 +10769,22 @@ var $author$project$Enemy$renderEnemy = F2(
 						case 'Left':
 							return A2(
 								$Zinggi$elm_game_resources$Game$Resources$getTexture,
-								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + 'Left.png'),
+								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + '_left.png'),
 								resources);
 						case 'Right':
 							return A2(
 								$Zinggi$elm_game_resources$Game$Resources$getTexture,
-								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + 'Right.png'),
+								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + '_right.png'),
 								resources);
 						case 'Up':
 							return A2(
 								$Zinggi$elm_game_resources$Game$Resources$getTexture,
-								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + 'Up.png'),
+								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + '_up.png'),
 								resources);
 						default:
 							return A2(
 								$Zinggi$elm_game_resources$Game$Resources$getTexture,
-								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + 'Down.png'),
+								'assets/enemy/' + ($author$project$Enemy$enemyTypeToString(enemy) + '_down.png'),
 								resources);
 					}
 				}(),
@@ -10806,15 +10806,15 @@ var $author$project$Player$renderPlayer = F2(
 					var _v0 = player.dir;
 					switch (_v0.$) {
 						case 'Left':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerLeft.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_left.png', resources);
 						case 'Right':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerRight.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_right.png', resources);
 						case 'Up':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerUp.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_up.png', resources);
 						case 'Down':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerDown.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_down.png', resources);
 						default:
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/playerIdle.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_idle.png', resources);
 					}
 				}(),
 				topRight: _Utils_Tuple2(1, 1)
@@ -10843,7 +10843,7 @@ var $author$project$Sword$renderSwordAttack = F2(
 				size: _Utils_Tuple2(1, 0.5),
 				texture: A2(
 					$Zinggi$elm_game_resources$Game$Resources$getTexture,
-					'assets/sword_' + ($author$project$Sword$swordTypeToString(sword) + '_attack.png'),
+					'assets/sword/sword_' + ($author$project$Sword$swordTypeToString(sword) + '_attack.png'),
 					resources),
 				tiling: _Utils_Tuple2(1, 1)
 			});
@@ -10858,7 +10858,7 @@ var $author$project$Sword$renderSwordIdle = F2(
 				size: _Utils_Tuple2(0.5, 1),
 				texture: A2(
 					$Zinggi$elm_game_resources$Game$Resources$getTexture,
-					'assets/sword_' + ($author$project$Sword$swordTypeToString(sword) + '.png'),
+					'assets/sword/sword_' + ($author$project$Sword$swordTypeToString(sword) + '.png'),
 					resources),
 				tiling: _Utils_Tuple2(1, 1)
 			});

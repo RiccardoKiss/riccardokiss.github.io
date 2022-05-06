@@ -40,11 +40,11 @@ type EnemyType
 
 textures : List String
 textures =
-  [ "assets/enemy/enemyRight.png"
-  , "assets/enemy/enemyLeft.png"
-  , "assets/enemy/enemyUp.png"
-  , "assets/enemy/enemyDown.png"
-  --, "assets/enemy/enemyIdle.png"
+  [ "assets/enemy/enemy_right.png"
+  , "assets/enemy/enemy_left.png"
+  , "assets/enemy/enemy_up.png"
+  , "assets/enemy/enemy_down.png"
+  --, "assets/enemy/enemy_idle.png"
   ]
 
 isAlive : Enemy -> Bool
@@ -133,16 +133,16 @@ renderEnemy resources enemy =
     , texture =
         case enemy.dir of
           Left ->
-            Resources.getTexture ("assets/enemy/" ++ enemyTypeToString enemy ++ "Left.png") resources
+            Resources.getTexture ("assets/enemy/" ++ enemyTypeToString enemy ++ "_left.png") resources
 
           Right ->
-            Resources.getTexture ("assets/enemy/" ++ enemyTypeToString enemy ++ "Right.png") resources
+            Resources.getTexture ("assets/enemy/" ++ enemyTypeToString enemy ++ "_right.png") resources
 
           Up ->
-            Resources.getTexture ("assets/enemy/" ++ enemyTypeToString enemy ++ "Up.png") resources
+            Resources.getTexture ("assets/enemy/" ++ enemyTypeToString enemy ++ "_up.png") resources
 
           Down ->
-            Resources.getTexture ("assets/enemy/" ++ enemyTypeToString enemy ++ "Down.png") resources
+            Resources.getTexture ("assets/enemy/" ++ enemyTypeToString enemy ++ "_down.png") resources
     , bottomLeft = ( 0, 0 )
     , topRight = ( 1, 1 )
     , duration = 1

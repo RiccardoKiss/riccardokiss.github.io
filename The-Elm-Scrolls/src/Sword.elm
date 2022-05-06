@@ -26,14 +26,14 @@ type Sword_Type
 
 textures : List String
 textures =
-  [ "assets/sword_wood.png"
-  , "assets/sword_wood_attack.png"
-  , "assets/sword_stone.png"
-  , "assets/sword_stone_attack.png"
-  , "assets/sword_iron.png"
-  , "assets/sword_iron_attack.png"
-  , "assets/sword_dark.png"
-  , "assets/sword_dark_attack.png"
+  [ "assets/sword/sword_wood.png"
+  , "assets/sword/sword_wood_attack.png"
+  , "assets/sword/sword_stone.png"
+  , "assets/sword/sword_stone_attack.png"
+  , "assets/sword/sword_iron.png"
+  , "assets/sword/sword_iron_attack.png"
+  , "assets/sword/sword_dark.png"
+  , "assets/sword/sword_dark_attack.png"
   ]
 
 swordTypeToString : Sword -> String
@@ -61,7 +61,7 @@ updateSwordCoordinates sword playerX playerY =
 renderSwordIdle : Resources -> Sword -> Renderable
 renderSwordIdle resources sword =
   Render.spriteWithOptions
-    { texture = Resources.getTexture ("assets/sword_" ++ swordTypeToString sword ++ ".png") resources
+    { texture = Resources.getTexture ("assets/sword/sword_" ++ swordTypeToString sword ++ ".png") resources
     , position = ( sword.x, sword.y, 0.1 )
     , size = ( 0.5, 1 )
     , tiling = ( 1, 1 )
@@ -72,7 +72,7 @@ renderSwordIdle resources sword =
 renderSwordAttack : Resources -> Sword -> Renderable
 renderSwordAttack resources sword =
   Render.spriteWithOptions
-    { texture = Resources.getTexture ("assets/sword_" ++ swordTypeToString sword ++ "_attack.png") resources
+    { texture = Resources.getTexture ("assets/sword/sword_" ++ swordTypeToString sword ++ "_attack.png") resources
     , position = ( sword.x, sword.y, 0.1 )
     , size = ( 1, 0.5 )
     , tiling = ( 1, 1 )

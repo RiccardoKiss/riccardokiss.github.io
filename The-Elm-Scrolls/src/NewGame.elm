@@ -37,21 +37,26 @@ getNavKey model =
   model.navKey
 
 
-radio : msg -> Bool -> String -> List ( Html msg )
+radio : Msg -> Bool -> String -> Html Msg
 radio  msg isChecked value =
+  div [ style "position" "absolute", onClick msg ]
   [ input [ type_ "radio"
           , style "margin-left" "40px"
-          , onClick msg
+          , style "width" "5em"
+          , style "height" "5em"
+          --, onClick msg
           , checked isChecked
           ] []
-  , text value
+  , div [ style "position" "absolute"
+        , style "left" "110%"
+        , style "top" "25%"
+        ] [ text value ]
   ]
 
 
 type Msg
   = HoverBack
   | HoverStart
-  --| ClickedBack
   | MouseOut
   | DifficultyTo Difficulty
 
@@ -92,7 +97,7 @@ view : Model -> { title : String, content : Html Msg }
 view model =
   { title = "New Game"
   , content =
-    div []
+    div [ style "font-family" "monospace" ]
       [ img [ src "assets/default_background_1920_969.png"
             , style "display" "block"
             , style "position" "relative"
@@ -100,23 +105,37 @@ view model =
             , style "top" "0px"
             ] []
       , h1 [ style "position" "absolute"
-           , style "left" "800px"
+           , style "left" "895px"
            , style "top" "100px"
            ] [ text "New Game" ]
       , div [ style "position" "absolute"
             , style "left" "700px"
             , style "top" "500px"
             ]
-            [ h1 [style "white-space" "nowrap"]
-                 [ text "Enter name:"
-                 , input [ type_ "input", style "margin-left" "40px" ] []
-                 ]
-            , h1 [style "white-space" "nowrap"]
-                 ([ text "Difficulty:" ]
-                 ++ radio ( DifficultyTo Easy ) ( model.difficulty == Easy ) "easy"
-                 ++ radio ( DifficultyTo Medium ) ( model.difficulty == Medium ) "medium"
-                 ++ radio ( DifficultyTo Hard ) ( model.difficulty == Hard ) "hard"
-                 )
+            [ h1 [ style "white-space" "nowrap" ]
+                  [ text "Enter name:"
+                  , input [ type_ "input", style "margin-left" "40px" ] []
+                  ]
+            , h1 [ style "position" "absolute", style "white-space" "nowrap" ]
+                  [ div [ style "position" "absolute"
+                        , style "top" "20px"
+                        ] [ text "Difficulty:" ]
+                  , div [ style "position" "absolute"
+                        , style "left" "150px"
+                        , style "top" "0px"
+                        ]
+                        [ radio ( DifficultyTo Easy ) ( model.difficulty == Easy ) "easy" ]
+                  , div [ style "position" "absolute"
+                        , style "left" "360px"
+                        , style "top" "0px"
+                        ]
+                        [ radio ( DifficultyTo Medium ) ( model.difficulty == Medium ) "medium" ]
+                  , div [ style "position" "absolute"
+                        , style "left" "610px"
+                        , style "top" "0px"
+                        ]
+                        [ radio ( DifficultyTo Hard ) ( model.difficulty == Hard ) "hard" ]
+                  ]
             ]
       , a [ Route.href Route.Home ]
           [ img [ src model.button_back

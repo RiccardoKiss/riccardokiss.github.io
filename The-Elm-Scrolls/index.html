@@ -11951,26 +11951,48 @@ var $elm$html$Html$Events$onClick = function (msg) {
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $author$project$NewGame$radio = F3(
 	function (msg, isChecked, value) {
-		return _List_fromArray(
-			[
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('radio'),
-						A2($elm$html$Html$Attributes$style, 'margin-left', '40px'),
-						$elm$html$Html$Events$onClick(msg),
-						$elm$html$Html$Attributes$checked(isChecked)
-					]),
-				_List_Nil),
-				$elm$html$Html$text(value)
-			]);
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					$elm$html$Html$Events$onClick(msg)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$type_('radio'),
+							A2($elm$html$Html$Attributes$style, 'margin-left', '40px'),
+							A2($elm$html$Html$Attributes$style, 'width', '5em'),
+							A2($elm$html$Html$Attributes$style, 'height', '5em'),
+							$elm$html$Html$Attributes$checked(isChecked)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '110%'),
+							A2($elm$html$Html$Attributes$style, 'top', '25%')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(value)
+						]))
+				]));
 	});
 var $author$project$NewGame$view = function (model) {
 	return {
 		content: A2(
 			$elm$html$Html$div,
-			_List_Nil,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+				]),
 			_List_fromArray(
 				[
 					A2(
@@ -11989,7 +12011,7 @@ var $author$project$NewGame$view = function (model) {
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '800px'),
+							A2($elm$html$Html$Attributes$style, 'left', '895px'),
 							A2($elm$html$Html$Attributes$style, 'top', '100px')
 						]),
 					_List_fromArray(
@@ -12028,30 +12050,71 @@ var $author$project$NewGame$view = function (model) {
 							$elm$html$Html$h1,
 							_List_fromArray(
 								[
+									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 									A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
 								]),
-							_Utils_ap(
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Difficulty:')
-									]),
-								_Utils_ap(
-									A3(
-										$author$project$NewGame$radio,
-										$author$project$NewGame$DifficultyTo($author$project$NewGame$Easy),
-										_Utils_eq(model.difficulty, $author$project$NewGame$Easy),
-										'easy'),
-									_Utils_ap(
-										A3(
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+											A2($elm$html$Html$Attributes$style, 'top', '20px')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Difficulty:')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+											A2($elm$html$Html$Attributes$style, 'left', '150px'),
+											A2($elm$html$Html$Attributes$style, 'top', '0px')
+										]),
+									_List_fromArray(
+										[
+											A3(
+											$author$project$NewGame$radio,
+											$author$project$NewGame$DifficultyTo($author$project$NewGame$Easy),
+											_Utils_eq(model.difficulty, $author$project$NewGame$Easy),
+											'easy')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+											A2($elm$html$Html$Attributes$style, 'left', '360px'),
+											A2($elm$html$Html$Attributes$style, 'top', '0px')
+										]),
+									_List_fromArray(
+										[
+											A3(
 											$author$project$NewGame$radio,
 											$author$project$NewGame$DifficultyTo($author$project$NewGame$Medium),
 											_Utils_eq(model.difficulty, $author$project$NewGame$Medium),
-											'medium'),
-										A3(
+											'medium')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+											A2($elm$html$Html$Attributes$style, 'left', '610px'),
+											A2($elm$html$Html$Attributes$style, 'top', '0px')
+										]),
+									_List_fromArray(
+										[
+											A3(
 											$author$project$NewGame$radio,
 											$author$project$NewGame$DifficultyTo($author$project$NewGame$Hard),
 											_Utils_eq(model.difficulty, $author$project$NewGame$Hard),
-											'hard')))))
+											'hard')
+										]))
+								]))
 						])),
 					A2(
 					$elm$html$Html$a,

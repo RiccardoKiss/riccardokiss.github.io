@@ -55,7 +55,7 @@ view : Model -> { title : String, content : Html Msg }
 view model =
   { title = "Help"
   , content =
-    div []
+    div [ style "font-family" "monospace" ]
       [ img [ src "assets/default_background_1920_969.png"
             , style "display" "block"
             , style "position" "relative"

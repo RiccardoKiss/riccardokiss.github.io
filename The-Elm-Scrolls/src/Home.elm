@@ -22,11 +22,11 @@ type alias Model =
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
-    , button_newGame = "assets/buttons/button_newGame.png"
-    , button_loadGame = "assets/buttons/button_loadGame.png"
-    , button_highScore = "assets/buttons/button_highScore.png"
-    , button_settings = "assets/buttons/button_settings.png"
-    , button_help = "assets/buttons/button_help.png"
+    , button_newGame = "assets/button/button_newGame.png"
+    , button_loadGame = "assets/button/button_loadGame.png"
+    , button_highScore = "assets/button/button_highScore.png"
+    , button_settings = "assets/button/button_settings.png"
+    , button_help = "assets/button/button_help.png"
     }
   , Cmd.none
   )
@@ -52,46 +52,46 @@ update msg model =
   case msg of
     HoverNewGame ->
       ( { model
-        | button_newGame = "assets/buttons/button_newGame_hover.png"
+        | button_newGame = "assets/button/button_newGame_hover.png"
         }
       , Cmd.none
       )
 
     HoverLoadGame ->
       ( { model
-        | button_loadGame = "assets/buttons/button_loadGame_hover.png"
+        | button_loadGame = "assets/button/button_loadGame_hover.png"
         }
       , Cmd.none
       )
 
     HoverHighScore ->
       ( { model
-        | button_highScore = "assets/buttons/button_highScore_hover.png"
+        | button_highScore = "assets/button/button_highScore_hover.png"
         }
       , Cmd.none
       )
 
     HoverSettings ->
       ( { model
-        | button_settings = "assets/buttons/button_settings_hover.png"
+        | button_settings = "assets/button/button_settings_hover.png"
         }
       , Cmd.none
       )
 
     HoverHelp ->
       ( { model
-        | button_help = "assets/buttons/button_help_hover.png"
+        | button_help = "assets/button/button_help_hover.png"
         }
       , Cmd.none
       )
 
     MouseOut ->
       ( { model
-        | button_newGame = "assets/buttons/button_newGame.png"
-          , button_loadGame = "assets/buttons/button_loadGame.png"
-          , button_highScore = "assets/buttons/button_highScore.png"
-          , button_settings = "assets/buttons/button_settings.png"
-          , button_help = "assets/buttons/button_help.png"
+        | button_newGame = "assets/button/button_newGame.png"
+          , button_loadGame = "assets/button/button_loadGame.png"
+          , button_highScore = "assets/button/button_highScore.png"
+          , button_settings = "assets/button/button_settings.png"
+          , button_help = "assets/button/button_help.png"
         }
       , Cmd.none
       )

@@ -2,7 +2,6 @@ module Game exposing  (..)
 
 import Browser
 import Browser.Navigation as Nav
-import Browser.Dom exposing (getViewport)
 import Browser.Events exposing (onAnimationFrameDelta)
 import Game.Resources as Resources exposing (..)
 import Game.TwoD as Game2d
@@ -10,7 +9,9 @@ import Game.TwoD.Camera as Camera exposing (..)
 import Game.TwoD.Render as Render exposing (..)
 import Html exposing (Html, div, img, text, pre)
 import Html.Attributes exposing (style, src)
-import Keyboard
+import Html.Events exposing (on, keyCode)
+import Json.Decode as D
+import Keyboard exposing (..)
 import Keyboard.Arrows
 import Player exposing (..)
 import Sword exposing (..)
@@ -28,9 +29,24 @@ type alias Model =
   , enemies : List Enemy
   , resources : Resources
   , keys : List Keyboard.Key
+  , key_buttons : KeyButtons
   , time : Float
   , screen : ( Int, Int )
   , camera : Camera
+  }
+
+type alias KeyButtons =
+  { q : String
+  , e : String
+  , w : String
+  , a : String
+  , s : String
+  , d : String
+  , arrowUp : String
+  , arrowLeft : String
+  , arrowDown : String
+  , arrowRight : String
+  , spacebar : String
   }
 
 type alias Input =
@@ -40,6 +56,7 @@ type Msg
   = Tick Float
   | Resources Resources.Msg
   | Keys Keyboard.Msg
+  --| KeyDown
 
 getNavKey : Model -> Nav.Key
 getNavKey model =
@@ -253,12 +270,27 @@ initEnemy2 =
   , width = 1
   , height = 2
   , dir = Enemy.Up
-  , enemyType = Prototype
+  , enemyType = Skeleton
   , speed = 5.0
   , attack = 1
   , health = 10
   , expDrop = 2
   , alive = True
+  }
+
+initKeyButtons : KeyButtons
+initKeyButtons =
+  { q = "assets/button/q.png"
+  , e = "assets/button/w.png"
+  , w = "assets/button/w.png"
+  , a = "assets/button/a.png"
+  , s = "assets/button/s.png"
+  , d = "assets/button/d.png"
+  , arrowUp = "assets/button/arrowUp.png"
+  , arrowLeft = "assets/button/arrowLeft.png"
+  , arrowDown = "assets/button/arrowDown.png"
+  , arrowRight = "assets/button/arrowRight.png"
+  , spacebar = "assets/button/spacebar.png"
   }
 
 init : Nav.Key -> ( Model, Cmd Msg )
@@ -268,6 +300,7 @@ init navKey =
     , enemies = [ initEnemy, initEnemy2 ]
     , resources = Resources.init
     , keys = []
+    , key_buttons = initKeyButtons
     , time = 0
     , screen = ( 1024, 512 )
     , camera = Camera.fixedArea (32 * 16) ( 0, 0 )
@@ -316,14 +349,23 @@ update msg model =
         ( { model | keys = keys }
         , Cmd.none
         )
+    {-
+    KeyDown ->
+      if List.member Keyboard.Spacebar model.keys then
+        let
+          k = pressedKeyTexture "spacebar" model.key_buttons
+        in
+        ( { model | key_buttons = k }, Cmd.none )
+      else ( model, Cmd.none )-}
+
 
 tick :
-  Float ->
-  Array.Array ( Array.Array Char ) ->
-  List Keyboard.Key ->
-  List Enemy ->
-  Player ->
-  Player
+  Float
+  -> Array.Array ( Array.Array Char )
+  -> List Keyboard.Key
+  -> List Enemy
+  -> Player
+  -> Player
 tick dt tilemap keys enemyList player =
   let
     moveInput =
@@ -456,6 +498,77 @@ rectangularCollision rect1 rect2 =
   rect1.y <= rect2.y + rect2.height
 -}
 
+keyButtonTexture : String -> List Keyboard.Key -> String
+keyButtonTexture key_button keys =
+  let
+    assetPath = "assets/button/" ++ key_button ++ ".png"
+    pressedPath = String.replace "." "_pressed." assetPath
+  in
+  if key_button == "spacebar" then
+    if List.member (Keyboard.Spacebar) keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "q" then
+    if List.member (Keyboard.Character "Q") keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "e" then
+    if List.member (Keyboard.Character "E") keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "w" then
+    if List.member (Keyboard.Character "W") keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "a" then
+    if List.member (Keyboard.Character "A") keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "s" then
+    if List.member (Keyboard.Character "S") keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "d" then
+    if List.member (Keyboard.Character "D") keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "arrowUp" then
+    if List.member Keyboard.ArrowUp keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "arrowRight" then
+    if List.member Keyboard.ArrowRight keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "arrowDown" then
+    if List.member Keyboard.ArrowDown keys then
+      pressedPath
+    else
+      assetPath
+  else if key_button == "arrowLeft" then
+    if List.member Keyboard.ArrowLeft keys then
+      pressedPath
+    else
+      assetPath
+  else
+    ""
+
+
+onKeyDown : Msg -> Html.Attribute Msg
+onKeyDown msg =
+  let
+    _ = Debug.log "[onKeyDown] msg" msg
+  in
+  on "keydown" (D.succeed msg) --eventKeyDecoder --(D.map tagger keyCode)
 
 -- VIEW
 
@@ -497,14 +610,14 @@ viewDefenseInfo maxDef currDef =
       ]
       [ text (String.fromInt currDef ++ " / " ++ String.fromInt maxDef)]
 
-viewDefenseBar : Int -> Int -> Html Msg
-viewDefenseBar maxDef currDef =
+viewDefenseBar : Int -> Int -> Int -> Int -> Html Msg
+viewDefenseBar left top maxDef currDef =
   let
     defensePercentage =  (toFloat currDef / toFloat maxDef) * 100.0
   in
   div [ style "position" "absolute"
-      , style "left" "448px"
-      , style "top" "750px"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
       ]
       [ img [ src "assets/defense_bar.png" ] []
       , div [style "position" "absolute"
@@ -529,14 +642,14 @@ viewHealthInfo maxHp currHp =
       ]
       [ text (String.fromInt currHp ++ " / " ++ String.fromInt maxHp)]
 
-viewHealthBar : Int -> Int -> Html Msg
-viewHealthBar maxHp currHp =
+viewHealthBar : Int -> Int -> Int -> Int -> Html Msg
+viewHealthBar left top maxHp currHp =
   let
     healthPercentage =  (toFloat currHp / toFloat maxHp) * 100.0
   in
   div [ style "position" "absolute"
-      , style "left" "448px"
-      , style "top" "800px"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
       ]
       [ img [ src "assets/health_bar.png" ] []
       , div [style "position" "absolute"
@@ -561,14 +674,14 @@ viewExpInfo maxExp currExp =
       ]
       [ text (String.fromInt currExp ++ " / " ++ String.fromInt maxExp)]
 
-viewExpBar : Int -> Int -> Html Msg
-viewExpBar maxExp currExp =
+viewExpBar : Int -> Int -> Int -> Int -> Html Msg
+viewExpBar left top maxExp currExp =
   let
     expPercentage =  (toFloat currExp / toFloat maxExp) * 100.0
   in
   div [ style "position" "absolute"
-      , style "left" "448px"
-      , style "top" "850px"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
       ]
       [ img [ src "assets/exp_bar.png" ] []
       , div [style "position" "absolute"
@@ -583,11 +696,80 @@ viewExpBar maxExp currExp =
       , viewExpInfo maxExp currExp
       ]
 
-viewPlayerCoordinates : Player -> Html Msg
-viewPlayerCoordinates player =
+viewConsumable1 : Int -> Int -> List Keyboard.Key -> Html Msg
+viewConsumable1 left top keys =
+  div [ style "position" "absolute"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
+      ]
+      [ img [ src "assets/item/consumable_background.png"
+            ] []
+      , div [ style "position" "absolute"
+            , style "left" "0px"
+            , style "top" "0px"
+            ]
+            [ img [ src "assets/item/health_potion.png" ] []
+            ]
+      , div [ style "position" "absolute"
+            , style "left" "16px"
+            , style "top" "67px"
+            ]
+            [ img [ src (keyButtonTexture "q" keys) ] [] ]
+      ]
+
+viewConsumable2 : Int -> Int -> List Keyboard.Key -> Html Msg
+viewConsumable2 left top keys =
+  div [ style "position" "absolute"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
+      ]
+      [ img [ src "assets/item/consumable_background.png"
+            ] []
+      , div [ style "position" "absolute"
+            , style "left" "0px"
+            , style "top" "0px"
+            ]
+            [ img [ src "assets/item/speed_potion.png" ] []
+            ]
+      , div [ style "position" "absolute"
+            , style "left" "16px"
+            , style "top" "67px"
+            ]
+            [ img [ src (keyButtonTexture "e" keys) ] [] ]
+      ]
+
+viewPlayerInput : Int -> Int -> List Keyboard.Key -> Html Msg
+viewPlayerInput left top keys =
+  div [ style "position" "absolute"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
+      ]
+      [ div [ style "position" "absolute"
+            , style "left" "34px"
+            ] [ img [ src (keyButtonTexture "w" keys) ] [] ]
+      , div [ style "position" "absolute"
+            --, style "left" "34px"
+            , style "top" "34px"
+            ] [ img [ src (keyButtonTexture "a" keys) ] [] ]
+      , div [ style "position" "absolute"
+            , style "left" "34px"
+            , style "top" "34px"
+            ] [ img [ src (keyButtonTexture "s" keys) ] [] ]
+      , div [ style "position" "absolute"
+            , style "left" "68px"
+            , style "top" "34px"
+            ] [ img [ src (keyButtonTexture "d" keys) ] [] ]
+      , div [ style "position" "absolute"
+            , style "left" "170px"
+            , style "top" "34px"
+            ] [ img [ src (keyButtonTexture "spacebar" keys) ] [] ]
+      ]
+
+viewPlayerCoordinates : Int -> Int -> Player -> Html Msg
+viewPlayerCoordinates left top player =
   pre [ style "position" "absolute"
-      , style "left" "448px"
-      , style "top" "100px"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
       ]
       [ text "Player"
       , text ("\nx: " ++ String.fromFloat player.x)
@@ -599,7 +781,7 @@ viewPlayerCoordinates player =
       ]
 
 view : Model -> { title : String, content : Html Msg }
-view ({ time, screen } as model) =
+view model =
   { title = "Game"
   , content =
     div []
@@ -612,18 +794,21 @@ view ({ time, screen } as model) =
       , Game2d.renderWithOptions
           [ style "position" "absolute"
           , style "left" "448px"
-          , style "top" "228px"
+          , style "top" "100px" --"228px"
           , style "border" "solid 1px #FFF"
           ]
             { camera = model.camera
-            , time = time
-            , size = screen
+            , time = model.time
+            , size = model.screen
             }
               (render model)
-      , viewDefenseBar model.player.maxDefense model.player.currentDefense
-      , viewHealthBar model.player.maxHealth model.player.currentHealth
-      , viewExpBar model.player.maxExp model.player.currentExp
-      , viewPlayerCoordinates model.player
+      , viewPlayerCoordinates 100 100 model.player
+      , viewDefenseBar 448 617 model.player.maxDefense model.player.currentDefense
+      , viewHealthBar 448 665 model.player.maxHealth model.player.currentHealth
+      , viewExpBar 448 713 model.player.maxExp model.player.currentExp
+      , viewConsumable1 368 650 model.keys
+      , viewConsumable2 1488 650 model.keys
+      , viewPlayerInput 820 761 model.keys
       ]
   }
 

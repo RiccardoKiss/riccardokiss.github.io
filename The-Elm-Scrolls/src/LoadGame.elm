@@ -19,10 +19,10 @@ type alias Model =
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
-    , button_game1 = "assets/buttons/button_loadGameInstance_empty.png"
-    , button_game2 = "assets/buttons/button_loadGameInstance_empty.png"
-    , button_game3 = "assets/buttons/button_loadGameInstance_background.png"
-    , button_back = "assets/buttons/button_back.png"
+    , button_game1 = "assets/button/button_loadGameInstance_empty.png"
+    , button_game2 = "assets/button/button_loadGameInstance_empty.png"
+    , button_game3 = "assets/button/button_loadGameInstance_background.png"
+    , button_back = "assets/button/button_back.png"
     }
   , Cmd.none
   )
@@ -47,38 +47,38 @@ update msg model =
   case msg of
     HoverGame1 ->
       ( { model
-        | button_game1 = "assets/buttons/button_loadGameInstance_empty_hover.png"
+        | button_game1 = "assets/button/button_loadGameInstance_empty_hover.png"
         }
       , Cmd.none
       )
 
     HoverGame2 ->
       ( { model
-        | button_game2 = "assets/buttons/button_loadGameInstance_empty_hover.png"
+        | button_game2 = "assets/button/button_loadGameInstance_empty_hover.png"
         }
       , Cmd.none
       )
 
     HoverGame3 ->
       ( { model
-        | button_game3 = "assets/buttons/button_loadGameInstance_background_hover.png"
+        | button_game3 = "assets/button/button_loadGameInstance_background_hover.png"
         }
       , Cmd.none
       )
 
     HoverBack ->
       ( { model
-        | button_back = "assets/buttons/button_back_hover.png"
+        | button_back = "assets/button/button_back_hover.png"
         }
       , Cmd.none
       )
 
     MouseOut ->
       ( { model
-        | button_game1 = "assets/buttons/button_loadGameInstance_empty.png"
-          , button_game2 = "assets/buttons/button_loadGameInstance_empty.png"
-          , button_game3 = "assets/buttons/button_loadGameInstance_background.png"
-          , button_back = "assets/buttons/button_back.png"
+        | button_game1 = "assets/button/button_loadGameInstance_empty.png"
+          , button_game2 = "assets/button/button_loadGameInstance_empty.png"
+          , button_game3 = "assets/button/button_loadGameInstance_background.png"
+          , button_back = "assets/button/button_back.png"
         }
       , Cmd.none
       )

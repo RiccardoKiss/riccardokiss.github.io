@@ -7254,7 +7254,9 @@ var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$
 var $author$project$Enemy$Prototype = {$: 'Prototype'};
 var $author$project$Enemy$Up = {$: 'Up'};
 var $author$project$Game$initEnemy = {alive: true, attack: 1, dir: $author$project$Enemy$Up, enemyType: $author$project$Enemy$Prototype, expDrop: 2, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 57, initY: 11, speed: 3.0, vx: 0, vy: 0, width: 1, x: 57, y: 11};
-var $author$project$Game$initEnemy2 = {alive: true, attack: 1, dir: $author$project$Enemy$Up, enemyType: $author$project$Enemy$Prototype, expDrop: 2, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 55, initY: 12, speed: 5.0, vx: 0, vy: 0, width: 1, x: 55, y: 12};
+var $author$project$Enemy$Skeleton = {$: 'Skeleton'};
+var $author$project$Game$initEnemy2 = {alive: true, attack: 1, dir: $author$project$Enemy$Up, enemyType: $author$project$Enemy$Skeleton, expDrop: 2, health: 10, height: 2, initDir: $author$project$Enemy$Up, initX: 55, initY: 12, speed: 5.0, vx: 0, vy: 0, width: 1, x: 55, y: 12};
+var $author$project$Game$initKeyButtons = {a: 'assets/button/a.png', arrowDown: 'assets/button/arrowDown.png', arrowLeft: 'assets/button/arrowLeft.png', arrowRight: 'assets/button/arrowRight.png', arrowUp: 'assets/button/arrowUp.png', d: 'assets/button/d.png', e: 'assets/button/w.png', q: 'assets/button/q.png', s: 'assets/button/s.png', spacebar: 'assets/button/spacebar.png', w: 'assets/button/w.png'};
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Stone = {$: 'Stone'};
@@ -7347,7 +7349,7 @@ var $elm$core$List$concat = function (lists) {
 	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
 };
 var $author$project$Enemy$textures = _List_fromArray(
-	['assets/enemy/enemy_right.png', 'assets/enemy/enemy_left.png', 'assets/enemy/enemy_up.png', 'assets/enemy/enemy_down.png']);
+	['assets/enemy/enemy_right.png', 'assets/enemy/enemy_left.png', 'assets/enemy/enemy_up.png', 'assets/enemy/enemy_down.png', 'assets/enemy/skeleton_right.png', 'assets/enemy/skeleton_left.png', 'assets/enemy/skeleton_up.png', 'assets/enemy/skeleton_down.png']);
 var $author$project$Player$textures = _List_fromArray(
 	['assets/player/player_idle.png', 'assets/player/player_right.png', 'assets/player/player_left.png', 'assets/player/player_up.png', 'assets/player/player_down.png']);
 var $author$project$Sword$textures = _List_fromArray(
@@ -7370,6 +7372,7 @@ var $author$project$Game$init = function (navKey) {
 				_Utils_Tuple2(0, 0)),
 			enemies: _List_fromArray(
 				[$author$project$Game$initEnemy, $author$project$Game$initEnemy2]),
+			key_buttons: $author$project$Game$initKeyButtons,
 			keys: _List_Nil,
 			navKey: navKey,
 			player: $author$project$Game$initPlayer,
@@ -7385,34 +7388,34 @@ var $author$project$Game$init = function (navKey) {
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Help$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/buttons/button_back.png', navKey: navKey},
+		{button_back: 'assets/button/button_back.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$HighScores$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/buttons/button_back.png', navKey: navKey},
+		{button_back: 'assets/button/button_back.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Home$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_help: 'assets/buttons/button_help.png', button_highScore: 'assets/buttons/button_highScore.png', button_loadGame: 'assets/buttons/button_loadGame.png', button_newGame: 'assets/buttons/button_newGame.png', button_settings: 'assets/buttons/button_settings.png', navKey: navKey},
+		{button_help: 'assets/button/button_help.png', button_highScore: 'assets/button/button_highScore.png', button_loadGame: 'assets/button/button_loadGame.png', button_newGame: 'assets/button/button_newGame.png', button_settings: 'assets/button/button_settings.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$LoadGame$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/buttons/button_back.png', button_game1: 'assets/buttons/button_loadGameInstance_empty.png', button_game2: 'assets/buttons/button_loadGameInstance_empty.png', button_game3: 'assets/buttons/button_loadGameInstance_background.png', navKey: navKey},
+		{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_empty.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$NewGame$Medium = {$: 'Medium'};
 var $author$project$NewGame$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/buttons/button_back.png', button_start: 'assets/buttons/button_start.png', difficulty: $author$project$NewGame$Medium, navKey: navKey},
+		{button_back: 'assets/button/button_back.png', button_start: 'assets/button/button_start.png', difficulty: $author$project$NewGame$Medium, navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Settings$Off = {$: 'Off'};
 var $author$project$Settings$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/buttons/button_back.png', navKey: navKey, sound: $author$project$Settings$Off},
+		{button_back: 'assets/button/button_back.png', navKey: navKey, sound: $author$project$Settings$Off},
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Debug$log = _Debug_log;
@@ -9976,13 +9979,13 @@ var $author$project$Help$update = F2(
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{button_back: 'assets/buttons/button_back_hover.png'}),
+					{button_back: 'assets/button/button_back_hover.png'}),
 				$elm$core$Platform$Cmd$none);
 		} else {
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{button_back: 'assets/buttons/button_back.png'}),
+					{button_back: 'assets/button/button_back.png'}),
 				$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -9992,13 +9995,13 @@ var $author$project$HighScores$update = F2(
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{button_back: 'assets/buttons/button_back_hover.png'}),
+					{button_back: 'assets/button/button_back_hover.png'}),
 				$elm$core$Platform$Cmd$none);
 		} else {
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{button_back: 'assets/buttons/button_back.png'}),
+					{button_back: 'assets/button/button_back.png'}),
 				$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -10009,37 +10012,37 @@ var $author$project$Home$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_newGame: 'assets/buttons/button_newGame_hover.png'}),
+						{button_newGame: 'assets/button/button_newGame_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverLoadGame':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_loadGame: 'assets/buttons/button_loadGame_hover.png'}),
+						{button_loadGame: 'assets/button/button_loadGame_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverHighScore':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_highScore: 'assets/buttons/button_highScore_hover.png'}),
+						{button_highScore: 'assets/button/button_highScore_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverSettings':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_settings: 'assets/buttons/button_settings_hover.png'}),
+						{button_settings: 'assets/button/button_settings_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverHelp':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_help: 'assets/buttons/button_help_hover.png'}),
+						{button_help: 'assets/button/button_help_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			default:
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_help: 'assets/buttons/button_help.png', button_highScore: 'assets/buttons/button_highScore.png', button_loadGame: 'assets/buttons/button_loadGame.png', button_newGame: 'assets/buttons/button_newGame.png', button_settings: 'assets/buttons/button_settings.png'}),
+						{button_help: 'assets/button/button_help.png', button_highScore: 'assets/button/button_highScore.png', button_loadGame: 'assets/button/button_loadGame.png', button_newGame: 'assets/button/button_newGame.png', button_settings: 'assets/button/button_settings.png'}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -10050,31 +10053,31 @@ var $author$project$LoadGame$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_game1: 'assets/buttons/button_loadGameInstance_empty_hover.png'}),
+						{button_game1: 'assets/button/button_loadGameInstance_empty_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverGame2':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_game2: 'assets/buttons/button_loadGameInstance_empty_hover.png'}),
+						{button_game2: 'assets/button/button_loadGameInstance_empty_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverGame3':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_game3: 'assets/buttons/button_loadGameInstance_background_hover.png'}),
+						{button_game3: 'assets/button/button_loadGameInstance_background_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverBack':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/buttons/button_back_hover.png'}),
+						{button_back: 'assets/button/button_back_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			default:
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/buttons/button_back.png', button_game1: 'assets/buttons/button_loadGameInstance_empty.png', button_game2: 'assets/buttons/button_loadGameInstance_empty.png', button_game3: 'assets/buttons/button_loadGameInstance_background.png'}),
+						{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_empty.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png'}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -10085,19 +10088,19 @@ var $author$project$NewGame$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/buttons/button_back_hover.png'}),
+						{button_back: 'assets/button/button_back_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverStart':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_start: 'assets/buttons/button_start_hover.png'}),
+						{button_start: 'assets/button/button_start_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'MouseOut':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/buttons/button_back.png', button_start: 'assets/buttons/button_start.png'}),
+						{button_back: 'assets/button/button_back.png', button_start: 'assets/button/button_start.png'}),
 					$elm$core$Platform$Cmd$none);
 			default:
 				var choice = msg.a;
@@ -10115,13 +10118,13 @@ var $author$project$Settings$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/buttons/button_back_hover.png'}),
+						{button_back: 'assets/button/button_back_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'MouseOut':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/buttons/button_back.png'}),
+						{button_back: 'assets/button/button_back.png'}),
 					$elm$core$Platform$Cmd$none);
 			default:
 				var choice = msg.a;
@@ -10968,6 +10971,165 @@ var $elm$html$Html$Attributes$src = function (url) {
 };
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$core$String$replace = F3(
+	function (before, after, string) {
+		return A2(
+			$elm$core$String$join,
+			after,
+			A2($elm$core$String$split, before, string));
+	});
+var $author$project$Game$keyButtonTexture = F2(
+	function (key_button, keys) {
+		var assetPath = 'assets/button/' + (key_button + '.png');
+		var pressedPath = A3($elm$core$String$replace, '.', '_pressed.', assetPath);
+		return (key_button === 'spacebar') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? pressedPath : assetPath) : ((key_button === 'q') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('Q'),
+			keys) ? pressedPath : assetPath) : ((key_button === 'e') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('E'),
+			keys) ? pressedPath : assetPath) : ((key_button === 'w') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('W'),
+			keys) ? pressedPath : assetPath) : ((key_button === 'a') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('A'),
+			keys) ? pressedPath : assetPath) : ((key_button === 's') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('S'),
+			keys) ? pressedPath : assetPath) : ((key_button === 'd') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('D'),
+			keys) ? pressedPath : assetPath) : ((key_button === 'arrowUp') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowUp, keys) ? pressedPath : assetPath) : ((key_button === 'arrowRight') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowRight, keys) ? pressedPath : assetPath) : ((key_button === 'arrowDown') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowDown, keys) ? pressedPath : assetPath) : ((key_button === 'arrowLeft') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowLeft, keys) ? pressedPath : assetPath) : ''))))))))));
+	});
+var $author$project$Game$viewConsumable1 = F3(
+	function (left, top, keys) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/item/consumable_background.png')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '0px'),
+							A2($elm$html$Html$Attributes$style, 'top', '0px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/item/health_potion.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '16px'),
+							A2($elm$html$Html$Attributes$style, 'top', '67px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$keyButtonTexture, 'q', keys))
+								]),
+							_List_Nil)
+						]))
+				]));
+	});
+var $author$project$Game$viewConsumable2 = F3(
+	function (left, top, keys) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/item/consumable_background.png')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '0px'),
+							A2($elm$html$Html$Attributes$style, 'top', '0px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/item/speed_potion.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '16px'),
+							A2($elm$html$Html$Attributes$style, 'top', '67px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$keyButtonTexture, 'e', keys))
+								]),
+							_List_Nil)
+						]))
+				]));
+	});
 var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
@@ -10989,16 +11151,22 @@ var $author$project$Game$viewDefenseInfo = F2(
 					$elm$core$String$fromInt(currDef) + (' / ' + $elm$core$String$fromInt(maxDef)))
 				]));
 	});
-var $author$project$Game$viewDefenseBar = F2(
-	function (maxDef, currDef) {
+var $author$project$Game$viewDefenseBar = F4(
+	function (left, top, maxDef, currDef) {
 		var defensePercentage = (currDef / maxDef) * 100.0;
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
 					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-					A2($elm$html$Html$Attributes$style, 'left', '448px'),
-					A2($elm$html$Html$Attributes$style, 'top', '750px')
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
 				]),
 			_List_fromArray(
 				[
@@ -11053,16 +11221,22 @@ var $author$project$Game$viewExpInfo = F2(
 					$elm$core$String$fromInt(currExp) + (' / ' + $elm$core$String$fromInt(maxExp)))
 				]));
 	});
-var $author$project$Game$viewExpBar = F2(
-	function (maxExp, currExp) {
+var $author$project$Game$viewExpBar = F4(
+	function (left, top, maxExp, currExp) {
 		var expPercentage = (currExp / maxExp) * 100.0;
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
 					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-					A2($elm$html$Html$Attributes$style, 'left', '448px'),
-					A2($elm$html$Html$Attributes$style, 'top', '850px')
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
 				]),
 			_List_fromArray(
 				[
@@ -11117,16 +11291,22 @@ var $author$project$Game$viewHealthInfo = F2(
 					$elm$core$String$fromInt(currHp) + (' / ' + $elm$core$String$fromInt(maxHp)))
 				]));
 	});
-var $author$project$Game$viewHealthBar = F2(
-	function (maxHp, currHp) {
+var $author$project$Game$viewHealthBar = F4(
+	function (left, top, maxHp, currHp) {
 		var healthPercentage = (currHp / maxHp) * 100.0;
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
 					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-					A2($elm$html$Html$Attributes$style, 'left', '448px'),
-					A2($elm$html$Html$Attributes$style, 'top', '800px')
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
 				]),
 			_List_fromArray(
 				[
@@ -11164,31 +11344,149 @@ var $author$project$Game$viewHealthBar = F2(
 				]));
 	});
 var $elm$html$Html$pre = _VirtualDom_node('pre');
-var $author$project$Game$viewPlayerCoordinates = function (player) {
-	return A2(
-		$elm$html$Html$pre,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-				A2($elm$html$Html$Attributes$style, 'left', '448px'),
-				A2($elm$html$Html$Attributes$style, 'top', '100px')
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text('Player'),
-				$elm$html$Html$text(
-				'\nx: ' + $elm$core$String$fromFloat(player.x)),
-				$elm$html$Html$text(
-				'\ny: ' + $elm$core$String$fromFloat(player.y)),
-				$elm$html$Html$text(
-				'\nvx: ' + $elm$core$String$fromFloat(player.vx)),
-				$elm$html$Html$text(
-				'\nvy: ' + $elm$core$String$fromFloat(player.vy))
-			]));
-};
+var $author$project$Game$viewPlayerCoordinates = F3(
+	function (left, top, player) {
+		return A2(
+			$elm$html$Html$pre,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Player'),
+					$elm$html$Html$text(
+					'\nx: ' + $elm$core$String$fromFloat(player.x)),
+					$elm$html$Html$text(
+					'\ny: ' + $elm$core$String$fromFloat(player.y)),
+					$elm$html$Html$text(
+					'\nvx: ' + $elm$core$String$fromFloat(player.vx)),
+					$elm$html$Html$text(
+					'\nvy: ' + $elm$core$String$fromFloat(player.vy))
+				]));
+	});
+var $author$project$Game$viewPlayerInput = F3(
+	function (left, top, keys) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '34px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$keyButtonTexture, 'w', keys))
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'top', '34px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$keyButtonTexture, 'a', keys))
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '34px'),
+							A2($elm$html$Html$Attributes$style, 'top', '34px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$keyButtonTexture, 's', keys))
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '68px'),
+							A2($elm$html$Html$Attributes$style, 'top', '34px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$keyButtonTexture, 'd', keys))
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '170px'),
+							A2($elm$html$Html$Attributes$style, 'top', '34px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$keyButtonTexture, 'spacebar', keys))
+								]),
+							_List_Nil)
+						]))
+				]));
+	});
 var $author$project$Game$view = function (model) {
-	var time = model.time;
-	var screen = model.screen;
 	return {
 		content: A2(
 			$elm$html$Html$div,
@@ -11212,15 +11510,18 @@ var $author$project$Game$view = function (model) {
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 							A2($elm$html$Html$Attributes$style, 'left', '448px'),
-							A2($elm$html$Html$Attributes$style, 'top', '228px'),
+							A2($elm$html$Html$Attributes$style, 'top', '100px'),
 							A2($elm$html$Html$Attributes$style, 'border', 'solid 1px #FFF')
 						]),
-					{camera: model.camera, size: screen, time: time},
+					{camera: model.camera, size: model.screen, time: model.time},
 					$author$project$Game$render(model)),
-					A2($author$project$Game$viewDefenseBar, model.player.maxDefense, model.player.currentDefense),
-					A2($author$project$Game$viewHealthBar, model.player.maxHealth, model.player.currentHealth),
-					A2($author$project$Game$viewExpBar, model.player.maxExp, model.player.currentExp),
-					$author$project$Game$viewPlayerCoordinates(model.player)
+					A3($author$project$Game$viewPlayerCoordinates, 100, 100, model.player),
+					A4($author$project$Game$viewDefenseBar, 448, 617, model.player.maxDefense, model.player.currentDefense),
+					A4($author$project$Game$viewHealthBar, 448, 665, model.player.maxHealth, model.player.currentHealth),
+					A4($author$project$Game$viewExpBar, 448, 713, model.player.maxExp, model.player.currentExp),
+					A3($author$project$Game$viewConsumable1, 368, 650, model.keys),
+					A3($author$project$Game$viewConsumable2, 1488, 650, model.keys),
+					A3($author$project$Game$viewPlayerInput, 820, 761, model.keys)
 				])),
 		title: 'Game'
 	};

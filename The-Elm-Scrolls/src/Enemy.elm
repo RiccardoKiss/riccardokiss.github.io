@@ -45,6 +45,11 @@ textures =
   , "assets/enemy/enemy_up.png"
   , "assets/enemy/enemy_down.png"
   --, "assets/enemy/enemy_idle.png"
+  , "assets/enemy/skeleton_right.png"
+  , "assets/enemy/skeleton_left.png"
+  , "assets/enemy/skeleton_up.png"
+  , "assets/enemy/skeleton_down.png"
+  --, "assets/enemy/skeleton_idle.png"
   ]
 
 isAlive : Enemy -> Bool

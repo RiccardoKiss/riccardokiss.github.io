@@ -16,7 +16,7 @@ type alias Model =
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
-    , button_back = "assets/buttons/button_back.png"
+    , button_back = "assets/button/button_back.png"
     }
   , Cmd.none
   )
@@ -38,14 +38,14 @@ update msg model =
   case msg of
     HoverBack ->
       ( { model
-        | button_back = "assets/buttons/button_back_hover.png"
+        | button_back = "assets/button/button_back_hover.png"
         }
       , Cmd.none
       )
 
     MouseOut ->
       ( { model
-        | button_back = "assets/buttons/button_back.png"
+        | button_back = "assets/button/button_back.png"
         }
       , Cmd.none
       )

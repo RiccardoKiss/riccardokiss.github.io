@@ -3,6 +3,8 @@ module Enemy exposing (..)
 import Game.TwoD.Render as Render exposing (..)
 import Game.Resources as Resources exposing (..)
 
+import Tilemap exposing (..)
+import Level exposing (..)
 
 type alias Enemy =
   { initX : Float
@@ -16,12 +18,14 @@ type alias Enemy =
   , width : Float
   , height : Float
   , enemyType : EnemyType
+  , distanceLoop : Float
   , speed : Float
   , attack : Int
   , health : Int
   --, defense : Int
   , expDrop : Int
-  --, detect_player_radius : Float
+  , detectPlayerRadius : Float
+  , hostile : Bool
   , alive : Bool
   }
 
@@ -75,11 +79,60 @@ enemyTypeToString enemy =
     Prototype ->
       "enemy"
 
-enemyMovement : Float -> Enemy -> Enemy
-enemyMovement distance enemy  =
+euclideanDistance : Float -> Float -> Float -> Float -> Float
+euclideanDistance x1 y1 x2 y2 =
+  sqrt ((x2 - x1)^2 + (y2 - y1)^2)
+
+enemyMovement : Float -> Float -> Enemy -> Enemy
+enemyMovement playerX playerY enemy =
+  let
+    playerInRange =
+      if euclideanDistance playerX playerY enemy.x enemy.y <= enemy.detectPlayerRadius then
+        True
+      else
+        False
+  in
+  if playerInRange || enemy.hostile then
+    chasePlayer playerX playerY enemy
+  else
+    enemyLoop enemy
+
+chasePlayer : Float -> Float -> Enemy -> Enemy
+chasePlayer playerX playerY enemy =
+  let
+    xDiff = playerX - enemy.x
+    yDiff = playerY - enemy.y
+    coefficientVx = xDiff / abs xDiff
+    coefficientVy = yDiff / abs yDiff
+  in
+  { enemy
+    | vx = enemy.speed * coefficientVx
+    , vy = enemy.speed * coefficientVy
+    , hostile = True
+    {-, dir =
+      if abs xDiff < abs yDiff then
+        if xDiff <= 0 then
+          Left
+        else
+          Right
+      else
+        if yDiff <= 0 then
+          Down
+        else
+          Up-}
+      {-else if abs yDiff < abs xDiff then
+        if yDiff <= 0 then
+          Down
+        else
+          Up
+      else enemy.dir-}
+  }
+
+enemyLoop : Enemy -> Enemy
+enemyLoop enemy  =
   case enemy.initDir of
     Left ->
-      if (toFloat (floor enemy.x)) == (enemy.initX - distance) then
+      if (toFloat (floor enemy.x)) == (enemy.initX - enemy.distanceLoop) then
         { enemy
           | dir = Right
           , vx = enemy.speed
@@ -92,7 +145,7 @@ enemyMovement distance enemy  =
       else enemy
 
     Right ->
-      if (toFloat (floor enemy.x)) == (enemy.initX + distance) then
+      if (toFloat (floor enemy.x)) == (enemy.initX + enemy.distanceLoop) then
         { enemy
           | dir = Left
           , vx = -1 * enemy.speed
@@ -105,7 +158,7 @@ enemyMovement distance enemy  =
       else enemy
 
     Up ->
-      if (toFloat (floor enemy.y)) == (enemy.initY + distance) then
+      if (toFloat (floor enemy.y)) == (enemy.initY + enemy.distanceLoop) then
         { enemy
           | dir = Down
           , vy = -1 * enemy.speed
@@ -118,7 +171,7 @@ enemyMovement distance enemy  =
       else enemy
 
     Down ->
-      if (toFloat (floor enemy.y)) == (enemy.initY - distance) then
+      if (toFloat (floor enemy.y)) == (enemy.initY - enemy.distanceLoop) then
         { enemy
           | dir = Up
           , vy = enemy.speed
@@ -132,6 +185,9 @@ enemyMovement distance enemy  =
 
 renderEnemy : Resources -> Enemy -> Renderable
 renderEnemy resources enemy =
+  let
+      _ = Debug.log "[renderEnemy] enemy.dir" enemy.dir
+  in
   Render.animatedSpriteWithOptions
     { position = ( enemy.x, enemy.y, -0.1 )
     , size = ( 1, 2 )

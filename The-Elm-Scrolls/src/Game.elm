@@ -257,10 +257,24 @@ enemyPhysics dt lvl player enemy =
   case tileType of
     Just tile ->
       if tile == 'T' then
-        { enemy
-          | x = newX
-          , y = newY
-          , dir =
+        if collisionPlayerEnemy player enemy then
+          case enemy.dir of
+            Enemy.Left ->
+              { enemy | x = enemy.x + 1 }
+
+            Enemy.Right ->
+              { enemy | x = enemy.x - 1 }
+
+            Enemy.Up ->
+              { enemy | y = enemy.y - 1 }
+
+            Enemy.Down ->
+              { enemy | y = enemy.y + 1 }
+        else
+          { enemy
+            | x = newX
+            , y = newY
+            , dir =
               if xDiff < 0.10 then -- newX == enemy.x
                 if newY > enemy.y then
                   Enemy.Up
@@ -270,7 +284,7 @@ enemyPhysics dt lvl player enemy =
                 Enemy.Left
               else -- if newX > enemy.x then
                 Enemy.Right
-        }
+          }
       else
         enemy
 
@@ -280,7 +294,7 @@ enemyPhysics dt lvl player enemy =
 playerAttacked : List Enemy -> Player -> Player
 playerAttacked enemyList player =
   let
-    dmgTaken = List.filter (dmgDoneToPlayer player) enemyList
+    dmgTaken = List.filter (collisionPlayerEnemy player) enemyList
                |> List.map Enemy.getAttack
                |> List.sum
     newHp = player.currentHealth - dmgTaken
@@ -293,13 +307,31 @@ enemyAttacked player enemy =
     dmgTaken = dmgDoneToEnemy player.sword enemy
     newHp = enemy.health - dmgTaken
   in
-  { enemy
-    | health = if newHp <= 0 then 0 else newHp
-    , alive = if newHp <= 0 then False else True
-  }
+  if dmgTaken > 0 then
+    { enemy
+      | health = if newHp <= 0 then 0 else newHp
+      , alive = if newHp <= 0 then False else True
+      , x =
+        if enemy.dir == Enemy.Left then
+          enemy.x + 2
+        else if enemy.dir == Enemy.Right then
+          enemy.x - 2
+        else
+          enemy.x
+      , y =
+        if enemy.dir == Enemy.Down then
+          enemy.y + 2
+        else if enemy.dir == Enemy.Up then
+          enemy.y - 2
+        else
+          enemy.y
+    }
+  else
+    enemy
 
-dmgDoneToPlayer : Player -> Enemy -> Bool
-dmgDoneToPlayer player enemy =
+
+collisionPlayerEnemy : Player -> Enemy -> Bool
+collisionPlayerEnemy player enemy =
   if player.x + player.width >= enemy.x &&
      player.x <= enemy.x + enemy.width &&
      player.y + player.height >= enemy.y &&
@@ -307,14 +339,20 @@ dmgDoneToPlayer player enemy =
   then True --enemy.attack
   else False --0
 
+collisionSwordEnemy : Sword -> Enemy -> Bool
+collisionSwordEnemy sword enemy =
+  if sword.x + sword.width >= enemy.x &&
+     sword.x <= enemy.x + enemy.width &&
+     sword.y + sword.height >= enemy.y &&
+     sword.y <= enemy.y + enemy.height
+  then True
+  else False
+
 dmgDoneToEnemy : Sword -> Enemy -> Int
 dmgDoneToEnemy sword enemy =
   if sword.action == Attack then
-    if sword.x + sword.width >= enemy.x &&
-       sword.x <= enemy.x + enemy.width &&
-       sword.y + sword.height >= enemy.y &&
-       sword.y <= enemy.y + enemy.height
-    then sword.attack
+    if collisionSwordEnemy sword enemy then
+      sword.attack
     else 0
   else 0
 

@@ -8837,22 +8837,31 @@ var $author$project$Main$subscriptions = function (model) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $author$project$Enemy$Down = {$: 'Down'};
+var $author$project$Enemy$Left = {$: 'Left'};
+var $author$project$Enemy$Up = {$: 'Up'};
 var $author$project$Sword$Attack = {$: 'Attack'};
 var $elm$core$Basics$ge = _Utils_ge;
+var $author$project$Game$collisionSwordEnemy = F2(
+	function (sword, enemy) {
+		return ((_Utils_cmp(sword.x + sword.width, enemy.x) > -1) && ((_Utils_cmp(sword.x, enemy.x + enemy.width) < 1) && ((_Utils_cmp(sword.y + sword.height, enemy.y) > -1) && (_Utils_cmp(sword.y, enemy.y + enemy.height) < 1)))) ? true : false;
+	});
 var $author$project$Game$dmgDoneToEnemy = F2(
 	function (sword, enemy) {
-		return _Utils_eq(sword.action, $author$project$Sword$Attack) ? (((_Utils_cmp(sword.x + sword.width, enemy.x) > -1) && ((_Utils_cmp(sword.x, enemy.x + enemy.width) < 1) && ((_Utils_cmp(sword.y + sword.height, enemy.y) > -1) && (_Utils_cmp(sword.y, enemy.y + enemy.height) < 1)))) ? sword.attack : 0) : 0;
+		return _Utils_eq(sword.action, $author$project$Sword$Attack) ? (A2($author$project$Game$collisionSwordEnemy, sword, enemy) ? sword.attack : 0) : 0;
 	});
 var $author$project$Game$enemyAttacked = F2(
 	function (player, enemy) {
 		var dmgTaken = A2($author$project$Game$dmgDoneToEnemy, player.sword, enemy);
 		var newHp = enemy.health - dmgTaken;
-		return _Utils_update(
+		return (dmgTaken > 0) ? _Utils_update(
 			enemy,
 			{
 				alive: (newHp <= 0) ? false : true,
-				health: (newHp <= 0) ? 0 : newHp
-			});
+				health: (newHp <= 0) ? 0 : newHp,
+				x: _Utils_eq(enemy.dir, $author$project$Enemy$Left) ? (enemy.x + 2) : (_Utils_eq(enemy.dir, $author$project$Enemy$Right) ? (enemy.x - 2) : enemy.x),
+				y: _Utils_eq(enemy.dir, $author$project$Enemy$Down) ? (enemy.y + 2) : (_Utils_eq(enemy.dir, $author$project$Enemy$Up) ? (enemy.y - 2) : enemy.y)
+			}) : enemy;
 	});
 var $elm$core$Basics$negate = function (n) {
 	return -n;
@@ -8870,9 +8879,6 @@ var $author$project$Enemy$chasePlayer = F3(
 			enemy,
 			{hostile: true, vx: enemy.speed * coefficientVx, vy: enemy.speed * coefficientVy});
 	});
-var $author$project$Enemy$Down = {$: 'Down'};
-var $author$project$Enemy$Left = {$: 'Left'};
-var $author$project$Enemy$Up = {$: 'Up'};
 var $author$project$Enemy$enemyLoop = function (enemy) {
 	var _v0 = enemy.initDir;
 	switch (_v0.$) {
@@ -8931,6 +8937,10 @@ var $author$project$Enemy$enemyMovement = F3(
 			A4($author$project$Enemy$euclideanDistance, playerX, playerY, enemy.x, enemy.y),
 			enemy.detectPlayerRadius) < 1) ? true : false;
 		return (playerInRange || enemy.hostile) ? A3($author$project$Enemy$chasePlayer, playerX, playerY, enemy) : $author$project$Enemy$enemyLoop(enemy);
+	});
+var $author$project$Game$collisionPlayerEnemy = F2(
+	function (player, enemy) {
+		return ((_Utils_cmp(player.x + player.width, enemy.x) > -1) && ((_Utils_cmp(player.x, enemy.x + enemy.width) < 1) && ((_Utils_cmp(player.y + player.height, enemy.y) > -1) && (_Utils_cmp(player.y, enemy.y + enemy.height) < 1)))) ? true : false;
 	});
 var $elm$core$Maybe$andThen = F2(
 	function (callback, maybeValue) {
@@ -9308,18 +9318,43 @@ var $author$project$Game$enemyPhysics = F4(
 		var newX = enemy.x + (dt * enemy.vx);
 		var tileType = _Utils_eq(enemy.dir, $author$project$Enemy$Left) ? A3($author$project$Tilemap$getTileTypeFromTileMap, lvl, newX - 1, newY) : (_Utils_eq(enemy.dir, $author$project$Enemy$Up) ? A3($author$project$Tilemap$getTileTypeFromTileMap, lvl, newX, newY + 1) : A3($author$project$Tilemap$getTileTypeFromTileMap, lvl, newX, newY));
 		var xDiff = $elm$core$Basics$abs(player.x - newX);
-		var _v0 = A2($elm$core$Debug$log, '[XDiff]', xDiff);
 		if (tileType.$ === 'Just') {
 			var tile = tileType.a;
-			return _Utils_eq(
+			if (_Utils_eq(
 				tile,
-				_Utils_chr('T')) ? _Utils_update(
-				enemy,
-				{
-					dir: (xDiff < 0.10) ? ((_Utils_cmp(newY, enemy.y) > 0) ? $author$project$Enemy$Up : $author$project$Enemy$Down) : ((_Utils_cmp(newX, enemy.x) < 0) ? $author$project$Enemy$Left : $author$project$Enemy$Right),
-					x: newX,
-					y: newY
-				}) : enemy;
+				_Utils_chr('T'))) {
+				if (A2($author$project$Game$collisionPlayerEnemy, player, enemy)) {
+					var _v1 = enemy.dir;
+					switch (_v1.$) {
+						case 'Left':
+							return _Utils_update(
+								enemy,
+								{x: enemy.x + 1});
+						case 'Right':
+							return _Utils_update(
+								enemy,
+								{x: enemy.x - 1});
+						case 'Up':
+							return _Utils_update(
+								enemy,
+								{y: enemy.y - 1});
+						default:
+							return _Utils_update(
+								enemy,
+								{y: enemy.y + 1});
+					}
+				} else {
+					return _Utils_update(
+						enemy,
+						{
+							dir: (xDiff < 0.10) ? ((_Utils_cmp(newY, enemy.y) > 0) ? $author$project$Enemy$Up : $author$project$Enemy$Down) : ((_Utils_cmp(newX, enemy.x) < 0) ? $author$project$Enemy$Left : $author$project$Enemy$Right),
+							x: newX,
+							y: newY
+						});
+				}
+			} else {
+				return enemy;
+			}
 		} else {
 			return enemy;
 		}
@@ -9346,10 +9381,6 @@ var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
 				camera,
 				{position: pos}));
 	});
-var $author$project$Game$dmgDoneToPlayer = F2(
-	function (player, enemy) {
-		return ((_Utils_cmp(player.x + player.width, enemy.x) > -1) && ((_Utils_cmp(player.x, enemy.x + enemy.width) < 1) && ((_Utils_cmp(player.y + player.height, enemy.y) > -1) && (_Utils_cmp(player.y, enemy.y + enemy.height) < 1)))) ? true : false;
-	});
 var $author$project$Enemy$getAttack = function (enemy) {
 	return enemy.attack;
 };
@@ -9364,7 +9395,7 @@ var $author$project$Game$playerAttacked = F2(
 				$author$project$Enemy$getAttack,
 				A2(
 					$elm$core$List$filter,
-					$author$project$Game$dmgDoneToPlayer(player),
+					$author$project$Game$collisionPlayerEnemy(player),
 					enemyList)));
 		var newHp = player.currentHealth - dmgTaken;
 		return _Utils_update(

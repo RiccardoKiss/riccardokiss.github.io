@@ -9302,11 +9302,13 @@ var $author$project$Tilemap$getTileTypeFromTileMap = F3(
 				127 - $elm$core$Basics$floor(y),
 				$author$project$Tilemap$getTileMap(lvl)));
 	});
-var $author$project$Game$enemyPhysics = F3(
-	function (dt, lvl, enemy) {
+var $author$project$Game$enemyPhysics = F4(
+	function (dt, lvl, player, enemy) {
 		var newY = enemy.y + (dt * enemy.vy);
 		var newX = enemy.x + (dt * enemy.vx);
 		var tileType = _Utils_eq(enemy.dir, $author$project$Enemy$Left) ? A3($author$project$Tilemap$getTileTypeFromTileMap, lvl, newX - 1, newY) : (_Utils_eq(enemy.dir, $author$project$Enemy$Up) ? A3($author$project$Tilemap$getTileTypeFromTileMap, lvl, newX, newY + 1) : A3($author$project$Tilemap$getTileTypeFromTileMap, lvl, newX, newY));
+		var xDiff = $elm$core$Basics$abs(player.x - newX);
+		var _v0 = A2($elm$core$Debug$log, '[XDiff]', xDiff);
 		if (tileType.$ === 'Just') {
 			var tile = tileType.a;
 			return _Utils_eq(
@@ -9314,7 +9316,7 @@ var $author$project$Game$enemyPhysics = F3(
 				_Utils_chr('T')) ? _Utils_update(
 				enemy,
 				{
-					dir: (_Utils_cmp(newX, enemy.x) < 0) ? $author$project$Enemy$Left : ((_Utils_cmp(newX, enemy.x) > 0) ? $author$project$Enemy$Right : ((_Utils_cmp(newY, enemy.y) > 0) ? $author$project$Enemy$Up : $author$project$Enemy$Down)),
+					dir: (xDiff < 0.10) ? ((_Utils_cmp(newY, enemy.y) > 0) ? $author$project$Enemy$Up : $author$project$Enemy$Down) : ((_Utils_cmp(newX, enemy.x) < 0) ? $author$project$Enemy$Left : $author$project$Enemy$Right),
 					x: newX,
 					y: newY
 				}) : enemy;
@@ -9971,7 +9973,7 @@ var $author$project$Game$update = F2(
 									$author$project$Game$enemyAttacked(model.player),
 									A2(
 										$elm$core$List$map,
-										A2($author$project$Game$enemyPhysics, dt, model.level),
+										A3($author$project$Game$enemyPhysics, dt, model.level, model.player),
 										A2(
 											$elm$core$List$map,
 											A2($author$project$Enemy$enemyMovement, model.player.x, model.player.y),
@@ -11417,6 +11419,24 @@ var $author$project$Game$viewPlayerCoordinates = F4(
 						if (enemy.$ === 'Just') {
 							var en = enemy.a;
 							return $elm$core$String$fromFloat(en.y);
+						} else {
+							return '';
+						}
+					}()),
+					$elm$html$Html$text(
+					'\neVX: ' + function () {
+						if (enemy.$ === 'Just') {
+							var en = enemy.a;
+							return $elm$core$String$fromFloat(en.vx);
+						} else {
+							return '';
+						}
+					}()),
+					$elm$html$Html$text(
+					'\neVY: ' + function () {
+						if (enemy.$ === 'Just') {
+							var en = enemy.a;
+							return $elm$core$String$fromFloat(en.vy);
 						} else {
 							return '';
 						}

@@ -161,7 +161,7 @@ update msg model =
       ( { model
           | player = tick dt model.level model.keys model.enemies model.player
           , enemies = List.map (Enemy.enemyMovement model.player.x model.player.y) model.enemies
-                      |> List.map (enemyPhysics dt model.level)
+                      |> List.map (enemyPhysics dt model.level model.player)
                       |> List.map (enemyAttacked model.player)
                       |> List.filter isAlive
           , time = dt + model.time
@@ -239,10 +239,12 @@ playerPhysics dt lvl player =
           player.y
   }
 
-enemyPhysics : Float -> Level.Level -> Enemy -> Enemy
-enemyPhysics dt lvl enemy =
+enemyPhysics : Float -> Level.Level -> Player -> Enemy -> Enemy
+enemyPhysics dt lvl player enemy =
   let
     newX = enemy.x + dt * enemy.vx
+    xDiff = abs (player.x - newX)
+    --_ = Debug.log "[XDiff]" xDiff
     newY = enemy.y + dt * enemy.vy
     tileType =
       if enemy.dir == Enemy.Left then
@@ -259,40 +261,21 @@ enemyPhysics dt lvl enemy =
           | x = newX
           , y = newY
           , dir =
-              if newX < enemy.x  then
-                Enemy.Left
-              else if newX > enemy.x then
-                Enemy.Right
-              else -- newX == enemy.x
+              if xDiff < 0.10 then -- newX == enemy.x
                 if newY > enemy.y then
                   Enemy.Up
                 else -- newY < enemy.y
                   Enemy.Down
+              else if newX < enemy.x  then
+                Enemy.Left
+              else -- if newX > enemy.x then
+                Enemy.Right
         }
       else
         enemy
 
     Nothing ->
       enemy
-  {-
-  { enemy
-    | x =
-        case tileType of
-          Just tile ->
-            if tile == 'T' then
-              newX
-            else enemy.x
-          Nothing ->
-            enemy.x
-    , y =
-      case tileType of
-        Just tile ->
-          if tile == 'T' then
-            newY
-          else enemy.y
-        Nothing ->
-          enemy.y
-  }-}
 
 playerAttacked : List Enemy -> Player -> Player
 playerAttacked enemyList player =
@@ -617,6 +600,20 @@ viewPlayerCoordinates left top player enemy =
       , text ("\neY: " ++ case enemy of
           Just en ->
             String.fromFloat en.y
+
+          Nothing ->
+            ""
+            )
+      , text ("\neVX: " ++ case enemy of
+          Just en ->
+            String.fromFloat en.vx
+
+          Nothing ->
+            ""
+            )
+      , text ("\neVY: " ++ case enemy of
+          Just en ->
+            String.fromFloat en.vy
 
           Nothing ->
             ""

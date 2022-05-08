@@ -17,11 +17,11 @@ type alias Player =
   , height : Float
   , dir : Direction
   , sword : Sword
-  , level : Int
   , maxDefense : Int
   , currentDefense : Int
   , maxHealth : Int
   , currentHealth : Int
+  , playerLevel : Int
   , maxExp : Int
   , currentExp : Int
   }

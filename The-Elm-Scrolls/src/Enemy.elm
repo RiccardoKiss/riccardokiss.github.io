@@ -3,8 +3,6 @@ module Enemy exposing (..)
 import Game.TwoD.Render as Render exposing (..)
 import Game.Resources as Resources exposing (..)
 
-import Tilemap exposing (..)
-import Level exposing (..)
 
 type alias Enemy =
   { initX : Float
@@ -56,13 +54,113 @@ textures =
   --, "assets/enemy/skeleton_idle.png"
   ]
 
+prototype : Float -> Float -> Direction -> Enemy
+prototype initX initY initDir =
+  { initX = initX
+  , initY = initY
+  , initDir = initDir
+  , x = initX
+  , y = initY
+  , dir = initDir
+  , vx = 0
+  , vy = 0
+  , width = 1
+  , height = 2
+  , hostile = False
+  , alive = True
+  , enemyType = Prototype
+  , distanceLoop = 5.0
+  , speed = 1.0
+  , attack = 1
+  , health = 10
+  , expDrop = 1
+  , detectPlayerRadius = 2
+  }
+
+bandit : Float -> Float -> Direction -> Enemy
+bandit initX initY initDir =
+  { initX = initX
+  , initY = initY
+  , initDir = initDir
+  , x = initX
+  , y = initY
+  , dir = initDir
+  , vx = 0
+  , vy = 0
+  , width = 1
+  , height = 2
+  , hostile = False
+  , alive = True
+  , enemyType = Bandit
+  , distanceLoop = 5.0
+  , speed = 2.0
+  , attack = 2
+  , health = 15
+  , expDrop = 2
+  , detectPlayerRadius = 2
+  }
+
+zombie : Float -> Float -> Direction -> Enemy
+zombie initX initY initDir =
+  { initX = initX
+  , initY = initY
+  , initDir = initDir
+  , x = initX
+  , y = initY
+  , dir = initDir
+  , vx = 0
+  , vy = 0
+  , width = 1
+  , height = 2
+  , hostile = False
+  , alive = True
+  , enemyType = Zombie
+  , distanceLoop = 5.0
+  , speed = 1.5
+  , attack = 5
+  , health = 15
+  , expDrop = 5
+  , detectPlayerRadius = 4
+  }
+
+skeleton : Float -> Float -> Direction -> Enemy
+skeleton initX initY initDir =
+  { initX = initX
+  , initY = initY
+  , initDir = initDir
+  , x = initX
+  , y = initY
+  , dir = initDir
+  , vx = 0
+  , vy = 0
+  , width = 1
+  , height = 2
+  , hostile = False
+  , alive = True
+  , enemyType = Skeleton
+  , distanceLoop = 5.0
+  , speed = 2.5
+  , attack = 3
+  , health = 10
+  , expDrop = 3
+  , detectPlayerRadius = 3
+  }
+
 isAlive : Enemy -> Bool
 isAlive enemy =
   if enemy.alive then True else False
 
+isDead : Enemy -> Bool
+isDead enemy =
+  if enemy.alive then False else True
+
 getAttack : Enemy -> Int
 getAttack enemy =
-    enemy.attack
+  enemy.attack
+
+getExpDrop : Enemy -> Int
+getExpDrop enemy =
+  enemy.expDrop
 
 enemyTypeToString : Enemy -> String
 enemyTypeToString enemy =
@@ -109,23 +207,6 @@ chasePlayer playerX playerY enemy =
     | vx = enemy.speed * coefficientVx
     , vy = enemy.speed * coefficientVy
     , hostile = True
-    {-, dir =
-      if abs xDiff < abs yDiff then
-        if xDiff <= 0 then
-          Left
-        else
-          Right
-      else
-        if yDiff <= 0 then
-          Down
-        else
-          Up-}
-      {-else if abs yDiff < abs xDiff then
-        if yDiff <= 0 then
-          Down
-        else
-          Up
-      else enemy.dir-}
   }
 
 enemyLoop : Enemy -> Enemy

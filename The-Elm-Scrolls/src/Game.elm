@@ -29,7 +29,7 @@ type alias Model =
   { navKey : Nav.Key
   , level :  Level.Level
   , player : Player
-  , enemies : List Enemy
+  --, enemies : List Enemy
   , resources : Resources
   , keys : List Keyboard.Key
   , time : Float
@@ -60,10 +60,10 @@ initSword =
   , attack = 5
   }
 
-initPlayer : Player
-initPlayer =
-  { x = 56
-  , y = 9
+initPlayer : Level.Level -> Player
+initPlayer level =
+  { x = level.startX --56
+  , y = level.startY --9
   , vx = 0
   , vy = 0
   , speed = 3.0
@@ -71,11 +71,11 @@ initPlayer =
   , height = 2
   , dir = Player.Idle
   , sword = initSword
-  , level = 1
   , maxDefense = 100
   , currentDefense = 10
   , maxHealth = 100
   , currentHealth = 100
+  , playerLevel = 1
   , maxExp = 5
   , currentExp = 0
   }
@@ -129,9 +129,9 @@ initEnemy2 =
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
-    , level = Level.Lvl2
-    , player = initPlayer
-    , enemies = [ initEnemy]--, initEnemy2 ]
+    , level = Level.level2
+    , player = initPlayer Level.level2
+    --, enemies = [ initEnemy]--, initEnemy2 ]
     , resources = Resources.init
     , keys = []
     , time = 0
@@ -158,12 +158,13 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     Tick dt ->
+      let
+        playerWithExp = getExp model.level.enemies model.player
+        enemies = List.filter Enemy.isAlive model.level.enemies
+      in
       ( { model
-          | player = tick dt model.level model.keys model.enemies model.player
-          , enemies = List.map (Enemy.enemyMovement model.player.x model.player.y) model.enemies
-                      |> List.map (enemyPhysics dt model.level model.player)
-                      |> List.map (enemyAttacked model.player)
-                      |> List.filter isAlive
+          | player = tick dt model.level.map model.keys enemies playerWithExp
+          , level =  enemiesTick dt model.player model.level enemies
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
         }
@@ -187,7 +188,7 @@ update msg model =
 
 tick :
   Float
-  -> Level.Level
+  -> Level.Map
   -> List Keyboard.Key
   -> List Enemy
   -> Player
@@ -204,7 +205,7 @@ tick dt lvl keys enemyList player =
     |> Player.swordPhysics keys player.sword
     |> playerAttacked enemyList
 
-playerPhysics : Float -> Level.Level -> Player -> Player
+playerPhysics : Float -> Level.Map -> Player -> Player
 playerPhysics dt lvl player =
   let
     newX = player.x + dt * player.vx
@@ -239,7 +240,34 @@ playerPhysics dt lvl player =
           player.y
   }
 
-enemyPhysics : Float -> Level.Level -> Player -> Enemy -> Enemy
+getExp : List Enemy -> Player -> Player
+getExp enemyList player =
+  let
+    expGained = List.filter Enemy.isDead enemyList
+                |> List.map Enemy.getExpDrop
+                |> List.sum
+  in
+  if player.currentExp + expGained <= player.maxExp then
+    { player
+      | currentExp = player.currentExp + expGained
+    }
+  else
+    { player
+      | playerLevel = player.playerLevel + 1
+      , currentExp = player.currentExp + expGained - player.maxExp
+    }
+
+enemiesTick : Float -> Player -> Level.Level -> List Enemy -> Level.Level
+enemiesTick dt player level enemies =
+  { level
+    | enemies =
+      List.map (Enemy.enemyMovement player.x player.y) enemies
+      |> List.map (enemyPhysics dt level.map player)
+      |> List.map (enemyAttacked player)
+      --|> List.filter Enemy.isAlive
+  }
+
+enemyPhysics : Float -> Level.Map -> Player -> Enemy -> Enemy
 enemyPhysics dt lvl player enemy =
   let
     newX = enemy.x + dt * enemy.vx
@@ -431,9 +459,9 @@ render ({ resources, camera } as model) =
     , [ Player.renderPlayer resources model.player
       , renderSword resources model.player.sword model.keys
       ]
-    , List.map (Enemy.renderEnemy resources) model.enemies
-      --List.filter Enemy.isAlive model.enemies
-      --|> List.map (Enemy.renderEnemy resources)
+    --, List.map (Enemy.renderEnemy resources) model.level.enemies
+    , List.filter Enemy.isAlive model.level.enemies
+      |> List.map (Enemy.renderEnemy resources)
     ]
 
 renderBackground : Resources -> List Renderable
@@ -624,6 +652,7 @@ viewPlayerCoordinates left top player enemy =
       , style "top" (String.fromInt top ++ "px")
       ]
       [ text "Player"
+      , text ("\nlvl: " ++ String.fromInt player.playerLevel)
       , text ("\nx: " ++ String.fromFloat player.x)
       , text ("\ny: " ++ String.fromFloat player.y)
       , text ("\nvx: " ++ String.fromFloat player.vx)
@@ -658,11 +687,25 @@ viewPlayerCoordinates left top player enemy =
             )
       ]
 
+viewTime : Int -> Int -> Float -> Html Msg
+viewTime left top dt =
+  let
+    minutes = floor (dt / 60)
+    seconds = remainderBy 60 (floor dt) --floor dt
+  in
+  pre [ style "position" "absolute"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
+      , style "font-size" "x-large"
+      , style "font-weight" "bold"
+      ]
+      [ text ((String.fromInt minutes) ++ " : " ++ (String.fromInt seconds)) ]
+
 view : Model -> { title : String, content : Html Msg }
 view model =
   { title = "Game"
   , content =
-    div []
+    div [ style "font-family" "monospace" ]
       [ img [ src "assets/default_background_1920_969.png"
             , style "display" "block"
             , style "position" "relative"
@@ -680,7 +723,8 @@ view model =
             , size = model.screen
             }
               (render model)
-      , viewPlayerCoordinates 100 100 model.player (List.head model.enemies)
+      , viewPlayerCoordinates 100 100 model.player (List.head model.level.enemies)
+      , viewTime 950 50 model.time
       , viewDefenseBar 448 617 model.player.maxDefense model.player.currentDefense
       , viewHealthBar 448 665 model.player.maxHealth model.player.currentHealth
       , viewExpBar 448 713 model.player.maxExp model.player.currentExp

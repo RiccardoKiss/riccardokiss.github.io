@@ -7228,7 +7228,6 @@ var $author$project$Main$getNavKey = function (model) {
 			return $author$project$HighScores$getNavKey(modelHighScores);
 	}
 };
-var $author$project$Level$Lvl2 = {$: 'Lvl2'};
 var $author$project$Game$Resources = function (a) {
 	return {$: 'Resources', a: a};
 };
@@ -7252,14 +7251,33 @@ var $Zinggi$elm_game_resources$Game$Resources$R = function (a) {
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
-var $author$project$Enemy$Prototype = {$: 'Prototype'};
-var $author$project$Enemy$Right = {$: 'Right'};
-var $author$project$Game$initEnemy = {alive: true, attack: 1, detectPlayerRadius: 2, dir: $author$project$Enemy$Right, distanceLoop: 5.0, enemyType: $author$project$Enemy$Prototype, expDrop: 2, health: 10, height: 2, hostile: false, initDir: $author$project$Enemy$Right, initX: 57, initY: 17, speed: 1.0, vx: 0, vy: 0, width: 1, x: 57, y: 17};
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Stone = {$: 'Stone'};
 var $author$project$Game$initSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, sword_type: $author$project$Sword$Stone, width: 1, x: 0, y: 0};
-var $author$project$Game$initPlayer = {currentDefense: 10, currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, height: 2, level: 1, maxDefense: 100, maxExp: 5, maxHealth: 100, speed: 3.0, sword: $author$project$Game$initSword, vx: 0, vy: 0, width: 1, x: 56, y: 9};
+var $author$project$Game$initPlayer = function (level) {
+	return {currentDefense: 10, currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, height: 2, maxDefense: 100, maxExp: 5, maxHealth: 100, playerLevel: 1, speed: 3.0, sword: $author$project$Game$initSword, vx: 0, vy: 0, width: 1, x: level.startX, y: level.startY};
+};
+var $author$project$Level$Lvl2 = {$: 'Lvl2'};
+var $author$project$Enemy$Right = {$: 'Right'};
+var $author$project$Enemy$Up = {$: 'Up'};
+var $author$project$Enemy$Prototype = {$: 'Prototype'};
+var $author$project$Enemy$prototype = F3(
+	function (initX, initY, initDir) {
+		return {alive: true, attack: 1, detectPlayerRadius: 2, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Prototype, expDrop: 1, health: 10, height: 2, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 1.0, vx: 0, vy: 0, width: 1, x: initX, y: initY};
+	});
+var $author$project$Enemy$Skeleton = {$: 'Skeleton'};
+var $author$project$Enemy$skeleton = F3(
+	function (initX, initY, initDir) {
+		return {alive: true, attack: 3, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 3, health: 10, height: 2, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1, x: initX, y: initY};
+	});
+var $author$project$Level$level2Enemies = _List_fromArray(
+	[
+		A3($author$project$Enemy$prototype, 57, 17, $author$project$Enemy$Right),
+		A3($author$project$Enemy$skeleton, 55, 12, $author$project$Enemy$Up),
+		A3($author$project$Enemy$skeleton, 55, 14, $author$project$Enemy$Up)
+	]);
+var $author$project$Level$level2 = {enemies: $author$project$Level$level2Enemies, map: $author$project$Level$Lvl2, mapTexture: 'assets/level/level_2.png', startX: 56.0, startY: 9.0};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -7364,12 +7382,10 @@ var $author$project$Game$init = function (navKey) {
 				$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
 				32 * 16,
 				_Utils_Tuple2(0, 0)),
-			enemies: _List_fromArray(
-				[$author$project$Game$initEnemy]),
 			keys: _List_Nil,
-			level: $author$project$Level$Lvl2,
+			level: $author$project$Level$level2,
 			navKey: navKey,
-			player: $author$project$Game$initPlayer,
+			player: $author$project$Game$initPlayer($author$project$Level$level2),
 			resources: $Zinggi$elm_game_resources$Game$Resources$init,
 			screen: _Utils_Tuple2(1024, 512),
 			time: 0
@@ -8839,7 +8855,6 @@ var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var $author$project$Enemy$Down = {$: 'Down'};
 var $author$project$Enemy$Left = {$: 'Left'};
-var $author$project$Enemy$Up = {$: 'Up'};
 var $author$project$Sword$Attack = {$: 'Attack'};
 var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$Game$collisionSwordEnemy = F2(
@@ -9143,7 +9158,7 @@ var $author$project$Tilemap$level2TileMap = $elm$core$Array$fromList(
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTEETTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTETTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
@@ -9359,6 +9374,23 @@ var $author$project$Game$enemyPhysics = F4(
 			return enemy;
 		}
 	});
+var $author$project$Game$enemiesTick = F4(
+	function (dt, player, level, enemies) {
+		return _Utils_update(
+			level,
+			{
+				enemies: A2(
+					$elm$core$List$map,
+					$author$project$Game$enemyAttacked(player),
+					A2(
+						$elm$core$List$map,
+						A3($author$project$Game$enemyPhysics, dt, level.map, player),
+						A2(
+							$elm$core$List$map,
+							A2($author$project$Enemy$enemyMovement, player.x, player.y),
+							enemies)))
+			});
+	});
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -9369,6 +9401,28 @@ var $elm$core$List$filter = F2(
 				}),
 			_List_Nil,
 			list);
+	});
+var $author$project$Enemy$getExpDrop = function (enemy) {
+	return enemy.expDrop;
+};
+var $author$project$Enemy$isDead = function (enemy) {
+	return enemy.alive ? false : true;
+};
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $author$project$Game$getExp = F2(
+	function (enemyList, player) {
+		var expGained = $elm$core$List$sum(
+			A2(
+				$elm$core$List$map,
+				$author$project$Enemy$getExpDrop,
+				A2($elm$core$List$filter, $author$project$Enemy$isDead, enemyList)));
+		return (_Utils_cmp(player.currentExp + expGained, player.maxExp) < 1) ? _Utils_update(
+			player,
+			{currentExp: player.currentExp + expGained}) : _Utils_update(
+			player,
+			{currentExp: (player.currentExp + expGained) - player.maxExp, playerLevel: player.playerLevel + 1});
 	});
 var $author$project$Enemy$isAlive = function (enemy) {
 	return enemy.alive ? true : false;
@@ -9383,9 +9437,6 @@ var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
 	});
 var $author$project$Enemy$getAttack = function (enemy) {
 	return enemy.attack;
-};
-var $elm$core$List$sum = function (numbers) {
-	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
 };
 var $author$project$Game$playerAttacked = F2(
 	function (enemyList, player) {
@@ -9988,6 +10039,8 @@ var $author$project$Game$update = F2(
 		switch (msg.$) {
 			case 'Tick':
 				var dt = msg.a;
+				var playerWithExp = A2($author$project$Game$getExp, model.level.enemies, model.player);
+				var enemies = A2($elm$core$List$filter, $author$project$Enemy$isAlive, model.level.enemies);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -9996,20 +10049,8 @@ var $author$project$Game$update = F2(
 								$Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo,
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
-							enemies: A2(
-								$elm$core$List$filter,
-								$author$project$Enemy$isAlive,
-								A2(
-									$elm$core$List$map,
-									$author$project$Game$enemyAttacked(model.player),
-									A2(
-										$elm$core$List$map,
-										A3($author$project$Game$enemyPhysics, dt, model.level, model.player),
-										A2(
-											$elm$core$List$map,
-											A2($author$project$Enemy$enemyMovement, model.player.x, model.player.y),
-											model.enemies)))),
-							player: A5($author$project$Game$tick, dt, model.level, model.keys, model.enemies, model.player),
+							level: A4($author$project$Game$enemiesTick, dt, model.player, model.level, enemies),
+							player: A5($author$project$Game$tick, dt, model.level.map, model.keys, enemies, playerWithExp),
 							time: dt + model.time
 						}),
 					$elm$core$Platform$Cmd$none);
@@ -10950,7 +10991,7 @@ var $author$project$Game$render = function (model) {
 				A2(
 				$elm$core$List$map,
 				$author$project$Enemy$renderEnemy(resources),
-				model.enemies)
+				A2($elm$core$List$filter, $author$project$Enemy$isAlive, model.level.enemies))
 			]));
 };
 var $elm_explorations$webgl$WebGL$Internal$Alpha = function (a) {
@@ -11429,6 +11470,8 @@ var $author$project$Game$viewPlayerCoordinates = F4(
 				[
 					$elm$html$Html$text('Player'),
 					$elm$html$Html$text(
+					'\nlvl: ' + $elm$core$String$fromInt(player.playerLevel)),
+					$elm$html$Html$text(
 					'\nx: ' + $elm$core$String$fromFloat(player.x)),
 					$elm$html$Html$text(
 					'\ny: ' + $elm$core$String$fromFloat(player.y)),
@@ -11587,11 +11630,40 @@ var $author$project$Game$viewPlayerInput = F3(
 						]))
 				]));
 	});
+var $author$project$Game$viewTime = F3(
+	function (left, top, dt) {
+		var seconds = $elm$core$Basics$floor(dt) % 60;
+		var minutes = $elm$core$Basics$floor(dt / 60);
+		return A2(
+			$elm$html$Html$pre,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px'),
+					A2($elm$html$Html$Attributes$style, 'font-size', 'x-large'),
+					A2($elm$html$Html$Attributes$style, 'font-weight', 'bold')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(
+					$elm$core$String$fromInt(minutes) + (' : ' + $elm$core$String$fromInt(seconds)))
+				]));
+	});
 var $author$project$Game$view = function (model) {
 	return {
 		content: A2(
 			$elm$html$Html$div,
-			_List_Nil,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+				]),
 			_List_fromArray(
 				[
 					A2(
@@ -11621,7 +11693,8 @@ var $author$project$Game$view = function (model) {
 					100,
 					100,
 					model.player,
-					$elm$core$List$head(model.enemies)),
+					$elm$core$List$head(model.level.enemies)),
+					A3($author$project$Game$viewTime, 950, 50, model.time),
 					A4($author$project$Game$viewDefenseBar, 448, 617, model.player.maxDefense, model.player.currentDefense),
 					A4($author$project$Game$viewHealthBar, 448, 665, model.player.maxHealth, model.player.currentHealth),
 					A4($author$project$Game$viewExpBar, 448, 713, model.player.maxExp, model.player.currentExp),

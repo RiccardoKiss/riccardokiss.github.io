@@ -24,6 +24,8 @@ type alias Player =
   , playerLevel : Int
   , maxExp : Int
   , currentExp : Int
+  , healthPotionCount : Int
+  , speedPotionCount : Int
   }
 
 type Direction

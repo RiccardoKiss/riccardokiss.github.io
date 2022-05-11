@@ -7256,7 +7256,7 @@ var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Stone = {$: 'Stone'};
 var $author$project$Game$initSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, sword_type: $author$project$Sword$Stone, width: 1, x: 0, y: 0};
 var $author$project$Game$initPlayer = function (level) {
-	return {currentDefense: 10, currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, height: 2, maxDefense: 100, maxExp: 5, maxHealth: 100, playerLevel: 1, speed: 3.0, sword: $author$project$Game$initSword, vx: 0, vy: 0, width: 1, x: level.startX, y: level.startY};
+	return {currentDefense: 10, currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, healthPotionCount: 0, height: 2, maxDefense: 100, maxExp: 5, maxHealth: 100, playerLevel: 1, speed: 3.0, speedPotionCount: 0, sword: $author$project$Game$initSword, vx: 0, vy: 0, width: 1, x: level.startX, y: level.startY};
 };
 var $author$project$Level$Lvl2 = {$: 'Lvl2'};
 var $author$project$Enemy$Right = {$: 'Right'};
@@ -11108,8 +11108,10 @@ var $author$project$Game$keyButtonTexture = F2(
 			$ohanhi$keyboard$Keyboard$Character('D'),
 			keys) ? pressedPath : assetPath) : ((key_button === 'arrowUp') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowUp, keys) ? pressedPath : assetPath) : ((key_button === 'arrowRight') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowRight, keys) ? pressedPath : assetPath) : ((key_button === 'arrowDown') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowDown, keys) ? pressedPath : assetPath) : ((key_button === 'arrowLeft') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowLeft, keys) ? pressedPath : assetPath) : ''))))))))));
 	});
-var $author$project$Game$viewConsumable1 = F3(
-	function (left, top, keys) {
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Game$viewConsumable1 = F4(
+	function (left, top, keys, potionCount) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -11156,6 +11158,20 @@ var $author$project$Game$viewConsumable1 = F3(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '30px'),
+							A2($elm$html$Html$Attributes$style, 'top', '50px'),
+							A2($elm$html$Html$Attributes$style, 'color', 'white')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$elm$core$String$fromInt(potionCount))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 							A2($elm$html$Html$Attributes$style, 'left', '16px'),
 							A2($elm$html$Html$Attributes$style, 'top', '67px')
 						]),
@@ -11172,8 +11188,8 @@ var $author$project$Game$viewConsumable1 = F3(
 						]))
 				]));
 	});
-var $author$project$Game$viewConsumable2 = F3(
-	function (left, top, keys) {
+var $author$project$Game$viewConsumable2 = F4(
+	function (left, top, keys, potionCount) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -11220,6 +11236,20 @@ var $author$project$Game$viewConsumable2 = F3(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '30px'),
+							A2($elm$html$Html$Attributes$style, 'top', '50px'),
+							A2($elm$html$Html$Attributes$style, 'color', 'white')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$elm$core$String$fromInt(potionCount))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 							A2($elm$html$Html$Attributes$style, 'left', '16px'),
 							A2($elm$html$Html$Attributes$style, 'top', '67px')
 						]),
@@ -11237,8 +11267,6 @@ var $author$project$Game$viewConsumable2 = F3(
 				]));
 	});
 var $elm$core$String$fromFloat = _String_fromNumber;
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Game$viewDefenseInfo = F2(
 	function (maxDef, currDef) {
 		return A2(
@@ -11698,8 +11726,8 @@ var $author$project$Game$view = function (model) {
 					A4($author$project$Game$viewDefenseBar, 448, 617, model.player.maxDefense, model.player.currentDefense),
 					A4($author$project$Game$viewHealthBar, 448, 665, model.player.maxHealth, model.player.currentHealth),
 					A4($author$project$Game$viewExpBar, 448, 713, model.player.maxExp, model.player.currentExp),
-					A3($author$project$Game$viewConsumable1, 368, 650, model.keys),
-					A3($author$project$Game$viewConsumable2, 1488, 650, model.keys),
+					A4($author$project$Game$viewConsumable1, 368, 650, model.keys, model.player.healthPotionCount),
+					A4($author$project$Game$viewConsumable2, 1488, 650, model.keys, model.player.speedPotionCount),
 					A3($author$project$Game$viewPlayerInput, 820, 761, model.keys)
 				])),
 		title: 'Game'

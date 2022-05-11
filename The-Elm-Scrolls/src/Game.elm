@@ -78,6 +78,8 @@ initPlayer level =
   , playerLevel = 1
   , maxExp = 5
   , currentExp = 0
+  , healthPotionCount = 0
+  , speedPotionCount = 0
   }
 
 initEnemy : Enemy
@@ -576,14 +578,13 @@ viewExpBar left top maxExp currExp =
       , viewExpInfo maxExp currExp
       ]
 
-viewConsumable1 : Int -> Int -> List Keyboard.Key -> Html Msg
-viewConsumable1 left top keys =
+viewConsumable1 : Int -> Int -> List Keyboard.Key -> Int -> Html Msg
+viewConsumable1 left top keys potionCount =
   div [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
       ]
-      [ img [ src "assets/item/consumable_background.png"
-            ] []
+      [ img [ src "assets/item/consumable_background.png" ] []
       , div [ style "position" "absolute"
             , style "left" "0px"
             , style "top" "0px"
@@ -591,26 +592,37 @@ viewConsumable1 left top keys =
             [ img [ src "assets/item/health_potion.png" ] []
             ]
       , div [ style "position" "absolute"
+            , style "left" "30px"
+            , style "top" "50px"
+            , style "color" "white"
+            ]
+            [ text  (String.fromInt potionCount) ]
+      , div [ style "position" "absolute"
             , style "left" "16px"
             , style "top" "67px"
             ]
             [ img [ src (keyButtonTexture "q" keys) ] [] ]
       ]
 
-viewConsumable2 : Int -> Int -> List Keyboard.Key -> Html Msg
-viewConsumable2 left top keys =
+viewConsumable2 : Int -> Int -> List Keyboard.Key -> Int -> Html Msg
+viewConsumable2 left top keys potionCount =
   div [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
       ]
-      [ img [ src "assets/item/consumable_background.png"
-            ] []
+      [ img [ src "assets/item/consumable_background.png" ] []
       , div [ style "position" "absolute"
             , style "left" "0px"
             , style "top" "0px"
             ]
             [ img [ src "assets/item/speed_potion.png" ] []
             ]
+      , div [ style "position" "absolute"
+            , style "left" "30px"
+            , style "top" "50px"
+            , style "color" "white"
+            ]
+            [ text  (String.fromInt potionCount) ]
       , div [ style "position" "absolute"
             , style "left" "16px"
             , style "top" "67px"
@@ -728,8 +740,8 @@ view model =
       , viewDefenseBar 448 617 model.player.maxDefense model.player.currentDefense
       , viewHealthBar 448 665 model.player.maxHealth model.player.currentHealth
       , viewExpBar 448 713 model.player.maxExp model.player.currentExp
-      , viewConsumable1 368 650 model.keys
-      , viewConsumable2 1488 650 model.keys
+      , viewConsumable1 368 650 model.keys model.player.healthPotionCount
+      , viewConsumable2 1488 650 model.keys model.player.speedPotionCount
       , viewPlayerInput 820 761 model.keys
       ]
   }

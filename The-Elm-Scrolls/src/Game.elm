@@ -18,6 +18,7 @@ import Level exposing (..)
 import Player exposing (..)
 import Sword exposing (..)
 import Enemy exposing (..)
+import Item exposing (..)
 import Task
 import Array
 
@@ -150,6 +151,7 @@ texturesList =
     , Player.textures
     , Enemy.textures
     , Sword.textures
+    , Item.textures
     ]
 
 

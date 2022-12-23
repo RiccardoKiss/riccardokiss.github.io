@@ -22,7 +22,7 @@ type Map
 
 textures : List String
 textures =
-  [ "assets/level/level_2.png"
+  [ "assets/level/level_2_updated.png"
   --, "assets/level/level_1.png"
   --, "assets/level/level_3.png"
   ]
@@ -36,12 +36,12 @@ level2Enemies =
 
 level2Items : List Item
 level2Items =
-  []
+  [ healthPotionStand 56 10 ]
 
 level2 : Level
 level2 =
   { map = Lvl2
-  , mapTexture = "assets/level/level_2.png"
+  , mapTexture = "assets/level/level_2_updated.png"
   , enemies = level2Enemies
   , items = level2Items
   , startX = 56.0

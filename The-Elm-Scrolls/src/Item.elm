@@ -23,7 +23,7 @@ type ItemType
 
 textures : List String
 textures =
-  [ "assets/item/item_stand.png"
+  [ "assets/item/item_stand_empty.png"
   , "assets/item/item_stand_health_potion_idle.png"
   , "assets/item/item_stand_speed_potion_idle.png"
   , "assets/item/item_stand_sword_wood_idle.png"
@@ -36,7 +36,7 @@ itemTypeToString : Item -> String
 itemTypeToString item =
   case item.itemType of
     ItemStand ->
-      ""
+      "empty"
 
     HealthPotion_ItemStand ->
       "health_potion_idle"
@@ -58,14 +58,18 @@ itemTypeToString item =
 
 itemPickedUp : Item -> Item
 itemPickedUp item =
-  if item.itemType != ItemStand then
+  if item.itemType /= ItemStand then
     { item
       | itemType = ItemStand
       , pickable = False
     }
   else
     item
-  
+
+isPickable : Item -> Bool
+isPickable item =
+  if item.pickable then True else False
+
 itemStand : Float -> Float -> Item
 itemStand x y =
   { x = x

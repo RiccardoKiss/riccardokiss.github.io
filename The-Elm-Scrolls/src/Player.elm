@@ -52,11 +52,11 @@ type Direction
 
 textures : List String
 textures =
-  [ "assets/player/player_idle.png"
-  , "assets/player/player_right.png"
-  , "assets/player/player_left.png"
-  , "assets/player/player_up.png"
-  , "assets/player/player_down.png"
+  [ "assets/player/player_EEE_idle.png"
+  , "assets/player/player_EEE_right.png"
+  , "assets/player/player_EEE_left.png"
+  , "assets/player/player_EEE_up.png"
+  , "assets/player/player_EEE_down.png"
   ]
 
 walk : { x : Int, y : Int } -> Player -> Player
@@ -106,19 +106,19 @@ renderPlayer resources player =
     , texture =
         case player.dir of
           Left ->
-            Resources.getTexture "assets/player/player_left.png" resources
+            Resources.getTexture "assets/player/player_EEE_left.png" resources
 
           Right ->
-            Resources.getTexture "assets/player/player_right.png" resources
+            Resources.getTexture "assets/player/player_EEE_right.png" resources
 
           Up ->
-            Resources.getTexture "assets/player/player_up.png" resources
+            Resources.getTexture "assets/player/player_EEE_up.png" resources
 
           Down ->
-            Resources.getTexture "assets/player/player_down.png" resources
+            Resources.getTexture "assets/player/player_EEE_down.png" resources
 
           Idle ->
-            Resources.getTexture "assets/player/player_idle.png" resources
+            Resources.getTexture "assets/player/player_EEE_idle.png" resources
     , bottomLeft = ( 0, 0 )
     , topRight = ( 1, 1 )
     , duration = 1

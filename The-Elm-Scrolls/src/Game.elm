@@ -138,8 +138,8 @@ init navKey =
     , resources = Resources.init
     , keys = []
     , time = 0
-    , screen = ( 1024, 512 )
-    , camera = Camera.fixedArea (32 * 16) ( 0, 0 )
+    , screen = ( 1280, 720 )
+    , camera = Camera.fixedArea (32 * 16) ( 0, 0 ) --(16 * 8) ( 0, 0 )
     }
   , Cmd.map Resources (Resources.loadTextures texturesList )
   )
@@ -165,10 +165,11 @@ update msg model =
       let
         playerWithExp = getExp model.level.enemies model.player
         enemies = List.filter Enemy.isAlive model.level.enemies
+        items = List.filter Item.isPickable model.level.items
       in
       ( { model
           | player = tick dt model.level.map model.keys enemies playerWithExp
-          , level =  enemiesTick dt model.player model.level enemies
+          , level =  levelTick dt model.player model.level enemies items
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
         }
@@ -247,9 +248,10 @@ playerPhysics dt lvl player =
 getExp : List Enemy -> Player -> Player
 getExp enemyList player =
   let
-    expGained = List.filter Enemy.isDead enemyList
-                |> List.map Enemy.getExpDrop
-                |> List.sum
+    expGained =
+      List.filter Enemy.isDead enemyList
+      |> List.map Enemy.getExpDrop
+      |> List.sum
   in
   if player.currentExp + expGained <= player.maxExp then
     { player
@@ -261,15 +263,23 @@ getExp enemyList player =
       , currentExp = player.currentExp + expGained - player.maxExp
     }
 
-enemiesTick : Float -> Player -> Level.Level -> List Enemy -> Level.Level
-enemiesTick dt player level enemies =
+levelTick : Float -> Player -> Level.Level -> List Enemy -> List Item -> Level.Level
+levelTick dt player level enemies items =
   { level
-    | enemies =
-      List.map (Enemy.enemyMovement player.x player.y) enemies
-      |> List.map (enemyPhysics dt level.map player)
-      |> List.map (enemyAttacked player)
-      --|> List.filter Enemy.isAlive
+    | enemies = enemiesTick dt player level enemies
+    , items = itemsTick dt player level items
   }
+
+itemsTick : Float -> Player -> Level.Level -> List Item -> List Item
+itemsTick dt player level items =
+  []
+
+enemiesTick : Float -> Player -> Level.Level -> List Enemy -> List Enemy
+enemiesTick dt player level enemies =
+  List.map (Enemy.enemyMovement player.x player.y) enemies
+  |> List.map (enemyPhysics dt level.map player)
+  |> List.map (enemyAttacked player)
+  --|> List.filter Enemy.isAlive
 
 enemyPhysics : Float -> Level.Map -> Player -> Enemy -> Enemy
 enemyPhysics dt lvl player enemy =
@@ -466,12 +476,14 @@ render ({ resources, camera } as model) =
     --, List.map (Enemy.renderEnemy resources) model.level.enemies
     , List.filter Enemy.isAlive model.level.enemies
       |> List.map (Enemy.renderEnemy resources)
+    , List.filter Item.isPickable model.level.items
+      |> List.map (Item.renderItemStand resources)
     ]
 
 renderBackground : Resources -> List Renderable
 renderBackground resources =
   [ Render.spriteZ
-    { texture = Resources.getTexture "assets/level/level_2.png" resources
+    { texture = Resources.getTexture "assets/level/level_2_updated.png" resources
     , position = ( 0, 0, -0.9 )
     , size = ( 128, 128 )
     }
@@ -728,7 +740,7 @@ view model =
             ] []
       , Game2d.renderWithOptions
           [ style "position" "absolute"
-          , style "left" "448px"
+          , style "left" "320px"--"448px"
           , style "top" "100px" --"228px"
           , style "border" "solid 1px #FFF"
           ]
@@ -739,12 +751,12 @@ view model =
               (render model)
       , viewPlayerCoordinates 100 100 model.player (List.head model.level.enemies)
       , viewTime 950 50 model.time
-      , viewDefenseBar 448 617 model.player.maxDefense model.player.currentDefense
-      , viewHealthBar 448 665 model.player.maxHealth model.player.currentHealth
-      , viewExpBar 448 713 model.player.maxExp model.player.currentExp
+      , viewDefenseBar 448 685 model.player.maxDefense model.player.currentDefense
+      , viewHealthBar 448 725 model.player.maxHealth model.player.currentHealth
+      , viewExpBar 448 765 model.player.maxExp model.player.currentExp
       , viewConsumable1 368 650 model.keys model.player.healthPotionCount
       , viewConsumable2 1488 650 model.keys model.player.speedPotionCount
-      , viewPlayerInput 820 761 model.keys
+      , viewPlayerInput 820 861 model.keys
       ]
   }
 

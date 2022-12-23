@@ -7277,8 +7277,16 @@ var $author$project$Level$level2Enemies = _List_fromArray(
 		A3($author$project$Enemy$skeleton, 55, 12, $author$project$Enemy$Up),
 		A3($author$project$Enemy$skeleton, 55, 14, $author$project$Enemy$Up)
 	]);
-var $author$project$Level$level2Items = _List_Nil;
-var $author$project$Level$level2 = {enemies: $author$project$Level$level2Enemies, items: $author$project$Level$level2Items, map: $author$project$Level$Lvl2, mapTexture: 'assets/level/level_2.png', startX: 56.0, startY: 9.0};
+var $author$project$Item$HealthPotion_ItemStand = {$: 'HealthPotion_ItemStand'};
+var $author$project$Item$healthPotionStand = F2(
+	function (x, y) {
+		return {height: 2, itemType: $author$project$Item$HealthPotion_ItemStand, pickable: true, width: 1, x: x, y: y};
+	});
+var $author$project$Level$level2Items = _List_fromArray(
+	[
+		A2($author$project$Item$healthPotionStand, 56, 10)
+	]);
+var $author$project$Level$level2 = {enemies: $author$project$Level$level2Enemies, items: $author$project$Level$level2Items, map: $author$project$Level$Lvl2, mapTexture: 'assets/level/level_2_updated.png', startX: 56.0, startY: 9.0};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -7367,15 +7375,17 @@ var $elm$core$List$concat = function (lists) {
 };
 var $author$project$Enemy$textures = _List_fromArray(
 	['assets/enemy/enemy_right.png', 'assets/enemy/enemy_left.png', 'assets/enemy/enemy_up.png', 'assets/enemy/enemy_down.png', 'assets/enemy/skeleton_right.png', 'assets/enemy/skeleton_left.png', 'assets/enemy/skeleton_up.png', 'assets/enemy/skeleton_down.png']);
+var $author$project$Item$textures = _List_fromArray(
+	['assets/item/item_stand_empty.png', 'assets/item/item_stand_health_potion_idle.png', 'assets/item/item_stand_speed_potion_idle.png', 'assets/item/item_stand_sword_wood_idle.png', 'assets/item/item_stand_sword_stone_idle.png', 'assets/item/item_stand_sword_iron_idle.png', 'assets/item/item_stand_sword_dark_idle.png']);
 var $author$project$Level$textures = _List_fromArray(
-	['assets/level/level_2.png']);
+	['assets/level/level_2_updated.png']);
 var $author$project$Player$textures = _List_fromArray(
-	['assets/player/player_idle.png', 'assets/player/player_right.png', 'assets/player/player_left.png', 'assets/player/player_up.png', 'assets/player/player_down.png']);
+	['assets/player/player_EEE_idle.png', 'assets/player/player_EEE_right.png', 'assets/player/player_EEE_left.png', 'assets/player/player_EEE_up.png', 'assets/player/player_EEE_down.png']);
 var $author$project$Sword$textures = _List_fromArray(
 	['assets/sword/sword_wood.png', 'assets/sword/sword_wood_attack.png', 'assets/sword/sword_stone.png', 'assets/sword/sword_stone_attack.png', 'assets/sword/sword_iron.png', 'assets/sword/sword_iron_attack.png', 'assets/sword/sword_dark.png', 'assets/sword/sword_dark_attack.png']);
 var $author$project$Game$texturesList = $elm$core$List$concat(
 	_List_fromArray(
-		[$author$project$Level$textures, $author$project$Player$textures, $author$project$Enemy$textures, $author$project$Sword$textures]));
+		[$author$project$Level$textures, $author$project$Player$textures, $author$project$Enemy$textures, $author$project$Sword$textures, $author$project$Item$textures]));
 var $author$project$Game$init = function (navKey) {
 	return _Utils_Tuple2(
 		{
@@ -7388,7 +7398,7 @@ var $author$project$Game$init = function (navKey) {
 			navKey: navKey,
 			player: $author$project$Game$initPlayer($author$project$Level$level2),
 			resources: $Zinggi$elm_game_resources$Game$Resources$init,
-			screen: _Utils_Tuple2(1024, 512),
+			screen: _Utils_Tuple2(1280, 720),
 			time: 0
 		},
 		A2(
@@ -8854,6 +8864,45 @@ var $author$project$Main$subscriptions = function (model) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $author$project$Enemy$getExpDrop = function (enemy) {
+	return enemy.expDrop;
+};
+var $author$project$Enemy$isDead = function (enemy) {
+	return enemy.alive ? false : true;
+};
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $author$project$Game$getExp = F2(
+	function (enemyList, player) {
+		var expGained = $elm$core$List$sum(
+			A2(
+				$elm$core$List$map,
+				$author$project$Enemy$getExpDrop,
+				A2($elm$core$List$filter, $author$project$Enemy$isDead, enemyList)));
+		return (_Utils_cmp(player.currentExp + expGained, player.maxExp) < 1) ? _Utils_update(
+			player,
+			{currentExp: player.currentExp + expGained}) : _Utils_update(
+			player,
+			{currentExp: (player.currentExp + expGained) - player.maxExp, playerLevel: player.playerLevel + 1});
+	});
+var $author$project$Enemy$isAlive = function (enemy) {
+	return enemy.alive ? true : false;
+};
+var $author$project$Item$isPickable = function (item) {
+	return item.pickable ? true : false;
+};
 var $author$project$Enemy$Down = {$: 'Down'};
 var $author$project$Enemy$Left = {$: 'Left'};
 var $author$project$Sword$Attack = {$: 'Attack'};
@@ -9377,57 +9426,30 @@ var $author$project$Game$enemyPhysics = F4(
 	});
 var $author$project$Game$enemiesTick = F4(
 	function (dt, player, level, enemies) {
+		return A2(
+			$elm$core$List$map,
+			$author$project$Game$enemyAttacked(player),
+			A2(
+				$elm$core$List$map,
+				A3($author$project$Game$enemyPhysics, dt, level.map, player),
+				A2(
+					$elm$core$List$map,
+					A2($author$project$Enemy$enemyMovement, player.x, player.y),
+					enemies)));
+	});
+var $author$project$Game$itemsTick = F4(
+	function (dt, player, level, items) {
+		return _List_Nil;
+	});
+var $author$project$Game$levelTick = F5(
+	function (dt, player, level, enemies, items) {
 		return _Utils_update(
 			level,
 			{
-				enemies: A2(
-					$elm$core$List$map,
-					$author$project$Game$enemyAttacked(player),
-					A2(
-						$elm$core$List$map,
-						A3($author$project$Game$enemyPhysics, dt, level.map, player),
-						A2(
-							$elm$core$List$map,
-							A2($author$project$Enemy$enemyMovement, player.x, player.y),
-							enemies)))
+				enemies: A4($author$project$Game$enemiesTick, dt, player, level, enemies),
+				items: A4($author$project$Game$itemsTick, dt, player, level, items)
 			});
 	});
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var $author$project$Enemy$getExpDrop = function (enemy) {
-	return enemy.expDrop;
-};
-var $author$project$Enemy$isDead = function (enemy) {
-	return enemy.alive ? false : true;
-};
-var $elm$core$List$sum = function (numbers) {
-	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
-};
-var $author$project$Game$getExp = F2(
-	function (enemyList, player) {
-		var expGained = $elm$core$List$sum(
-			A2(
-				$elm$core$List$map,
-				$author$project$Enemy$getExpDrop,
-				A2($elm$core$List$filter, $author$project$Enemy$isDead, enemyList)));
-		return (_Utils_cmp(player.currentExp + expGained, player.maxExp) < 1) ? _Utils_update(
-			player,
-			{currentExp: player.currentExp + expGained}) : _Utils_update(
-			player,
-			{currentExp: (player.currentExp + expGained) - player.maxExp, playerLevel: player.playerLevel + 1});
-	});
-var $author$project$Enemy$isAlive = function (enemy) {
-	return enemy.alive ? true : false;
-};
 var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
 	function (pos, _v0) {
 		var camera = _v0.a;
@@ -10041,6 +10063,7 @@ var $author$project$Game$update = F2(
 			case 'Tick':
 				var dt = msg.a;
 				var playerWithExp = A2($author$project$Game$getExp, model.level.enemies, model.player);
+				var items = A2($elm$core$List$filter, $author$project$Item$isPickable, model.level.items);
 				var enemies = A2($elm$core$List$filter, $author$project$Enemy$isAlive, model.level.enemies);
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -10050,7 +10073,7 @@ var $author$project$Game$update = F2(
 								$Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo,
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
-							level: A4($author$project$Game$enemiesTick, dt, model.player, model.level, enemies),
+							level: A5($author$project$Game$levelTick, dt, model.player, model.level, enemies, items),
 							player: A5($author$project$Game$tick, dt, model.level.map, model.keys, enemies, playerWithExp),
 							time: dt + model.time
 						}),
@@ -10801,7 +10824,7 @@ var $author$project$Game$renderBackground = function (resources) {
 			{
 				position: _Utils_Tuple3(0, 0, -0.9),
 				size: _Utils_Tuple2(128, 128),
-				texture: A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/level/level_2.png', resources)
+				texture: A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/level/level_2_updated.png', resources)
 			})
 		]);
 };
@@ -10901,6 +10924,43 @@ var $author$project$Enemy$renderEnemy = F2(
 				topRight: _Utils_Tuple2(1, 1)
 			});
 	});
+var $author$project$Item$itemTypeToString = function (item) {
+	var _v0 = item.itemType;
+	switch (_v0.$) {
+		case 'ItemStand':
+			return 'empty';
+		case 'HealthPotion_ItemStand':
+			return 'health_potion_idle';
+		case 'SpeedPotion_ItemStand':
+			return 'speed_potion_idle';
+		case 'WoodSword_ItemStand':
+			return 'sword_wood_idle';
+		case 'StoneSword_ItemStand':
+			return 'sword_stone_idle';
+		case 'IronSword_ItemStand':
+			return 'sword_iron_idle';
+		default:
+			return 'sword_dark_idle';
+	}
+};
+var $author$project$Item$renderItemStand = F2(
+	function (resources, item) {
+		return $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions(
+			{
+				bottomLeft: _Utils_Tuple2(0, 0),
+				duration: 1,
+				numberOfFrames: 4,
+				pivot: _Utils_Tuple2(0, 0),
+				position: _Utils_Tuple3(item.x, item.y, -0.1),
+				rotation: 0,
+				size: _Utils_Tuple2(1, 2),
+				texture: A2(
+					$Zinggi$elm_game_resources$Game$Resources$getTexture,
+					'assets/item/item_stand_' + ($author$project$Item$itemTypeToString(item) + '.png'),
+					resources),
+				topRight: _Utils_Tuple2(1, 1)
+			});
+	});
 var $author$project$Player$renderPlayer = F2(
 	function (resources, player) {
 		return $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions(
@@ -10916,15 +10976,15 @@ var $author$project$Player$renderPlayer = F2(
 					var _v0 = player.dir;
 					switch (_v0.$) {
 						case 'Left':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_left.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_EEE_left.png', resources);
 						case 'Right':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_right.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_EEE_right.png', resources);
 						case 'Up':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_up.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_EEE_up.png', resources);
 						case 'Down':
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_down.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_EEE_down.png', resources);
 						default:
-							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_idle.png', resources);
+							return A2($Zinggi$elm_game_resources$Game$Resources$getTexture, 'assets/player/player_EEE_idle.png', resources);
 					}
 				}(),
 				topRight: _Utils_Tuple2(1, 1)
@@ -10992,7 +11052,11 @@ var $author$project$Game$render = function (model) {
 				A2(
 				$elm$core$List$map,
 				$author$project$Enemy$renderEnemy(resources),
-				A2($elm$core$List$filter, $author$project$Enemy$isAlive, model.level.enemies))
+				A2($elm$core$List$filter, $author$project$Enemy$isAlive, model.level.enemies)),
+				A2(
+				$elm$core$List$map,
+				$author$project$Item$renderItemStand(resources),
+				A2($elm$core$List$filter, $author$project$Item$isPickable, model.level.items))
 			]));
 };
 var $elm_explorations$webgl$WebGL$Internal$Alpha = function (a) {
@@ -11711,7 +11775,7 @@ var $author$project$Game$view = function (model) {
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '448px'),
+							A2($elm$html$Html$Attributes$style, 'left', '320px'),
 							A2($elm$html$Html$Attributes$style, 'top', '100px'),
 							A2($elm$html$Html$Attributes$style, 'border', 'solid 1px #FFF')
 						]),
@@ -11724,12 +11788,12 @@ var $author$project$Game$view = function (model) {
 					model.player,
 					$elm$core$List$head(model.level.enemies)),
 					A3($author$project$Game$viewTime, 950, 50, model.time),
-					A4($author$project$Game$viewDefenseBar, 448, 617, model.player.maxDefense, model.player.currentDefense),
-					A4($author$project$Game$viewHealthBar, 448, 665, model.player.maxHealth, model.player.currentHealth),
-					A4($author$project$Game$viewExpBar, 448, 713, model.player.maxExp, model.player.currentExp),
+					A4($author$project$Game$viewDefenseBar, 448, 685, model.player.maxDefense, model.player.currentDefense),
+					A4($author$project$Game$viewHealthBar, 448, 725, model.player.maxHealth, model.player.currentHealth),
+					A4($author$project$Game$viewExpBar, 448, 765, model.player.maxExp, model.player.currentExp),
 					A4($author$project$Game$viewConsumable1, 368, 650, model.keys, model.player.healthPotionCount),
 					A4($author$project$Game$viewConsumable2, 1488, 650, model.keys, model.player.speedPotionCount),
-					A3($author$project$Game$viewPlayerInput, 820, 761, model.keys)
+					A3($author$project$Game$viewPlayerInput, 820, 861, model.keys)
 				])),
 		title: 'Game'
 	};

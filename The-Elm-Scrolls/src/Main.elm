@@ -252,10 +252,10 @@ subscriptions model =
 view : Model -> Document Msg
 view model =
   let
-    viewPage page toMsg content =
+    viewPage toMsg content =
       let
         { title, body } =
-          Page.view page content
+          Page.view content
       in
       { title = title
       , body = List.map (Html.map toMsg) body
@@ -263,25 +263,25 @@ view model =
   in
   case model of
     NotFound _ ->
-      Page.view Page.NotFound NotFound.view
+      Page.view NotFound.view
 
     Home modelHome ->
-      viewPage Page.Home GotHomeMsg (Home.view modelHome)
+      viewPage GotHomeMsg (Home.view modelHome)
 
     NewGame modelNewGame ->
-      viewPage Page.NewGame GotNewGameMsg (NewGame.view modelNewGame)
+      viewPage GotNewGameMsg (NewGame.view modelNewGame)
 
     Game modelGame ->
-      viewPage Page.Game GotGameMsg (Game.view modelGame)
+      viewPage GotGameMsg (Game.view modelGame)
 
     LoadGame modelLoadGame ->
-      viewPage Page.LoadGame GotLoadGameMsg (LoadGame.view modelLoadGame)
+      viewPage GotLoadGameMsg (LoadGame.view modelLoadGame)
 
     Settings modelSettings ->
-      viewPage Page.Settings GotSettingsMsg (Settings.view modelSettings)
+      viewPage GotSettingsMsg (Settings.view modelSettings)
 
     Help modelHelp ->
-      viewPage Page.Help GotHelpMsg (Help.view modelHelp)
+      viewPage GotHelpMsg (Help.view modelHelp)
 
     HighScores modelHighScores ->
-      viewPage Page.HighScores GotHighScoresMsg (HighScores.view modelHighScores)
+      viewPage GotHighScoresMsg (HighScores.view modelHighScores)

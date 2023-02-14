@@ -10384,14 +10384,6 @@ var $author$project$Main$update = F2(
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $elm$json$Json$Decode$value = _Json_decodeValue;
-var $author$project$Page$Game = {$: 'Game'};
-var $author$project$Page$Help = {$: 'Help'};
-var $author$project$Page$HighScores = {$: 'HighScores'};
-var $author$project$Page$Home = {$: 'Home'};
-var $author$project$Page$LoadGame = {$: 'LoadGame'};
-var $author$project$Page$NewGame = {$: 'NewGame'};
-var $author$project$Page$NotFound = {$: 'NotFound'};
-var $author$project$Page$Settings = {$: 'Settings'};
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $elm$html$Html$div = _VirtualDom_node('div');
@@ -12447,16 +12439,15 @@ var $author$project$NotFound$view = {
 	content: $elm$html$Html$text(''),
 	title: 'NotFound'
 };
-var $author$project$Page$view = F2(
-	function (page, _v0) {
-		var title = _v0.title;
-		var content = _v0.content;
-		return {
-			body: _List_fromArray(
-				[content]),
-			title: title + ' - The Elm Scrolls'
-		};
-	});
+var $author$project$Page$view = function (_v0) {
+	var title = _v0.title;
+	var content = _v0.content;
+	return {
+		body: _List_fromArray(
+			[content]),
+		title: title + ' - The Elm Scrolls'
+	};
+};
 var $author$project$Settings$HoverBack = {$: 'HoverBack'};
 var $author$project$Settings$MouseOut = {$: 'MouseOut'};
 var $author$project$Settings$On = {$: 'On'};
@@ -12572,9 +12563,9 @@ var $author$project$Settings$view = function (model) {
 	};
 };
 var $author$project$Main$view = function (model) {
-	var viewPage = F3(
-		function (page, toMsg, content) {
-			var _v1 = A2($author$project$Page$view, page, content);
+	var viewPage = F2(
+		function (toMsg, content) {
+			var _v1 = $author$project$Page$view(content);
 			var title = _v1.title;
 			var body = _v1.body;
 			return {
@@ -12587,54 +12578,47 @@ var $author$project$Main$view = function (model) {
 		});
 	switch (model.$) {
 		case 'NotFound':
-			return A2($author$project$Page$view, $author$project$Page$NotFound, $author$project$NotFound$view);
+			return $author$project$Page$view($author$project$NotFound$view);
 		case 'Home':
 			var modelHome = model.a;
-			return A3(
+			return A2(
 				viewPage,
-				$author$project$Page$Home,
 				$author$project$Main$GotHomeMsg,
 				$author$project$Home$view(modelHome));
 		case 'NewGame':
 			var modelNewGame = model.a;
-			return A3(
+			return A2(
 				viewPage,
-				$author$project$Page$NewGame,
 				$author$project$Main$GotNewGameMsg,
 				$author$project$NewGame$view(modelNewGame));
 		case 'Game':
 			var modelGame = model.a;
-			return A3(
+			return A2(
 				viewPage,
-				$author$project$Page$Game,
 				$author$project$Main$GotGameMsg,
 				$author$project$Game$view(modelGame));
 		case 'LoadGame':
 			var modelLoadGame = model.a;
-			return A3(
+			return A2(
 				viewPage,
-				$author$project$Page$LoadGame,
 				$author$project$Main$GotLoadGameMsg,
 				$author$project$LoadGame$view(modelLoadGame));
 		case 'Settings':
 			var modelSettings = model.a;
-			return A3(
+			return A2(
 				viewPage,
-				$author$project$Page$Settings,
 				$author$project$Main$GotSettingsMsg,
 				$author$project$Settings$view(modelSettings));
 		case 'Help':
 			var modelHelp = model.a;
-			return A3(
+			return A2(
 				viewPage,
-				$author$project$Page$Help,
 				$author$project$Main$GotHelpMsg,
 				$author$project$Help$view(modelHelp));
 		default:
 			var modelHighScores = model.a;
-			return A3(
+			return A2(
 				viewPage,
-				$author$project$Page$HighScores,
 				$author$project$Main$GotHighScoresMsg,
 				$author$project$HighScores$view(modelHighScores));
 	}

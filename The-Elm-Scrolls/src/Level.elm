@@ -7,8 +7,8 @@ import Item exposing (..)
 type alias Level =
   { map : Map
   , mapTexture : String
-  , enemies : List Enemy -- spawn positions for each enemy
-  , items : List Item
+  , enemies : List Enemy  -- spawn positions for each enemy
+  , items : List Item     -- spawn positions for each item
   , startX : Float
   , startY : Float
   --, endX : Float
@@ -30,13 +30,14 @@ textures =
 level2Enemies : List Enemy
 level2Enemies =
   [ prototype 57 17 Enemy.Right
-  , skeleton 55 12 Enemy.Up
-  , skeleton 55 14 Enemy.Up
+  --, skeleton 55 12 Enemy.Up
+  --, skeleton 55 14 Enemy.Up
   ]
 
 level2Items : List Item
 level2Items =
-  [ healthPotionStand 56 10 ]
+  [ healthPotionStand 57 11
+  ]
 
 level2 : Level
 level2 =

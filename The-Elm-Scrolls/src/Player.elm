@@ -85,17 +85,7 @@ swordPhysics : List Keyboard.Key -> Sword -> Player -> Player
 swordPhysics keys sword player =
   { player
     | sword = Sword.updateSwordCoordinates sword player.x player.y
-              |> swordAttack keys
-  }
-
-swordAttack : List Keyboard.Key -> Sword -> Sword
-swordAttack keys sword =
-  { sword
-    | action =
-        if List.member Keyboard.Spacebar keys then
-          Attack
-        else
-          NotAttack
+              |> Sword.swordAttack keys
   }
 
 renderPlayer : Resources -> Player -> Renderable

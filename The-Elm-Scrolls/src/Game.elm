@@ -13,14 +13,15 @@ import Html.Events exposing (on, keyCode)
 import Json.Decode as D
 import Keyboard exposing (..)
 import Keyboard.Arrows
+import Task
+import Array
+
 import Tilemap exposing (..)
 import Level exposing (..)
 import Player exposing (..)
 import Sword exposing (..)
 import Enemy exposing (..)
 import Item exposing (..)
-import Task
-import Array
 
 
 -- MODEL
@@ -57,7 +58,7 @@ initSword =
   , width = 1
   , height = 0.5
   , action = NotAttack
-  , sword_type = Stone
+  , swordType = Stone
   , attack = 5
   }
 
@@ -168,8 +169,8 @@ update msg model =
         items = List.filter Item.isPickable model.level.items
       in
       ( { model
-          | player = tick dt model.level.map model.keys enemies playerWithExp
-          , level =  levelTick dt model.player model.level enemies items
+          | player = tick dt model.level model.keys enemies playerWithExp
+          , level =  levelTick dt model.player model.level enemies model.level.items
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
         }
@@ -193,7 +194,7 @@ update msg model =
 
 tick :
   Float
-  -> Level.Map
+  -> Level
   -> List Keyboard.Key
   -> List Enemy
   -> Player
@@ -210,19 +211,31 @@ tick dt lvl keys enemyList player =
     |> Player.swordPhysics keys player.sword
     |> playerAttacked enemyList
 
-playerPhysics : Float -> Level.Map -> Player -> Player
+playerPhysics : Float -> Level -> Player -> Player
 playerPhysics dt lvl player =
   let
     newX = player.x + dt * player.vx
     newY = player.y + dt * player.vy
     tileType =
       if player.dir == Player.Left then
-        Tilemap.getTileTypeFromTileMap lvl (newX - 1) newY
+        Tilemap.getTileTypeFromTileMap lvl.map (newX - 1) newY
       else if player.dir == Player.Up then
-        Tilemap.getTileTypeFromTileMap lvl newX (newY + 1)
+        Tilemap.getTileTypeFromTileMap lvl.map newX (newY + 1)
       else
-        Tilemap.getTileTypeFromTileMap lvl newX newY
-
+        Tilemap.getTileTypeFromTileMap lvl.map newX newY
+    newTileItemStand = List.filter (Item.checkItemStandByCoordinates (round newX) (round newY)) lvl.items
+      {-if player.dir == Player.Left then
+        List.filter (Item.checkItemStandByCoordinates (round newX - 1) (round newY)) lvl.items
+      else if player.dir == Player.Up then
+        List.filter (Item.checkItemStandByCoordinates (round newX) (round newY + 1)) lvl.items
+      else if player.dir == Player.Down then
+        List.filter (Item.checkItemStandByCoordinates (round newX ) (round newY-1)) lvl.items
+      else if player.dir == Player.Right then
+        List.filter (Item.checkItemStandByCoordinates (round newX+1 ) (round newY)) lvl.items
+      else
+        List.filter (Item.checkItemStandByCoordinates (floor newX ) (floor newY)) lvl.items
+        -}
+    _ = Debug.log "[playerPhysics] newTileItemStand" newTileItemStand
     --_ = Debug.log "[physics] newX" newX
     --_ = Debug.log "[physics] newY" newY
   in
@@ -231,18 +244,22 @@ playerPhysics dt lvl player =
         case tileType of
           Just tile ->
             if tile == 'T' then
-              newX
+              if List.isEmpty newTileItemStand then   -- if item stand is not on the new tile, player can move
+                newX
+              else player.x  -- pouzit na itemStand Item.itemPickedUp ak je isPickable
             else player.x
           Nothing ->
             player.x
     , y =
-      case tileType of
-        Just tile ->
-          if tile == 'T' then
-            newY
-          else player.y
-        Nothing ->
-          player.y
+        case tileType of
+          Just tile ->
+            if tile == 'T' then
+              if List.isEmpty newTileItemStand then   -- if item stand is not on the new tile, player can move
+                newY
+              else player.y -- pouzit na itemStand Item.itemPickedUp ak je isPickable
+            else player.y
+          Nothing ->
+            player.y
   }
 
 getExp : List Enemy -> Player -> Player
@@ -272,7 +289,7 @@ levelTick dt player level enemies items =
 
 itemsTick : Float -> Player -> Level.Level -> List Item -> List Item
 itemsTick dt player level items =
-  []
+  items
 
 enemiesTick : Float -> Player -> Level.Level -> List Enemy -> List Enemy
 enemiesTick dt player level enemies =
@@ -299,7 +316,7 @@ enemyPhysics dt lvl player enemy =
   case tileType of
     Just tile ->
       if tile == 'T' then
-        if collisionPlayerEnemy player enemy then
+        if collisionPlayerEnemy player enemy then   -- after collision with player, enemy takes a step back
           case enemy.dir of
             Enemy.Left ->
               { enemy | x = enemy.x + 1 }
@@ -323,9 +340,9 @@ enemyPhysics dt lvl player enemy =
                 else -- newY < enemy.y
                   Enemy.Down
               else if newX < enemy.x  then
-                Enemy.Left
+                Enemy.Left --enemy.dir
               else -- if newX > enemy.x then
-                Enemy.Right
+                Enemy.Right --enemy,dir
           }
       else
         enemy
@@ -683,7 +700,7 @@ viewPlayerCoordinates left top player enemy =
       , text ("\ny: " ++ String.fromFloat player.y)
       , text ("\nvx: " ++ String.fromFloat player.vx)
       , text ("\nvy: " ++ String.fromFloat player.vy)
-      , text ("\neX: " ++ case enemy of
+      {-, text ("\neX: " ++ case enemy of
           Just en ->
             String.fromFloat en.x
 
@@ -711,6 +728,7 @@ viewPlayerCoordinates left top player enemy =
           Nothing ->
             ""
             )
+      -}
       ]
 
 viewTime : Int -> Int -> Float -> Html Msg

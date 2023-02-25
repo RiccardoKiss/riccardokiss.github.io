@@ -2,6 +2,7 @@ module Sword exposing (..)
 
 import Game.TwoD.Render as Render exposing (..)
 import Game.Resources as Resources exposing (..)
+import Keyboard
 
 
 type alias Sword =
@@ -10,7 +11,7 @@ type alias Sword =
   , width : Float
   , height : Float
   , action : Action
-  , sword_type : Sword_Type
+  , swordType : SwordType
   , attack : Int
   }
 
@@ -18,11 +19,11 @@ type Action
   = NotAttack
   | Attack
 
-type Sword_Type
+type SwordType
   = Wood
   | Stone
   | Iron
-  | Dark
+  | Dragon
 
 textures : List String
 textures =
@@ -32,13 +33,13 @@ textures =
   , "assets/sword/sword_stone_attack.png"
   , "assets/sword/sword_iron.png"
   , "assets/sword/sword_iron_attack.png"
-  , "assets/sword/sword_dark.png"
-  , "assets/sword/sword_dark_attack.png"
+  , "assets/sword/sword_dragon.png"
+  , "assets/sword/sword_dragon_attack.png"
   ]
 
 swordTypeToString : Sword -> String
 swordTypeToString sword =
-  case sword.sword_type of
+  case sword.swordType of
     Wood ->
       "wood"
 
@@ -48,14 +49,24 @@ swordTypeToString sword =
     Iron ->
       "iron"
 
-    Dark ->
-      "dark"
+    Dragon ->
+      "dragon"
 
 updateSwordCoordinates : Sword -> Float -> Float -> Sword
 updateSwordCoordinates sword playerX playerY =
   { sword
     | x = playerX + 0.75
     , y = playerY + 0.5
+  }
+
+swordAttack : List Keyboard.Key -> Sword -> Sword
+swordAttack keys sword =
+  { sword
+    | action =
+        if List.member Keyboard.Spacebar keys then
+          Attack
+        else
+          NotAttack
   }
 
 renderSwordIdle : Resources -> Sword -> Renderable

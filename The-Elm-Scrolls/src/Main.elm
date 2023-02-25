@@ -5,17 +5,18 @@ import Url.Parser as Parser exposing (Parser, (</>), parse, map, oneOf, top, s, 
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Json.Decode as Decode
-import Route exposing (Route)
 import Debug exposing (..)
+
+import Route exposing (Route)
 import Page
 import Home
 import NewGame
-import Game
 import LoadGame
 import Settings
-import Help
 import HighScores
+import Help
 import NotFound
+import Game
 
 import Url.Builder
 import Browser.Events exposing (..)

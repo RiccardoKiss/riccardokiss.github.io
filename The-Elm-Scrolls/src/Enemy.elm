@@ -266,9 +266,9 @@ enemyLoop enemy  =
 
 renderEnemy : Resources -> Enemy -> Renderable
 renderEnemy resources enemy =
-  let
-      _ = Debug.log "[renderEnemy] enemy.dir" enemy.dir
-  in
+  --let
+    --_ = Debug.log "[renderEnemy] enemy.dir" enemy.dir
+  --in
   Render.animatedSpriteWithOptions
     { position = ( enemy.x, enemy.y, -0.1 )
     , size = ( 1, 2 )

@@ -19,7 +19,7 @@ type ItemType
   | WoodSword_ItemStand
   | StoneSword_ItemStand
   | IronSword_ItemStand
-  | DarkSword_ItemStand
+  | DragonSword_ItemStand
 
 textures : List String
 textures =
@@ -29,7 +29,7 @@ textures =
   , "assets/item/item_stand_sword_wood_idle.png"
   , "assets/item/item_stand_sword_stone_idle.png"
   , "assets/item/item_stand_sword_iron_idle.png"
-  , "assets/item/item_stand_sword_dark_idle.png"
+  , "assets/item/item_stand_sword_dragon_idle.png"
   ]
 
 itemTypeToString : Item -> String
@@ -53,8 +53,8 @@ itemTypeToString item =
     IronSword_ItemStand ->
       "sword_iron_idle"
 
-    DarkSword_ItemStand ->
-      "sword_dark_idle"
+    DragonSword_ItemStand ->
+      "sword_dragon_idle"
 
 itemPickedUp : Item -> Item
 itemPickedUp item =
@@ -69,6 +69,10 @@ itemPickedUp item =
 isPickable : Item -> Bool
 isPickable item =
   if item.pickable then True else False
+
+checkItemStandByCoordinates : Int -> Int -> Item -> Bool
+checkItemStandByCoordinates x y item =
+  if item.x == ( toFloat x ) && item.y == ( toFloat y ) then True else False
 
 itemStand : Float -> Float -> Item
 itemStand x y =
@@ -130,13 +134,13 @@ ironSwordStand x y =
   , pickable = True
   }
 
-darkSwordStand : Float -> Float -> Item
-darkSwordStand x y =
+dragonSwordStand : Float -> Float -> Item
+dragonSwordStand x y =
   { x = x
   , y = y
   , width = 1
   , height = 2
-  , itemType = DarkSword_ItemStand
+  , itemType = DragonSword_ItemStand
   , pickable = True
   }
 

@@ -5,7 +5,7 @@ import Game.Resources as Resources exposing (..)
 import Keyboard
 
 import Sword exposing (..)
-
+import Armor exposing (..)
 
 type alias Player =
   { x : Float
@@ -17,6 +17,7 @@ type alias Player =
   , height : Float
   , dir : Direction
   , sword : Sword
+  , armor : Armor
   , maxDefense : Int
   , currentDefense : Int
   , maxHealth : Int
@@ -57,7 +58,37 @@ textures =
   , "assets/player/player_EEE_left.png"
   , "assets/player/player_EEE_up.png"
   , "assets/player/player_EEE_down.png"
+  , "assets/player/player_LLL_idle.png"
+  , "assets/player/player_LLL_right.png"
+  , "assets/player/player_LLL_left.png"
+  , "assets/player/player_LLL_up.png"
+  , "assets/player/player_LLL_down.png"
+  , "assets/player/player_SSS_idle.png"
+  , "assets/player/player_SSS_right.png"
+  , "assets/player/player_SSS_left.png"
+  , "assets/player/player_SSS_up.png"
+  , "assets/player/player_SSS_down.png"
+  , "assets/player/player_DDD_idle.png"
+  , "assets/player/player_DDD_right.png"
+  , "assets/player/player_DDD_left.png"
+  , "assets/player/player_DDD_up.png"
+  , "assets/player/player_DDD_down.png"
   ]
+
+armorToTexturePath : Armor -> String
+armorToTexturePath armor =
+  case armor.armorType of
+    Armor.None ->
+      "EEE"
+
+    Armor.Leather ->
+      "LLL"
+
+    Armor.Silver ->
+      "SSS"
+
+    Armor.Dragon ->
+      "DDD"
 
 walk : { x : Int, y : Int } -> Player -> Player
 walk { x, y } player =
@@ -81,10 +112,10 @@ walk { x, y } player =
           Idle
   }
 
-swordPhysics : List Keyboard.Key -> Sword -> Player -> Player
-swordPhysics keys sword player =
+swordPhysics : List Keyboard.Key -> Player -> Player
+swordPhysics keys player =
   { player
-    | sword = Sword.updateSwordCoordinates sword player.x player.y
+    | sword = Sword.updateSwordCoordinates player.sword player.x player.y
               |> Sword.swordAttack keys
   }
 
@@ -96,19 +127,19 @@ renderPlayer resources player =
     , texture =
         case player.dir of
           Left ->
-            Resources.getTexture "assets/player/player_EEE_left.png" resources
+            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_left.png") resources
 
           Right ->
-            Resources.getTexture "assets/player/player_EEE_right.png" resources
+            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_right.png") resources
 
           Up ->
-            Resources.getTexture "assets/player/player_EEE_up.png" resources
+            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_up.png") resources
 
           Down ->
-            Resources.getTexture "assets/player/player_EEE_down.png" resources
+            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_down.png") resources
 
           Idle ->
-            Resources.getTexture "assets/player/player_EEE_idle.png" resources
+            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_idle.png") resources
     , bottomLeft = ( 0, 0 )
     , topRight = ( 1, 1 )
     , duration = 1

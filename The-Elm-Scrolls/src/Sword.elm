@@ -69,6 +69,50 @@ swordAttack keys sword =
           NotAttack
   }
 
+woodSword : Sword
+woodSword =
+  { x = 0
+  , y = 0
+  , width = 1
+  , height = 0.5
+  , action = NotAttack
+  , swordType = Wood
+  , attack = 5
+  }
+
+stoneSword : Sword
+stoneSword =
+  { x = 0
+  , y = 0
+  , width = 1
+  , height = 0.5
+  , action = NotAttack
+  , swordType = Stone
+  , attack = 5
+  }
+
+ironSword : Sword
+ironSword =
+  { x = 0
+  , y = 0
+  , width = 1
+  , height = 0.5
+  , action = NotAttack
+  , swordType = Iron
+  , attack = 5
+  }
+
+dragonSword : Sword
+dragonSword =
+  { x = 0
+  , y = 0
+  , width = 1
+  , height = 0.5
+  , action = NotAttack
+  , swordType = Dragon
+  , attack = 5
+  }
+
 renderSwordIdle : Resources -> Sword -> Renderable
 renderSwordIdle resources sword =
   Render.spriteWithOptions

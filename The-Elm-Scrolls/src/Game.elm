@@ -22,6 +22,7 @@ import Player exposing (..)
 import Sword exposing (..)
 import Enemy exposing (..)
 import Item exposing (..)
+import Armor exposing (..)
 
 
 -- MODEL
@@ -31,7 +32,6 @@ type alias Model =
   { navKey : Nav.Key
   , level :  Level.Level
   , player : Player
-  --, enemies : List Enemy
   , resources : Resources
   , keys : List Keyboard.Key
   , time : Float
@@ -51,17 +51,6 @@ getNavKey : Model -> Nav.Key
 getNavKey model =
   model.navKey
 
-initSword : Sword
-initSword =
-  { x = 0
-  , y = 0
-  , width = 1
-  , height = 0.5
-  , action = NotAttack
-  , swordType = Stone
-  , attack = 5
-  }
-
 initPlayer : Level.Level -> Player
 initPlayer level =
   { x = level.startX --56
@@ -72,7 +61,8 @@ initPlayer level =
   , width = 1
   , height = 2
   , dir = Player.Idle
-  , sword = initSword
+  , sword = Sword.woodSword
+  , armor = Armor.noneArmorSet
   , maxDefense = 100
   , currentDefense = 10
   , maxHealth = 100
@@ -84,65 +74,18 @@ initPlayer level =
   , speedPotionCount = 0
   }
 
-initEnemy : Enemy
-initEnemy =
-  { initX = 57
-  , initY = 17
-  , initDir = Enemy.Right
-  , x = 57
-  , y = 17
-  , vx = 0
-  , vy = 0
-  , width = 1
-  , height = 2
-  , dir = Enemy.Right
-  , enemyType = Prototype
-  , distanceLoop = 5.0
-  , speed = 1.0
-  , attack = 1
-  , health = 10
-  , expDrop = 2
-  , detectPlayerRadius = 2
-  , hostile = False
-  , alive = True
-  }
-
-initEnemy2 : Enemy
-initEnemy2 =
-  { initX = 55
-  , initY = 12
-  , initDir = Enemy.Up
-  , x = 55
-  , y = 12
-  , vx = 0
-  , vy = 0
-  , width = 1
-  , height = 2
-  , dir = Enemy.Up
-  , enemyType = Skeleton
-  , distanceLoop = 5.0
-  , speed = 5.0
-  , attack = 1
-  , health = 10
-  , expDrop = 2
-  , detectPlayerRadius = 2
-  , hostile = False
-  , alive = True
-  }
-
 init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
     , level = Level.level2
     , player = initPlayer Level.level2
-    --, enemies = [ initEnemy]--, initEnemy2 ]
     , resources = Resources.init
     , keys = []
     , time = 0
     , screen = ( 1280, 720 )
     , camera = Camera.fixedArea (32 * 16) ( 0, 0 ) --(16 * 8) ( 0, 0 )
     }
-  , Cmd.map Resources (Resources.loadTextures texturesList )
+  , Cmd.map Resources ( Resources.loadTextures texturesList )
   )
 
 texturesList : List String
@@ -172,7 +115,7 @@ update msg model =
           | player = tick dt model.level model.keys enemies playerWithExp
           , level =  levelTick dt model.player model.level enemies model.level.items
           , time = dt + model.time
-          , camera = Camera.moveTo ( model.player.x, model.player.y) model.camera
+          , camera = Camera.moveTo ( model.player.x, model.player.y ) model.camera
         }
         , Cmd.none
       )
@@ -206,10 +149,10 @@ tick dt lvl keys enemyList player =
       --Keyboard.Arrows.arrows keys
   in
   player
-    |> Player.walk moveInput
-    |> playerPhysics dt lvl
-    |> Player.swordPhysics keys player.sword
-    |> playerAttacked enemyList
+  |> Player.walk moveInput
+  |> playerPhysics dt lvl
+  |> Player.swordPhysics keys
+  |> playerAttacked enemyList
 
 playerPhysics : Float -> Level -> Player -> Player
 playerPhysics dt lvl player =
@@ -224,7 +167,7 @@ playerPhysics dt lvl player =
       else
         Tilemap.getTileTypeFromTileMap lvl.map newX newY
     newTileItemStand = List.filter (Item.checkItemStandByCoordinates (round newX) (round newY)) lvl.items
-      {-if player.dir == Player.Left then
+    {-if player.dir == Player.Left then
         List.filter (Item.checkItemStandByCoordinates (round newX - 1) (round newY)) lvl.items
       else if player.dir == Player.Up then
         List.filter (Item.checkItemStandByCoordinates (round newX) (round newY + 1)) lvl.items
@@ -234,10 +177,8 @@ playerPhysics dt lvl player =
         List.filter (Item.checkItemStandByCoordinates (round newX+1 ) (round newY)) lvl.items
       else
         List.filter (Item.checkItemStandByCoordinates (floor newX ) (floor newY)) lvl.items
-        -}
+    -}
     _ = Debug.log "[playerPhysics] newTileItemStand" newTileItemStand
-    --_ = Debug.log "[physics] newX" newX
-    --_ = Debug.log "[physics] newY" newY
   in
   { player
     | x =
@@ -246,7 +187,7 @@ playerPhysics dt lvl player =
             if tile == 'T' then
               if List.isEmpty newTileItemStand then   -- if item stand is not on the new tile, player can move
                 newX
-              else player.x  -- pouzit na itemStand Item.itemPickedUp ak je isPickable
+              else player.x
             else player.x
           Nothing ->
             player.x
@@ -256,10 +197,52 @@ playerPhysics dt lvl player =
             if tile == 'T' then
               if List.isEmpty newTileItemStand then   -- if item stand is not on the new tile, player can move
                 newY
-              else player.y -- pouzit na itemStand Item.itemPickedUp ak je isPickable
+              else player.y
             else player.y
           Nothing ->
             player.y
+    , sword =
+        case List.head newTileItemStand of
+          Just itemStand ->
+            if Item.getItemType itemStand == WoodSword_ItemStand then
+              Sword.woodSword
+            else if Item.getItemType itemStand == StoneSword_ItemStand then
+              Sword.stoneSword
+            else if Item.getItemType itemStand == IronSword_ItemStand then
+              Sword.ironSword
+            else if Item.getItemType itemStand == DragonSword_ItemStand then
+              Sword.dragonSword
+            else player.sword
+          Nothing ->
+            player.sword
+    , armor =
+        case List.head newTileItemStand of
+          Just itemStand ->
+            if Item.getItemType itemStand == LeatherArmor_ItemStand then
+              Armor.leatherArmorSet
+            else if Item.getItemType itemStand == SilverArmor_ItemStand then
+              Armor.silverArmorSet
+            else if Item.getItemType itemStand == DragonArmor_ItemStand then
+              Armor.dragonArmorSet
+            else player.armor
+          Nothing ->
+            player.armor
+    , healthPotionCount =
+        case List.head newTileItemStand of
+          Just itemStand ->
+            if Item.getItemType itemStand == HealthPotion_ItemStand then
+              player.healthPotionCount + 1
+            else player.healthPotionCount
+          Nothing ->
+            player.healthPotionCount
+    , speedPotionCount =
+        case List.head newTileItemStand of
+          Just itemStand ->
+            if Item.getItemType itemStand == SpeedPotion_ItemStand then
+              player.speedPotionCount + 1
+            else player.speedPotionCount
+          Nothing ->
+            player.speedPotionCount
   }
 
 getExp : List Enemy -> Player -> Player
@@ -289,7 +272,12 @@ levelTick dt player level enemies items =
 
 itemsTick : Float -> Player -> Level.Level -> List Item -> List Item
 itemsTick dt player level items =
-  items
+  let
+    newX = player.x + dt * player.vx
+    newY = player.y + dt * player.vy
+  in
+  List.map (Item.updateItemStand (round newX) (round newY)) items
+
 
 enemiesTick : Float -> Player -> Level.Level -> List Enemy -> List Enemy
 enemiesTick dt player level enemies =
@@ -688,18 +676,29 @@ viewPlayerInput left top keys =
             ] [ img [ src (keyButtonTexture "spacebar" keys) ] [] ]
       ]
 
-viewPlayerCoordinates : Int -> Int -> Player -> Maybe Enemy -> Html Msg
-viewPlayerCoordinates left top player enemy =
+viewPlayerModel : Int -> Int -> Player -> Maybe Enemy -> Html Msg
+viewPlayerModel left top player enemy =
   pre [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
       ]
       [ text "Player"
       , text ("\nlvl: " ++ String.fromInt player.playerLevel)
+      , text ("\nmaxEXP: " ++ String.fromInt player.maxExp)
+      , text ("\ncurEXP: " ++ String.fromInt player.currentExp)
       , text ("\nx: " ++ String.fromFloat player.x)
       , text ("\ny: " ++ String.fromFloat player.y)
       , text ("\nvx: " ++ String.fromFloat player.vx)
       , text ("\nvy: " ++ String.fromFloat player.vy)
+      , text ("\nspeed: " ++ String.fromFloat player.speed)
+      , text ("\nsword: " ++ Sword.swordTypeToString player.sword)
+      , text ("\narmor: " ++ Armor.armorTypeToString player.armor)
+      , text ("\nmaxDEF: " ++ String.fromInt player.maxDefense)
+      , text ("\ncurDEF: " ++ String.fromInt player.currentDefense)
+      , text ("\nmaxHP: " ++ String.fromInt player.maxHealth)
+      , text ("\ncurHP: " ++ String.fromInt player.currentHealth)
+      , text ("\nHP potions: " ++ String.fromInt player.healthPotionCount)
+      , text ("\nSPD potions: " ++ String.fromInt player.speedPotionCount)
       {-, text ("\neX: " ++ case enemy of
           Just en ->
             String.fromFloat en.x
@@ -767,7 +766,7 @@ view model =
             , size = model.screen
             }
               (render model)
-      , viewPlayerCoordinates 100 100 model.player (List.head model.level.enemies)
+      , viewPlayerModel 100 100 model.player (List.head model.level.enemies)
       , viewTime 950 50 model.time
       , viewDefenseBar 448 685 model.player.maxDefense model.player.currentDefense
       , viewHealthBar 448 725 model.player.maxHealth model.player.currentHealth

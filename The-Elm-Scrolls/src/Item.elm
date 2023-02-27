@@ -20,6 +20,9 @@ type ItemType
   | StoneSword_ItemStand
   | IronSword_ItemStand
   | DragonSword_ItemStand
+  | LeatherArmor_ItemStand
+  | SilverArmor_ItemStand
+  | DragonArmor_ItemStand
 
 textures : List String
 textures =
@@ -30,6 +33,9 @@ textures =
   , "assets/item/item_stand_sword_stone_idle.png"
   , "assets/item/item_stand_sword_iron_idle.png"
   , "assets/item/item_stand_sword_dragon_idle.png"
+  , "assets/item/item_stand_leather_chest.png"
+  , "assets/item/item_stand_silver_chest.png"
+  , "assets/item/item_stand_dragon_chest.png"
   ]
 
 itemTypeToString : Item -> String
@@ -56,6 +62,25 @@ itemTypeToString item =
     DragonSword_ItemStand ->
       "sword_dragon_idle"
 
+    LeatherArmor_ItemStand ->
+      "leather_chest"
+
+    SilverArmor_ItemStand ->
+      "silver_chest"
+
+    DragonArmor_ItemStand ->
+      "dragon_chest"
+
+getItemType : Item -> ItemType
+getItemType item =
+  item.itemType
+
+updateItemStand : Int -> Int -> Item -> Item
+updateItemStand x y item =
+  if checkItemStandByCoordinates x y item && item.pickable then
+    itemPickedUp item
+  else item
+
 itemPickedUp : Item -> Item
 itemPickedUp item =
   if item.itemType /= ItemStand then
@@ -63,8 +88,7 @@ itemPickedUp item =
       | itemType = ItemStand
       , pickable = False
     }
-  else
-    item
+  else item
 
 isPickable : Item -> Bool
 isPickable item =
@@ -141,6 +165,36 @@ dragonSwordStand x y =
   , width = 1
   , height = 2
   , itemType = DragonSword_ItemStand
+  , pickable = True
+  }
+
+leatherArmorStand : Float -> Float -> Item
+leatherArmorStand x y =
+  { x = x
+  , y = y
+  , width = 1
+  , height = 2
+  , itemType = LeatherArmor_ItemStand
+  , pickable = True
+  }
+
+silverArmorStand : Float -> Float -> Item
+silverArmorStand x y =
+  { x = x
+  , y = y
+  , width = 1
+  , height = 2
+  , itemType = SilverArmor_ItemStand
+  , pickable = True
+  }
+
+dragonArmorStand : Float -> Float -> Item
+dragonArmorStand x y =
+  { x = x
+  , y = y
+  , width = 1
+  , height = 2
+  , itemType = DragonArmor_ItemStand
   , pickable = True
   }
 

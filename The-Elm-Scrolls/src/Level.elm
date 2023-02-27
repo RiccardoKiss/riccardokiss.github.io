@@ -29,7 +29,7 @@ textures =
 
 level2Enemies : List Enemy
 level2Enemies =
-  [ prototype 57 17 Enemy.Right
+  [ --prototype 57 17 Enemy.Right
   --, skeleton 55 12 Enemy.Up
   --, skeleton 55 14 Enemy.Up
   ]
@@ -37,6 +37,9 @@ level2Enemies =
 level2Items : List Item
 level2Items =
   [ healthPotionStand 57 11
+  , speedPotionStand 55 12
+  , stoneSwordStand 55 15
+  , dragonArmorStand 57 16
   ]
 
 level2 : Level

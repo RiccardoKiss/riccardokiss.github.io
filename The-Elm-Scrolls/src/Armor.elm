@@ -1,13 +1,67 @@
 module Armor exposing (..)
 
 type alias Armor =
-  { armor_type : Armor_Type
-  , health_bonus : Int
-  , defense_bonus : Int
+  { armorType : ArmorType
+  , totalDef : Int
+  , helmetDef : Int
+  , chestDef : Int
+  , legsDef : Int
   }
 
-type Armor_Type
-  = Head
-  | Body
-  | Arms
-  | Legs
+type ArmorType
+  = None
+  | Leather
+  | Silver
+  --| Gold
+  | Dragon
+
+armorTypeToString : Armor -> String
+armorTypeToString armor =
+  case armor.armorType of
+    None ->
+      "none"
+
+    Leather ->
+      "leather"
+
+    Silver ->
+      "silver"
+
+    Dragon ->
+      "dragon"
+
+noneArmorSet : Armor
+noneArmorSet =
+  { armorType = None
+  , totalDef = 0
+  , helmetDef = 0
+  , chestDef = 0
+  , legsDef = 0
+  }
+
+leatherArmorSet : Armor
+leatherArmorSet =
+  { armorType = Leather
+  , totalDef = 30
+  , helmetDef = 10
+  , chestDef = 10
+  , legsDef = 10
+  }
+
+silverArmorSet : Armor
+silverArmorSet =
+  { armorType = Silver
+  , totalDef = 60
+  , helmetDef = 20
+  , chestDef = 20
+  , legsDef = 20
+  }
+
+dragonArmorSet : Armor
+dragonArmorSet =
+  { armorType = Dragon
+  , totalDef = 90
+  , helmetDef = 30
+  , chestDef = 30
+  , legsDef = 30
+  }

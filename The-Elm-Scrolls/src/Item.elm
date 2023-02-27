@@ -77,7 +77,7 @@ getItemType item =
 
 updateItemStand : Int -> Int -> Item -> Item
 updateItemStand x y item =
-  if checkItemStandByCoordinates x y item && item.pickable then
+  if (checkItemStandByCoordinates x y item) && item.pickable then
     itemPickedUp item
   else item
 
@@ -96,7 +96,7 @@ isPickable item =
 
 checkItemStandByCoordinates : Int -> Int -> Item -> Bool
 checkItemStandByCoordinates x y item =
-  if item.x == ( toFloat x ) && item.y == ( toFloat y ) then True else False
+  if (item.x == ( toFloat x )) && (item.y == ( toFloat y )) then True else False
 
 itemStand : Float -> Float -> Item
 itemStand x y =

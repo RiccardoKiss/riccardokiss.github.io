@@ -7267,10 +7267,30 @@ var $author$project$Item$dragonArmorStand = F2(
 	function (x, y) {
 		return {height: 2, itemType: $author$project$Item$DragonArmor_ItemStand, pickable: true, width: 1, x: x, y: y};
 	});
+var $author$project$Item$DragonSword_ItemStand = {$: 'DragonSword_ItemStand'};
+var $author$project$Item$dragonSwordStand = F2(
+	function (x, y) {
+		return {height: 2, itemType: $author$project$Item$DragonSword_ItemStand, pickable: true, width: 1, x: x, y: y};
+	});
 var $author$project$Item$HealthPotion_ItemStand = {$: 'HealthPotion_ItemStand'};
 var $author$project$Item$healthPotionStand = F2(
 	function (x, y) {
 		return {height: 2, itemType: $author$project$Item$HealthPotion_ItemStand, pickable: true, width: 1, x: x, y: y};
+	});
+var $author$project$Item$IronSword_ItemStand = {$: 'IronSword_ItemStand'};
+var $author$project$Item$ironSwordStand = F2(
+	function (x, y) {
+		return {height: 2, itemType: $author$project$Item$IronSword_ItemStand, pickable: true, width: 1, x: x, y: y};
+	});
+var $author$project$Item$LeatherArmor_ItemStand = {$: 'LeatherArmor_ItemStand'};
+var $author$project$Item$leatherArmorStand = F2(
+	function (x, y) {
+		return {height: 2, itemType: $author$project$Item$LeatherArmor_ItemStand, pickable: true, width: 1, x: x, y: y};
+	});
+var $author$project$Item$SilverArmor_ItemStand = {$: 'SilverArmor_ItemStand'};
+var $author$project$Item$silverArmorStand = F2(
+	function (x, y) {
+		return {height: 2, itemType: $author$project$Item$SilverArmor_ItemStand, pickable: true, width: 1, x: x, y: y};
 	});
 var $author$project$Item$SpeedPotion_ItemStand = {$: 'SpeedPotion_ItemStand'};
 var $author$project$Item$speedPotionStand = F2(
@@ -7284,10 +7304,14 @@ var $author$project$Item$stoneSwordStand = F2(
 	});
 var $author$project$Level$level2Items = _List_fromArray(
 	[
-		A2($author$project$Item$healthPotionStand, 57, 11),
-		A2($author$project$Item$speedPotionStand, 55, 12),
-		A2($author$project$Item$stoneSwordStand, 55, 15),
-		A2($author$project$Item$dragonArmorStand, 57, 16)
+		A2($author$project$Item$healthPotionStand, 54, 9),
+		A2($author$project$Item$speedPotionStand, 57, 9),
+		A2($author$project$Item$stoneSwordStand, 53, 11),
+		A2($author$project$Item$ironSwordStand, 53, 13),
+		A2($author$project$Item$dragonSwordStand, 53, 15),
+		A2($author$project$Item$leatherArmorStand, 58, 11),
+		A2($author$project$Item$silverArmorStand, 58, 13),
+		A2($author$project$Item$dragonArmorStand, 58, 15)
 	]);
 var $author$project$Level$level2 = {enemies: $author$project$Level$level2Enemies, items: $author$project$Level$level2Items, map: $author$project$Level$Lvl2, mapTexture: 'assets/level/level_2_updated.png', startX: 56.0, startY: 9.0};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
@@ -8903,9 +8927,6 @@ var $author$project$Game$getExp = F2(
 var $author$project$Enemy$isAlive = function (enemy) {
 	return enemy.alive ? true : false;
 };
-var $author$project$Item$isPickable = function (item) {
-	return item.pickable ? true : false;
-};
 var $author$project$Enemy$Down = {$: 'Down'};
 var $author$project$Enemy$Left = {$: 'Left'};
 var $author$project$Enemy$Right = {$: 'Right'};
@@ -9507,11 +9528,7 @@ var $author$project$Game$playerAttacked = F2(
 				currentHealth: (newHp <= 0) ? 0 : newHp
 			});
 	});
-var $author$project$Item$DragonSword_ItemStand = {$: 'DragonSword_ItemStand'};
-var $author$project$Item$IronSword_ItemStand = {$: 'IronSword_ItemStand'};
-var $author$project$Item$LeatherArmor_ItemStand = {$: 'LeatherArmor_ItemStand'};
 var $author$project$Player$Left = {$: 'Left'};
-var $author$project$Item$SilverArmor_ItemStand = {$: 'SilverArmor_ItemStand'};
 var $author$project$Player$Up = {$: 'Up'};
 var $author$project$Item$WoodSword_ItemStand = {$: 'WoodSword_ItemStand'};
 var $author$project$Armor$Dragon = {$: 'Dragon'};
@@ -9557,14 +9574,13 @@ var $author$project$Game$playerPhysics = F3(
 				$elm$core$Basics$round(newX),
 				$elm$core$Basics$round(newY)),
 			lvl.items);
-		var _v0 = A2($elm$core$Debug$log, '[playerPhysics] newTileItemStand', newTileItemStand);
 		return _Utils_update(
 			player,
 			{
 				armor: function () {
-					var _v1 = $elm$core$List$head(newTileItemStand);
-					if (_v1.$ === 'Just') {
-						var itemStand = _v1.a;
+					var _v0 = $elm$core$List$head(newTileItemStand);
+					if (_v0.$ === 'Just') {
+						var itemStand = _v0.a;
 						return _Utils_eq(
 							$author$project$Item$getItemType(itemStand),
 							$author$project$Item$LeatherArmor_ItemStand) ? $author$project$Armor$leatherArmorSet : (_Utils_eq(
@@ -9577,9 +9593,9 @@ var $author$project$Game$playerPhysics = F3(
 					}
 				}(),
 				healthPotionCount: function () {
-					var _v2 = $elm$core$List$head(newTileItemStand);
-					if (_v2.$ === 'Just') {
-						var itemStand = _v2.a;
+					var _v1 = $elm$core$List$head(newTileItemStand);
+					if (_v1.$ === 'Just') {
+						var itemStand = _v1.a;
 						return _Utils_eq(
 							$author$project$Item$getItemType(itemStand),
 							$author$project$Item$HealthPotion_ItemStand) ? (player.healthPotionCount + 1) : player.healthPotionCount;
@@ -9588,9 +9604,9 @@ var $author$project$Game$playerPhysics = F3(
 					}
 				}(),
 				speedPotionCount: function () {
-					var _v3 = $elm$core$List$head(newTileItemStand);
-					if (_v3.$ === 'Just') {
-						var itemStand = _v3.a;
+					var _v2 = $elm$core$List$head(newTileItemStand);
+					if (_v2.$ === 'Just') {
+						var itemStand = _v2.a;
 						return _Utils_eq(
 							$author$project$Item$getItemType(itemStand),
 							$author$project$Item$SpeedPotion_ItemStand) ? (player.speedPotionCount + 1) : player.speedPotionCount;
@@ -9599,9 +9615,9 @@ var $author$project$Game$playerPhysics = F3(
 					}
 				}(),
 				sword: function () {
-					var _v4 = $elm$core$List$head(newTileItemStand);
-					if (_v4.$ === 'Just') {
-						var itemStand = _v4.a;
+					var _v3 = $elm$core$List$head(newTileItemStand);
+					if (_v3.$ === 'Just') {
+						var itemStand = _v3.a;
 						return _Utils_eq(
 							$author$project$Item$getItemType(itemStand),
 							$author$project$Item$WoodSword_ItemStand) ? $author$project$Sword$woodSword : (_Utils_eq(
@@ -10188,7 +10204,6 @@ var $author$project$Game$update = F2(
 			case 'Tick':
 				var dt = msg.a;
 				var playerWithExp = A2($author$project$Game$getExp, model.level.enemies, model.player);
-				var items = A2($elm$core$List$filter, $author$project$Item$isPickable, model.level.items);
 				var enemies = A2($elm$core$List$filter, $author$project$Enemy$isAlive, model.level.enemies);
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -11197,7 +11212,7 @@ var $author$project$Game$render = function (model) {
 				A2(
 				$elm$core$List$map,
 				$author$project$Item$renderItemStand(resources),
-				A2($elm$core$List$filter, $author$project$Item$isPickable, model.level.items))
+				model.level.items)
 			]));
 };
 var $elm_explorations$webgl$WebGL$Internal$Alpha = function (a) {

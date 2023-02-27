@@ -109,7 +109,7 @@ update msg model =
       let
         playerWithExp = getExp model.level.enemies model.player
         enemies = List.filter Enemy.isAlive model.level.enemies
-        items = List.filter Item.isPickable model.level.items
+        --items = List.filter Item.isPickable model.level.items
       in
       ( { model
           | player = tick dt model.level model.keys enemies playerWithExp
@@ -178,7 +178,7 @@ playerPhysics dt lvl player =
       else
         List.filter (Item.checkItemStandByCoordinates (floor newX ) (floor newY)) lvl.items
     -}
-    _ = Debug.log "[playerPhysics] newTileItemStand" newTileItemStand
+    --_ = Debug.log "[playerPhysics] newTileItemStand" newTileItemStand
   in
   { player
     | x =
@@ -275,6 +275,7 @@ itemsTick dt player level items =
   let
     newX = player.x + dt * player.vx
     newY = player.y + dt * player.vy
+    --_ = Debug.log "[itemsTick] items" items
   in
   List.map (Item.updateItemStand (round newX) (round newY)) items
 
@@ -478,11 +479,9 @@ render ({ resources, camera } as model) =
     , [ Player.renderPlayer resources model.player
       , renderSword resources model.player.sword model.keys
       ]
-    --, List.map (Enemy.renderEnemy resources) model.level.enemies
     , List.filter Enemy.isAlive model.level.enemies
       |> List.map (Enemy.renderEnemy resources)
-    , List.filter Item.isPickable model.level.items
-      |> List.map (Item.renderItemStand resources)
+    , List.map (Item.renderItemStand resources) model.level.items
     ]
 
 renderBackground : Resources -> List Renderable

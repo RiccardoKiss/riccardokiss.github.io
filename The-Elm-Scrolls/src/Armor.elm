@@ -33,10 +33,10 @@ armorTypeToString armor =
 noneArmorSet : Armor
 noneArmorSet =
   { armorType = None
-  , totalDef = 0
+  , totalDef = 2
   , helmetDef = 0
-  , chestDef = 0
-  , legsDef = 0
+  , chestDef = 1
+  , legsDef = 1
   }
 
 leatherArmorSet : Armor

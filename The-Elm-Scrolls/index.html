@@ -7253,12 +7253,12 @@ var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Armor$None = {$: 'None'};
-var $author$project$Armor$noneArmorSet = {armorType: $author$project$Armor$None, chestDef: 0, helmetDef: 0, legsDef: 0, totalDef: 0};
+var $author$project$Armor$noneArmorSet = {armorType: $author$project$Armor$None, chestDef: 1, helmetDef: 0, legsDef: 1, totalDef: 2};
 var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Wood = {$: 'Wood'};
 var $author$project$Sword$woodSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, swordType: $author$project$Sword$Wood, width: 1, x: 0, y: 0};
 var $author$project$Game$initPlayer = function (level) {
-	return {armor: $author$project$Armor$noneArmorSet, currentDefense: 10, currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, healthPotionCount: 0, height: 2, maxDefense: 100, maxExp: 5, maxHealth: 100, playerLevel: 1, speed: 3.0, speedPotionCount: 0, sword: $author$project$Sword$woodSword, vx: 0, vy: 0, width: 1, x: level.startX, y: level.startY};
+	return {armor: $author$project$Armor$noneArmorSet, currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, healthPotionCount: 0, height: 2, maxDefense: 100, maxExp: 5, maxHealth: 100, playerLevel: 1, speed: 3.0, speedPotionCount: 0, sword: $author$project$Sword$woodSword, vx: 0, vy: 0, width: 1, x: level.startX, y: level.startY};
 };
 var $author$project$Level$Lvl2 = {$: 'Lvl2'};
 var $author$project$Level$level2Enemies = _List_Nil;
@@ -11298,6 +11298,225 @@ var $elm$html$Html$Attributes$src = function (url) {
 };
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $author$project$Game$armorImgPath = F2(
+	function (armorType, armorPiece) {
+		var imgSize = '128';
+		switch (armorType.$) {
+			case 'None':
+				return 'assets/item/default_' + (armorPiece + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
+			case 'Leather':
+				return 'assets/item/leather_' + (armorPiece + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
+			case 'Silver':
+				return 'assets/item/silver_' + (armorPiece + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
+			default:
+				return 'assets/item/dragon_' + (armorPiece + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
+		}
+	});
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$Game$viewCharacterScreen = F4(
+	function (left, top, keys, player) {
+		var itemsImgSize = '128';
+		var swordImgPath = function () {
+			var _v1 = player.sword.swordType;
+			switch (_v1.$) {
+				case 'Wood':
+					return 'assets/sword/sword_wood_' + (itemsImgSize + ('_' + (itemsImgSize + '.png')));
+				case 'Stone':
+					return 'assets/sword/sword_stone_' + (itemsImgSize + ('_' + (itemsImgSize + '.png')));
+				case 'Iron':
+					return 'assets/sword/sword_iron_' + (itemsImgSize + ('_' + (itemsImgSize + '.png')));
+				default:
+					return 'assets/sword/sword_dragon_' + (itemsImgSize + ('_' + (itemsImgSize + '.png')));
+			}
+		}();
+		var characterImgPath = function () {
+			var _v0 = player.armor.armorType;
+			switch (_v0.$) {
+				case 'None':
+					return 'assets/player/player_EEE_256_512.png';
+				case 'Leather':
+					return 'assets/player/player_LLL_256_512.png';
+				case 'Silver':
+					return 'assets/player/player_SSS_256_512.png';
+				default:
+					return 'assets/player/player_DDD_256_512.png';
+			}
+		}();
+		return A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('C'),
+			keys) ? A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px'),
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/character_screen_background_1200_600.png'),
+							A2($elm$html$Html$Attributes$style, 'display', 'block'),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '500px'),
+							A2($elm$html$Html$Attributes$style, 'top', '8px'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '2em'),
+							A2($elm$html$Html$Attributes$style, 'color', 'black')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('<player_name>')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '500px'),
+							A2($elm$html$Html$Attributes$style, 'top', '48px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(characterImgPath)
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '350px'),
+							A2($elm$html$Html$Attributes$style, 'top', '48px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$armorImgPath, player.armor.armorType, 'helmet'))
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '350px'),
+							A2($elm$html$Html$Attributes$style, 'top', '186px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$armorImgPath, player.armor.armorType, 'chest'))
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '350px'),
+							A2($elm$html$Html$Attributes$style, 'top', '324px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(
+									A2($author$project$Game$armorImgPath, player.armor.armorType, 'legs'))
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '350px'),
+							A2($elm$html$Html$Attributes$style, 'top', '462px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(swordImgPath)
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '766px'),
+							A2($elm$html$Html$Attributes$style, 'top', '294px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/item/health_potion_' + (itemsImgSize + ('_' + (itemsImgSize + '.png'))))
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '766px'),
+							A2($elm$html$Html$Attributes$style, 'top', '432px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/item/speed_potion_' + (itemsImgSize + ('_' + (itemsImgSize + '.png'))))
+								]),
+							_List_Nil)
+						]))
+				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
+	});
 var $elm$core$String$replace = F3(
 	function (before, after, string) {
 		return A2(
@@ -11329,8 +11548,6 @@ var $author$project$Game$keyButtonTexture = F2(
 			$ohanhi$keyboard$Keyboard$Character('D'),
 			keys) ? pressedPath : assetPath) : ((key_button === 'arrowUp') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowUp, keys) ? pressedPath : assetPath) : ((key_button === 'arrowRight') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowRight, keys) ? pressedPath : assetPath) : ((key_button === 'arrowDown') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowDown, keys) ? pressedPath : assetPath) : ((key_button === 'arrowLeft') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowLeft, keys) ? pressedPath : assetPath) : ''))))))))));
 	});
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Game$viewConsumable1 = F4(
 	function (left, top, keys, potionCount) {
 		return A2(
@@ -11698,6 +11915,73 @@ var $author$project$Game$viewHealthBar = F4(
 					A2($author$project$Game$viewHealthInfo, maxHp, currHp)
 				]));
 	});
+var $author$project$Armor$armorTypeToString = function (armor) {
+	var _v0 = armor.armorType;
+	switch (_v0.$) {
+		case 'None':
+			return 'none';
+		case 'Leather':
+			return 'leather';
+		case 'Silver':
+			return 'silver';
+		default:
+			return 'dragon';
+	}
+};
+var $elm$html$Html$pre = _VirtualDom_node('pre');
+var $author$project$Game$viewPlayerInfo = F4(
+	function (left, top, player, enemy) {
+		return A2(
+			$elm$html$Html$pre,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Player'),
+					$elm$html$Html$text(
+					'\nlvl: ' + $elm$core$String$fromInt(player.playerLevel)),
+					$elm$html$Html$text(
+					'\nmaxEXP: ' + $elm$core$String$fromInt(player.maxExp)),
+					$elm$html$Html$text(
+					'\ncurEXP: ' + $elm$core$String$fromInt(player.currentExp)),
+					$elm$html$Html$text(
+					'\nx: ' + $elm$core$String$fromFloat(player.x)),
+					$elm$html$Html$text(
+					'\ny: ' + $elm$core$String$fromFloat(player.y)),
+					$elm$html$Html$text(
+					'\nvx: ' + $elm$core$String$fromFloat(player.vx)),
+					$elm$html$Html$text(
+					'\nvy: ' + $elm$core$String$fromFloat(player.vy)),
+					$elm$html$Html$text(
+					'\nspeed: ' + $elm$core$String$fromFloat(player.speed)),
+					$elm$html$Html$text(
+					'\nsword: ' + $author$project$Sword$swordTypeToString(player.sword)),
+					$elm$html$Html$text(
+					'\narmor: ' + $author$project$Armor$armorTypeToString(player.armor)),
+					$elm$html$Html$text(
+					'\nmaxDEF: ' + $elm$core$String$fromInt(player.maxDefense)),
+					$elm$html$Html$text(
+					'\ncurDEF: ' + $elm$core$String$fromInt(player.armor.totalDef)),
+					$elm$html$Html$text(
+					'\nmaxHP: ' + $elm$core$String$fromInt(player.maxHealth)),
+					$elm$html$Html$text(
+					'\ncurHP: ' + $elm$core$String$fromInt(player.currentHealth)),
+					$elm$html$Html$text(
+					'\nHP potions: ' + $elm$core$String$fromInt(player.healthPotionCount)),
+					$elm$html$Html$text(
+					'\nSPD potions: ' + $elm$core$String$fromInt(player.speedPotionCount))
+				]));
+	});
 var $author$project$Game$viewPlayerInput = F3(
 	function (left, top, keys) {
 		return A2(
@@ -11811,73 +12095,6 @@ var $author$project$Game$viewPlayerInput = F3(
 						]))
 				]));
 	});
-var $author$project$Armor$armorTypeToString = function (armor) {
-	var _v0 = armor.armorType;
-	switch (_v0.$) {
-		case 'None':
-			return 'none';
-		case 'Leather':
-			return 'leather';
-		case 'Silver':
-			return 'silver';
-		default:
-			return 'dragon';
-	}
-};
-var $elm$html$Html$pre = _VirtualDom_node('pre');
-var $author$project$Game$viewPlayerModel = F4(
-	function (left, top, player, enemy) {
-		return A2(
-			$elm$html$Html$pre,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'left',
-					$elm$core$String$fromInt(left) + 'px'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'top',
-					$elm$core$String$fromInt(top) + 'px')
-				]),
-			_List_fromArray(
-				[
-					$elm$html$Html$text('Player'),
-					$elm$html$Html$text(
-					'\nlvl: ' + $elm$core$String$fromInt(player.playerLevel)),
-					$elm$html$Html$text(
-					'\nmaxEXP: ' + $elm$core$String$fromInt(player.maxExp)),
-					$elm$html$Html$text(
-					'\ncurEXP: ' + $elm$core$String$fromInt(player.currentExp)),
-					$elm$html$Html$text(
-					'\nx: ' + $elm$core$String$fromFloat(player.x)),
-					$elm$html$Html$text(
-					'\ny: ' + $elm$core$String$fromFloat(player.y)),
-					$elm$html$Html$text(
-					'\nvx: ' + $elm$core$String$fromFloat(player.vx)),
-					$elm$html$Html$text(
-					'\nvy: ' + $elm$core$String$fromFloat(player.vy)),
-					$elm$html$Html$text(
-					'\nspeed: ' + $elm$core$String$fromFloat(player.speed)),
-					$elm$html$Html$text(
-					'\nsword: ' + $author$project$Sword$swordTypeToString(player.sword)),
-					$elm$html$Html$text(
-					'\narmor: ' + $author$project$Armor$armorTypeToString(player.armor)),
-					$elm$html$Html$text(
-					'\nmaxDEF: ' + $elm$core$String$fromInt(player.maxDefense)),
-					$elm$html$Html$text(
-					'\ncurDEF: ' + $elm$core$String$fromInt(player.currentDefense)),
-					$elm$html$Html$text(
-					'\nmaxHP: ' + $elm$core$String$fromInt(player.maxHealth)),
-					$elm$html$Html$text(
-					'\ncurHP: ' + $elm$core$String$fromInt(player.currentHealth)),
-					$elm$html$Html$text(
-					'\nHP potions: ' + $elm$core$String$fromInt(player.healthPotionCount)),
-					$elm$html$Html$text(
-					'\nSPD potions: ' + $elm$core$String$fromInt(player.speedPotionCount))
-				]));
-	});
 var $author$project$Game$viewTime = F3(
 	function (left, top, dt) {
 		var seconds = $elm$core$Basics$floor(dt) % 60;
@@ -11937,17 +12154,18 @@ var $author$project$Game$view = function (model) {
 					{camera: model.camera, size: model.screen, time: model.time},
 					$author$project$Game$render(model)),
 					A4(
-					$author$project$Game$viewPlayerModel,
+					$author$project$Game$viewPlayerInfo,
 					100,
 					100,
 					model.player,
 					$elm$core$List$head(model.level.enemies)),
 					A3($author$project$Game$viewTime, 950, 50, model.time),
-					A4($author$project$Game$viewDefenseBar, 448, 685, model.player.maxDefense, model.player.currentDefense),
+					A4($author$project$Game$viewDefenseBar, 448, 685, model.player.maxDefense, model.player.armor.totalDef),
 					A4($author$project$Game$viewHealthBar, 448, 725, model.player.maxHealth, model.player.currentHealth),
 					A4($author$project$Game$viewExpBar, 448, 765, model.player.maxExp, model.player.currentExp),
 					A4($author$project$Game$viewConsumable1, 368, 650, model.keys, model.player.healthPotionCount),
 					A4($author$project$Game$viewConsumable2, 1488, 650, model.keys, model.player.speedPotionCount),
+					A4($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.player),
 					A3($author$project$Game$viewPlayerInput, 820, 861, model.keys)
 				])),
 		title: 'Game'

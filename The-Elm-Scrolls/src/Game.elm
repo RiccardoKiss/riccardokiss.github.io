@@ -64,7 +64,7 @@ initPlayer level =
   , sword = Sword.woodSword
   , armor = Armor.noneArmorSet
   , maxDefense = 100
-  , currentDefense = 10
+  --, currentDefense = 10
   , maxHealth = 100
   , currentHealth = 100
   , playerLevel = 1
@@ -675,8 +675,8 @@ viewPlayerInput left top keys =
             ] [ img [ src (keyButtonTexture "spacebar" keys) ] [] ]
       ]
 
-viewPlayerModel : Int -> Int -> Player -> Maybe Enemy -> Html Msg
-viewPlayerModel left top player enemy =
+viewPlayerInfo : Int -> Int -> Player -> Maybe Enemy -> Html Msg
+viewPlayerInfo left top player enemy =
   pre [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
@@ -693,7 +693,7 @@ viewPlayerModel left top player enemy =
       , text ("\nsword: " ++ Sword.swordTypeToString player.sword)
       , text ("\narmor: " ++ Armor.armorTypeToString player.armor)
       , text ("\nmaxDEF: " ++ String.fromInt player.maxDefense)
-      , text ("\ncurDEF: " ++ String.fromInt player.currentDefense)
+      , text ("\ncurDEF: " ++ String.fromInt player.armor.totalDef)
       , text ("\nmaxHP: " ++ String.fromInt player.maxHealth)
       , text ("\ncurHP: " ++ String.fromInt player.currentHealth)
       , text ("\nHP potions: " ++ String.fromInt player.healthPotionCount)
@@ -729,6 +729,107 @@ viewPlayerModel left top player enemy =
       -}
       ]
 
+armorImgPath : Armor.ArmorType -> String -> String
+armorImgPath  armorType armorPiece =
+  let
+    imgSize = "128" --64
+  in
+  case armorType of
+    Armor.None ->
+      "assets/item/default_" ++ armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+
+    Armor.Leather ->
+      "assets/item/leather_" ++ armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+
+    Armor.Silver ->
+      "assets/item/silver_" ++ armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+
+    Armor.Dragon ->
+      "assets/item/dragon_" ++ armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+
+viewCharacterScreen : Int -> Int -> List Keyboard.Key -> Player -> Html Msg
+viewCharacterScreen left top keys player =
+  let
+    itemsImgSize = "128" --64
+    characterImgPath =
+      case player.armor.armorType of
+        Armor.None ->
+          "assets/player/player_EEE_256_512.png"
+
+        Armor.Leather ->
+          "assets/player/player_LLL_256_512.png"
+
+        Armor.Silver ->
+          "assets/player/player_SSS_256_512.png"
+
+        Armor.Dragon ->
+          "assets/player/player_DDD_256_512.png"
+
+    swordImgPath =
+      case player.sword.swordType of
+        Sword.Wood ->
+          "assets/sword/sword_wood_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png"
+
+        Sword.Stone ->
+          "assets/sword/sword_stone_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png"
+
+        Sword.Iron ->
+          "assets/sword/sword_iron_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png"
+
+        Sword.Dragon ->
+          "assets/sword/sword_dragon_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png"
+
+  in
+  if List.member (Keyboard.Character "C") keys then
+    div [ style "left" (String.fromInt left ++ "px")
+        , style "top" (String.fromInt top ++ "px")
+        , style "position" "absolute"
+        , style "font-family" "monospace"
+        ]
+        [ img [ src "assets/character_screen_background_1200_600.png"
+              , style "display" "block"
+              , style "position" "absolute"
+              ] []
+        , div [ style "position" "absolute"
+              , style "left" "500px"
+              , style "top" "8px"
+              --, style "font-family" "monospace"
+              , style "font-size" "2em"
+              , style "color" "black"
+              ]
+              [ text  "<player_name>" ]
+        , div [ style "position" "absolute"
+              , style "left" "500px"
+              , style "top" "48px"
+              ] [ img [ src characterImgPath ] [] ]
+        , div [ style "position" "absolute"
+              , style "left" "350px"
+              , style "top" "48px"
+              ] [ img [ src (armorImgPath player.armor.armorType "helmet") ] [] ]
+        , div [ style "position" "absolute"
+              , style "left" "350px"
+              , style "top" "186px"
+              ] [ img [ src (armorImgPath player.armor.armorType "chest") ] [] ]
+        , div [ style "position" "absolute"
+              , style "left" "350px"
+              , style "top" "324px"
+              ] [ img [ src (armorImgPath player.armor.armorType "legs") ] [] ]
+        , div [ style "position" "absolute"
+              , style "left" "350px"
+              , style "top" "462px"
+              ] [ img [ src swordImgPath ] [] ]
+        , div [ style "position" "absolute"
+              , style "left" "766px"
+              , style "top" "294px"
+              ] [ img [ src ("assets/item/health_potion_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png") ] [] ]
+        , div [ style "position" "absolute"
+              , style "left" "766px"
+              , style "top" "432px"
+              ] [ img [ src ("assets/item/speed_potion_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png") ] [] ]
+        ]
+  else
+    div [] []
+
 viewTime : Int -> Int -> Float -> Html Msg
 viewTime left top dt =
   let
@@ -762,16 +863,17 @@ view model =
           ]
             { camera = model.camera
             , time = model.time
-            , size = model.screen
+            , size = model.screen  -- (1280, 720)
             }
               (render model)
-      , viewPlayerModel 100 100 model.player (List.head model.level.enemies)
+      , viewPlayerInfo 100 100 model.player (List.head model.level.enemies)
       , viewTime 950 50 model.time
-      , viewDefenseBar 448 685 model.player.maxDefense model.player.currentDefense
+      , viewDefenseBar 448 685 model.player.maxDefense model.player.armor.totalDef
       , viewHealthBar 448 725 model.player.maxHealth model.player.currentHealth
       , viewExpBar 448 765 model.player.maxExp model.player.currentExp
       , viewConsumable1 368 650 model.keys model.player.healthPotionCount
       , viewConsumable2 1488 650 model.keys model.player.speedPotionCount
+      , viewCharacterScreen 360 160 model.keys model.player
       , viewPlayerInput 820 861 model.keys
       ]
   }

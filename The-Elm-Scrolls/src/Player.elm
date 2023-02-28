@@ -19,7 +19,7 @@ type alias Player =
   , sword : Sword
   , armor : Armor
   , maxDefense : Int
-  , currentDefense : Int
+  --, currentDefense : Int
   , maxHealth : Int
   , currentHealth : Int
   , playerLevel : Int

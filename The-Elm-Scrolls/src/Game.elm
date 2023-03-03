@@ -7,7 +7,7 @@ import Game.Resources as Resources exposing (..)
 import Game.TwoD as Game2d
 import Game.TwoD.Camera as Camera exposing (..)
 import Game.TwoD.Render as Render exposing (..)
-import Html exposing (Html, div, img, text, pre)
+import Html exposing (Html, div, img, text, pre, p, span)
 import Html.Attributes exposing (style, src)
 import Html.Events exposing (on, keyCode)
 import Json.Decode as D
@@ -675,16 +675,16 @@ viewPlayerInput left top keys =
             ] [ img [ src (keyButtonTexture "spacebar" keys) ] [] ]
       ]
 
-viewPlayerInfo : Int -> Int -> Player -> Maybe Enemy -> Html Msg
-viewPlayerInfo left top player enemy =
+viewPlayerDebugInfo : Int -> Int -> Player -> Maybe Enemy -> Html Msg
+viewPlayerDebugInfo left top player enemy =
   pre [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
       ]
       [ text "Player"
-      , text ("\nlvl: " ++ String.fromInt player.playerLevel)
-      , text ("\nmaxEXP: " ++ String.fromInt player.maxExp)
-      , text ("\ncurEXP: " ++ String.fromInt player.currentExp)
+      --, text ("\nlvl: " ++ String.fromInt player.playerLevel)
+      --, text ("\nmaxEXP: " ++ String.fromInt player.maxExp)
+      --, text ("\ncurEXP: " ++ String.fromInt player.currentExp)
       , text ("\nx: " ++ String.fromFloat player.x)
       , text ("\ny: " ++ String.fromFloat player.y)
       , text ("\nvx: " ++ String.fromFloat player.vx)
@@ -692,12 +692,12 @@ viewPlayerInfo left top player enemy =
       , text ("\nspeed: " ++ String.fromFloat player.speed)
       , text ("\nsword: " ++ Sword.swordTypeToString player.sword)
       , text ("\narmor: " ++ Armor.armorTypeToString player.armor)
-      , text ("\nmaxDEF: " ++ String.fromInt player.maxDefense)
-      , text ("\ncurDEF: " ++ String.fromInt player.armor.totalDef)
-      , text ("\nmaxHP: " ++ String.fromInt player.maxHealth)
-      , text ("\ncurHP: " ++ String.fromInt player.currentHealth)
-      , text ("\nHP potions: " ++ String.fromInt player.healthPotionCount)
-      , text ("\nSPD potions: " ++ String.fromInt player.speedPotionCount)
+      --, text ("\nmaxDEF: " ++ String.fromInt player.maxDefense)
+      --, text ("\ncurDEF: " ++ String.fromInt player.armor.totalDef)
+      --, text ("\nmaxHP: " ++ String.fromInt player.maxHealth)
+      --, text ("\ncurHP: " ++ String.fromInt player.currentHealth)
+      --, text ("\nHP potions: " ++ String.fromInt player.healthPotionCount)
+      --, text ("\nSPD potions: " ++ String.fromInt player.speedPotionCount)
       {-, text ("\neX: " ++ case enemy of
           Just en ->
             String.fromFloat en.x
@@ -729,28 +729,183 @@ viewPlayerInfo left top player enemy =
       -}
       ]
 
-armorImgPath : Armor.ArmorType -> String -> String
-armorImgPath  armorType armorPiece =
+viewPlayerInfo : Int -> Int -> Player -> Html Msg
+viewPlayerInfo left top player =
+  div [ style "position" "absolute"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
+      ]
+      [ pre [ style "position" "absolute"
+            , style "margin" "0em"
+            , style "font-family" "monospace"
+            , style "font-weight" "bolder"
+            , style "font-size" "1.75em"
+            ]
+            [ text  "<player_name>" ]
+      , pre [ style "position" "absolute"
+            , style "margin-top" "1.5em"
+            , style "font-size" "1.5em"
+            ]
+            [ text ("LVL: " ++ String.fromInt player.playerLevel)
+            , text ("\nEXP: " ++ String.fromInt player.currentExp ++ " / " ++ String.fromInt player.maxExp)
+            , text ("\n\nHealth: " ++ String.fromInt player.currentHealth ++ " / " ++ String.fromInt player.maxHealth)
+            , text ("\nDefense: " ++ String.fromInt player.armor.totalDef ++ " / " ++ String.fromInt player.maxDefense)
+            , text ("\nAttack: " ++ String.fromInt player.sword.attack)
+            , text ("\nSpeed: " ++ String.fromFloat player.speed)
+            ]
+      ]
+
+armorInfo : Int -> Int -> String -> Armor -> Armor.ArmorPiece -> Html Msg
+armorInfo left top imgSize armor armorPiece =
   let
-    imgSize = "128" --64
+    armorImgPath =
+      case armor.armorType of
+        Armor.None ->
+          "assets/item/default_" ++ armorPieceToString armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+
+        Armor.Leather ->
+          "assets/item/leather_" ++ armorPieceToString armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+
+        Armor.Silver ->
+          "assets/item/silver_" ++ armorPieceToString armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+
+        Armor.Dragon ->
+          "assets/item/dragon_" ++ armorPieceToString armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+    armorPieceDefValue =
+      case armorPiece of
+        Armor.Helmet ->
+          armor.helmetDef
+
+        Armor.Chestplate ->
+          armor.chestDef
+
+        Armor.Legs ->
+          armor.legsDef
+    armorName = String.toUpper ((Armor.armorTypeToString armor) ++ " " ++ armorPieceToString armorPiece)
   in
-  case armorType of
-    Armor.None ->
-      "assets/item/default_" ++ armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+  div [ style "position" "absolute"
+      , style "top" (String.fromInt top ++ "px")
+      ]
+      [ pre [ style "position" "absolute"
+            , style "left" (String.fromInt 150 ++ "px")
+            , style "margin-top" "0em"
+            , style "font-family" "consolas"
+            , style "font-size" "1.5em"
+            , style "font-weight" "bolder"
+            ]
+            [ text ((String.padLeft 15 ' ' armorName) ++ "\n") ]
+      , pre [ style "position" "absolute"
+            , style "left" (String.fromInt 150 ++ "px")
+            , style "font-family" "consolas"
+            , style "font-size" "1.5em"
+            ]
+            [ text (String.padLeft 15 ' ' ("DEF " ++ String.fromInt armorPieceDefValue )) ]
+      , div [ style "position" "absolute"
+            , style "left" (String.fromInt left ++ "px")
+            ]
+            [ img [ src armorImgPath ] [] ]
+  ]
 
-    Armor.Leather ->
-      "assets/item/leather_" ++ armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+swordInfo : Int -> Int -> String -> Sword -> Html Msg
+swordInfo left top imgSize sword =
+  let
+    swordImgPath =
+      case sword.swordType of
+        Sword.Wood ->
+          "assets/sword/sword_wood_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
 
-    Armor.Silver ->
-      "assets/item/silver_" ++ armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+        Sword.Stone ->
+          "assets/sword/sword_stone_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
 
-    Armor.Dragon ->
-      "assets/item/dragon_" ++ armorPiece ++ "_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+        Sword.Iron ->
+          "assets/sword/sword_iron_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+
+        Sword.Dragon ->
+          "assets/sword/sword_dragon_" ++ imgSize ++ "_" ++ imgSize ++ ".png"
+    swordName = String.toUpper ((Sword.swordTypeToString sword) ++ " sword")
+  in
+  div [ style "position" "absolute"
+      , style "top" (String.fromInt top ++ "px")
+      ]
+      [ pre [ style "position" "absolute"
+            , style "left" (String.fromInt 150 ++ "px")
+            , style "margin-top" "0em"
+            , style "font-family" "consolas"
+            , style "font-size" "1.5em"
+            , style "font-weight" "bolder"
+            ]
+            [ text ((String.padLeft 15 ' ' swordName) ++ "\n") ]
+      , pre [ style "position" "absolute"
+            , style "left" (String.fromInt 150 ++ "px")
+            , style "font-family" "consolas"
+            , style "font-size" "1.5em"
+            ]
+            [ text (String.padLeft 15 ' ' ("ATK " ++ String.fromInt sword.attack )) ]
+      , div [ style "position" "absolute"
+            , style "left" (String.fromInt left ++ "px")
+            ] [ img [ src swordImgPath ] [] ]
+      ]
+
+healthPotionInfo : Int -> Int -> Int -> Html Msg
+healthPotionInfo left top healthPotionCount =
+  div [ style "position" "absolute"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
+      ]
+      [ div [ style "position" "absolute"
+            ]
+            [ img [ src ("assets/item/health_potion_128_128.png") ] [] ]
+      , pre [ style "position" "absolute"
+            --, style "margin-top" "0em"
+            , style "margin-left" "4em"
+            , style "font-family" "consolas"
+            , style "font-size" "1.5em"
+            , style "font-weight" "bolder"
+            , style "color" "red"
+            ]
+            [ text ("Health potion  x" ++ String.fromInt healthPotionCount) ]
+      , pre [ style "position" "absolute"
+            , style "margin-top" "2.5em"
+            , style "margin-left" "5em"
+            , style "font-family" "monospace"
+            , style "font-size" "1.5em"
+            ]
+            [ text "- restores 10% of max HP"]
+      ]
+
+speedPotionInfo : Int -> Int -> Int -> Html Msg
+speedPotionInfo left top speedPotionCount =
+  div [ style "position" "absolute"
+      , style "left" (String.fromInt left ++ "px")
+      , style "top" (String.fromInt top ++ "px")
+      ]
+      [ div [ style "position" "absolute"
+            ]
+            [ img [ src ("assets/item/speed_potion_128_128.png") ] [] ]
+      , pre [ style "position" "absolute"
+            --, style "margin-top" "0em"
+            , style "margin-left" "4em"
+            , style "font-family" "consolas"
+            , style "font-size" "1.5em"
+            , style "font-weight" "bolder"
+            , style "color" "green"
+            ]
+            [ text ("Speed potion  x" ++ String.fromInt speedPotionCount) ]
+      , pre [ style "position" "absolute"
+            , style "margin-top" "2.5em"
+            , style "margin-left" "5em"
+            , style "font-family" "monospace"
+            , style "font-size" "1.5em"
+            ]
+            [ text "- increase speed by 50%\n"
+            , text "- duration: 5s"
+            ]
+      ]
 
 viewCharacterScreen : Int -> Int -> List Keyboard.Key -> Player -> Html Msg
 viewCharacterScreen left top keys player =
   let
-    itemsImgSize = "128" --64
+    itemsImgSize = "64" --"128"
     characterImgPath =
       case player.armor.armorType of
         Armor.None ->
@@ -765,20 +920,6 @@ viewCharacterScreen left top keys player =
         Armor.Dragon ->
           "assets/player/player_DDD_256_512.png"
 
-    swordImgPath =
-      case player.sword.swordType of
-        Sword.Wood ->
-          "assets/sword/sword_wood_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png"
-
-        Sword.Stone ->
-          "assets/sword/sword_stone_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png"
-
-        Sword.Iron ->
-          "assets/sword/sword_iron_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png"
-
-        Sword.Dragon ->
-          "assets/sword/sword_dragon_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png"
-
   in
   if List.member (Keyboard.Character "C") keys then
     div [ style "left" (String.fromInt left ++ "px")
@@ -786,46 +927,21 @@ viewCharacterScreen left top keys player =
         , style "position" "absolute"
         , style "font-family" "monospace"
         ]
-        [ img [ src "assets/character_screen_background_1200_600.png"
+        [ img [ src "assets/character_screen_scroll_background_1200_600.png"
               , style "display" "block"
               , style "position" "absolute"
               ] []
         , div [ style "position" "absolute"
-              , style "left" "500px"
-              , style "top" "8px"
-              --, style "font-family" "monospace"
-              , style "font-size" "2em"
-              , style "color" "black"
-              ]
-              [ text  "<player_name>" ]
-        , div [ style "position" "absolute"
-              , style "left" "500px"
+              , style "left" "472px"
               , style "top" "48px"
               ] [ img [ src characterImgPath ] [] ]
-        , div [ style "position" "absolute"
-              , style "left" "350px"
-              , style "top" "48px"
-              ] [ img [ src (armorImgPath player.armor.armorType "helmet") ] [] ]
-        , div [ style "position" "absolute"
-              , style "left" "350px"
-              , style "top" "186px"
-              ] [ img [ src (armorImgPath player.armor.armorType "chest") ] [] ]
-        , div [ style "position" "absolute"
-              , style "left" "350px"
-              , style "top" "324px"
-              ] [ img [ src (armorImgPath player.armor.armorType "legs") ] [] ]
-        , div [ style "position" "absolute"
-              , style "left" "350px"
-              , style "top" "462px"
-              ] [ img [ src swordImgPath ] [] ]
-        , div [ style "position" "absolute"
-              , style "left" "766px"
-              , style "top" "294px"
-              ] [ img [ src ("assets/item/health_potion_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png") ] [] ]
-        , div [ style "position" "absolute"
-              , style "left" "766px"
-              , style "top" "432px"
-              ] [ img [ src ("assets/item/speed_potion_" ++ itemsImgSize ++ "_" ++ itemsImgSize ++ ".png") ] [] ]
+        , armorInfo 375 100 itemsImgSize player.armor Armor.Helmet
+        , armorInfo 375 196 itemsImgSize player.armor Armor.Chestplate
+        , armorInfo 375 292 itemsImgSize player.armor Armor.Legs
+        , swordInfo 375 388 itemsImgSize player.sword
+        , viewPlayerInfo 766 75 player
+        , healthPotionInfo 710 310 player.healthPotionCount
+        , speedPotionInfo 710 420 player.speedPotionCount
         ]
   else
     div [] []
@@ -866,7 +982,7 @@ view model =
             , size = model.screen  -- (1280, 720)
             }
               (render model)
-      , viewPlayerInfo 100 100 model.player (List.head model.level.enemies)
+      , viewPlayerDebugInfo 100 100 model.player (List.head model.level.enemies)
       , viewTime 950 50 model.time
       , viewDefenseBar 448 685 model.player.maxDefense model.player.armor.totalDef
       , viewHealthBar 448 725 model.player.maxHealth model.player.currentHealth

@@ -15,6 +15,11 @@ type ArmorType
   --| Gold
   | Dragon
 
+type ArmorPiece
+  = Helmet
+  | Chestplate
+  | Legs
+
 armorTypeToString : Armor -> String
 armorTypeToString armor =
   case armor.armorType of
@@ -29,6 +34,18 @@ armorTypeToString armor =
 
     Dragon ->
       "dragon"
+
+armorPieceToString : ArmorPiece -> String
+armorPieceToString armorPiece =
+  case armorPiece of
+    Helmet ->
+      "helmet"
+
+    Chestplate ->
+      "chest"
+
+    Legs ->
+      "legs"
 
 noneArmorSet : Armor
 noneArmorSet =

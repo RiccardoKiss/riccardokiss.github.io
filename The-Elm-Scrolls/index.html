@@ -9534,7 +9534,7 @@ var $author$project$Item$WoodSword_ItemStand = {$: 'WoodSword_ItemStand'};
 var $author$project$Armor$Dragon = {$: 'Dragon'};
 var $author$project$Armor$dragonArmorSet = {armorType: $author$project$Armor$Dragon, chestDef: 30, helmetDef: 30, legsDef: 30, totalDef: 90};
 var $author$project$Sword$Dragon = {$: 'Dragon'};
-var $author$project$Sword$dragonSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, swordType: $author$project$Sword$Dragon, width: 1, x: 0, y: 0};
+var $author$project$Sword$dragonSword = {action: $author$project$Sword$NotAttack, attack: 20, height: 0.5, swordType: $author$project$Sword$Dragon, width: 1, x: 0, y: 0};
 var $author$project$Item$getItemType = function (item) {
 	return item.itemType;
 };
@@ -9548,7 +9548,7 @@ var $elm$core$List$head = function (list) {
 	}
 };
 var $author$project$Sword$Iron = {$: 'Iron'};
-var $author$project$Sword$ironSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, swordType: $author$project$Sword$Iron, width: 1, x: 0, y: 0};
+var $author$project$Sword$ironSword = {action: $author$project$Sword$NotAttack, attack: 15, height: 0.5, swordType: $author$project$Sword$Iron, width: 1, x: 0, y: 0};
 var $elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
 		return true;
@@ -9561,7 +9561,7 @@ var $author$project$Armor$leatherArmorSet = {armorType: $author$project$Armor$Le
 var $author$project$Armor$Silver = {$: 'Silver'};
 var $author$project$Armor$silverArmorSet = {armorType: $author$project$Armor$Silver, chestDef: 20, helmetDef: 20, legsDef: 20, totalDef: 60};
 var $author$project$Sword$Stone = {$: 'Stone'};
-var $author$project$Sword$stoneSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, swordType: $author$project$Sword$Stone, width: 1, x: 0, y: 0};
+var $author$project$Sword$stoneSword = {action: $author$project$Sword$NotAttack, attack: 10, height: 0.5, swordType: $author$project$Sword$Stone, width: 1, x: 0, y: 0};
 var $author$project$Game$playerPhysics = F3(
 	function (dt, lvl, player) {
 		var newY = player.y + (dt * player.vy);
@@ -11298,38 +11298,455 @@ var $elm$html$Html$Attributes$src = function (url) {
 };
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $author$project$Game$armorImgPath = F2(
-	function (armorType, armorPiece) {
-		var imgSize = '128';
-		switch (armorType.$) {
-			case 'None':
-				return 'assets/item/default_' + (armorPiece + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
-			case 'Leather':
-				return 'assets/item/leather_' + (armorPiece + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
-			case 'Silver':
-				return 'assets/item/silver_' + (armorPiece + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
-			default:
-				return 'assets/item/dragon_' + (armorPiece + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
-		}
+var $author$project$Armor$Chestplate = {$: 'Chestplate'};
+var $author$project$Armor$Helmet = {$: 'Helmet'};
+var $author$project$Armor$Legs = {$: 'Legs'};
+var $author$project$Armor$armorPieceToString = function (armorPiece) {
+	switch (armorPiece.$) {
+		case 'Helmet':
+			return 'helmet';
+		case 'Chestplate':
+			return 'chest';
+		default:
+			return 'legs';
+	}
+};
+var $author$project$Armor$armorTypeToString = function (armor) {
+	var _v0 = armor.armorType;
+	switch (_v0.$) {
+		case 'None':
+			return 'none';
+		case 'Leather':
+			return 'leather';
+		case 'Silver':
+			return 'silver';
+		default:
+			return 'dragon';
+	}
+};
+var $elm$core$String$cons = _String_cons;
+var $elm$core$String$fromChar = function (_char) {
+	return A2($elm$core$String$cons, _char, '');
+};
+var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
+var $elm$core$String$repeatHelp = F3(
+	function (n, chunk, result) {
+		return (n <= 0) ? result : A3(
+			$elm$core$String$repeatHelp,
+			n >> 1,
+			_Utils_ap(chunk, chunk),
+			(!(n & 1)) ? result : _Utils_ap(result, chunk));
 	});
+var $elm$core$String$repeat = F2(
+	function (n, chunk) {
+		return A3($elm$core$String$repeatHelp, n, chunk, '');
+	});
+var $elm$core$String$padLeft = F3(
+	function (n, _char, string) {
+		return _Utils_ap(
+			A2(
+				$elm$core$String$repeat,
+				n - $elm$core$String$length(string),
+				$elm$core$String$fromChar(_char)),
+			string);
+	});
+var $elm$html$Html$pre = _VirtualDom_node('pre');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$Game$viewCharacterScreen = F4(
-	function (left, top, keys, player) {
-		var itemsImgSize = '128';
-		var swordImgPath = function () {
-			var _v1 = player.sword.swordType;
-			switch (_v1.$) {
-				case 'Wood':
-					return 'assets/sword/sword_wood_' + (itemsImgSize + ('_' + (itemsImgSize + '.png')));
-				case 'Stone':
-					return 'assets/sword/sword_stone_' + (itemsImgSize + ('_' + (itemsImgSize + '.png')));
-				case 'Iron':
-					return 'assets/sword/sword_iron_' + (itemsImgSize + ('_' + (itemsImgSize + '.png')));
+var $author$project$Game$armorInfo = F5(
+	function (left, top, imgSize, armor, armorPiece) {
+		var armorPieceDefValue = function () {
+			switch (armorPiece.$) {
+				case 'Helmet':
+					return armor.helmetDef;
+				case 'Chestplate':
+					return armor.chestDef;
 				default:
-					return 'assets/sword/sword_dragon_' + (itemsImgSize + ('_' + (itemsImgSize + '.png')));
+					return armor.legsDef;
 			}
 		}();
+		var armorName = $elm$core$String$toUpper(
+			$author$project$Armor$armorTypeToString(armor) + (' ' + $author$project$Armor$armorPieceToString(armorPiece)));
+		var armorImgPath = function () {
+			var _v0 = armor.armorType;
+			switch (_v0.$) {
+				case 'None':
+					return 'assets/item/default_' + ($author$project$Armor$armorPieceToString(armorPiece) + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
+				case 'Leather':
+					return 'assets/item/leather_' + ($author$project$Armor$armorPieceToString(armorPiece) + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
+				case 'Silver':
+					return 'assets/item/silver_' + ($author$project$Armor$armorPieceToString(armorPiece) + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
+				default:
+					return 'assets/item/dragon_' + ($author$project$Armor$armorPieceToString(armorPiece) + ('_' + (imgSize + ('_' + (imgSize + '.png')))));
+			}
+		}();
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'left',
+							$elm$core$String$fromInt(150) + 'px'),
+							A2($elm$html$Html$Attributes$style, 'margin-top', '0em'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em'),
+							A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							A3(
+								$elm$core$String$padLeft,
+								15,
+								_Utils_chr(' '),
+								armorName) + '\n')
+						])),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'left',
+							$elm$core$String$fromInt(150) + 'px'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							A3(
+								$elm$core$String$padLeft,
+								15,
+								_Utils_chr(' '),
+								'DEF ' + $elm$core$String$fromInt(armorPieceDefValue)))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'left',
+							$elm$core$String$fromInt(left) + 'px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(armorImgPath)
+								]),
+							_List_Nil)
+						]))
+				]));
+	});
+var $author$project$Game$healthPotionInfo = F3(
+	function (left, top, healthPotionCount) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/item/health_potion_128_128.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'margin-left', '4em'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em'),
+							A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
+							A2($elm$html$Html$Attributes$style, 'color', 'red')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Health potion  x' + $elm$core$String$fromInt(healthPotionCount))
+						])),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'margin-top', '2.5em'),
+							A2($elm$html$Html$Attributes$style, 'margin-left', '5em'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'monospace'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('- restores 10% of max HP')
+						]))
+				]));
+	});
+var $author$project$Game$speedPotionInfo = F3(
+	function (left, top, speedPotionCount) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/item/speed_potion_128_128.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'margin-left', '4em'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em'),
+							A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
+							A2($elm$html$Html$Attributes$style, 'color', 'green')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'Speed potion  x' + $elm$core$String$fromInt(speedPotionCount))
+						])),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'margin-top', '2.5em'),
+							A2($elm$html$Html$Attributes$style, 'margin-left', '5em'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'monospace'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('- increase speed by 50%\n'),
+							$elm$html$Html$text('- duration: 5s')
+						]))
+				]));
+	});
+var $author$project$Game$swordInfo = F4(
+	function (left, top, imgSize, sword) {
+		var swordName = $elm$core$String$toUpper(
+			$author$project$Sword$swordTypeToString(sword) + ' sword');
+		var swordImgPath = function () {
+			var _v0 = sword.swordType;
+			switch (_v0.$) {
+				case 'Wood':
+					return 'assets/sword/sword_wood_' + (imgSize + ('_' + (imgSize + '.png')));
+				case 'Stone':
+					return 'assets/sword/sword_stone_' + (imgSize + ('_' + (imgSize + '.png')));
+				case 'Iron':
+					return 'assets/sword/sword_iron_' + (imgSize + ('_' + (imgSize + '.png')));
+				default:
+					return 'assets/sword/sword_dragon_' + (imgSize + ('_' + (imgSize + '.png')));
+			}
+		}();
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'left',
+							$elm$core$String$fromInt(150) + 'px'),
+							A2($elm$html$Html$Attributes$style, 'margin-top', '0em'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em'),
+							A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							A3(
+								$elm$core$String$padLeft,
+								15,
+								_Utils_chr(' '),
+								swordName) + '\n')
+						])),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'left',
+							$elm$core$String$fromInt(150) + 'px'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							A3(
+								$elm$core$String$padLeft,
+								15,
+								_Utils_chr(' '),
+								'ATK ' + $elm$core$String$fromInt(sword.attack)))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'left',
+							$elm$core$String$fromInt(left) + 'px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(swordImgPath)
+								]),
+							_List_Nil)
+						]))
+				]));
+	});
+var $elm$core$String$fromFloat = _String_fromNumber;
+var $author$project$Game$viewPlayerInfo = F3(
+	function (left, top, player) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'margin', '0em'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'monospace'),
+							A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.75em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('<player_name>')
+						])),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'margin-top', '1.5em'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							'LVL: ' + $elm$core$String$fromInt(player.playerLevel)),
+							$elm$html$Html$text(
+							'\nEXP: ' + ($elm$core$String$fromInt(player.currentExp) + (' / ' + $elm$core$String$fromInt(player.maxExp)))),
+							$elm$html$Html$text(
+							'\n\nHealth: ' + ($elm$core$String$fromInt(player.currentHealth) + (' / ' + $elm$core$String$fromInt(player.maxHealth)))),
+							$elm$html$Html$text(
+							'\nDefense: ' + ($elm$core$String$fromInt(player.armor.totalDef) + (' / ' + $elm$core$String$fromInt(player.maxDefense)))),
+							$elm$html$Html$text(
+							'\nAttack: ' + $elm$core$String$fromInt(player.sword.attack)),
+							$elm$html$Html$text(
+							'\nSpeed: ' + $elm$core$String$fromFloat(player.speed))
+						]))
+				]));
+	});
+var $author$project$Game$viewCharacterScreen = F4(
+	function (left, top, keys, player) {
+		var itemsImgSize = '64';
 		var characterImgPath = function () {
 			var _v0 = player.armor.armorType;
 			switch (_v0.$) {
@@ -11367,7 +11784,7 @@ var $author$project$Game$viewCharacterScreen = F4(
 					$elm$html$Html$img,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$src('assets/character_screen_background_1200_600.png'),
+							$elm$html$Html$Attributes$src('assets/character_screen_scroll_background_1200_600.png'),
 							A2($elm$html$Html$Attributes$style, 'display', 'block'),
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute')
 						]),
@@ -11377,21 +11794,7 @@ var $author$project$Game$viewCharacterScreen = F4(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '500px'),
-							A2($elm$html$Html$Attributes$style, 'top', '8px'),
-							A2($elm$html$Html$Attributes$style, 'font-size', '2em'),
-							A2($elm$html$Html$Attributes$style, 'color', 'black')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('<player_name>')
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '500px'),
+							A2($elm$html$Html$Attributes$style, 'left', '472px'),
 							A2($elm$html$Html$Attributes$style, 'top', '48px')
 						]),
 					_List_fromArray(
@@ -11404,117 +11807,13 @@ var $author$project$Game$viewCharacterScreen = F4(
 								]),
 							_List_Nil)
 						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '350px'),
-							A2($elm$html$Html$Attributes$style, 'top', '48px')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(
-									A2($author$project$Game$armorImgPath, player.armor.armorType, 'helmet'))
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '350px'),
-							A2($elm$html$Html$Attributes$style, 'top', '186px')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(
-									A2($author$project$Game$armorImgPath, player.armor.armorType, 'chest'))
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '350px'),
-							A2($elm$html$Html$Attributes$style, 'top', '324px')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(
-									A2($author$project$Game$armorImgPath, player.armor.armorType, 'legs'))
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '350px'),
-							A2($elm$html$Html$Attributes$style, 'top', '462px')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(swordImgPath)
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '766px'),
-							A2($elm$html$Html$Attributes$style, 'top', '294px')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src('assets/item/health_potion_' + (itemsImgSize + ('_' + (itemsImgSize + '.png'))))
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '766px'),
-							A2($elm$html$Html$Attributes$style, 'top', '432px')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src('assets/item/speed_potion_' + (itemsImgSize + ('_' + (itemsImgSize + '.png'))))
-								]),
-							_List_Nil)
-						]))
+					A5($author$project$Game$armorInfo, 375, 100, itemsImgSize, player.armor, $author$project$Armor$Helmet),
+					A5($author$project$Game$armorInfo, 375, 196, itemsImgSize, player.armor, $author$project$Armor$Chestplate),
+					A5($author$project$Game$armorInfo, 375, 292, itemsImgSize, player.armor, $author$project$Armor$Legs),
+					A4($author$project$Game$swordInfo, 375, 388, itemsImgSize, player.sword),
+					A3($author$project$Game$viewPlayerInfo, 766, 75, player),
+					A3($author$project$Game$healthPotionInfo, 710, 310, player.healthPotionCount),
+					A3($author$project$Game$speedPotionInfo, 710, 420, player.speedPotionCount)
 				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
 	});
 var $elm$core$String$replace = F3(
@@ -11704,7 +12003,6 @@ var $author$project$Game$viewConsumable2 = F4(
 						]))
 				]));
 	});
-var $elm$core$String$fromFloat = _String_fromNumber;
 var $author$project$Game$viewDefenseInfo = F2(
 	function (maxDef, currDef) {
 		return A2(
@@ -11915,21 +12213,7 @@ var $author$project$Game$viewHealthBar = F4(
 					A2($author$project$Game$viewHealthInfo, maxHp, currHp)
 				]));
 	});
-var $author$project$Armor$armorTypeToString = function (armor) {
-	var _v0 = armor.armorType;
-	switch (_v0.$) {
-		case 'None':
-			return 'none';
-		case 'Leather':
-			return 'leather';
-		case 'Silver':
-			return 'silver';
-		default:
-			return 'dragon';
-	}
-};
-var $elm$html$Html$pre = _VirtualDom_node('pre');
-var $author$project$Game$viewPlayerInfo = F4(
+var $author$project$Game$viewPlayerDebugInfo = F4(
 	function (left, top, player, enemy) {
 		return A2(
 			$elm$html$Html$pre,
@@ -11949,12 +12233,6 @@ var $author$project$Game$viewPlayerInfo = F4(
 				[
 					$elm$html$Html$text('Player'),
 					$elm$html$Html$text(
-					'\nlvl: ' + $elm$core$String$fromInt(player.playerLevel)),
-					$elm$html$Html$text(
-					'\nmaxEXP: ' + $elm$core$String$fromInt(player.maxExp)),
-					$elm$html$Html$text(
-					'\ncurEXP: ' + $elm$core$String$fromInt(player.currentExp)),
-					$elm$html$Html$text(
 					'\nx: ' + $elm$core$String$fromFloat(player.x)),
 					$elm$html$Html$text(
 					'\ny: ' + $elm$core$String$fromFloat(player.y)),
@@ -11967,19 +12245,7 @@ var $author$project$Game$viewPlayerInfo = F4(
 					$elm$html$Html$text(
 					'\nsword: ' + $author$project$Sword$swordTypeToString(player.sword)),
 					$elm$html$Html$text(
-					'\narmor: ' + $author$project$Armor$armorTypeToString(player.armor)),
-					$elm$html$Html$text(
-					'\nmaxDEF: ' + $elm$core$String$fromInt(player.maxDefense)),
-					$elm$html$Html$text(
-					'\ncurDEF: ' + $elm$core$String$fromInt(player.armor.totalDef)),
-					$elm$html$Html$text(
-					'\nmaxHP: ' + $elm$core$String$fromInt(player.maxHealth)),
-					$elm$html$Html$text(
-					'\ncurHP: ' + $elm$core$String$fromInt(player.currentHealth)),
-					$elm$html$Html$text(
-					'\nHP potions: ' + $elm$core$String$fromInt(player.healthPotionCount)),
-					$elm$html$Html$text(
-					'\nSPD potions: ' + $elm$core$String$fromInt(player.speedPotionCount))
+					'\narmor: ' + $author$project$Armor$armorTypeToString(player.armor))
 				]));
 	});
 var $author$project$Game$viewPlayerInput = F3(
@@ -12154,7 +12420,7 @@ var $author$project$Game$view = function (model) {
 					{camera: model.camera, size: model.screen, time: model.time},
 					$author$project$Game$render(model)),
 					A4(
-					$author$project$Game$viewPlayerInfo,
+					$author$project$Game$viewPlayerDebugInfo,
 					100,
 					100,
 					model.player,

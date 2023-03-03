@@ -88,7 +88,7 @@ stoneSword =
   , height = 0.5
   , action = NotAttack
   , swordType = Stone
-  , attack = 5
+  , attack = 10
   }
 
 ironSword : Sword
@@ -99,7 +99,7 @@ ironSword =
   , height = 0.5
   , action = NotAttack
   , swordType = Iron
-  , attack = 5
+  , attack = 15
   }
 
 dragonSword : Sword
@@ -110,7 +110,7 @@ dragonSword =
   , height = 0.5
   , action = NotAttack
   , swordType = Dragon
-  , attack = 5
+  , attack = 20
   }
 
 renderSwordIdle : Resources -> Sword -> Renderable

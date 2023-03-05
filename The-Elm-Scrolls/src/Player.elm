@@ -114,9 +114,27 @@ walk { x, y } player =
 
 swordPhysics : List Keyboard.Key -> Player -> Player
 swordPhysics keys player =
+  let
+    swordDir =
+      case player.dir of
+        Left ->
+          Sword.Left
+
+        Right ->
+          Sword.Right
+
+        Up ->
+          Sword.Up
+
+        Down ->
+          Sword.Down
+
+        Idle ->
+          Sword.Idle
+  in
   { player
-    | sword = Sword.updateSwordCoordinates player.sword player.x player.y
-              |> Sword.swordAttack keys
+    | sword = Sword.swordAttack player.sword keys
+              |> Sword.updateSwordCoordinates swordDir player.x player.y
   }
 
 renderPlayer : Resources -> Player -> Renderable

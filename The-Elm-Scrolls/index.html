@@ -7254,9 +7254,10 @@ var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Armor$None = {$: 'None'};
 var $author$project$Armor$noneArmorSet = {armorType: $author$project$Armor$None, chestDef: 1, helmetDef: 0, legsDef: 1, totalDef: 2};
+var $author$project$Sword$Idle = {$: 'Idle'};
 var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Wood = {$: 'Wood'};
-var $author$project$Sword$woodSword = {action: $author$project$Sword$NotAttack, attack: 5, height: 0.5, swordType: $author$project$Sword$Wood, width: 1, x: 0, y: 0};
+var $author$project$Sword$woodSword = {action: $author$project$Sword$NotAttack, attack: 5, dir: $author$project$Sword$Idle, height: 0.5, swordType: $author$project$Sword$Wood, width: 1, x: 0, y: 0};
 var $author$project$Game$initPlayer = function (level) {
 	return {armor: $author$project$Armor$noneArmorSet, currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, healthPotionCount: 0, height: 2, maxDefense: 100, maxExp: 5, maxHealth: 100, playerLevel: 1, speed: 3.0, speedPotionCount: 0, sword: $author$project$Sword$woodSword, vx: 0, vy: 0, width: 1, x: level.startX, y: level.startY};
 };
@@ -7409,7 +7410,7 @@ var $author$project$Level$textures = _List_fromArray(
 var $author$project$Player$textures = _List_fromArray(
 	['assets/player/player_EEE_idle.png', 'assets/player/player_EEE_right.png', 'assets/player/player_EEE_left.png', 'assets/player/player_EEE_up.png', 'assets/player/player_EEE_down.png', 'assets/player/player_LLL_idle.png', 'assets/player/player_LLL_right.png', 'assets/player/player_LLL_left.png', 'assets/player/player_LLL_up.png', 'assets/player/player_LLL_down.png', 'assets/player/player_SSS_idle.png', 'assets/player/player_SSS_right.png', 'assets/player/player_SSS_left.png', 'assets/player/player_SSS_up.png', 'assets/player/player_SSS_down.png', 'assets/player/player_DDD_idle.png', 'assets/player/player_DDD_right.png', 'assets/player/player_DDD_left.png', 'assets/player/player_DDD_up.png', 'assets/player/player_DDD_down.png']);
 var $author$project$Sword$textures = _List_fromArray(
-	['assets/sword/sword_wood.png', 'assets/sword/sword_wood_attack.png', 'assets/sword/sword_stone.png', 'assets/sword/sword_stone_attack.png', 'assets/sword/sword_iron.png', 'assets/sword/sword_iron_attack.png', 'assets/sword/sword_dragon.png', 'assets/sword/sword_dragon_attack.png']);
+	['assets/sword/sword_wood.png', 'assets/sword/sword_wood_attack_right.png', 'assets/sword/sword_wood_attack_left.png', 'assets/sword/sword_wood_attack_up.png', 'assets/sword/sword_wood_attack_down.png', 'assets/sword/sword_stone.png', 'assets/sword/sword_stone_attack_right.png', 'assets/sword/sword_stone_attack_left.png', 'assets/sword/sword_stone_attack_up.png', 'assets/sword/sword_stone_attack_down.png', 'assets/sword/sword_iron.png', 'assets/sword/sword_iron_attack_right.png', 'assets/sword/sword_iron_attack_left.png', 'assets/sword/sword_iron_attack_up.png', 'assets/sword/sword_iron_attack_down.png', 'assets/sword/sword_dragon.png', 'assets/sword/sword_dragon_attack_right.png', 'assets/sword/sword_dragon_attack_left.png', 'assets/sword/sword_dragon_attack_up.png', 'assets/sword/sword_dragon_attack_down.png']);
 var $author$project$Game$texturesList = $elm$core$List$concat(
 	_List_fromArray(
 		[$author$project$Level$textures, $author$project$Player$textures, $author$project$Enemy$textures, $author$project$Sword$textures, $author$project$Item$textures]));
@@ -9534,7 +9535,7 @@ var $author$project$Item$WoodSword_ItemStand = {$: 'WoodSword_ItemStand'};
 var $author$project$Armor$Dragon = {$: 'Dragon'};
 var $author$project$Armor$dragonArmorSet = {armorType: $author$project$Armor$Dragon, chestDef: 30, helmetDef: 30, legsDef: 30, totalDef: 90};
 var $author$project$Sword$Dragon = {$: 'Dragon'};
-var $author$project$Sword$dragonSword = {action: $author$project$Sword$NotAttack, attack: 20, height: 0.5, swordType: $author$project$Sword$Dragon, width: 1, x: 0, y: 0};
+var $author$project$Sword$dragonSword = {action: $author$project$Sword$NotAttack, attack: 20, dir: $author$project$Sword$Idle, height: 0.5, swordType: $author$project$Sword$Dragon, width: 1, x: 0, y: 0};
 var $author$project$Item$getItemType = function (item) {
 	return item.itemType;
 };
@@ -9548,7 +9549,7 @@ var $elm$core$List$head = function (list) {
 	}
 };
 var $author$project$Sword$Iron = {$: 'Iron'};
-var $author$project$Sword$ironSword = {action: $author$project$Sword$NotAttack, attack: 15, height: 0.5, swordType: $author$project$Sword$Iron, width: 1, x: 0, y: 0};
+var $author$project$Sword$ironSword = {action: $author$project$Sword$NotAttack, attack: 15, dir: $author$project$Sword$Idle, height: 0.5, swordType: $author$project$Sword$Iron, width: 1, x: 0, y: 0};
 var $elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
 		return true;
@@ -9561,7 +9562,7 @@ var $author$project$Armor$leatherArmorSet = {armorType: $author$project$Armor$Le
 var $author$project$Armor$Silver = {$: 'Silver'};
 var $author$project$Armor$silverArmorSet = {armorType: $author$project$Armor$Silver, chestDef: 20, helmetDef: 20, legsDef: 20, totalDef: 60};
 var $author$project$Sword$Stone = {$: 'Stone'};
-var $author$project$Sword$stoneSword = {action: $author$project$Sword$NotAttack, attack: 10, height: 0.5, swordType: $author$project$Sword$Stone, width: 1, x: 0, y: 0};
+var $author$project$Sword$stoneSword = {action: $author$project$Sword$NotAttack, attack: 10, dir: $author$project$Sword$Idle, height: 0.5, swordType: $author$project$Sword$Stone, width: 1, x: 0, y: 0};
 var $author$project$Game$playerPhysics = F3(
 	function (dt, lvl, player) {
 		var newY = player.y + (dt * player.vy);
@@ -9653,6 +9654,10 @@ var $author$project$Game$playerPhysics = F3(
 				}()
 			});
 	});
+var $author$project$Sword$Down = {$: 'Down'};
+var $author$project$Sword$Left = {$: 'Left'};
+var $author$project$Sword$Right = {$: 'Right'};
+var $author$project$Sword$Up = {$: 'Up'};
 var $ohanhi$keyboard$Keyboard$Spacebar = {$: 'Spacebar'};
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
@@ -9685,28 +9690,154 @@ var $elm$core$List$member = F2(
 			xs);
 	});
 var $author$project$Sword$swordAttack = F2(
-	function (keys, sword) {
+	function (sword, keys) {
 		return _Utils_update(
 			sword,
 			{
 				action: A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? $author$project$Sword$Attack : $author$project$Sword$NotAttack
 			});
 	});
-var $author$project$Sword$updateSwordCoordinates = F3(
-	function (sword, playerX, playerY) {
-		return _Utils_update(
-			sword,
-			{x: playerX + 0.75, y: playerY + 0.5});
+var $author$project$Sword$updateSwordCoordinates = F4(
+	function (playerDir, playerX, playerY, sword) {
+		switch (playerDir.$) {
+			case 'Left':
+				return _Utils_update(
+					sword,
+					{
+						dir: playerDir,
+						x: function () {
+							var _v1 = sword.action;
+							if (_v1.$ === 'NotAttack') {
+								return playerX + 0.15;
+							} else {
+								return playerX - 0.7;
+							}
+						}(),
+						y: function () {
+							var _v2 = sword.action;
+							if (_v2.$ === 'NotAttack') {
+								return playerY + 0.7;
+							} else {
+								return playerY + 0.6;
+							}
+						}()
+					});
+			case 'Right':
+				return _Utils_update(
+					sword,
+					{
+						dir: playerDir,
+						x: function () {
+							var _v3 = sword.action;
+							if (_v3.$ === 'NotAttack') {
+								return playerX + 0.4;
+							} else {
+								return playerX + 0.3;
+							}
+						}(),
+						y: function () {
+							var _v4 = sword.action;
+							if (_v4.$ === 'NotAttack') {
+								return playerY + 0.5;
+							} else {
+								return playerY + 0.4;
+							}
+						}()
+					});
+			case 'Up':
+				return _Utils_update(
+					sword,
+					{
+						dir: playerDir,
+						x: function () {
+							var _v5 = sword.action;
+							if (_v5.$ === 'NotAttack') {
+								return playerX + 0.75;
+							} else {
+								return playerX + 0.65;
+							}
+						}(),
+						y: function () {
+							var _v6 = sword.action;
+							if (_v6.$ === 'NotAttack') {
+								return playerY + 0.6;
+							} else {
+								return playerY + 1.2;
+							}
+						}()
+					});
+			case 'Down':
+				return _Utils_update(
+					sword,
+					{
+						dir: playerDir,
+						x: function () {
+							var _v7 = sword.action;
+							if (_v7.$ === 'NotAttack') {
+								return playerX + 0.2;
+							} else {
+								return playerX;
+							}
+						}(),
+						y: function () {
+							var _v8 = sword.action;
+							if (_v8.$ === 'NotAttack') {
+								return playerY + 0.5;
+							} else {
+								return playerY - 0.2;
+							}
+						}()
+					});
+			default:
+				return _Utils_update(
+					sword,
+					{
+						dir: playerDir,
+						x: function () {
+							var _v9 = sword.action;
+							if (_v9.$ === 'NotAttack') {
+								return playerX + 0.1;
+							} else {
+								return playerX - 0.7;
+							}
+						}(),
+						y: function () {
+							var _v10 = sword.action;
+							if (_v10.$ === 'NotAttack') {
+								return playerY + 0.5;
+							} else {
+								return playerY + 0.5;
+							}
+						}()
+					});
+		}
 	});
 var $author$project$Player$swordPhysics = F2(
 	function (keys, player) {
+		var swordDir = function () {
+			var _v0 = player.dir;
+			switch (_v0.$) {
+				case 'Left':
+					return $author$project$Sword$Left;
+				case 'Right':
+					return $author$project$Sword$Right;
+				case 'Up':
+					return $author$project$Sword$Up;
+				case 'Down':
+					return $author$project$Sword$Down;
+				default:
+					return $author$project$Sword$Idle;
+			}
+		}();
 		return _Utils_update(
 			player,
 			{
-				sword: A2(
-					$author$project$Sword$swordAttack,
-					keys,
-					A3($author$project$Sword$updateSwordCoordinates, player.sword, player.x, player.y))
+				sword: A4(
+					$author$project$Sword$updateSwordCoordinates,
+					swordDir,
+					player.x,
+					player.y,
+					A2($author$project$Sword$swordAttack, player.sword, keys))
 			});
 	});
 var $author$project$Player$Down = {$: 'Down'};
@@ -11146,6 +11277,21 @@ var $author$project$Player$renderPlayer = F2(
 				topRight: _Utils_Tuple2(1, 1)
 			});
 	});
+var $author$project$Sword$swordDirectionToString = function (sword) {
+	var _v0 = sword.dir;
+	switch (_v0.$) {
+		case 'Left':
+			return 'left';
+		case 'Right':
+			return 'right';
+		case 'Up':
+			return 'up';
+		case 'Down':
+			return 'down';
+		default:
+			return 'left';
+	}
+};
 var $author$project$Sword$swordTypeToString = function (sword) {
 	var _v0 = sword.swordType;
 	switch (_v0.$) {
@@ -11166,10 +11312,10 @@ var $author$project$Sword$renderSwordAttack = F2(
 				pivot: _Utils_Tuple2(0, 0),
 				position: _Utils_Tuple3(sword.x, sword.y, 0.1),
 				rotation: 0,
-				size: _Utils_Tuple2(1, 0.5),
+				size: (_Utils_eq(sword.dir, $author$project$Sword$Up) || _Utils_eq(sword.dir, $author$project$Sword$Down)) ? _Utils_Tuple2(0.5, 1) : _Utils_Tuple2(1, 0.5),
 				texture: A2(
 					$Zinggi$elm_game_resources$Game$Resources$getTexture,
-					'assets/sword/sword_' + ($author$project$Sword$swordTypeToString(sword) + '_attack.png'),
+					'assets/sword/sword_' + ($author$project$Sword$swordTypeToString(sword) + ('_attack_' + ($author$project$Sword$swordDirectionToString(sword) + '.png'))),
 					resources),
 				tiling: _Utils_Tuple2(1, 1)
 			});

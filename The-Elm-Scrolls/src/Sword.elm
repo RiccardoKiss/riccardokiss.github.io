@@ -12,6 +12,7 @@ type alias Sword =
   , height : Float
   , action : Action
   , swordType : SwordType
+  , dir : Direction
   , attack : Int
   }
 
@@ -25,16 +26,35 @@ type SwordType
   | Iron
   | Dragon
 
+type Direction
+  = Left
+  | Right
+  | Up
+  | Down
+  | Idle
+
 textures : List String
 textures =
   [ "assets/sword/sword_wood.png"
-  , "assets/sword/sword_wood_attack.png"
+  , "assets/sword/sword_wood_attack_right.png"
+  , "assets/sword/sword_wood_attack_left.png"
+  , "assets/sword/sword_wood_attack_up.png"
+  , "assets/sword/sword_wood_attack_down.png"
   , "assets/sword/sword_stone.png"
-  , "assets/sword/sword_stone_attack.png"
+  , "assets/sword/sword_stone_attack_right.png"
+  , "assets/sword/sword_stone_attack_left.png"
+  , "assets/sword/sword_stone_attack_up.png"
+  , "assets/sword/sword_stone_attack_down.png"
   , "assets/sword/sword_iron.png"
-  , "assets/sword/sword_iron_attack.png"
+  , "assets/sword/sword_iron_attack_right.png"
+  , "assets/sword/sword_iron_attack_left.png"
+  , "assets/sword/sword_iron_attack_up.png"
+  , "assets/sword/sword_iron_attack_down.png"
   , "assets/sword/sword_dragon.png"
-  , "assets/sword/sword_dragon_attack.png"
+  , "assets/sword/sword_dragon_attack_right.png"
+  , "assets/sword/sword_dragon_attack_left.png"
+  , "assets/sword/sword_dragon_attack_up.png"
+  , "assets/sword/sword_dragon_attack_down.png"
   ]
 
 swordTypeToString : Sword -> String
@@ -52,15 +72,134 @@ swordTypeToString sword =
     Dragon ->
       "dragon"
 
-updateSwordCoordinates : Sword -> Float -> Float -> Sword
-updateSwordCoordinates sword playerX playerY =
-  { sword
-    | x = playerX + 0.75
-    , y = playerY + 0.5
-  }
+swordDirectionToString : Sword -> String
+swordDirectionToString sword =
+  case sword.dir of
+    Left ->
+      "left"
 
-swordAttack : List Keyboard.Key -> Sword -> Sword
-swordAttack keys sword =
+    Right ->
+      "right"
+
+    Up ->
+      "up"
+
+    Down ->
+      "down"
+
+    Idle ->
+      "left"
+
+updateSwordCoordinates : Direction -> Float -> Float -> Sword -> Sword
+updateSwordCoordinates playerDir playerX playerY sword =
+  case playerDir of
+    Left ->
+      { sword
+        | x =
+            case sword.action of
+              NotAttack ->
+                playerX + 0.15
+
+              Attack ->
+                playerX - 0.7
+
+        , y =
+            case sword.action of
+              NotAttack ->
+                playerY + 0.7
+
+              Attack ->
+                playerY + 0.6
+
+        , dir = playerDir
+      }
+
+    Right ->
+      { sword
+        | x =
+            case sword.action of
+              NotAttack ->
+                playerX + 0.4
+
+              Attack ->
+                playerX + 0.3
+
+        , y =
+            case sword.action of
+              NotAttack ->
+                playerY + 0.5
+
+              Attack ->
+                playerY + 0.4
+
+        , dir = playerDir
+      }
+
+    Up ->
+      { sword
+        | x =
+            case sword.action of
+              NotAttack ->
+                playerX + 0.75
+
+              Attack ->
+                playerX + 0.65
+
+        , y =
+            case sword.action of
+              NotAttack ->
+                playerY + 0.6
+
+              Attack ->
+                playerY + 1.2
+
+        , dir = playerDir
+      }
+
+    Down ->
+      { sword
+        | x =
+            case sword.action of
+              NotAttack ->
+                playerX + 0.2
+
+              Attack ->
+                playerX
+
+        , y =
+            case sword.action of
+              NotAttack ->
+                playerY + 0.5
+
+              Attack ->
+                playerY - 0.2
+
+        , dir = playerDir
+      }
+
+    Idle ->
+      { sword
+        | x =
+            case sword.action of
+              NotAttack ->
+                playerX + 0.1
+
+              Attack ->
+                playerX - 0.7
+
+        , y =
+            case sword.action of
+              NotAttack ->
+                playerY + 0.5
+
+              Attack ->
+                playerY + 0.5
+
+        , dir = playerDir
+      }
+
+swordAttack : Sword -> List Keyboard.Key -> Sword
+swordAttack sword keys =
   { sword
     | action =
         if List.member Keyboard.Spacebar keys then
@@ -77,6 +216,7 @@ woodSword =
   , height = 0.5
   , action = NotAttack
   , swordType = Wood
+  , dir = Idle
   , attack = 5
   }
 
@@ -88,6 +228,7 @@ stoneSword =
   , height = 0.5
   , action = NotAttack
   , swordType = Stone
+  , dir = Idle
   , attack = 10
   }
 
@@ -99,6 +240,7 @@ ironSword =
   , height = 0.5
   , action = NotAttack
   , swordType = Iron
+  , dir = Idle
   , attack = 15
   }
 
@@ -110,6 +252,7 @@ dragonSword =
   , height = 0.5
   , action = NotAttack
   , swordType = Dragon
+  , dir = Idle
   , attack = 20
   }
 
@@ -127,9 +270,13 @@ renderSwordIdle resources sword =
 renderSwordAttack : Resources -> Sword -> Renderable
 renderSwordAttack resources sword =
   Render.spriteWithOptions
-    { texture = Resources.getTexture ("assets/sword/sword_" ++ swordTypeToString sword ++ "_attack.png") resources
+    { texture = Resources.getTexture ("assets/sword/sword_" ++ swordTypeToString sword ++ "_attack_" ++ swordDirectionToString sword ++ ".png") resources
     , position = ( sword.x, sword.y, 0.1 )
-    , size = ( 1, 0.5 )
+    , size =
+        if sword.dir == Up || sword.dir == Down  then
+          ( 0.5, 1 )
+        else
+          ( 1, 0.5 )
     , tiling = ( 1, 1 )
     , rotation = 0 -- -1
     , pivot = ( 0, 0)

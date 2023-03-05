@@ -7252,14 +7252,42 @@ var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
 var $author$project$Player$Idle = {$: 'Idle'};
+var $author$project$Potion$healthPotion = F5(
+	function (rt, dur, cdr, sec, c) {
+		return {cooldown: cdr, count: c, duration: dur, ratio: rt, timeOfLastUse: sec};
+	});
 var $author$project$Armor$None = {$: 'None'};
 var $author$project$Armor$noneArmorSet = {armorType: $author$project$Armor$None, chestDef: 1, helmetDef: 0, legsDef: 1, totalDef: 2};
+var $author$project$Potion$speedPotion = F5(
+	function (rt, dur, cdr, sec, c) {
+		return {cooldown: cdr, count: c, duration: dur, ratio: rt, timeOfLastUse: sec};
+	});
 var $author$project$Sword$Idle = {$: 'Idle'};
 var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$Wood = {$: 'Wood'};
 var $author$project$Sword$woodSword = {action: $author$project$Sword$NotAttack, attack: 5, dir: $author$project$Sword$Idle, height: 0.5, swordType: $author$project$Sword$Wood, width: 1, x: 0, y: 0};
 var $author$project$Game$initPlayer = function (level) {
-	return {armor: $author$project$Armor$noneArmorSet, currentExp: 0, currentHealth: 100, dir: $author$project$Player$Idle, healthPotionCount: 0, height: 2, maxDefense: 100, maxExp: 5, maxHealth: 100, playerLevel: 1, speed: 3.0, speedPotionCount: 0, sword: $author$project$Sword$woodSword, vx: 0, vy: 0, width: 1, x: level.startX, y: level.startY};
+	return {
+		armor: $author$project$Armor$noneArmorSet,
+		baseSpeed: 3.0,
+		currentExp: 0,
+		currentHealth: 50,
+		currentSpeed: 3.0,
+		dir: $author$project$Player$Idle,
+		healthPotions: A5($author$project$Potion$healthPotion, 0.1, 0.0, 3.0, 0.0, 0),
+		height: 2,
+		maxDefense: 100,
+		maxExp: 5,
+		maxHealth: 100,
+		playerLevel: 1,
+		speedPotions: A5($author$project$Potion$speedPotion, 1.5, 5.0, 5.0, 0.0, 0),
+		sword: $author$project$Sword$woodSword,
+		vx: 0,
+		vy: 0,
+		width: 1,
+		x: level.startX,
+		y: level.startY
+	};
 };
 var $author$project$Level$Lvl2 = {$: 'Lvl2'};
 var $author$project$Level$level2Enemies = _List_Nil;
@@ -7306,7 +7334,9 @@ var $author$project$Item$stoneSwordStand = F2(
 var $author$project$Level$level2Items = _List_fromArray(
 	[
 		A2($author$project$Item$healthPotionStand, 54, 9),
+		A2($author$project$Item$healthPotionStand, 53, 9),
 		A2($author$project$Item$speedPotionStand, 57, 9),
+		A2($author$project$Item$speedPotionStand, 58, 9),
 		A2($author$project$Item$stoneSwordStand, 53, 11),
 		A2($author$project$Item$ironSwordStand, 53, 13),
 		A2($author$project$Item$dragonSwordStand, 53, 15),
@@ -9509,6 +9539,91 @@ var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
 				camera,
 				{position: pos}));
 	});
+var $ohanhi$keyboard$Keyboard$Character = function (a) {
+	return {$: 'Character', a: a};
+};
+var $author$project$Potion$canUsePotion = F2(
+	function (time, potion) {
+		var secondsSinceLastUse = time - potion.timeOfLastUse;
+		return ((_Utils_cmp(secondsSinceLastUse, potion.cooldown) > -1) || (potion.timeOfLastUse === 0.0)) ? true : false;
+	});
+var $author$project$Potion$decrementPotionsCount = function (potion) {
+	return _Utils_update(
+		potion,
+		{count: potion.count - 1});
+};
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var $author$project$Potion$updateTimeOfLastUse = F2(
+	function (time, potion) {
+		return _Utils_update(
+			potion,
+			{timeOfLastUse: time});
+	});
+var $author$project$Player$applyHealthPotion = F3(
+	function (keys, time, player) {
+		var healAmount = player.maxHealth * player.healthPotions.ratio;
+		var newCurrHealth = (_Utils_cmp(
+			player.currentHealth + $elm$core$Basics$round(healAmount),
+			player.maxHealth) < 0) ? (player.currentHealth + $elm$core$Basics$round(healAmount)) : player.maxHealth;
+		return (player.healthPotions.count > 0) ? ((_Utils_cmp(player.currentHealth, player.maxHealth) < 0) ? (A2($author$project$Potion$canUsePotion, time, player.healthPotions) ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('Q'),
+			keys) ? _Utils_update(
+			player,
+			{
+				currentHealth: newCurrHealth,
+				healthPotions: A2(
+					$author$project$Potion$updateTimeOfLastUse,
+					time,
+					$author$project$Potion$decrementPotionsCount(player.healthPotions))
+			}) : player) : player) : player) : player;
+	});
+var $author$project$Player$applySpeedPotion = F3(
+	function (keys, time, player) {
+		return A2($author$project$Potion$canUsePotion, time, player.speedPotions) ? ((player.speedPotions.count > 0) ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('E'),
+			keys) ? _Utils_update(
+			player,
+			{
+				currentSpeed: player.baseSpeed * player.speedPotions.ratio,
+				speedPotions: A2(
+					$author$project$Potion$updateTimeOfLastUse,
+					time,
+					$author$project$Potion$decrementPotionsCount(player.speedPotions))
+			}) : player) : _Utils_update(
+			player,
+			{currentSpeed: player.baseSpeed})) : player;
+	});
 var $author$project$Enemy$getAttack = function (enemy) {
 	return enemy.attack;
 };
@@ -9547,6 +9662,11 @@ var $elm$core$List$head = function (list) {
 	} else {
 		return $elm$core$Maybe$Nothing;
 	}
+};
+var $author$project$Potion$incrementPotionsCount = function (potion) {
+	return _Utils_update(
+		potion,
+		{count: potion.count + 1});
 };
 var $author$project$Sword$Iron = {$: 'Iron'};
 var $author$project$Sword$ironSword = {action: $author$project$Sword$NotAttack, attack: 15, dir: $author$project$Sword$Idle, height: 0.5, swordType: $author$project$Sword$Iron, width: 1, x: 0, y: 0};
@@ -9593,26 +9713,26 @@ var $author$project$Game$playerPhysics = F3(
 						return player.armor;
 					}
 				}(),
-				healthPotionCount: function () {
+				healthPotions: function () {
 					var _v1 = $elm$core$List$head(newTileItemStand);
 					if (_v1.$ === 'Just') {
 						var itemStand = _v1.a;
 						return _Utils_eq(
 							$author$project$Item$getItemType(itemStand),
-							$author$project$Item$HealthPotion_ItemStand) ? (player.healthPotionCount + 1) : player.healthPotionCount;
+							$author$project$Item$HealthPotion_ItemStand) ? $author$project$Potion$incrementPotionsCount(player.healthPotions) : player.healthPotions;
 					} else {
-						return player.healthPotionCount;
+						return player.healthPotions;
 					}
 				}(),
-				speedPotionCount: function () {
+				speedPotions: function () {
 					var _v2 = $elm$core$List$head(newTileItemStand);
 					if (_v2.$ === 'Just') {
 						var itemStand = _v2.a;
 						return _Utils_eq(
 							$author$project$Item$getItemType(itemStand),
-							$author$project$Item$SpeedPotion_ItemStand) ? (player.speedPotionCount + 1) : player.speedPotionCount;
+							$author$project$Item$SpeedPotion_ItemStand) ? $author$project$Potion$incrementPotionsCount(player.speedPotions) : player.speedPotions;
 					} else {
-						return player.speedPotionCount;
+						return player.speedPotions;
 					}
 				}(),
 				sword: function () {
@@ -9659,36 +9779,6 @@ var $author$project$Sword$Left = {$: 'Left'};
 var $author$project$Sword$Right = {$: 'Right'};
 var $author$project$Sword$Up = {$: 'Up'};
 var $ohanhi$keyboard$Keyboard$Spacebar = {$: 'Spacebar'};
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var $elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			$elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
-	});
 var $author$project$Sword$swordAttack = F2(
 	function (sword, keys) {
 		return _Utils_update(
@@ -9850,13 +9940,10 @@ var $author$project$Player$walk = F2(
 			player,
 			{
 				dir: (x < 0) ? $author$project$Player$Left : ((x > 0) ? $author$project$Player$Right : ((y < 0) ? $author$project$Player$Down : ((y > 0) ? $author$project$Player$Up : $author$project$Player$Idle))),
-				vx: player.speed * x,
-				vy: player.speed * y
+				vx: player.currentSpeed * x,
+				vy: player.currentSpeed * y
 			});
 	});
-var $ohanhi$keyboard$Keyboard$Character = function (a) {
-	return {$: 'Character', a: a};
-};
 var $ohanhi$keyboard$Keyboard$Arrows$boolToInt = function (bool) {
 	return bool ? 1 : 0;
 };
@@ -9872,8 +9959,8 @@ var $ohanhi$keyboard$Keyboard$Arrows$wasd = function (keys) {
 	var y = toInt('W') - toInt('S');
 	return {x: x, y: y};
 };
-var $author$project$Game$tick = F5(
-	function (dt, lvl, keys, enemyList, player) {
+var $author$project$Game$playerTick = F6(
+	function (dt, time, lvl, keys, enemyList, player) {
 		var moveInput = $ohanhi$keyboard$Keyboard$Arrows$wasd(keys);
 		return A2(
 			$author$project$Game$playerAttacked,
@@ -9885,7 +9972,14 @@ var $author$project$Game$tick = F5(
 					$author$project$Game$playerPhysics,
 					dt,
 					lvl,
-					A2($author$project$Player$walk, moveInput, player))));
+					A2(
+						$author$project$Player$walk,
+						moveInput,
+						A3(
+							$author$project$Player$applySpeedPotion,
+							keys,
+							time,
+							A3($author$project$Player$applyHealthPotion, keys, time, player))))));
 	});
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {
@@ -10345,7 +10439,7 @@ var $author$project$Game$update = F2(
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
 							level: A5($author$project$Game$levelTick, dt, model.player, model.level, enemies, model.level.items),
-							player: A5($author$project$Game$tick, dt, model.level, model.keys, enemies, playerWithExp),
+							player: A6($author$project$Game$playerTick, dt, model.time, model.level, model.keys, enemies, playerWithExp),
 							time: dt + model.time
 						}),
 					$elm$core$Platform$Cmd$none);
@@ -11604,8 +11698,9 @@ var $author$project$Game$armorInfo = F5(
 						]))
 				]));
 	});
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $author$project$Game$healthPotionInfo = F3(
-	function (left, top, healthPotionCount) {
+	function (left, top, healthPotion) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -11652,7 +11747,7 @@ var $author$project$Game$healthPotionInfo = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Health potion  x' + $elm$core$String$fromInt(healthPotionCount))
+							'Health potion  x' + $elm$core$String$fromInt(healthPotion.count))
 						])),
 					A2(
 					$elm$html$Html$pre,
@@ -11666,12 +11761,13 @@ var $author$project$Game$healthPotionInfo = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('- restores 10% of max HP')
+							$elm$html$Html$text(
+							'- restores ' + ($elm$core$String$fromFloat(healthPotion.ratio * 100.0) + '% of max HP'))
 						]))
 				]));
 	});
 var $author$project$Game$speedPotionInfo = F3(
-	function (left, top, speedPotionCount) {
+	function (left, top, speedPotion) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -11718,7 +11814,7 @@ var $author$project$Game$speedPotionInfo = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							'Speed potion  x' + $elm$core$String$fromInt(speedPotionCount))
+							'Speed potion  x' + $elm$core$String$fromInt(speedPotion.count))
 						])),
 					A2(
 					$elm$html$Html$pre,
@@ -11732,8 +11828,10 @@ var $author$project$Game$speedPotionInfo = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('- increase speed by 50%\n'),
-							$elm$html$Html$text('- duration: 5s')
+							$elm$html$Html$text(
+							'- increase speed by ' + ($elm$core$String$fromFloat((speedPotion.ratio - 1) * 100.0) + '%\n')),
+							$elm$html$Html$text(
+							'- duration: ' + ($elm$core$String$fromFloat(speedPotion.duration) + 's'))
 						]))
 				]));
 	});
@@ -11832,7 +11930,6 @@ var $author$project$Game$swordInfo = F4(
 						]))
 				]));
 	});
-var $elm$core$String$fromFloat = _String_fromNumber;
 var $author$project$Game$viewPlayerInfo = F3(
 	function (left, top, player) {
 		return A2(
@@ -11886,7 +11983,7 @@ var $author$project$Game$viewPlayerInfo = F3(
 							$elm$html$Html$text(
 							'\nAttack: ' + $elm$core$String$fromInt(player.sword.attack)),
 							$elm$html$Html$text(
-							'\nSpeed: ' + $elm$core$String$fromFloat(player.speed))
+							'\nSpeed: ' + $elm$core$String$fromFloat(player.currentSpeed))
 						]))
 				]));
 	});
@@ -11958,43 +12055,44 @@ var $author$project$Game$viewCharacterScreen = F4(
 					A5($author$project$Game$armorInfo, 375, 292, itemsImgSize, player.armor, $author$project$Armor$Legs),
 					A4($author$project$Game$swordInfo, 375, 388, itemsImgSize, player.sword),
 					A3($author$project$Game$viewPlayerInfo, 766, 75, player),
-					A3($author$project$Game$healthPotionInfo, 710, 310, player.healthPotionCount),
-					A3($author$project$Game$speedPotionInfo, 710, 420, player.speedPotionCount)
+					A3($author$project$Game$healthPotionInfo, 710, 310, player.healthPotions),
+					A3($author$project$Game$speedPotionInfo, 710, 420, player.speedPotions)
 				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
 	});
-var $elm$core$String$replace = F3(
-	function (before, after, string) {
+var $author$project$Game$viewConsumableKeyCooldown = F4(
+	function (keys, key, time, potion) {
+		var tmpPercentage = ((time - potion.timeOfLastUse) * 100.0) / potion.cooldown;
+		var cooldownPercentage = ((tmpPercentage > 100.0) || (potion.timeOfLastUse === 0.0)) ? 100.0 : tmpPercentage;
+		var assetPath = (cooldownPercentage === 100.0) ? 'assets/button/consumable_key_ready.png' : 'assets/button/consumable_key_cooldown.svg';
 		return A2(
-			$elm$core$String$join,
-			after,
-			A2($elm$core$String$split, before, string));
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character(key),
+			keys) ? A2($elm$html$Html$div, _List_Nil, _List_Nil) : A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'left', '0px'),
+					A2($elm$html$Html$Attributes$style, 'top', '0px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src(assetPath),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'width',
+							$elm$core$String$fromFloat(cooldownPercentage) + '%'),
+							A2($elm$html$Html$Attributes$style, 'height', '32px')
+						]),
+					_List_Nil)
+				]));
 	});
-var $author$project$Game$keyButtonTexture = F2(
-	function (key_button, keys) {
-		var assetPath = 'assets/button/' + (key_button + '.png');
-		var pressedPath = A3($elm$core$String$replace, '.', '_pressed.', assetPath);
-		return (key_button === 'spacebar') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? pressedPath : assetPath) : ((key_button === 'q') ? (A2(
-			$elm$core$List$member,
-			$ohanhi$keyboard$Keyboard$Character('Q'),
-			keys) ? pressedPath : assetPath) : ((key_button === 'e') ? (A2(
-			$elm$core$List$member,
-			$ohanhi$keyboard$Keyboard$Character('E'),
-			keys) ? pressedPath : assetPath) : ((key_button === 'w') ? (A2(
-			$elm$core$List$member,
-			$ohanhi$keyboard$Keyboard$Character('W'),
-			keys) ? pressedPath : assetPath) : ((key_button === 'a') ? (A2(
-			$elm$core$List$member,
-			$ohanhi$keyboard$Keyboard$Character('A'),
-			keys) ? pressedPath : assetPath) : ((key_button === 's') ? (A2(
-			$elm$core$List$member,
-			$ohanhi$keyboard$Keyboard$Character('S'),
-			keys) ? pressedPath : assetPath) : ((key_button === 'd') ? (A2(
-			$elm$core$List$member,
-			$ohanhi$keyboard$Keyboard$Character('D'),
-			keys) ? pressedPath : assetPath) : ((key_button === 'arrowUp') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowUp, keys) ? pressedPath : assetPath) : ((key_button === 'arrowRight') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowRight, keys) ? pressedPath : assetPath) : ((key_button === 'arrowDown') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowDown, keys) ? pressedPath : assetPath) : ((key_button === 'arrowLeft') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowLeft, keys) ? pressedPath : assetPath) : ''))))))))));
-	});
-var $author$project$Game$viewConsumable1 = F4(
-	function (left, top, keys, potionCount) {
+var $author$project$Game$viewConsumable1 = F5(
+	function (left, top, keys, time, healthPotion) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -12048,7 +12146,7 @@ var $author$project$Game$viewConsumable1 = F4(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							$elm$core$String$fromInt(potionCount))
+							$elm$core$String$fromInt(healthPotion.count))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -12064,15 +12162,33 @@ var $author$project$Game$viewConsumable1 = F4(
 							$elm$html$Html$img,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$src(
-									A2($author$project$Game$keyButtonTexture, 'q', keys))
+									$elm$html$Html$Attributes$src('assets/button/consumable_key_pressed.png')
 								]),
-							_List_Nil)
+							_List_Nil),
+							A4($author$project$Game$viewConsumableKeyCooldown, keys, 'Q', time, healthPotion),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+									A2($elm$html$Html$Attributes$style, 'left', '0px'),
+									A2($elm$html$Html$Attributes$style, 'top', '0px')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src('assets/button/q_transparent.png')
+										]),
+									_List_Nil)
+								]))
 						]))
 				]));
 	});
-var $author$project$Game$viewConsumable2 = F4(
-	function (left, top, keys, potionCount) {
+var $author$project$Game$viewConsumable2 = F5(
+	function (left, top, keys, time, speedPotion) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -12126,7 +12242,7 @@ var $author$project$Game$viewConsumable2 = F4(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							$elm$core$String$fromInt(potionCount))
+							$elm$core$String$fromInt(speedPotion.count))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -12142,10 +12258,28 @@ var $author$project$Game$viewConsumable2 = F4(
 							$elm$html$Html$img,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$src(
-									A2($author$project$Game$keyButtonTexture, 'e', keys))
+									$elm$html$Html$Attributes$src('assets/button/consumable_key_pressed.png')
 								]),
-							_List_Nil)
+							_List_Nil),
+							A4($author$project$Game$viewConsumableKeyCooldown, keys, 'E', time, speedPotion),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+									A2($elm$html$Html$Attributes$style, 'left', '0px'),
+									A2($elm$html$Html$Attributes$style, 'top', '0px')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src('assets/button/e_transparent.png')
+										]),
+									_List_Nil)
+								]))
 						]))
 				]));
 	});
@@ -12387,12 +12521,43 @@ var $author$project$Game$viewPlayerDebugInfo = F4(
 					$elm$html$Html$text(
 					'\nvy: ' + $elm$core$String$fromFloat(player.vy)),
 					$elm$html$Html$text(
-					'\nspeed: ' + $elm$core$String$fromFloat(player.speed)),
+					'\ncurrentSpeed: ' + $elm$core$String$fromFloat(player.currentSpeed)),
 					$elm$html$Html$text(
 					'\nsword: ' + $author$project$Sword$swordTypeToString(player.sword)),
 					$elm$html$Html$text(
 					'\narmor: ' + $author$project$Armor$armorTypeToString(player.armor))
 				]));
+	});
+var $elm$core$String$replace = F3(
+	function (before, after, string) {
+		return A2(
+			$elm$core$String$join,
+			after,
+			A2($elm$core$String$split, before, string));
+	});
+var $author$project$Game$keyButtonTexture = F2(
+	function (key_button, keys) {
+		var assetPath = 'assets/button/' + (key_button + '.png');
+		var pressedPath = A3($elm$core$String$replace, '.', '_pressed.', assetPath);
+		return (key_button === 'spacebar') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? pressedPath : assetPath) : ((key_button === 'q') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('Q'),
+			keys) ? 'assets/button/consumable_key_pressed.png' : assetPath) : ((key_button === 'e') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('E'),
+			keys) ? pressedPath : assetPath) : ((key_button === 'w') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('W'),
+			keys) ? pressedPath : assetPath) : ((key_button === 'a') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('A'),
+			keys) ? pressedPath : assetPath) : ((key_button === 's') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('S'),
+			keys) ? pressedPath : assetPath) : ((key_button === 'd') ? (A2(
+			$elm$core$List$member,
+			$ohanhi$keyboard$Keyboard$Character('D'),
+			keys) ? pressedPath : assetPath) : ((key_button === 'arrowUp') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowUp, keys) ? pressedPath : assetPath) : ((key_button === 'arrowRight') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowRight, keys) ? pressedPath : assetPath) : ((key_button === 'arrowDown') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowDown, keys) ? pressedPath : assetPath) : ((key_button === 'arrowLeft') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowLeft, keys) ? pressedPath : assetPath) : ''))))))))));
 	});
 var $author$project$Game$viewPlayerInput = F3(
 	function (left, top, keys) {
@@ -12575,8 +12740,8 @@ var $author$project$Game$view = function (model) {
 					A4($author$project$Game$viewDefenseBar, 448, 685, model.player.maxDefense, model.player.armor.totalDef),
 					A4($author$project$Game$viewHealthBar, 448, 725, model.player.maxHealth, model.player.currentHealth),
 					A4($author$project$Game$viewExpBar, 448, 765, model.player.maxExp, model.player.currentExp),
-					A4($author$project$Game$viewConsumable1, 368, 650, model.keys, model.player.healthPotionCount),
-					A4($author$project$Game$viewConsumable2, 1488, 650, model.keys, model.player.speedPotionCount),
+					A5($author$project$Game$viewConsumable1, 368, 650, model.keys, model.time, model.player.healthPotions),
+					A5($author$project$Game$viewConsumable2, 1488, 650, model.keys, model.time, model.player.speedPotions),
 					A4($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.player),
 					A3($author$project$Game$viewPlayerInput, 820, 861, model.keys)
 				])),

@@ -23,7 +23,7 @@ import Sword exposing (..)
 import Enemy exposing (..)
 import Item exposing (..)
 import Armor exposing (..)
-
+import Potion exposing (..)
 
 -- MODEL
 
@@ -57,7 +57,8 @@ initPlayer level =
   , y = level.startY --9
   , vx = 0
   , vy = 0
-  , speed = 3.0
+  , baseSpeed = 3.0
+  , currentSpeed = 3.0
   , width = 1
   , height = 2
   , dir = Player.Idle
@@ -66,12 +67,12 @@ initPlayer level =
   , maxDefense = 100
   --, currentDefense = 10
   , maxHealth = 100
-  , currentHealth = 100
+  , currentHealth = 50
   , playerLevel = 1
   , maxExp = 5
   , currentExp = 0
-  , healthPotionCount = 0
-  , speedPotionCount = 0
+  , healthPotions = Potion.healthPotion 0.1 0.0 3.0 0.0 0
+  , speedPotions = Potion.speedPotion 1.5 5.0 5.0 0.0 0
   }
 
 init : Nav.Key -> ( Model, Cmd Msg )
@@ -112,7 +113,7 @@ update msg model =
         --items = List.filter Item.isPickable model.level.items
       in
       ( { model
-          | player = tick dt model.level model.keys enemies playerWithExp
+          | player = playerTick dt model.time model.level model.keys enemies playerWithExp
           , level =  levelTick dt model.player model.level enemies model.level.items
           , time = dt + model.time
           , camera = Camera.moveTo ( model.player.x, model.player.y ) model.camera
@@ -135,20 +136,23 @@ update msg model =
         )
 
 
-tick :
+playerTick :
   Float
+  -> Float
   -> Level
   -> List Keyboard.Key
   -> List Enemy
   -> Player
   -> Player
-tick dt lvl keys enemyList player =
+playerTick dt time lvl keys enemyList player =
   let
     moveInput =
       Keyboard.Arrows.wasd keys
       --Keyboard.Arrows.arrows keys
   in
   player
+  |> Player.applyHealthPotion keys time
+  |> Player.applySpeedPotion keys time
   |> Player.walk moveInput
   |> playerPhysics dt lvl
   |> Player.swordPhysics keys
@@ -227,22 +231,22 @@ playerPhysics dt lvl player =
             else player.armor
           Nothing ->
             player.armor
-    , healthPotionCount =
+    , healthPotions =
         case List.head newTileItemStand of
           Just itemStand ->
             if Item.getItemType itemStand == HealthPotion_ItemStand then
-              player.healthPotionCount + 1
-            else player.healthPotionCount
+              incrementPotionsCount player.healthPotions
+            else player.healthPotions
           Nothing ->
-            player.healthPotionCount
-    , speedPotionCount =
+            player.healthPotions
+    , speedPotions =
         case List.head newTileItemStand of
           Just itemStand ->
             if Item.getItemType itemStand == SpeedPotion_ItemStand then
-              player.speedPotionCount + 1
-            else player.speedPotionCount
+              incrementPotionsCount player.speedPotions
+            else player.speedPotions
           Nothing ->
-            player.speedPotionCount
+            player.speedPotions
   }
 
 getExp : List Enemy -> Player -> Player
@@ -417,7 +421,7 @@ keyButtonTexture key_button keys =
       assetPath
   else if key_button == "q" then
     if List.member (Keyboard.Character "Q") keys then
-      pressedPath
+      "assets/button/consumable_key_pressed.png"--pressedPath
     else
       assetPath
   else if key_button == "e" then
@@ -596,8 +600,35 @@ viewExpBar left top maxExp currExp =
       , viewExpInfo maxExp currExp
       ]
 
-viewConsumable1 : Int -> Int -> List Keyboard.Key -> Int -> Html Msg
-viewConsumable1 left top keys potionCount =
+viewConsumableKeyCooldown : List Keyboard.Key -> String -> Float -> Potion -> Html Msg
+viewConsumableKeyCooldown keys key time potion =
+  let
+    tmpPercentage = ((time - potion.timeOfLastUse) * 100.0) / potion.cooldown
+    cooldownPercentage =
+      if tmpPercentage > 100.0 || potion.timeOfLastUse == 0.0 then
+        100.0
+      else tmpPercentage
+    assetPath =
+      if cooldownPercentage == 100.0 then
+        "assets/button/consumable_key_ready.png"
+      else
+        "assets/button/consumable_key_cooldown.svg"
+  in
+  if List.member (Keyboard.Character key) keys then
+    div [] []
+  else
+    div [ style "position" "absolute"
+        , style "left" "0px"
+        , style "top" "0px"
+        ]
+        [ img [ src assetPath
+              , style "width" (String.fromFloat cooldownPercentage ++ "%")  -- height
+              , style "height" "32px" -- width
+              ] []
+        ]
+
+viewConsumable1 : Int -> Int -> List Keyboard.Key -> Float -> Potion -> Html Msg
+viewConsumable1 left top keys time healthPotion =
   div [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
@@ -614,16 +645,23 @@ viewConsumable1 left top keys potionCount =
             , style "top" "50px"
             , style "color" "white"
             ]
-            [ text  (String.fromInt potionCount) ]
+            [ text  (String.fromInt healthPotion.count) ]
       , div [ style "position" "absolute"
             , style "left" "16px"
             , style "top" "67px"
             ]
-            [ img [ src (keyButtonTexture "q" keys) ] [] ]
+            [ img [ src "assets/button/consumable_key_pressed.png" ] []--(keyButtonTexture "q" keys) ] []
+            , viewConsumableKeyCooldown keys "Q" time healthPotion
+            , div [ style "position" "absolute"
+                  , style "left" "0px"
+                  , style "top" "0px"
+                  ]
+                  [ img [ src "assets/button/q_transparent.png" ] [] ]
+            ]
       ]
 
-viewConsumable2 : Int -> Int -> List Keyboard.Key -> Int -> Html Msg
-viewConsumable2 left top keys potionCount =
+viewConsumable2 : Int -> Int -> List Keyboard.Key -> Float -> Potion -> Html Msg
+viewConsumable2 left top keys time speedPotion =
   div [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
@@ -640,12 +678,19 @@ viewConsumable2 left top keys potionCount =
             , style "top" "50px"
             , style "color" "white"
             ]
-            [ text  (String.fromInt potionCount) ]
+            [ text  (String.fromInt speedPotion.count) ]
       , div [ style "position" "absolute"
             , style "left" "16px"
             , style "top" "67px"
             ]
-            [ img [ src (keyButtonTexture "e" keys) ] [] ]
+            [ img [ src "assets/button/consumable_key_pressed.png" ] []--(keyButtonTexture "e" keys) ] []
+            , viewConsumableKeyCooldown keys "E" time speedPotion
+            , div [ style "position" "absolute"
+                  , style "left" "0px"
+                  , style "top" "0px"
+                  ]
+                  [ img [ src "assets/button/e_transparent.png" ] [] ]
+            ]
       ]
 
 viewPlayerInput : Int -> Int -> List Keyboard.Key -> Html Msg
@@ -689,7 +734,7 @@ viewPlayerDebugInfo left top player enemy =
       , text ("\ny: " ++ String.fromFloat player.y)
       , text ("\nvx: " ++ String.fromFloat player.vx)
       , text ("\nvy: " ++ String.fromFloat player.vy)
-      , text ("\nspeed: " ++ String.fromFloat player.speed)
+      , text ("\ncurrentSpeed: " ++ String.fromFloat player.currentSpeed)
       , text ("\nsword: " ++ Sword.swordTypeToString player.sword)
       , text ("\narmor: " ++ Armor.armorTypeToString player.armor)
       --, text ("\nmaxDEF: " ++ String.fromInt player.maxDefense)
@@ -751,7 +796,7 @@ viewPlayerInfo left top player =
             , text ("\n\nHealth: " ++ String.fromInt player.currentHealth ++ " / " ++ String.fromInt player.maxHealth)
             , text ("\nDefense: " ++ String.fromInt player.armor.totalDef ++ " / " ++ String.fromInt player.maxDefense)
             , text ("\nAttack: " ++ String.fromInt player.sword.attack)
-            , text ("\nSpeed: " ++ String.fromFloat player.speed)
+            , text ("\nSpeed: " ++ String.fromFloat player.currentSpeed)
             ]
       ]
 
@@ -846,8 +891,8 @@ swordInfo left top imgSize sword =
             ] [ img [ src swordImgPath ] [] ]
       ]
 
-healthPotionInfo : Int -> Int -> Int -> Html Msg
-healthPotionInfo left top healthPotionCount =
+healthPotionInfo : Int -> Int -> Potion -> Html Msg
+healthPotionInfo left top healthPotion =
   div [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
@@ -863,18 +908,18 @@ healthPotionInfo left top healthPotionCount =
             , style "font-weight" "bolder"
             , style "color" "red"
             ]
-            [ text ("Health potion  x" ++ String.fromInt healthPotionCount) ]
+            [ text ("Health potion  x" ++ String.fromInt healthPotion.count) ]
       , pre [ style "position" "absolute"
             , style "margin-top" "2.5em"
             , style "margin-left" "5em"
             , style "font-family" "monospace"
             , style "font-size" "1.5em"
             ]
-            [ text "- restores 10% of max HP"]
+            [ text ("- restores " ++ String.fromFloat (healthPotion.ratio * 100.0) ++ "% of max HP") ]
       ]
 
-speedPotionInfo : Int -> Int -> Int -> Html Msg
-speedPotionInfo left top speedPotionCount =
+speedPotionInfo : Int -> Int -> Potion -> Html Msg
+speedPotionInfo left top speedPotion =
   div [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
@@ -890,15 +935,15 @@ speedPotionInfo left top speedPotionCount =
             , style "font-weight" "bolder"
             , style "color" "green"
             ]
-            [ text ("Speed potion  x" ++ String.fromInt speedPotionCount) ]
+            [ text ("Speed potion  x" ++ String.fromInt speedPotion.count) ]
       , pre [ style "position" "absolute"
             , style "margin-top" "2.5em"
             , style "margin-left" "5em"
             , style "font-family" "monospace"
             , style "font-size" "1.5em"
             ]
-            [ text "- increase speed by 50%\n"
-            , text "- duration: 5s"
+            [ text ("- increase speed by " ++ String.fromFloat ((speedPotion.ratio - 1) * 100.0) ++ "%\n")
+            , text ("- duration: " ++ String.fromFloat speedPotion.duration ++ "s")
             ]
       ]
 
@@ -940,8 +985,8 @@ viewCharacterScreen left top keys player =
         , armorInfo 375 292 itemsImgSize player.armor Armor.Legs
         , swordInfo 375 388 itemsImgSize player.sword
         , viewPlayerInfo 766 75 player
-        , healthPotionInfo 710 310 player.healthPotionCount
-        , speedPotionInfo 710 420 player.speedPotionCount
+        , healthPotionInfo 710 310 player.healthPotions
+        , speedPotionInfo 710 420 player.speedPotions
         ]
   else
     div [] []
@@ -987,8 +1032,8 @@ view model =
       , viewDefenseBar 448 685 model.player.maxDefense model.player.armor.totalDef
       , viewHealthBar 448 725 model.player.maxHealth model.player.currentHealth
       , viewExpBar 448 765 model.player.maxExp model.player.currentExp
-      , viewConsumable1 368 650 model.keys model.player.healthPotionCount
-      , viewConsumable2 1488 650 model.keys model.player.speedPotionCount
+      , viewConsumable1 368 650 model.keys model.time model.player.healthPotions
+      , viewConsumable2 1488 650 model.keys model.time model.player.speedPotions
       , viewCharacterScreen 360 160 model.keys model.player
       , viewPlayerInput 820 861 model.keys
       ]

@@ -37,7 +37,9 @@ level2Enemies =
 level2Items : List Item
 level2Items =
   [ healthPotionStand 54 9
+  , healthPotionStand 53 9
   , speedPotionStand 57 9
+  , speedPotionStand 58 9
   , stoneSwordStand 53 11
   , ironSwordStand 53 13
   , dragonSwordStand 53 15

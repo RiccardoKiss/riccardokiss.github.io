@@ -6,13 +6,16 @@ import Keyboard
 
 import Sword exposing (..)
 import Armor exposing (..)
+import Potion exposing (..)
+
 
 type alias Player =
   { x : Float
   , y : Float
   , vx : Float
   , vy : Float
-  , speed : Float
+  , baseSpeed : Float
+  , currentSpeed : Float
   , width : Float
   , height : Float
   , dir : Direction
@@ -25,8 +28,8 @@ type alias Player =
   , playerLevel : Int
   , maxExp : Int
   , currentExp : Int
-  , healthPotionCount : Int
-  , speedPotionCount : Int
+  , healthPotions : Potion
+  , speedPotions : Potion
   }
 
 type Direction
@@ -90,11 +93,60 @@ armorToTexturePath armor =
     Armor.Dragon ->
       "DDD"
 
+applyHealthPotion : List Keyboard.Key -> Float -> Player -> Player
+applyHealthPotion keys time player =
+  let
+    healAmount = toFloat player.maxHealth * player.healthPotions.ratio
+    newCurrHealth =
+      if player.currentHealth + round healAmount < player.maxHealth then
+        player.currentHealth + round healAmount
+      else
+        player.maxHealth
+  in
+  if player.healthPotions.count > 0 then
+    if player.currentHealth < player.maxHealth then
+      if Potion.canUsePotion time player.healthPotions then
+        if List.member (Keyboard.Character "Q") keys then
+          { player
+            | currentHealth = newCurrHealth
+            , healthPotions = Potion.decrementPotionsCount player.healthPotions
+                              |> Potion.updateTimeOfLastUse time
+          }
+        else
+          player
+      else
+        player
+    else
+      player
+  else
+    player
+
+applySpeedPotion : List Keyboard.Key -> Float -> Player -> Player
+applySpeedPotion keys time player =
+  if Potion.canUsePotion time player.speedPotions then
+    if player.speedPotions.count > 0 then
+      if List.member (Keyboard.Character "E") keys then
+        { player
+          | currentSpeed = player.baseSpeed * player.speedPotions.ratio
+          , speedPotions =
+              Potion.decrementPotionsCount player.speedPotions
+              |> Potion.updateTimeOfLastUse time
+        }
+      else
+        player
+    else
+      { player
+        | currentSpeed = player.baseSpeed
+      }
+  else
+    player
+
+
 walk : { x : Int, y : Int } -> Player -> Player
 walk { x, y } player =
   { player
-    | vx = player.speed * toFloat x
-    , vy = player.speed * toFloat y
+    | vx = player.currentSpeed * toFloat x
+    , vy = player.currentSpeed * toFloat y
     , dir =
         if x < 0 then
           Left

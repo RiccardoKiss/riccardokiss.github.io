@@ -37,6 +37,7 @@ type alias Model =
   , time : Float
   , screen : ( Int, Int )
   , camera : Camera
+  , pauseToggle : Bool
   }
 
 type alias Input =
@@ -85,6 +86,7 @@ init navKey =
     , time = 0
     , screen = ( 1280, 720 )
     , camera = Camera.fixedArea (32 * 16) ( 0, 0 ) --(16 * 8) ( 0, 0 )
+    , pauseToggle = False
     }
   , Cmd.map Resources ( Resources.loadTextures texturesList )
   )
@@ -114,8 +116,12 @@ update msg model =
       in
       ( { model
           | player = playerTick dt model.time model.level model.keys enemies playerWithExp
-          , level =  levelTick dt model.player model.level enemies model.level.items
-          , time = dt + model.time
+          , level =  levelTick dt model.pauseToggle model.player model.level --enemies model.level.items
+          , time =
+            if model.pauseToggle then
+              model.time
+            else
+               model.time + dt
           , camera = Camera.moveTo ( model.player.x, model.player.y ) model.camera
         }
         , Cmd.none
@@ -131,9 +137,20 @@ update msg model =
         keys = Keyboard.update keyMsg model.keys
         --_ = Debug.log "[model.keys]" keys
       in
-        ( { model | keys = keys }
-        , Cmd.none
-        )
+      ( { model
+          | keys =
+            if model.pauseToggle then
+              []
+            else
+              keys
+        , pauseToggle =
+            if List.member Keyboard.Escape keys then
+              not model.pauseToggle
+            else
+              model.pauseToggle
+        }
+      , Cmd.none
+      )
 
 
 playerTick :
@@ -171,17 +188,6 @@ playerPhysics dt lvl player =
       else
         Tilemap.getTileTypeFromTileMap lvl.map newX newY
     newTileItemStand = List.filter (Item.checkItemStandByCoordinates (round newX) (round newY)) lvl.items
-    {-if player.dir == Player.Left then
-        List.filter (Item.checkItemStandByCoordinates (round newX - 1) (round newY)) lvl.items
-      else if player.dir == Player.Up then
-        List.filter (Item.checkItemStandByCoordinates (round newX) (round newY + 1)) lvl.items
-      else if player.dir == Player.Down then
-        List.filter (Item.checkItemStandByCoordinates (round newX ) (round newY-1)) lvl.items
-      else if player.dir == Player.Right then
-        List.filter (Item.checkItemStandByCoordinates (round newX+1 ) (round newY)) lvl.items
-      else
-        List.filter (Item.checkItemStandByCoordinates (floor newX ) (floor newY)) lvl.items
-    -}
     --_ = Debug.log "[playerPhysics] newTileItemStand" newTileItemStand
   in
   { player
@@ -267,29 +273,31 @@ getExp enemyList player =
       , currentExp = player.currentExp + expGained - player.maxExp
     }
 
-levelTick : Float -> Player -> Level.Level -> List Enemy -> List Item -> Level.Level
-levelTick dt player level enemies items =
+levelTick : Float -> Bool -> Player -> Level.Level -> Level.Level
+levelTick dt pauseToggle player level =
+  if pauseToggle then
+    level
+  else
   { level
-    | enemies = enemiesTick dt player level enemies
-    , items = itemsTick dt player level items
+    | enemies = enemiesTick dt player level
+    , items = itemsTick dt player level
   }
 
-itemsTick : Float -> Player -> Level.Level -> List Item -> List Item
-itemsTick dt player level items =
+itemsTick : Float -> Player -> Level.Level -> List Item
+itemsTick dt player level =
   let
     newX = player.x + dt * player.vx
     newY = player.y + dt * player.vy
     --_ = Debug.log "[itemsTick] items" items
   in
-  List.map (Item.updateItemStand (round newX) (round newY)) items
+  List.map (Item.updateItemStand (round newX) (round newY)) level.items
 
-
-enemiesTick : Float -> Player -> Level.Level -> List Enemy -> List Enemy
-enemiesTick dt player level enemies =
-  List.map (Enemy.enemyMovement player.x player.y) enemies
+enemiesTick : Float -> Player -> Level.Level -> List Enemy
+enemiesTick dt player level =
+  List.filter Enemy.isAlive level.enemies
+  |> List.map (Enemy.enemyMovement player.x player.y)
   |> List.map (enemyPhysics dt level.map player)
   |> List.map (enemyAttacked player)
-  --|> List.filter Enemy.isAlive
 
 enemyPhysics : Float -> Level.Map -> Player -> Enemy -> Enemy
 enemyPhysics dt lvl player enemy =
@@ -973,7 +981,6 @@ viewCharacterScreen left top keys player =
         , style "font-family" "monospace"
         ]
         [ img [ src "assets/character_screen_scroll_background_1200_600.png"
-              , style "display" "block"
               , style "position" "absolute"
               ] []
         , div [ style "position" "absolute"
@@ -987,6 +994,28 @@ viewCharacterScreen left top keys player =
         , viewPlayerInfo 766 75 player
         , healthPotionInfo 710 310 player.healthPotions
         , speedPotionInfo 710 420 player.speedPotions
+        ]
+  else
+    div [] []
+
+viewPauseScreen : Int -> Int -> Bool -> Html Msg
+viewPauseScreen left top pauseToggle =
+  if pauseToggle then
+    div [ style "left" (String.fromInt left ++ "px")
+        , style "top" (String.fromInt top ++ "px")
+        , style "position" "absolute"
+        , style "font-family" "monospace"
+        ]
+        [ img [ src "assets/background_1200_600.png"
+              , style "position" "absolute"
+              ] []
+        , pre [ style "position" "absolute"
+              , style "left" "472px"
+              , style "top" "48px"
+              , style "font-family" "Consolas"
+              , style "font-weight" "bolder"
+              , style "font-size" "1.75em"
+              ] [ text "PAUSE SCREEN" ]
         ]
   else
     div [] []
@@ -1035,6 +1064,7 @@ view model =
       , viewConsumable1 368 650 model.keys model.time model.player.healthPotions
       , viewConsumable2 1488 650 model.keys model.time model.player.speedPotions
       , viewCharacterScreen 360 160 model.keys model.player
+      , viewPauseScreen 360 160 model.pauseToggle
       , viewPlayerInput 820 861 model.keys
       ]
   }

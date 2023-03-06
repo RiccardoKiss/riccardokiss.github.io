@@ -7290,7 +7290,23 @@ var $author$project$Game$initPlayer = function (level) {
 	};
 };
 var $author$project$Level$Lvl2 = {$: 'Lvl2'};
-var $author$project$Level$level2Enemies = _List_Nil;
+var $author$project$Enemy$Right = {$: 'Right'};
+var $author$project$Enemy$Up = {$: 'Up'};
+var $author$project$Enemy$Prototype = {$: 'Prototype'};
+var $author$project$Enemy$prototype = F3(
+	function (initX, initY, initDir) {
+		return {alive: true, attack: 1, detectPlayerRadius: 2, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Prototype, expDrop: 1, health: 10, height: 2, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 1.0, vx: 0, vy: 0, width: 1, x: initX, y: initY};
+	});
+var $author$project$Enemy$Skeleton = {$: 'Skeleton'};
+var $author$project$Enemy$skeleton = F3(
+	function (initX, initY, initDir) {
+		return {alive: true, attack: 3, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 3, health: 10, height: 2, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1, x: initX, y: initY};
+	});
+var $author$project$Level$level2Enemies = _List_fromArray(
+	[
+		A3($author$project$Enemy$prototype, 57, 17, $author$project$Enemy$Right),
+		A3($author$project$Enemy$skeleton, 55, 14, $author$project$Enemy$Up)
+	]);
 var $author$project$Item$DragonArmor_ItemStand = {$: 'DragonArmor_ItemStand'};
 var $author$project$Item$dragonArmorStand = F2(
 	function (x, y) {
@@ -7454,6 +7470,7 @@ var $author$project$Game$init = function (navKey) {
 			keys: _List_Nil,
 			level: $author$project$Level$level2,
 			navKey: navKey,
+			pauseToggle: false,
 			player: $author$project$Game$initPlayer($author$project$Level$level2),
 			resources: $Zinggi$elm_game_resources$Game$Resources$init,
 			screen: _Utils_Tuple2(1280, 720),
@@ -8922,6 +8939,7 @@ var $author$project$Main$subscriptions = function (model) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $ohanhi$keyboard$Keyboard$Escape = {$: 'Escape'};
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -8960,8 +8978,6 @@ var $author$project$Enemy$isAlive = function (enemy) {
 };
 var $author$project$Enemy$Down = {$: 'Down'};
 var $author$project$Enemy$Left = {$: 'Left'};
-var $author$project$Enemy$Right = {$: 'Right'};
-var $author$project$Enemy$Up = {$: 'Up'};
 var $author$project$Sword$Attack = {$: 'Attack'};
 var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$Game$collisionSwordEnemy = F2(
@@ -9481,8 +9497,8 @@ var $author$project$Game$enemyPhysics = F4(
 			return enemy;
 		}
 	});
-var $author$project$Game$enemiesTick = F4(
-	function (dt, player, level, enemies) {
+var $author$project$Game$enemiesTick = F3(
+	function (dt, player, level) {
 		return A2(
 			$elm$core$List$map,
 			$author$project$Game$enemyAttacked(player),
@@ -9492,7 +9508,7 @@ var $author$project$Game$enemiesTick = F4(
 				A2(
 					$elm$core$List$map,
 					A2($author$project$Enemy$enemyMovement, player.x, player.y),
-					enemies)));
+					A2($elm$core$List$filter, $author$project$Enemy$isAlive, level.enemies))));
 	});
 var $elm$core$Basics$round = _Basics_round;
 var $author$project$Item$checkItemStandByCoordinates = F3(
@@ -9510,8 +9526,8 @@ var $author$project$Item$updateItemStand = F3(
 	function (x, y, item) {
 		return (A3($author$project$Item$checkItemStandByCoordinates, x, y, item) && item.pickable) ? $author$project$Item$itemPickedUp(item) : item;
 	});
-var $author$project$Game$itemsTick = F4(
-	function (dt, player, level, items) {
+var $author$project$Game$itemsTick = F3(
+	function (dt, player, level) {
 		var newY = player.y + (dt * player.vy);
 		var newX = player.x + (dt * player.vx);
 		return A2(
@@ -9520,38 +9536,17 @@ var $author$project$Game$itemsTick = F4(
 				$author$project$Item$updateItemStand,
 				$elm$core$Basics$round(newX),
 				$elm$core$Basics$round(newY)),
-			items);
+			level.items);
 	});
-var $author$project$Game$levelTick = F5(
-	function (dt, player, level, enemies, items) {
-		return _Utils_update(
+var $author$project$Game$levelTick = F4(
+	function (dt, pauseToggle, player, level) {
+		return pauseToggle ? level : _Utils_update(
 			level,
 			{
-				enemies: A4($author$project$Game$enemiesTick, dt, player, level, enemies),
-				items: A4($author$project$Game$itemsTick, dt, player, level, items)
+				enemies: A3($author$project$Game$enemiesTick, dt, player, level),
+				items: A3($author$project$Game$itemsTick, dt, player, level)
 			});
 	});
-var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
-	function (pos, _v0) {
-		var camera = _v0.a;
-		return $Zinggi$elm_2d_game$Game$TwoD$Camera$Camera(
-			_Utils_update(
-				camera,
-				{position: pos}));
-	});
-var $ohanhi$keyboard$Keyboard$Character = function (a) {
-	return {$: 'Character', a: a};
-};
-var $author$project$Potion$canUsePotion = F2(
-	function (time, potion) {
-		var secondsSinceLastUse = time - potion.timeOfLastUse;
-		return ((_Utils_cmp(secondsSinceLastUse, potion.cooldown) > -1) || (potion.timeOfLastUse === 0.0)) ? true : false;
-	});
-var $author$project$Potion$decrementPotionsCount = function (potion) {
-	return _Utils_update(
-		potion,
-		{count: potion.count - 1});
-};
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -9582,6 +9577,28 @@ var $elm$core$List$member = F2(
 			},
 			xs);
 	});
+var $Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo = F2(
+	function (pos, _v0) {
+		var camera = _v0.a;
+		return $Zinggi$elm_2d_game$Game$TwoD$Camera$Camera(
+			_Utils_update(
+				camera,
+				{position: pos}));
+	});
+var $elm$core$Basics$not = _Basics_not;
+var $ohanhi$keyboard$Keyboard$Character = function (a) {
+	return {$: 'Character', a: a};
+};
+var $author$project$Potion$canUsePotion = F2(
+	function (time, potion) {
+		var secondsSinceLastUse = time - potion.timeOfLastUse;
+		return ((_Utils_cmp(secondsSinceLastUse, potion.cooldown) > -1) || (potion.timeOfLastUse === 0.0)) ? true : false;
+	});
+var $author$project$Potion$decrementPotionsCount = function (potion) {
+	return _Utils_update(
+		potion,
+		{count: potion.count - 1});
+};
 var $author$project$Potion$updateTimeOfLastUse = F2(
 	function (time, potion) {
 		return _Utils_update(
@@ -10305,7 +10322,6 @@ var $ohanhi$keyboard$Keyboard$Again = {$: 'Again'};
 var $ohanhi$keyboard$Keyboard$Attn = {$: 'Attn'};
 var $ohanhi$keyboard$Keyboard$Cancel = {$: 'Cancel'};
 var $ohanhi$keyboard$Keyboard$ContextMenu = {$: 'ContextMenu'};
-var $ohanhi$keyboard$Keyboard$Escape = {$: 'Escape'};
 var $ohanhi$keyboard$Keyboard$Execute = {$: 'Execute'};
 var $ohanhi$keyboard$Keyboard$Find = {$: 'Find'};
 var $ohanhi$keyboard$Keyboard$Finish = {$: 'Finish'};
@@ -10438,9 +10454,9 @@ var $author$project$Game$update = F2(
 								$Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo,
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
-							level: A5($author$project$Game$levelTick, dt, model.player, model.level, enemies, model.level.items),
+							level: A4($author$project$Game$levelTick, dt, model.pauseToggle, model.player, model.level),
 							player: A6($author$project$Game$playerTick, dt, model.time, model.level, model.keys, enemies, playerWithExp),
-							time: dt + model.time
+							time: model.pauseToggle ? model.time : (model.time + dt)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'Resources':
@@ -10458,7 +10474,10 @@ var $author$project$Game$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{keys: keys}),
+						{
+							keys: model.pauseToggle ? _List_Nil : keys,
+							pauseToggle: A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Escape, keys) ? (!model.pauseToggle) : model.pauseToggle
+						}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -12028,7 +12047,6 @@ var $author$project$Game$viewCharacterScreen = F4(
 					_List_fromArray(
 						[
 							$elm$html$Html$Attributes$src('assets/character_screen_scroll_background_1200_600.png'),
-							A2($elm$html$Html$Attributes$style, 'display', 'block'),
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute')
 						]),
 					_List_Nil),
@@ -12493,6 +12511,50 @@ var $author$project$Game$viewHealthBar = F4(
 					A2($author$project$Game$viewHealthInfo, maxHp, currHp)
 				]));
 	});
+var $author$project$Game$viewPauseScreen = F3(
+	function (left, top, pauseToggle) {
+		return pauseToggle ? A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px'),
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/background_1200_600.png'),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '472px'),
+							A2($elm$html$Html$Attributes$style, 'top', '48px'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.75em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('PAUSE SCREEN')
+						]))
+				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
+	});
 var $author$project$Game$viewPlayerDebugInfo = F4(
 	function (left, top, player, enemy) {
 		return A2(
@@ -12743,6 +12805,7 @@ var $author$project$Game$view = function (model) {
 					A5($author$project$Game$viewConsumable1, 368, 650, model.keys, model.time, model.player.healthPotions),
 					A5($author$project$Game$viewConsumable2, 1488, 650, model.keys, model.time, model.player.speedPotions),
 					A4($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.player),
+					A3($author$project$Game$viewPauseScreen, 360, 160, model.pauseToggle),
 					A3($author$project$Game$viewPlayerInput, 820, 861, model.keys)
 				])),
 		title: 'Game'

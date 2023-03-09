@@ -29,9 +29,9 @@ textures =
 
 level2Enemies : List Enemy
 level2Enemies =
-  [ prototype 57 17 Enemy.Right
+  [ --prototype 57 17 Enemy.Right
   --, skeleton 55 12 Enemy.Up
-  , skeleton 55 14 Enemy.Up
+  --, skeleton 55 14 Enemy.Up
   ]
 
 level2Items : List Item

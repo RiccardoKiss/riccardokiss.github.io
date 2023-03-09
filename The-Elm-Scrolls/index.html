@@ -7290,23 +7290,7 @@ var $author$project$Game$initPlayer = function (level) {
 	};
 };
 var $author$project$Level$Lvl2 = {$: 'Lvl2'};
-var $author$project$Enemy$Right = {$: 'Right'};
-var $author$project$Enemy$Up = {$: 'Up'};
-var $author$project$Enemy$Prototype = {$: 'Prototype'};
-var $author$project$Enemy$prototype = F3(
-	function (initX, initY, initDir) {
-		return {alive: true, attack: 1, detectPlayerRadius: 2, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Prototype, expDrop: 1, health: 10, height: 2, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 1.0, vx: 0, vy: 0, width: 1, x: initX, y: initY};
-	});
-var $author$project$Enemy$Skeleton = {$: 'Skeleton'};
-var $author$project$Enemy$skeleton = F3(
-	function (initX, initY, initDir) {
-		return {alive: true, attack: 3, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 3, health: 10, height: 2, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1, x: initX, y: initY};
-	});
-var $author$project$Level$level2Enemies = _List_fromArray(
-	[
-		A3($author$project$Enemy$prototype, 57, 17, $author$project$Enemy$Right),
-		A3($author$project$Enemy$skeleton, 55, 14, $author$project$Enemy$Up)
-	]);
+var $author$project$Level$level2Enemies = _List_Nil;
 var $author$project$Item$DragonArmor_ItemStand = {$: 'DragonArmor_ItemStand'};
 var $author$project$Item$dragonArmorStand = F2(
 	function (x, y) {
@@ -8978,6 +8962,8 @@ var $author$project$Enemy$isAlive = function (enemy) {
 };
 var $author$project$Enemy$Down = {$: 'Down'};
 var $author$project$Enemy$Left = {$: 'Left'};
+var $author$project$Enemy$Right = {$: 'Right'};
+var $author$project$Enemy$Up = {$: 'Up'};
 var $author$project$Sword$Attack = {$: 'Attack'};
 var $elm$core$Basics$ge = _Utils_ge;
 var $author$project$Game$collisionSwordEnemy = F2(
@@ -12081,7 +12067,7 @@ var $author$project$Game$viewConsumableKeyCooldown = F4(
 	function (keys, key, time, potion) {
 		var tmpPercentage = ((time - potion.timeOfLastUse) * 100.0) / potion.cooldown;
 		var cooldownPercentage = ((tmpPercentage > 100.0) || (potion.timeOfLastUse === 0.0)) ? 100.0 : tmpPercentage;
-		var assetPath = (cooldownPercentage === 100.0) ? 'assets/button/consumable_key_ready.png' : 'assets/button/consumable_key_cooldown.svg';
+		var assetPath = (cooldownPercentage === 100.0) ? 'assets/button/consumable_key_48_48_ready.png' : 'assets/button/consumable_key_48_48_cooldown.svg';
 		return A2(
 			$elm$core$List$member,
 			$ohanhi$keyboard$Keyboard$Character(key),
@@ -12104,7 +12090,7 @@ var $author$project$Game$viewConsumableKeyCooldown = F4(
 							$elm$html$Html$Attributes$style,
 							'width',
 							$elm$core$String$fromFloat(cooldownPercentage) + '%'),
-							A2($elm$html$Html$Attributes$style, 'height', '32px')
+							A2($elm$html$Html$Attributes$style, 'height', '48px')
 						]),
 					_List_Nil)
 				]));
@@ -12131,7 +12117,7 @@ var $author$project$Game$viewConsumable1 = F5(
 					$elm$html$Html$img,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$src('assets/item/consumable_background.png')
+							$elm$html$Html$Attributes$src('assets/item/consumable_background_96_96.png')
 						]),
 					_List_Nil),
 					A2(
@@ -12148,7 +12134,7 @@ var $author$project$Game$viewConsumable1 = F5(
 							$elm$html$Html$img,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$src('assets/item/health_potion.png')
+									$elm$html$Html$Attributes$src('assets/item/health_potion_96_96.png')
 								]),
 							_List_Nil)
 						])),
@@ -12157,8 +12143,8 @@ var $author$project$Game$viewConsumable1 = F5(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '30px'),
-							A2($elm$html$Html$Attributes$style, 'top', '50px'),
+							A2($elm$html$Html$Attributes$style, 'left', '45px'),
+							A2($elm$html$Html$Attributes$style, 'top', '78px'),
 							A2($elm$html$Html$Attributes$style, 'color', 'white')
 						]),
 					_List_fromArray(
@@ -12171,8 +12157,8 @@ var $author$project$Game$viewConsumable1 = F5(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '16px'),
-							A2($elm$html$Html$Attributes$style, 'top', '67px')
+							A2($elm$html$Html$Attributes$style, 'left', '24px'),
+							A2($elm$html$Html$Attributes$style, 'top', '100px')
 						]),
 					_List_fromArray(
 						[
@@ -12180,7 +12166,7 @@ var $author$project$Game$viewConsumable1 = F5(
 							$elm$html$Html$img,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$src('assets/button/consumable_key_pressed.png')
+									$elm$html$Html$Attributes$src('assets/button/consumable_key_48_48_pressed.png')
 								]),
 							_List_Nil),
 							A4($author$project$Game$viewConsumableKeyCooldown, keys, 'Q', time, healthPotion),
@@ -12198,7 +12184,7 @@ var $author$project$Game$viewConsumable1 = F5(
 									$elm$html$Html$img,
 									_List_fromArray(
 										[
-											$elm$html$Html$Attributes$src('assets/button/q_transparent.png')
+											$elm$html$Html$Attributes$src('assets/button/q_48_48_transparent.png')
 										]),
 									_List_Nil)
 								]))
@@ -12227,7 +12213,7 @@ var $author$project$Game$viewConsumable2 = F5(
 					$elm$html$Html$img,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$src('assets/item/consumable_background.png')
+							$elm$html$Html$Attributes$src('assets/item/consumable_background_96_96.png')
 						]),
 					_List_Nil),
 					A2(
@@ -12244,7 +12230,7 @@ var $author$project$Game$viewConsumable2 = F5(
 							$elm$html$Html$img,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$src('assets/item/speed_potion.png')
+									$elm$html$Html$Attributes$src('assets/item/speed_potion_96_96.png')
 								]),
 							_List_Nil)
 						])),
@@ -12253,8 +12239,8 @@ var $author$project$Game$viewConsumable2 = F5(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '30px'),
-							A2($elm$html$Html$Attributes$style, 'top', '50px'),
+							A2($elm$html$Html$Attributes$style, 'left', '45px'),
+							A2($elm$html$Html$Attributes$style, 'top', '78px'),
 							A2($elm$html$Html$Attributes$style, 'color', 'white')
 						]),
 					_List_fromArray(
@@ -12267,8 +12253,8 @@ var $author$project$Game$viewConsumable2 = F5(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '16px'),
-							A2($elm$html$Html$Attributes$style, 'top', '67px')
+							A2($elm$html$Html$Attributes$style, 'left', '24px'),
+							A2($elm$html$Html$Attributes$style, 'top', '100px')
 						]),
 					_List_fromArray(
 						[
@@ -12276,7 +12262,7 @@ var $author$project$Game$viewConsumable2 = F5(
 							$elm$html$Html$img,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$src('assets/button/consumable_key_pressed.png')
+									$elm$html$Html$Attributes$src('assets/button/consumable_key_48_48_pressed.png')
 								]),
 							_List_Nil),
 							A4($author$project$Game$viewConsumableKeyCooldown, keys, 'E', time, speedPotion),
@@ -12294,7 +12280,7 @@ var $author$project$Game$viewConsumable2 = F5(
 									$elm$html$Html$img,
 									_List_fromArray(
 										[
-											$elm$html$Html$Attributes$src('assets/button/e_transparent.png')
+											$elm$html$Html$Attributes$src('assets/button/e_48_48_transparent.png')
 										]),
 									_List_Nil)
 								]))
@@ -12551,7 +12537,12 @@ var $author$project$Game$viewPauseScreen = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('PAUSE SCREEN')
+							$elm$html$Html$text('PAUSE SCREEN\n\n'),
+							$elm$html$Html$text('Resume\n'),
+							$elm$html$Html$text('Settings\n'),
+							$elm$html$Html$text('Controls\n'),
+							$elm$html$Html$text('Help\n'),
+							$elm$html$Html$text('Return to Main Menu\n')
 						]))
 				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
 	});
@@ -12599,9 +12590,9 @@ var $elm$core$String$replace = F3(
 	});
 var $author$project$Game$keyButtonTexture = F2(
 	function (key_button, keys) {
-		var assetPath = 'assets/button/' + (key_button + '.png');
+		var assetPath = 'assets/button/' + (key_button + '_48_48.png');
 		var pressedPath = A3($elm$core$String$replace, '.', '_pressed.', assetPath);
-		return (key_button === 'spacebar') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? pressedPath : assetPath) : ((key_button === 'q') ? (A2(
+		return (key_button === 'spacebar') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? 'assets/button/spacebar_192_48_pressed.png' : 'assets/button/spacebar_192_48.png') : ((key_button === 'q') ? (A2(
 			$elm$core$List$member,
 			$ohanhi$keyboard$Keyboard$Character('Q'),
 			keys) ? 'assets/button/consumable_key_pressed.png' : assetPath) : ((key_button === 'e') ? (A2(
@@ -12644,7 +12635,7 @@ var $author$project$Game$viewPlayerInput = F3(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '34px')
+							A2($elm$html$Html$Attributes$style, 'left', '52px')
 						]),
 					_List_fromArray(
 						[
@@ -12662,7 +12653,7 @@ var $author$project$Game$viewPlayerInput = F3(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'top', '34px')
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
 						]),
 					_List_fromArray(
 						[
@@ -12680,8 +12671,8 @@ var $author$project$Game$viewPlayerInput = F3(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '34px'),
-							A2($elm$html$Html$Attributes$style, 'top', '34px')
+							A2($elm$html$Html$Attributes$style, 'left', '52px'),
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
 						]),
 					_List_fromArray(
 						[
@@ -12699,8 +12690,8 @@ var $author$project$Game$viewPlayerInput = F3(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '68px'),
-							A2($elm$html$Html$Attributes$style, 'top', '34px')
+							A2($elm$html$Html$Attributes$style, 'left', '104px'),
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
 						]),
 					_List_fromArray(
 						[
@@ -12718,8 +12709,8 @@ var $author$project$Game$viewPlayerInput = F3(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '170px'),
-							A2($elm$html$Html$Attributes$style, 'top', '34px')
+							A2($elm$html$Html$Attributes$style, 'left', '260px'),
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
 						]),
 					_List_fromArray(
 						[
@@ -12802,11 +12793,11 @@ var $author$project$Game$view = function (model) {
 					A4($author$project$Game$viewDefenseBar, 448, 685, model.player.maxDefense, model.player.armor.totalDef),
 					A4($author$project$Game$viewHealthBar, 448, 725, model.player.maxHealth, model.player.currentHealth),
 					A4($author$project$Game$viewExpBar, 448, 765, model.player.maxExp, model.player.currentExp),
-					A5($author$project$Game$viewConsumable1, 368, 650, model.keys, model.time, model.player.healthPotions),
-					A5($author$project$Game$viewConsumable2, 1488, 650, model.keys, model.time, model.player.speedPotions),
+					A5($author$project$Game$viewConsumable1, 336, 650, model.keys, model.time, model.player.healthPotions),
+					A5($author$project$Game$viewConsumable2, 1485, 650, model.keys, model.time, model.player.speedPotions),
 					A4($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.player),
 					A3($author$project$Game$viewPauseScreen, 360, 160, model.pauseToggle),
-					A3($author$project$Game$viewPlayerInput, 820, 861, model.keys)
+					A3($author$project$Game$viewPlayerInput, 820, 835, model.keys)
 				])),
 		title: 'Game'
 	};

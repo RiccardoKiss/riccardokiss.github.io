@@ -419,14 +419,14 @@ dmgDoneToEnemy sword enemy =
 keyButtonTexture : String -> List Keyboard.Key -> String
 keyButtonTexture key_button keys =
   let
-    assetPath = "assets/button/" ++ key_button ++ ".png"
+    assetPath = "assets/button/" ++ key_button ++ "_48_48.png"
     pressedPath = String.replace "." "_pressed." assetPath
   in
   if key_button == "spacebar" then
     if List.member (Keyboard.Spacebar) keys then
-      pressedPath
+      "assets/button/spacebar_192_48_pressed.png"
     else
-      assetPath
+      "assets/button/spacebar_192_48.png"
   else if key_button == "q" then
     if List.member (Keyboard.Character "Q") keys then
       "assets/button/consumable_key_pressed.png"--pressedPath
@@ -618,9 +618,9 @@ viewConsumableKeyCooldown keys key time potion =
       else tmpPercentage
     assetPath =
       if cooldownPercentage == 100.0 then
-        "assets/button/consumable_key_ready.png"
+        "assets/button/consumable_key_48_48_ready.png"
       else
-        "assets/button/consumable_key_cooldown.svg"
+        "assets/button/consumable_key_48_48_cooldown.svg"
   in
   if List.member (Keyboard.Character key) keys then
     div [] []
@@ -631,7 +631,7 @@ viewConsumableKeyCooldown keys key time potion =
         ]
         [ img [ src assetPath
               , style "width" (String.fromFloat cooldownPercentage ++ "%")  -- height
-              , style "height" "32px" -- width
+              , style "height" "48px" -- width
               ] []
         ]
 
@@ -641,30 +641,30 @@ viewConsumable1 left top keys time healthPotion =
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
       ]
-      [ img [ src "assets/item/consumable_background.png" ] []
+      [ img [ src "assets/item/consumable_background_96_96.png" ] []
       , div [ style "position" "absolute"
             , style "left" "0px"
             , style "top" "0px"
             ]
-            [ img [ src "assets/item/health_potion.png" ] []
+            [ img [ src "assets/item/health_potion_96_96.png" ] []
             ]
       , div [ style "position" "absolute"
-            , style "left" "30px"
-            , style "top" "50px"
+            , style "left" "45px"
+            , style "top" "78px"
             , style "color" "white"
             ]
             [ text  (String.fromInt healthPotion.count) ]
       , div [ style "position" "absolute"
-            , style "left" "16px"
-            , style "top" "67px"
+            , style "left" "24px"
+            , style "top" "100px"
             ]
-            [ img [ src "assets/button/consumable_key_pressed.png" ] []--(keyButtonTexture "q" keys) ] []
+            [ img [ src "assets/button/consumable_key_48_48_pressed.png" ] []--(keyButtonTexture "q" keys) ] []
             , viewConsumableKeyCooldown keys "Q" time healthPotion
             , div [ style "position" "absolute"
                   , style "left" "0px"
                   , style "top" "0px"
                   ]
-                  [ img [ src "assets/button/q_transparent.png" ] [] ]
+                  [ img [ src "assets/button/q_48_48_transparent.png" ] [] ]
             ]
       ]
 
@@ -674,30 +674,30 @@ viewConsumable2 left top keys time speedPotion =
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
       ]
-      [ img [ src "assets/item/consumable_background.png" ] []
+      [ img [ src "assets/item/consumable_background_96_96.png" ] []
       , div [ style "position" "absolute"
             , style "left" "0px"
             , style "top" "0px"
             ]
-            [ img [ src "assets/item/speed_potion.png" ] []
+            [ img [ src "assets/item/speed_potion_96_96.png" ] []
             ]
       , div [ style "position" "absolute"
-            , style "left" "30px"
-            , style "top" "50px"
+            , style "left" "45px"
+            , style "top" "78px"
             , style "color" "white"
             ]
             [ text  (String.fromInt speedPotion.count) ]
       , div [ style "position" "absolute"
-            , style "left" "16px"
-            , style "top" "67px"
+            , style "left" "24px"
+            , style "top" "100px"
             ]
-            [ img [ src "assets/button/consumable_key_pressed.png" ] []--(keyButtonTexture "e" keys) ] []
+            [ img [ src "assets/button/consumable_key_48_48_pressed.png" ] []--(keyButtonTexture "e" keys) ] []
             , viewConsumableKeyCooldown keys "E" time speedPotion
             , div [ style "position" "absolute"
                   , style "left" "0px"
                   , style "top" "0px"
                   ]
-                  [ img [ src "assets/button/e_transparent.png" ] [] ]
+                  [ img [ src "assets/button/e_48_48_transparent.png" ] [] ]
             ]
       ]
 
@@ -708,23 +708,23 @@ viewPlayerInput left top keys =
       , style "top" (String.fromInt top ++ "px")
       ]
       [ div [ style "position" "absolute"
-            , style "left" "34px"
+            , style "left" "52px"
             ] [ img [ src (keyButtonTexture "w" keys) ] [] ]
       , div [ style "position" "absolute"
             --, style "left" "34px"
-            , style "top" "34px"
+            , style "top" "52px"
             ] [ img [ src (keyButtonTexture "a" keys) ] [] ]
       , div [ style "position" "absolute"
-            , style "left" "34px"
-            , style "top" "34px"
+            , style "left" "52px"
+            , style "top" "52px"
             ] [ img [ src (keyButtonTexture "s" keys) ] [] ]
       , div [ style "position" "absolute"
-            , style "left" "68px"
-            , style "top" "34px"
+            , style "left" "104px"
+            , style "top" "52px"
             ] [ img [ src (keyButtonTexture "d" keys) ] [] ]
       , div [ style "position" "absolute"
-            , style "left" "170px"
-            , style "top" "34px"
+            , style "left" "260px"
+            , style "top" "52px"
             ] [ img [ src (keyButtonTexture "spacebar" keys) ] [] ]
       ]
 
@@ -1015,7 +1015,14 @@ viewPauseScreen left top pauseToggle =
               , style "font-family" "Consolas"
               , style "font-weight" "bolder"
               , style "font-size" "1.75em"
-              ] [ text "PAUSE SCREEN" ]
+              ]
+              [ text "PAUSE SCREEN\n\n"
+              , text "Resume\n"
+              , text "Settings\n"
+              , text "Controls\n"
+              , text "Help\n"
+              , text "Return to Main Menu\n"
+              ]
         ]
   else
     div [] []
@@ -1061,11 +1068,11 @@ view model =
       , viewDefenseBar 448 685 model.player.maxDefense model.player.armor.totalDef
       , viewHealthBar 448 725 model.player.maxHealth model.player.currentHealth
       , viewExpBar 448 765 model.player.maxExp model.player.currentExp
-      , viewConsumable1 368 650 model.keys model.time model.player.healthPotions
-      , viewConsumable2 1488 650 model.keys model.time model.player.speedPotions
+      , viewConsumable1 336 650 model.keys model.time model.player.healthPotions
+      , viewConsumable2 1485 650 model.keys model.time model.player.speedPotions
       , viewCharacterScreen 360 160 model.keys model.player
       , viewPauseScreen 360 160 model.pauseToggle
-      , viewPlayerInput 820 861 model.keys
+      , viewPlayerInput 820 835 model.keys  --820 861
       ]
   }
 

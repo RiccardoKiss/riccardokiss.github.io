@@ -133,11 +133,9 @@ applySpeedPotion keys time player =
               |> Potion.updateTimeOfLastUse time
         }
       else
-        player
+        { player | currentSpeed = player.baseSpeed }
     else
-      { player
-        | currentSpeed = player.baseSpeed
-      }
+      { player | currentSpeed = player.baseSpeed }
   else
     player
 

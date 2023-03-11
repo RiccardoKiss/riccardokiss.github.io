@@ -7,15 +7,16 @@ import Game.Resources as Resources exposing (..)
 import Game.TwoD as Game2d
 import Game.TwoD.Camera as Camera exposing (..)
 import Game.TwoD.Render as Render exposing (..)
-import Html exposing (Html, div, img, text, pre, p, span)
+import Html exposing (Html, div, img, text, pre, p, a, span)
 import Html.Attributes exposing (style, src)
-import Html.Events exposing (on, keyCode)
+import Html.Events exposing (on, keyCode, onClick, onMouseOver, onMouseOut)
 import Json.Decode as D
 import Keyboard exposing (..)
 import Keyboard.Arrows
 import Task
 import Array
 
+import Route exposing (Route)
 import Tilemap exposing (..)
 import Level exposing (..)
 import Player exposing (..)
@@ -38,15 +39,33 @@ type alias Model =
   , screen : ( Int, Int )
   , camera : Camera
   , pauseToggle : Bool
+  , button_DS_respawn : String
+  , button_DS_return : String
+--  , button_PS_resume : String
+--  , button_PS_settings : String
+--  , button_PS_controls : String
+--  , button_PS_help : String
+--  , button_PS_return : String
   }
 
 type alias Input =
   { x : Int, y : Int }
 
+type Button
+  = DeathScreenRespawn
+  | DeathScreenReturn
+--  | PauseScreenResume
+--  | PauseScreenSettings
+--  | PauseScreenControls
+--  | PauseScreenHelp
+--  | PauseScreenReturn
+
 type Msg
   = Tick Float
   | Resources Resources.Msg
   | Keys Keyboard.Msg
+  | Hover Button
+  | MouseOut Button
 
 getNavKey : Model -> Nav.Key
 getNavKey model =
@@ -87,6 +106,13 @@ init navKey =
     , screen = ( 1280, 720 )
     , camera = Camera.fixedArea (32 * 16) ( 0, 0 ) --(16 * 8) ( 0, 0 )
     , pauseToggle = False
+    , button_DS_respawn = "assets/button/button_DS_respawn.png"
+    , button_DS_return = "assets/button/button_DS_return_MainMenu.png"
+    --, button_PS_resume = "assets/button/button_DS_respawn.png"
+    --, button_PS_settings = "assets/button/button_DS_respawn.png"
+    --, button_PS_controls = "assets/button/button_DS_respawn.png"
+    --, button_PS_help = "assets/button/button_DS_respawn.png"
+    --, button_PS_return = "assets/button/button_DS_respawn.png"
     }
   , Cmd.map Resources ( Resources.loadTextures texturesList )
   )
@@ -117,11 +143,16 @@ update msg model =
       ( { model
           | player = playerTick dt model.time model.level model.keys enemies playerWithExp
           , level =  levelTick dt model.pauseToggle model.player model.level --enemies model.level.items
+          , pauseToggle =
+              if model.player.currentHealth == 0 then
+                True
+              else
+                model.pauseToggle
           , time =
-            if model.pauseToggle then
-              model.time
-            else
-               model.time + dt
+              if model.pauseToggle then
+                model.time
+              else
+                model.time + dt
           , camera = Camera.moveTo ( model.player.x, model.player.y ) model.camera
         }
         , Cmd.none
@@ -144,13 +175,49 @@ update msg model =
             else
               keys
         , pauseToggle =
-            if List.member Keyboard.Escape keys then
-              not model.pauseToggle
+            if model.player.currentHealth > 0 then
+              if List.member Keyboard.Escape keys then
+                not model.pauseToggle
+              else
+                model.pauseToggle
             else
               model.pauseToggle
+
         }
       , Cmd.none
       )
+
+    Hover button ->
+      case button of
+        DeathScreenRespawn ->
+          ( { model
+            | button_DS_respawn = "assets/button/button_DS_respawn_hover.png"
+            }
+          , Cmd.none
+          )
+
+        DeathScreenReturn ->
+          ( { model
+            | button_DS_return = "assets/button/button_DS_return_MainMenu_hover.png"
+            }
+          , Cmd.none
+          )
+
+    MouseOut button ->
+      case button of
+        DeathScreenRespawn ->
+          ( { model
+            | button_DS_respawn = "assets/button/button_DS_respawn.png"
+            }
+          , Cmd.none
+          )
+
+        DeathScreenReturn ->
+          ( { model
+            | button_DS_return = "assets/button/button_DS_return_MainMenu.png"
+            }
+          , Cmd.none
+          )
 
 
 playerTick :
@@ -998,9 +1065,9 @@ viewCharacterScreen left top keys player =
   else
     div [] []
 
-viewPauseScreen : Int -> Int -> Bool -> Html Msg
-viewPauseScreen left top pauseToggle =
-  if pauseToggle then
+viewPauseScreen : Int -> Int -> Bool -> Player -> Html Msg
+viewPauseScreen left top pauseToggle player =
+  if pauseToggle && player.currentHealth > 0 then
     div [ style "left" (String.fromInt left ++ "px")
         , style "top" (String.fromInt top ++ "px")
         , style "position" "absolute"
@@ -1022,6 +1089,43 @@ viewPauseScreen left top pauseToggle =
               , text "Controls\n"
               , text "Help\n"
               , text "Return to Main Menu\n"
+              ]
+        ]
+  else
+    div [] []
+
+viewDeathScreen : Int -> Int -> String -> String -> Player -> Html Msg
+viewDeathScreen left top pathRespawn pathReturn player =
+  if player.currentHealth == 0 then
+    div [ style "left" (String.fromInt left ++ "px")
+        , style "top" (String.fromInt top ++ "px")
+        , style "position" "absolute"
+        , style "font-family" "monospace"
+        ]
+        [ img [ src "assets/death_screen_background_1200_600.png"
+              , style "position" "absolute"
+              ] []
+        , div [ style "position" "absolute"
+              , style "left" "390px"
+              , style "top" "300px"
+              ]
+              [ a [ Route.href Route.Game ]
+                [ img [ src pathRespawn
+                      , onMouseOver (Hover DeathScreenRespawn)
+                      , onMouseOut (MouseOut DeathScreenRespawn)
+                      ] []
+                ]
+              ]
+        , div [ style "position" "absolute"
+              , style "left" "390px"
+              , style "top" "400px"
+              ]
+              [ a [ Route.href Route.Home ]
+                [ img [ src pathReturn
+                      , onMouseOver (Hover DeathScreenReturn)
+                      , onMouseOut (MouseOut DeathScreenReturn)
+                      ] []
+                ]
               ]
         ]
   else
@@ -1071,7 +1175,8 @@ view model =
       , viewConsumable1 336 650 model.keys model.time model.player.healthPotions
       , viewConsumable2 1485 650 model.keys model.time model.player.speedPotions
       , viewCharacterScreen 360 160 model.keys model.player
-      , viewPauseScreen 360 160 model.pauseToggle
+      , viewPauseScreen 360 160 model.pauseToggle model.player
+      , viewDeathScreen 360 160 model.button_DS_respawn model.button_DS_return model.player
       , viewPlayerInput 820 835 model.keys  --820 861
       ]
   }

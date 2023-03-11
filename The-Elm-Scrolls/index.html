@@ -7290,7 +7290,16 @@ var $author$project$Game$initPlayer = function (level) {
 	};
 };
 var $author$project$Level$Lvl2 = {$: 'Lvl2'};
-var $author$project$Level$level2Enemies = _List_Nil;
+var $author$project$Enemy$Right = {$: 'Right'};
+var $author$project$Enemy$Skeleton = {$: 'Skeleton'};
+var $author$project$Enemy$skeleton = F3(
+	function (initX, initY, initDir) {
+		return {alive: true, attack: 3, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 3, health: 10, height: 2, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1, x: initX, y: initY};
+	});
+var $author$project$Level$level2Enemies = _List_fromArray(
+	[
+		A3($author$project$Enemy$skeleton, 57, 17, $author$project$Enemy$Right)
+	]);
 var $author$project$Item$DragonArmor_ItemStand = {$: 'DragonArmor_ItemStand'};
 var $author$project$Item$dragonArmorStand = F2(
 	function (x, y) {
@@ -7447,6 +7456,8 @@ var $author$project$Game$texturesList = $elm$core$List$concat(
 var $author$project$Game$init = function (navKey) {
 	return _Utils_Tuple2(
 		{
+			button_DS_respawn: 'assets/button/button_DS_respawn.png',
+			button_DS_return: 'assets/button/button_DS_return_MainMenu.png',
 			camera: A2(
 				$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
 				32 * 16,
@@ -8962,7 +8973,6 @@ var $author$project$Enemy$isAlive = function (enemy) {
 };
 var $author$project$Enemy$Down = {$: 'Down'};
 var $author$project$Enemy$Left = {$: 'Left'};
-var $author$project$Enemy$Right = {$: 'Right'};
 var $author$project$Enemy$Up = {$: 'Up'};
 var $author$project$Sword$Attack = {$: 'Attack'};
 var $elm$core$Basics$ge = _Utils_ge;
@@ -9623,7 +9633,9 @@ var $author$project$Player$applySpeedPotion = F3(
 					$author$project$Potion$updateTimeOfLastUse,
 					time,
 					$author$project$Potion$decrementPotionsCount(player.speedPotions))
-			}) : player) : _Utils_update(
+			}) : _Utils_update(
+			player,
+			{currentSpeed: player.baseSpeed})) : _Utils_update(
 			player,
 			{currentSpeed: player.baseSpeed})) : player;
 	});
@@ -10441,6 +10453,7 @@ var $author$project$Game$update = F2(
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
 							level: A4($author$project$Game$levelTick, dt, model.pauseToggle, model.player, model.level),
+							pauseToggle: (!model.player.currentHealth) ? true : model.pauseToggle,
 							player: A6($author$project$Game$playerTick, dt, model.time, model.level, model.keys, enemies, playerWithExp),
 							time: model.pauseToggle ? model.time : (model.time + dt)
 						}),
@@ -10454,7 +10467,7 @@ var $author$project$Game$update = F2(
 							resources: A2($Zinggi$elm_game_resources$Game$Resources$update, rMsg, model.resources)
 						}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'Keys':
 				var keyMsg = msg.a;
 				var keys = A2($ohanhi$keyboard$Keyboard$update, keyMsg, model.keys);
 				return _Utils_Tuple2(
@@ -10462,9 +10475,39 @@ var $author$project$Game$update = F2(
 						model,
 						{
 							keys: model.pauseToggle ? _List_Nil : keys,
-							pauseToggle: A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Escape, keys) ? (!model.pauseToggle) : model.pauseToggle
+							pauseToggle: (model.player.currentHealth > 0) ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Escape, keys) ? (!model.pauseToggle) : model.pauseToggle) : model.pauseToggle
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 'Hover':
+				var button = msg.a;
+				if (button.$ === 'DeathScreenRespawn') {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{button_DS_respawn: 'assets/button/button_DS_respawn_hover.png'}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{button_DS_return: 'assets/button/button_DS_return_MainMenu_hover.png'}),
+						$elm$core$Platform$Cmd$none);
+				}
+			default:
+				var button = msg.a;
+				if (button.$ === 'DeathScreenRespawn') {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{button_DS_respawn: 'assets/button/button_DS_respawn.png'}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{button_DS_return: 'assets/button/button_DS_return_MainMenu.png'}),
+						$elm$core$Platform$Cmd$none);
+				}
 		}
 	});
 var $author$project$Help$update = F2(
@@ -12287,6 +12330,159 @@ var $author$project$Game$viewConsumable2 = F5(
 						]))
 				]));
 	});
+var $author$project$Game$DeathScreenRespawn = {$: 'DeathScreenRespawn'};
+var $author$project$Game$DeathScreenReturn = {$: 'DeathScreenReturn'};
+var $author$project$Game$Hover = function (a) {
+	return {$: 'Hover', a: a};
+};
+var $author$project$Game$MouseOut = function (a) {
+	return {$: 'MouseOut', a: a};
+};
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $author$project$Route$routeToPieces = function (page) {
+	switch (page.$) {
+		case 'NotFound':
+			return 'not-found';
+		case 'Home':
+			return 'index.html';
+		case 'Help':
+			return 'help';
+		case 'HighScores':
+			return 'highscores';
+		case 'Settings':
+			return 'settings';
+		case 'Game':
+			return 'game';
+		case 'NewGame':
+			return 'new-game';
+		default:
+			return 'load-game';
+	}
+};
+var $author$project$Route$href = function (targetRoute) {
+	return $elm$html$Html$Attributes$href(
+		$author$project$Route$routeToPieces(targetRoute));
+};
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onMouseOut = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'mouseout',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$html$Html$Events$onMouseOver = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'mouseover',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $author$project$Game$viewDeathScreen = F5(
+	function (left, top, pathRespawn, pathReturn, player) {
+		return (!player.currentHealth) ? A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px'),
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/death_screen_background_1200_600.png'),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '390px'),
+							A2($elm$html$Html$Attributes$style, 'top', '300px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$author$project$Route$href($author$project$Route$Game)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(pathRespawn),
+											$elm$html$Html$Events$onMouseOver(
+											$author$project$Game$Hover($author$project$Game$DeathScreenRespawn)),
+											$elm$html$Html$Events$onMouseOut(
+											$author$project$Game$MouseOut($author$project$Game$DeathScreenRespawn))
+										]),
+									_List_Nil)
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '390px'),
+							A2($elm$html$Html$Attributes$style, 'top', '400px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$author$project$Route$href($author$project$Route$Home)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(pathReturn),
+											$elm$html$Html$Events$onMouseOver(
+											$author$project$Game$Hover($author$project$Game$DeathScreenReturn)),
+											$elm$html$Html$Events$onMouseOut(
+											$author$project$Game$MouseOut($author$project$Game$DeathScreenReturn))
+										]),
+									_List_Nil)
+								]))
+						]))
+				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
+	});
 var $author$project$Game$viewDefenseInfo = F2(
 	function (maxDef, currDef) {
 		return A2(
@@ -12497,9 +12693,9 @@ var $author$project$Game$viewHealthBar = F4(
 					A2($author$project$Game$viewHealthInfo, maxHp, currHp)
 				]));
 	});
-var $author$project$Game$viewPauseScreen = F3(
-	function (left, top, pauseToggle) {
-		return pauseToggle ? A2(
+var $author$project$Game$viewPauseScreen = F4(
+	function (left, top, pauseToggle, player) {
+		return (pauseToggle && (player.currentHealth > 0)) ? A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
@@ -12796,7 +12992,8 @@ var $author$project$Game$view = function (model) {
 					A5($author$project$Game$viewConsumable1, 336, 650, model.keys, model.time, model.player.healthPotions),
 					A5($author$project$Game$viewConsumable2, 1485, 650, model.keys, model.time, model.player.speedPotions),
 					A4($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.player),
-					A3($author$project$Game$viewPauseScreen, 360, 160, model.pauseToggle),
+					A4($author$project$Game$viewPauseScreen, 360, 160, model.pauseToggle, model.player),
+					A5($author$project$Game$viewDeathScreen, 360, 160, model.button_DS_respawn, model.button_DS_return, model.player),
 					A3($author$project$Game$viewPlayerInput, 820, 835, model.keys)
 				])),
 		title: 'Game'
@@ -12804,61 +13001,7 @@ var $author$project$Game$view = function (model) {
 };
 var $author$project$Help$HoverBack = {$: 'HoverBack'};
 var $author$project$Help$MouseOut = {$: 'MouseOut'};
-var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
-var $author$project$Route$routeToPieces = function (page) {
-	switch (page.$) {
-		case 'NotFound':
-			return 'not-found';
-		case 'Home':
-			return 'index.html';
-		case 'Help':
-			return 'help';
-		case 'HighScores':
-			return 'highscores';
-		case 'Settings':
-			return 'settings';
-		case 'Game':
-			return 'game';
-		case 'NewGame':
-			return 'new-game';
-		default:
-			return 'load-game';
-	}
-};
-var $author$project$Route$href = function (targetRoute) {
-	return $elm$html$Html$Attributes$href(
-		$author$project$Route$routeToPieces(targetRoute));
-};
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onMouseOut = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'mouseout',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $elm$html$Html$Events$onMouseOver = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'mouseover',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $author$project$Help$view = function (model) {
 	return {
 		content: A2(

@@ -41,11 +41,10 @@ type alias Model =
   , pauseToggle : Bool
   , button_DS_respawn : String
   , button_DS_return : String
---  , button_PS_resume : String
---  , button_PS_settings : String
---  , button_PS_controls : String
---  , button_PS_help : String
---  , button_PS_return : String
+  , button_PS_resume : String
+  , button_PS_settings : String
+  , button_PS_help : String
+  , button_PS_return : String
   }
 
 type alias Input =
@@ -54,11 +53,10 @@ type alias Input =
 type Button
   = DeathScreenRespawn
   | DeathScreenReturn
---  | PauseScreenResume
---  | PauseScreenSettings
---  | PauseScreenControls
---  | PauseScreenHelp
---  | PauseScreenReturn
+  | PauseScreenResume
+  | PauseScreenSettings
+  | PauseScreenHelp
+  | PauseScreenReturn
 
 type Msg
   = Tick Float
@@ -66,6 +64,7 @@ type Msg
   | Keys Keyboard.Msg
   | Hover Button
   | MouseOut Button
+  | ClickResume
 
 getNavKey : Model -> Nav.Key
 getNavKey model =
@@ -108,11 +107,10 @@ init navKey =
     , pauseToggle = False
     , button_DS_respawn = "assets/button/button_DS_respawn.png"
     , button_DS_return = "assets/button/button_DS_return_MainMenu.png"
-    --, button_PS_resume = "assets/button/button_DS_respawn.png"
-    --, button_PS_settings = "assets/button/button_DS_respawn.png"
-    --, button_PS_controls = "assets/button/button_DS_respawn.png"
-    --, button_PS_help = "assets/button/button_DS_respawn.png"
-    --, button_PS_return = "assets/button/button_DS_respawn.png"
+    , button_PS_resume = "assets/button/button_resume.png"
+    , button_PS_settings = "assets/button/button_settings.png"
+    , button_PS_help = "assets/button/button_help.png"
+    , button_PS_return = "assets/button/button_return_MainMenu.png"
     }
   , Cmd.map Resources ( Resources.loadTextures texturesList )
   )
@@ -203,6 +201,34 @@ update msg model =
           , Cmd.none
           )
 
+        PauseScreenResume ->
+          ( { model
+            | button_PS_resume = "assets/button/button_resume_hover.png"
+            }
+          , Cmd.none
+          )
+
+        PauseScreenSettings ->
+          ( { model
+            | button_PS_settings = "assets/button/button_settings_hover.png"
+            }
+          , Cmd.none
+          )
+
+        PauseScreenHelp ->
+          ( { model
+            | button_PS_help = "assets/button/button_help_hover.png"
+            }
+          , Cmd.none
+          )
+
+        PauseScreenReturn ->
+          ( { model
+            | button_PS_return = "assets/button/button_return_MainMenu_hover.png"
+            }
+          , Cmd.none
+          )
+
     MouseOut button ->
       case button of
         DeathScreenRespawn ->
@@ -218,6 +244,39 @@ update msg model =
             }
           , Cmd.none
           )
+
+        PauseScreenResume ->
+          ( { model
+            | button_PS_resume = "assets/button/button_resume.png"
+            }
+          , Cmd.none
+          )
+
+        PauseScreenSettings ->
+          ( { model
+            | button_PS_settings = "assets/button/button_settings.png"
+            }
+          , Cmd.none
+          )
+
+        PauseScreenHelp ->
+          ( { model
+            | button_PS_help = "assets/button/button_help.png"
+            }
+          , Cmd.none
+          )
+
+        PauseScreenReturn ->
+          ( { model
+            | button_PS_return = "assets/button/button_return_MainMenu.png"
+            }
+          , Cmd.none
+          )
+
+    ClickResume ->
+      ( { model | pauseToggle = False }
+      , Cmd.none
+      )
 
 
 playerTick :
@@ -1065,8 +1124,8 @@ viewCharacterScreen left top keys player =
   else
     div [] []
 
-viewPauseScreen : Int -> Int -> Bool -> Player -> Html Msg
-viewPauseScreen left top pauseToggle player =
+viewPauseScreen : Int -> Int -> String -> String -> String -> String -> Bool -> Player -> Html Msg
+viewPauseScreen left top pathResume pathSettings pathHelp pathReturn pauseToggle player =
   if pauseToggle && player.currentHealth > 0 then
     div [ style "left" (String.fromInt left ++ "px")
         , style "top" (String.fromInt top ++ "px")
@@ -1077,18 +1136,56 @@ viewPauseScreen left top pauseToggle player =
               , style "position" "absolute"
               ] []
         , pre [ style "position" "absolute"
-              , style "left" "472px"
-              , style "top" "48px"
+              , style "left" "500px"
+              , style "top" "25px"
               , style "font-family" "Consolas"
               , style "font-weight" "bolder"
               , style "font-size" "1.75em"
               ]
-              [ text "PAUSE SCREEN\n\n"
-              , text "Resume\n"
-              , text "Settings\n"
-              , text "Controls\n"
-              , text "Help\n"
-              , text "Return to Main Menu\n"
+              [ text "PAUSE SCREEN" ]
+        , div [ style "position" "absolute"
+              , style "left" "392px"
+              , style "top" "150px"
+              ]
+              [ img [ src pathResume
+                    , onMouseOver (Hover PauseScreenResume)
+                    , onMouseOut (MouseOut PauseScreenResume)
+                    , onClick ClickResume
+                    , style "cursor" "pointer"
+                    ] []
+              ]
+        , div [ style "position" "absolute"
+              , style "left" "392px"
+              , style "top" "250px"
+              ]
+              [ a [ Route.href Route.Settings ]
+                  [ img [ src pathSettings
+                        , onMouseOver (Hover PauseScreenSettings)
+                        , onMouseOut (MouseOut PauseScreenSettings)
+                        ] []
+                  ]
+              ]
+        , div [ style "position" "absolute"
+              , style "left" "392px"
+              , style "top" "350px"
+              ]
+              [ a [ Route.href Route.Help ]
+                  [ img [ src pathHelp
+                        , onMouseOver (Hover PauseScreenHelp)
+                        , onMouseOut (MouseOut PauseScreenHelp)
+                        ] []
+                  ]
+              ]
+        , div [ style "position" "absolute"
+              , style "left" "392px"
+              , style "top" "450px"
+              ]
+              [ a [ Route.href Route.Home ]
+                  [ img [ src pathReturn
+                        , onMouseOver (Hover PauseScreenReturn)
+                        , onMouseOut (MouseOut PauseScreenReturn)
+                        ] []
+                  ]
               ]
         ]
   else
@@ -1175,7 +1272,7 @@ view model =
       , viewConsumable1 336 650 model.keys model.time model.player.healthPotions
       , viewConsumable2 1485 650 model.keys model.time model.player.speedPotions
       , viewCharacterScreen 360 160 model.keys model.player
-      , viewPauseScreen 360 160 model.pauseToggle model.player
+      , viewPauseScreen 360 160 model.button_PS_resume model.button_PS_settings model.button_PS_help model.button_PS_return model.pauseToggle model.player
       , viewDeathScreen 360 160 model.button_DS_respawn model.button_DS_return model.player
       , viewPlayerInput 820 835 model.keys  --820 861
       ]

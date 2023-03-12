@@ -7458,6 +7458,10 @@ var $author$project$Game$init = function (navKey) {
 		{
 			button_DS_respawn: 'assets/button/button_DS_respawn.png',
 			button_DS_return: 'assets/button/button_DS_return_MainMenu.png',
+			button_PS_help: 'assets/button/button_help.png',
+			button_PS_resume: 'assets/button/button_resume.png',
+			button_PS_return: 'assets/button/button_return_MainMenu.png',
+			button_PS_settings: 'assets/button/button_settings.png',
 			camera: A2(
 				$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
 				32 * 16,
@@ -10480,34 +10484,90 @@ var $author$project$Game$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'Hover':
 				var button = msg.a;
-				if (button.$ === 'DeathScreenRespawn') {
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{button_DS_respawn: 'assets/button/button_DS_respawn_hover.png'}),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{button_DS_return: 'assets/button/button_DS_return_MainMenu_hover.png'}),
-						$elm$core$Platform$Cmd$none);
+				switch (button.$) {
+					case 'DeathScreenRespawn':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_DS_respawn: 'assets/button/button_DS_respawn_hover.png'}),
+							$elm$core$Platform$Cmd$none);
+					case 'DeathScreenReturn':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_DS_return: 'assets/button/button_DS_return_MainMenu_hover.png'}),
+							$elm$core$Platform$Cmd$none);
+					case 'PauseScreenResume':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_PS_resume: 'assets/button/button_resume_hover.png'}),
+							$elm$core$Platform$Cmd$none);
+					case 'PauseScreenSettings':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_PS_settings: 'assets/button/button_settings_hover.png'}),
+							$elm$core$Platform$Cmd$none);
+					case 'PauseScreenHelp':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_PS_help: 'assets/button/button_help_hover.png'}),
+							$elm$core$Platform$Cmd$none);
+					default:
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_PS_return: 'assets/button/button_return_MainMenu_hover.png'}),
+							$elm$core$Platform$Cmd$none);
+				}
+			case 'MouseOut':
+				var button = msg.a;
+				switch (button.$) {
+					case 'DeathScreenRespawn':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_DS_respawn: 'assets/button/button_DS_respawn.png'}),
+							$elm$core$Platform$Cmd$none);
+					case 'DeathScreenReturn':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_DS_return: 'assets/button/button_DS_return_MainMenu.png'}),
+							$elm$core$Platform$Cmd$none);
+					case 'PauseScreenResume':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_PS_resume: 'assets/button/button_resume.png'}),
+							$elm$core$Platform$Cmd$none);
+					case 'PauseScreenSettings':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_PS_settings: 'assets/button/button_settings.png'}),
+							$elm$core$Platform$Cmd$none);
+					case 'PauseScreenHelp':
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_PS_help: 'assets/button/button_help.png'}),
+							$elm$core$Platform$Cmd$none);
+					default:
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{button_PS_return: 'assets/button/button_return_MainMenu.png'}),
+							$elm$core$Platform$Cmd$none);
 				}
 			default:
-				var button = msg.a;
-				if (button.$ === 'DeathScreenRespawn') {
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{button_DS_respawn: 'assets/button/button_DS_respawn.png'}),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{button_DS_return: 'assets/button/button_DS_return_MainMenu.png'}),
-						$elm$core$Platform$Cmd$none);
-				}
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{pauseToggle: false}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Help$update = F2(
@@ -12693,8 +12753,19 @@ var $author$project$Game$viewHealthBar = F4(
 					A2($author$project$Game$viewHealthInfo, maxHp, currHp)
 				]));
 	});
-var $author$project$Game$viewPauseScreen = F4(
-	function (left, top, pauseToggle, player) {
+var $author$project$Game$ClickResume = {$: 'ClickResume'};
+var $author$project$Game$PauseScreenHelp = {$: 'PauseScreenHelp'};
+var $author$project$Game$PauseScreenResume = {$: 'PauseScreenResume'};
+var $author$project$Game$PauseScreenReturn = {$: 'PauseScreenReturn'};
+var $author$project$Game$PauseScreenSettings = {$: 'PauseScreenSettings'};
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $author$project$Game$viewPauseScreen = F8(
+	function (left, top, pathResume, pathSettings, pathHelp, pathReturn, pauseToggle, player) {
 		return (pauseToggle && (player.currentHealth > 0)) ? A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -12725,20 +12796,132 @@ var $author$project$Game$viewPauseScreen = F4(
 					_List_fromArray(
 						[
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '472px'),
-							A2($elm$html$Html$Attributes$style, 'top', '48px'),
+							A2($elm$html$Html$Attributes$style, 'left', '500px'),
+							A2($elm$html$Html$Attributes$style, 'top', '25px'),
 							A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
 							A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
 							A2($elm$html$Html$Attributes$style, 'font-size', '1.75em')
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('PAUSE SCREEN\n\n'),
-							$elm$html$Html$text('Resume\n'),
-							$elm$html$Html$text('Settings\n'),
-							$elm$html$Html$text('Controls\n'),
-							$elm$html$Html$text('Help\n'),
-							$elm$html$Html$text('Return to Main Menu\n')
+							$elm$html$Html$text('PAUSE SCREEN')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '392px'),
+							A2($elm$html$Html$Attributes$style, 'top', '150px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(pathResume),
+									$elm$html$Html$Events$onMouseOver(
+									$author$project$Game$Hover($author$project$Game$PauseScreenResume)),
+									$elm$html$Html$Events$onMouseOut(
+									$author$project$Game$MouseOut($author$project$Game$PauseScreenResume)),
+									$elm$html$Html$Events$onClick($author$project$Game$ClickResume),
+									A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '392px'),
+							A2($elm$html$Html$Attributes$style, 'top', '250px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$author$project$Route$href($author$project$Route$Settings)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(pathSettings),
+											$elm$html$Html$Events$onMouseOver(
+											$author$project$Game$Hover($author$project$Game$PauseScreenSettings)),
+											$elm$html$Html$Events$onMouseOut(
+											$author$project$Game$MouseOut($author$project$Game$PauseScreenSettings))
+										]),
+									_List_Nil)
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '392px'),
+							A2($elm$html$Html$Attributes$style, 'top', '350px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$author$project$Route$href($author$project$Route$Help)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(pathHelp),
+											$elm$html$Html$Events$onMouseOver(
+											$author$project$Game$Hover($author$project$Game$PauseScreenHelp)),
+											$elm$html$Html$Events$onMouseOut(
+											$author$project$Game$MouseOut($author$project$Game$PauseScreenHelp))
+										]),
+									_List_Nil)
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '392px'),
+							A2($elm$html$Html$Attributes$style, 'top', '450px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$author$project$Route$href($author$project$Route$Home)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(pathReturn),
+											$elm$html$Html$Events$onMouseOver(
+											$author$project$Game$Hover($author$project$Game$PauseScreenReturn)),
+											$elm$html$Html$Events$onMouseOut(
+											$author$project$Game$MouseOut($author$project$Game$PauseScreenReturn))
+										]),
+									_List_Nil)
+								]))
 						]))
 				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
 	});
@@ -12992,7 +13175,7 @@ var $author$project$Game$view = function (model) {
 					A5($author$project$Game$viewConsumable1, 336, 650, model.keys, model.time, model.player.healthPotions),
 					A5($author$project$Game$viewConsumable2, 1485, 650, model.keys, model.time, model.player.speedPotions),
 					A4($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.player),
-					A4($author$project$Game$viewPauseScreen, 360, 160, model.pauseToggle, model.player),
+					A8($author$project$Game$viewPauseScreen, 360, 160, model.button_PS_resume, model.button_PS_settings, model.button_PS_help, model.button_PS_return, model.pauseToggle, model.player),
 					A5($author$project$Game$viewDeathScreen, 360, 160, model.button_DS_respawn, model.button_DS_return, model.player),
 					A3($author$project$Game$viewPlayerInput, 820, 835, model.keys)
 				])),
@@ -13370,12 +13553,6 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $author$project$NewGame$radio = F3(
 	function (msg, isChecked, value) {

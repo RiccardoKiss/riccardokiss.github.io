@@ -27,6 +27,18 @@ textures =
   --, "assets/level/level_3.png"
   ]
 
+mapToString : Level -> String
+mapToString level =
+  case level.map of
+    Lvl1 ->
+      "Lvl1"
+
+    Lvl2 ->
+      "Lvl2"
+
+    Lvl3 ->
+      "Lvl3"
+
 level2Enemies : List Enemy
 level2Enemies =
   [ skeleton 57 17 Enemy.Right

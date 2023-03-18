@@ -162,6 +162,24 @@ getExpDrop : Enemy -> Int
 getExpDrop enemy =
   enemy.expDrop
 
+enemyDirToString : Enemy -> String
+enemyDirToString enemy =
+  case enemy.dir of
+    Left ->
+      "left"
+
+    Right ->
+      "right"
+
+    Up ->
+      "up"
+
+    Down ->
+      "down"
+
+    --Idle ->
+      --"idle"
+
 enemyTypeToString : Enemy -> String
 enemyTypeToString enemy =
   case enemy.enemyType of

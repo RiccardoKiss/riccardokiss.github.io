@@ -93,6 +93,24 @@ armorToTexturePath armor =
     Armor.Dragon ->
       "DDD"
 
+playerDirToString : Player -> String
+playerDirToString player =
+  case player.dir of
+    Left ->
+      "left"
+
+    Right ->
+      "right"
+
+    Up ->
+      "up"
+
+    Down ->
+      "down"
+
+    Idle ->
+      "idle"
+
 applyHealthPotion : List Keyboard.Key -> Float -> Player -> Player
 applyHealthPotion keys time player =
   let

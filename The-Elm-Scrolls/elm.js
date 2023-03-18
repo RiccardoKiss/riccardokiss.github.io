@@ -1,45 +1,3 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Main</title>
-  <style>body { padding: 0; margin: 0; }</style>
-  <script type="text/javascript" src="elm.js"></script>
-</head>
-<body>
-  <div id="elm"></div>
-</body>
-<script>
-	  var app = Elm.Main.init({
-      node: document.getElementById('elm')
-    });
-
-    app.ports.storePlayer.subscribe(function(state) {
-        localStorage.setItem('player', JSON.stringify(state));
-    });
-    app.ports.storeTime.subscribe(function(state) {
-        localStorage.setItem('time', JSON.stringify(state));
-    });
-    app.ports.storeLevel.subscribe(function(state) {
-        localStorage.setItem('level', JSON.stringify(state));
-    });
-</script>
-</html>
-
-<!--
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Main</title>
-  <style>body { padding: 0; margin: 0; }</style>
-</head>
-
-<body>
-
-<pre id="elm"></pre>
-
-<script>
-try {
 (function(scope){
 'use strict';
 
@@ -10071,8 +10029,8 @@ var $author$project$Player$playerDirToString = function (player) {
 			return 'idle';
 	}
 };
+var $author$project$Ports$storePlayer = _Platform_outgoingPort('storePlayer', $elm$core$Basics$identity);
 var $elm$json$Json$Encode$string = _Json_wrap;
-var $author$project$Ports$storeToLocalStorage = _Platform_outgoingPort('storeToLocalStorage', $elm$json$Json$Encode$string);
 var $author$project$Sword$swordTypeToString = function (sword) {
 	var _v0 = sword.swordType;
 	switch (_v0.$) {
@@ -10145,9 +10103,19 @@ var $author$project$Game$savePlayer = function (player) {
 				'speedPotionsCount',
 				$elm$json$Json$Encode$int(player.speedPotions.count))
 			]));
-	return $author$project$Ports$storeToLocalStorage(
-		A2($elm$json$Json$Encode$encode, 2, encodePlayer));
+	return $author$project$Ports$storePlayer(encodePlayer);
 };
+var $author$project$Ports$storeToLocalStorage = _Platform_outgoingPort('storeToLocalStorage', $elm$core$Basics$identity);
+var $author$project$Game$saveTest = function () {
+	var test = $elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'test',
+				$elm$json$Json$Encode$string('123'))
+			]));
+	return $author$project$Ports$storeToLocalStorage(test);
+}();
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {
 		var url = _v0.a;
@@ -10719,7 +10687,12 @@ var $author$project$Game$update = F2(
 			default:
 				return _Utils_Tuple2(
 					model,
-					$author$project$Game$savePlayer(model.player));
+					$elm$core$Platform$Cmd$batch(
+						_List_fromArray(
+							[
+								$author$project$Game$savePlayer(model.player),
+								$author$project$Game$saveTest
+							])));
 		}
 	});
 var $author$project$Help$update = F2(
@@ -14085,22 +14058,3 @@ var $author$project$Main$view = function (model) {
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$UrlChanged, onUrlRequest: $author$project$Main$LinkClicked, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)(0)}});}(this));
-
-  var app = Elm.Main.init({ node: document.getElementById("elm") });
-}
-catch (e)
-{
-  // display initialization errors (e.g. bad flags, infinite recursion)
-  var header = document.createElement("h1");
-  header.style.fontFamily = "monospace";
-  header.innerText = "Initialization Error";
-  var pre = document.getElementById("elm");
-  document.body.insertBefore(header, pre);
-  pre.innerText = e;
-  throw e;
-}
-</script>
-
-</body>
-</html>
--->

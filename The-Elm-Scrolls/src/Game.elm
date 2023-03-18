@@ -10,13 +10,15 @@ import Game.TwoD.Render as Render exposing (..)
 import Html exposing (Html, div, img, text, pre, p, a, span)
 import Html.Attributes exposing (style, src)
 import Html.Events exposing (on, keyCode, onClick, onMouseOver, onMouseOut)
-import Json.Decode as D
+import Json.Decode as Decode
+import Json.Encode as Encode
 import Keyboard exposing (..)
 import Keyboard.Arrows
 import Task
 import Array
 
 import Route exposing (Route)
+import Ports exposing (..)
 import Tilemap exposing (..)
 import Level exposing (..)
 import Player exposing (..)
@@ -65,6 +67,7 @@ type Msg
   | Hover Button
   | MouseOut Button
   | ClickResume
+  | SaveGame
 
 getNavKey : Model -> Nav.Key
 getNavKey model =
@@ -277,6 +280,90 @@ update msg model =
       ( { model | pauseToggle = False }
       , Cmd.none
       )
+
+    SaveGame ->
+      ( model
+      , Cmd.batch
+          [ savePlayer model.player
+          , saveTime model.time
+          --, saveLevel model.level
+          ]
+      )
+
+
+saveTime : Float -> Cmd msg
+saveTime time =
+  let
+    encodeTime =
+      Encode.object
+        [ ( "time", Encode.float time ) ]
+  in
+  encodeTime
+  |> Ports.storeTime
+
+saveEnemy : Enemy -> Encode.Value
+saveEnemy enemy =
+  Encode.object
+    [ ( "x", Encode.float enemy.x )
+    , ( "y", Encode.float enemy.y )
+    , ( "vx", Encode.float enemy.vx )
+    , ( "vy", Encode.float enemy.vy )
+    , ( "speed", Encode.float enemy.speed )
+    , ( "dir", Encode.string (enemyDirToString player) )
+    , ( "enemyType", Encode.string (enemyTypeToString enemy) )
+    --, ( "maxHealth", Encode.int enemy.maxHealth )
+    , ( "currentHealth", Encode.int enemy.health )
+    ]
+
+saveItem : Item -> Encode.Value
+saveItem item =
+  Encode.object
+    [ ( "x", Encode.float item.x )
+    , ( "y", Encode.float item.y )
+    , ( "itemType", Encode.string (itemTypeToString item) )
+    ]
+
+saveLevel : Level -> Cmd msg
+saveLevel level =
+  let
+    encodeEnemies = List.map saveEnemy level.enemies
+    encodeItems = List.map saveItem level.items
+    encodeLevel =
+      Encode.object
+        [ ( "map", Encode.string (mapToString level) )
+        --, ( "enemies", Encode.list encodeEnemies )
+        --, ( "items", Encode.list encodeItems )
+        ]
+  in
+  encodeLevel
+  |> Ports.storeLevel
+
+savePlayer : Player -> Cmd msg
+savePlayer player =
+  let
+    encodePlayer =
+      Encode.object
+        [ ( "x", Encode.float player.x )
+        , ( "y", Encode.float player.y )
+        , ( "vx", Encode.float player.vx )
+        , ( "vy", Encode.float player.vy )
+        , ( "baseSpeed", Encode.float player.baseSpeed )
+        , ( "currentSpeed", Encode.float player.currentSpeed )
+        , ( "dir", Encode.string (playerDirToString player) )
+        , ( "sword", Encode.string (swordTypeToString player.sword) )
+        , ( "armor", Encode.string (armorTypeToString player.armor) )
+        , ( "maxDefense", Encode.int player.maxDefense )
+        , ( "maxHealth", Encode.int player.maxHealth )
+        , ( "currentHealth", Encode.int player.currentHealth )
+        , ( "playerLevel", Encode.int player.playerLevel )
+        , ( "maxExp", Encode.int player.maxExp )
+        , ( "currentExp", Encode.int player.currentExp )
+        , ( "healthPotionsCount", Encode.int player.healthPotions.count )
+        , ( "speedPotionsCount", Encode.int player.speedPotions.count )
+        ]
+  in
+  encodePlayer
+  |> Ports.storePlayer
 
 
 playerTick :
@@ -1184,6 +1271,7 @@ viewPauseScreen left top pathResume pathSettings pathHelp pathReturn pauseToggle
                   [ img [ src pathReturn
                         , onMouseOver (Hover PauseScreenReturn)
                         , onMouseOut (MouseOut PauseScreenReturn)
+                        , onClick SaveGame
                         ] []
                   ]
               ]

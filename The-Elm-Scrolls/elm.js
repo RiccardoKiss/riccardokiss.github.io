@@ -7484,7 +7484,7 @@ var $author$project$Home$init = function (navKey) {
 };
 var $author$project$LoadGame$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_empty.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey},
+		{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_background.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey, time1: 0.0},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$NewGame$Medium = {$: 'Medium'};
@@ -8892,6 +8892,14 @@ var $author$project$Game$subscriptions = function (model) {
 					$author$project$Game$Tick))
 			]));
 };
+var $author$project$LoadGame$ReceiveTimeFromJS = function (a) {
+	return {$: 'ReceiveTimeFromJS', a: a};
+};
+var $elm$json$Json$Decode$float = _Json_decodeFloat;
+var $author$project$LoadGame$receiveTime = _Platform_incomingPort('receiveTime', $elm$json$Json$Decode$float);
+var $author$project$LoadGame$subscriptions = function (_v0) {
+	return $author$project$LoadGame$receiveTime($author$project$LoadGame$ReceiveTimeFromJS);
+};
 var $author$project$Main$subscriptions = function (model) {
 	switch (model.$) {
 		case 'NotFound':
@@ -8910,7 +8918,10 @@ var $author$project$Main$subscriptions = function (model) {
 				$author$project$Game$subscriptions(modelGame));
 		case 'LoadGame':
 			var modelLoadGame = model.a;
-			return $elm$core$Platform$Sub$none;
+			return A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Main$GotLoadGameMsg,
+				$author$project$LoadGame$subscriptions(modelLoadGame));
 		case 'Settings':
 			var modelSettings = model.a;
 			return $elm$core$Platform$Sub$none;
@@ -9986,21 +9997,26 @@ var $author$project$Game$playerTick = F6(
 							time,
 							A3($author$project$Player$applyHealthPotion, keys, time, player))))));
 	});
-var $author$project$Armor$armorTypeToString = function (armor) {
-	var _v0 = armor.armorType;
+var $elm$json$Json$Encode$list = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				$elm$core$List$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(_Utils_Tuple0),
+				entries));
+	});
+var $author$project$Level$mapToString = function (level) {
+	var _v0 = level.map;
 	switch (_v0.$) {
-		case 'None':
-			return 'none';
-		case 'Leather':
-			return 'leather';
-		case 'Silver':
-			return 'silver';
+		case 'Lvl1':
+			return 'Lvl1';
+		case 'Lvl2':
+			return 'Lvl2';
 		default:
-			return 'dragon';
+			return 'Lvl3';
 	}
 };
-var $elm$json$Json$Encode$float = _Json_wrap;
-var $elm$json$Json$Encode$int = _Json_wrap;
 var $elm$json$Json$Encode$object = function (pairs) {
 	return _Json_wrap(
 		A3(
@@ -10013,6 +10029,139 @@ var $elm$json$Json$Encode$object = function (pairs) {
 				}),
 			_Json_emptyObject(_Utils_Tuple0),
 			pairs));
+};
+var $author$project$Enemy$enemyDirToString = function (enemy) {
+	var _v0 = enemy.dir;
+	switch (_v0.$) {
+		case 'Left':
+			return 'left';
+		case 'Right':
+			return 'right';
+		case 'Up':
+			return 'up';
+		default:
+			return 'down';
+	}
+};
+var $author$project$Enemy$enemyTypeToString = function (enemy) {
+	var _v0 = enemy.enemyType;
+	switch (_v0.$) {
+		case 'Bandit':
+			return 'bandit';
+		case 'Zombie':
+			return 'zombie';
+		case 'Skeleton':
+			return 'skeleton';
+		default:
+			return 'enemy';
+	}
+};
+var $elm$json$Json$Encode$float = _Json_wrap;
+var $elm$json$Json$Encode$int = _Json_wrap;
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $author$project$Game$saveEnemy = function (enemy) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'x',
+			$elm$json$Json$Encode$float(enemy.x)),
+			_Utils_Tuple2(
+			'y',
+			$elm$json$Json$Encode$float(enemy.y)),
+			_Utils_Tuple2(
+			'vx',
+			$elm$json$Json$Encode$float(enemy.vx)),
+			_Utils_Tuple2(
+			'vy',
+			$elm$json$Json$Encode$float(enemy.vy)),
+			_Utils_Tuple2(
+			'speed',
+			$elm$json$Json$Encode$float(enemy.speed)),
+			_Utils_Tuple2(
+			'dir',
+			$elm$json$Json$Encode$string(
+				$author$project$Enemy$enemyDirToString(enemy))),
+			_Utils_Tuple2(
+			'enemyType',
+			$elm$json$Json$Encode$string(
+				$author$project$Enemy$enemyTypeToString(enemy))),
+			_Utils_Tuple2(
+			'currentHealth',
+			$elm$json$Json$Encode$int(enemy.health))
+		]);
+};
+var $author$project$Item$itemTypeToString = function (item) {
+	var _v0 = item.itemType;
+	switch (_v0.$) {
+		case 'ItemStand':
+			return 'empty';
+		case 'HealthPotion_ItemStand':
+			return 'health_potion_idle';
+		case 'SpeedPotion_ItemStand':
+			return 'speed_potion_idle';
+		case 'WoodSword_ItemStand':
+			return 'sword_wood_idle';
+		case 'StoneSword_ItemStand':
+			return 'sword_stone_idle';
+		case 'IronSword_ItemStand':
+			return 'sword_iron_idle';
+		case 'DragonSword_ItemStand':
+			return 'sword_dragon_idle';
+		case 'LeatherArmor_ItemStand':
+			return 'leather_chest';
+		case 'SilverArmor_ItemStand':
+			return 'silver_chest';
+		default:
+			return 'dragon_chest';
+	}
+};
+var $author$project$Game$saveItem = function (item) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'x',
+			$elm$json$Json$Encode$float(item.x)),
+			_Utils_Tuple2(
+			'y',
+			$elm$json$Json$Encode$float(item.y)),
+			_Utils_Tuple2(
+			'itemType',
+			$elm$json$Json$Encode$string(
+				$author$project$Item$itemTypeToString(item)))
+		]);
+};
+var $author$project$Ports$storeLevel = _Platform_outgoingPort('storeLevel', $elm$core$Basics$identity);
+var $author$project$Game$saveLevel = function (level) {
+	var encodeItems = A2($elm$core$List$map, $author$project$Game$saveItem, level.items);
+	var encodeEnemies = A2($elm$core$List$map, $author$project$Game$saveEnemy, level.enemies);
+	var encodeLevel = $elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'map',
+				$elm$json$Json$Encode$string(
+					$author$project$Level$mapToString(level))),
+				_Utils_Tuple2(
+				'enemies',
+				A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$object, encodeEnemies)),
+				_Utils_Tuple2(
+				'items',
+				A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$object, encodeItems))
+			]));
+	return $author$project$Ports$storeLevel(encodeLevel);
+};
+var $author$project$Armor$armorTypeToString = function (armor) {
+	var _v0 = armor.armorType;
+	switch (_v0.$) {
+		case 'None':
+			return 'none';
+		case 'Leather':
+			return 'leather';
+		case 'Silver':
+			return 'silver';
+		default:
+			return 'dragon';
+	}
 };
 var $author$project$Player$playerDirToString = function (player) {
 	var _v0 = player.dir;
@@ -10030,7 +10179,6 @@ var $author$project$Player$playerDirToString = function (player) {
 	}
 };
 var $author$project$Ports$storePlayer = _Platform_outgoingPort('storePlayer', $elm$core$Basics$identity);
-var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Sword$swordTypeToString = function (sword) {
 	var _v0 = sword.swordType;
 	switch (_v0.$) {
@@ -10105,17 +10253,11 @@ var $author$project$Game$savePlayer = function (player) {
 			]));
 	return $author$project$Ports$storePlayer(encodePlayer);
 };
-var $author$project$Ports$storeToLocalStorage = _Platform_outgoingPort('storeToLocalStorage', $elm$core$Basics$identity);
-var $author$project$Game$saveTest = function () {
-	var test = $elm$json$Json$Encode$object(
-		_List_fromArray(
-			[
-				_Utils_Tuple2(
-				'test',
-				$elm$json$Json$Encode$string('123'))
-			]));
-	return $author$project$Ports$storeToLocalStorage(test);
-}();
+var $author$project$Ports$storeGameTime = _Platform_outgoingPort('storeGameTime', $elm$core$Basics$identity);
+var $author$project$Game$saveTime = function (time) {
+	var encodeTime = $elm$json$Json$Encode$float(time);
+	return $author$project$Ports$storeGameTime(encodeTime);
+};
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {
 		var url = _v0.a;
@@ -10690,8 +10832,9 @@ var $author$project$Game$update = F2(
 					$elm$core$Platform$Cmd$batch(
 						_List_fromArray(
 							[
+								$author$project$Game$saveTime(model.time),
 								$author$project$Game$savePlayer(model.player),
-								$author$project$Game$saveTest
+								$author$project$Game$saveLevel(model.level)
 							])));
 		}
 	});
@@ -10775,7 +10918,7 @@ var $author$project$LoadGame$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_game1: 'assets/button/button_loadGameInstance_empty_hover.png'}),
+						{button_game1: 'assets/button/button_loadGameInstance_background_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverGame2':
 				return _Utils_Tuple2(
@@ -10795,11 +10938,18 @@ var $author$project$LoadGame$update = F2(
 						model,
 						{button_back: 'assets/button/button_back_hover.png'}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'MouseOut':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_empty.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png'}),
+						{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_background.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png'}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var data = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{time1: data}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -11452,19 +11602,6 @@ var $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions = function (_
 			{color: $avh4$elm_color$Color$grey, position: position, size: size});
 	}
 };
-var $author$project$Enemy$enemyTypeToString = function (enemy) {
-	var _v0 = enemy.enemyType;
-	switch (_v0.$) {
-		case 'Bandit':
-			return 'bandit';
-		case 'Zombie':
-			return 'zombie';
-		case 'Skeleton':
-			return 'skeleton';
-		default:
-			return 'enemy';
-	}
-};
 var $author$project$Enemy$renderEnemy = F2(
 	function (resources, enemy) {
 		return $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions(
@@ -11504,31 +11641,6 @@ var $author$project$Enemy$renderEnemy = F2(
 				topRight: _Utils_Tuple2(1, 1)
 			});
 	});
-var $author$project$Item$itemTypeToString = function (item) {
-	var _v0 = item.itemType;
-	switch (_v0.$) {
-		case 'ItemStand':
-			return 'empty';
-		case 'HealthPotion_ItemStand':
-			return 'health_potion_idle';
-		case 'SpeedPotion_ItemStand':
-			return 'speed_potion_idle';
-		case 'WoodSword_ItemStand':
-			return 'sword_wood_idle';
-		case 'StoneSword_ItemStand':
-			return 'sword_stone_idle';
-		case 'IronSword_ItemStand':
-			return 'sword_iron_idle';
-		case 'DragonSword_ItemStand':
-			return 'sword_dragon_idle';
-		case 'LeatherArmor_ItemStand':
-			return 'leather_chest';
-		case 'SilverArmor_ItemStand':
-			return 'silver_chest';
-		default:
-			return 'dragon_chest';
-	}
-};
 var $author$project$Item$renderItemStand = F2(
 	function (resources, item) {
 		return $Zinggi$elm_2d_game$Game$TwoD$Render$animatedSpriteWithOptions(
@@ -13002,26 +13114,17 @@ var $author$project$Game$viewPauseScreen = F8(
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$a,
+							$elm$html$Html$img,
 							_List_fromArray(
 								[
-									$author$project$Route$href($author$project$Route$Home)
+									$elm$html$Html$Attributes$src(pathReturn),
+									$elm$html$Html$Events$onMouseOver(
+									$author$project$Game$Hover($author$project$Game$PauseScreenReturn)),
+									$elm$html$Html$Events$onMouseOut(
+									$author$project$Game$MouseOut($author$project$Game$PauseScreenReturn)),
+									$elm$html$Html$Events$onClick($author$project$Game$SaveGame)
 								]),
-							_List_fromArray(
-								[
-									A2(
-									$elm$html$Html$img,
-									_List_fromArray(
-										[
-											$elm$html$Html$Attributes$src(pathReturn),
-											$elm$html$Html$Events$onMouseOver(
-											$author$project$Game$Hover($author$project$Game$PauseScreenReturn)),
-											$elm$html$Html$Events$onMouseOut(
-											$author$project$Game$MouseOut($author$project$Game$PauseScreenReturn)),
-											$elm$html$Html$Events$onClick($author$project$Game$SaveGame)
-										]),
-									_List_Nil)
-								]))
+							_List_Nil)
 						]))
 				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
 	});
@@ -13575,17 +13678,39 @@ var $author$project$LoadGame$view = function (model) {
 							$elm$html$Html$text('Load Game')
 						])),
 					A2(
-					$elm$html$Html$img,
+					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$src(model.button_game1),
 							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 							A2($elm$html$Html$Attributes$style, 'left', '660px'),
-							A2($elm$html$Html$Attributes$style, 'top', '250px'),
-							$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame1),
-							$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+							A2($elm$html$Html$Attributes$style, 'top', '250px')
 						]),
-					_List_Nil),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(model.button_game1),
+									$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame1),
+									$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$pre,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+									A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+									A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Player1 time:'),
+									$elm$html$Html$text(
+									$elm$core$String$fromFloat(model.time1))
+								]))
+						])),
 					A2(
 					$elm$html$Html$img,
 					_List_fromArray(

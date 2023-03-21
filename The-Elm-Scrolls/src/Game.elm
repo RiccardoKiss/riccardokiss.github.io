@@ -283,10 +283,10 @@ update msg model =
 
     SaveGame ->
       ( model
-      , Cmd.batch
-          [ savePlayer model.player
-          , saveTime model.time
-          --, saveLevel model.level
+      ,  Cmd.batch
+          [ saveTime model.time
+          , savePlayer model.player
+          , saveLevel model.level
           ]
       )
 
@@ -295,29 +295,29 @@ saveTime : Float -> Cmd msg
 saveTime time =
   let
     encodeTime =
-      Encode.object
-        [ ( "time", Encode.float time ) ]
+      Encode.float time
+        --[ ( "time", Encode.float time ) ]
   in
   encodeTime
-  |> Ports.storeTime
+  |> Ports.storeGameTime
 
-saveEnemy : Enemy -> Encode.Value
+saveEnemy : Enemy -> List (String, Encode.Value)
 saveEnemy enemy =
-  Encode.object
+  --Encode.object
     [ ( "x", Encode.float enemy.x )
     , ( "y", Encode.float enemy.y )
     , ( "vx", Encode.float enemy.vx )
     , ( "vy", Encode.float enemy.vy )
     , ( "speed", Encode.float enemy.speed )
-    , ( "dir", Encode.string (enemyDirToString player) )
+    , ( "dir", Encode.string (enemyDirToString enemy) )
     , ( "enemyType", Encode.string (enemyTypeToString enemy) )
     --, ( "maxHealth", Encode.int enemy.maxHealth )
     , ( "currentHealth", Encode.int enemy.health )
     ]
 
-saveItem : Item -> Encode.Value
+saveItem : Item -> List (String, Encode.Value)
 saveItem item =
-  Encode.object
+  --Encode.object
     [ ( "x", Encode.float item.x )
     , ( "y", Encode.float item.y )
     , ( "itemType", Encode.string (itemTypeToString item) )
@@ -331,8 +331,8 @@ saveLevel level =
     encodeLevel =
       Encode.object
         [ ( "map", Encode.string (mapToString level) )
-        --, ( "enemies", Encode.list encodeEnemies )
-        --, ( "items", Encode.list encodeItems )
+        , ( "enemies", Encode.list Encode.object encodeEnemies )
+        , ( "items", Encode.list Encode.object encodeItems )
         ]
   in
   encodeLevel
@@ -1267,13 +1267,13 @@ viewPauseScreen left top pathResume pathSettings pathHelp pathReturn pauseToggle
               , style "left" "392px"
               , style "top" "450px"
               ]
-              [ a [ Route.href Route.Home ]
-                  [ img [ src pathReturn
+              [ --a [ Route.href Route.Home ]
+                   img [ src pathReturn
                         , onMouseOver (Hover PauseScreenReturn)
                         , onMouseOut (MouseOut PauseScreenReturn)
                         , onClick SaveGame
                         ] []
-                  ]
+
               ]
         ]
   else

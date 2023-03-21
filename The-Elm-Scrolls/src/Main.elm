@@ -235,7 +235,7 @@ subscriptions model =
       Sub.map GotGameMsg (Game.subscriptions modelGame)
 
     LoadGame modelLoadGame ->
-      Sub.none
+      Sub.map GotLoadGameMsg (LoadGame.subscriptions modelLoadGame)
 
     Settings modelSettings ->
       Sub.none

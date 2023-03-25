@@ -1,4 +1,4 @@
-module Route exposing (Route(..), parser, toRoute, href, routeToPieces)
+module Route exposing (Route(..), parseUrl, pushUrl, href)
 
 import Browser.Navigation as Nav
 import Html exposing (Attribute)
@@ -9,83 +9,70 @@ import Url.Parser as Parser exposing (Parser, parse, map, oneOf, s)
 
 type Route
   = Home
+  | NewGame
+  | Game
+  | LoadGame
+  | HighScores
   | Settings
   | Help
-  | HighScores
-  | NewGame
-  | LoadGame
-  | Game
   | NotFound
-
-
-parser : Parser (Route -> a) a
-parser =
-  oneOf
-    [ Parser.map Home (s "index.html")
-    --, Parser.map Home Parser.top
-    , Parser.map Help (s "help")
-    , Parser.map HighScores (s "highscores")
-    , Parser.map Settings (s "settings")
-    , Parser.map NewGame (s "new-game")
-    , Parser.map LoadGame (s "load-game")
-    , Parser.map Game (s "game")
-    ]
-
-toRoute : String -> Route
-toRoute string =
-  let
-    _ = Debug.log "[Route.toRoute] string" string
-  in
-  case Debug.log "  [Route.toRoute] Url.fromString string" (Url.fromString string) of
-    Nothing ->
-      NotFound
-
-    Just url ->
-      Maybe.withDefault NotFound (Parser.parse parser url)
 
 
 -- PUBLIC
 
+
 href : Route -> Attribute msg
 href targetRoute =
-  --let
-    --_ = Debug.log "[Route.href] targetRoute" targetRoute
-  --in
-  Attr.href (routeToPieces targetRoute)
+  Attr.href (routeToString targetRoute)
 
-{-
-replaceUrl : Nav.Key -> Route -> Cmd msg
-replaceUrl key targetRoute =
-  Nav.replaceUrl key (routeToPieces targetRoute)
+pushUrl : Route -> Nav.Key -> Cmd msg
+pushUrl route navKey =
+  routeToString route
+  |> Nav.pushUrl navKey
 
+parseUrl : Url -> Route
+parseUrl url =
+  case parse matchRoute url of
+    Just route ->
+      route
 
-fromUrl : Url -> Maybe Route
-fromUrl url =
-  let
-    _ = Debug.log "[Route.fromUrl] url" url
-  in
-    { url | path = Maybe.withDefault "" url.fragment, fragment = Nothing }
-      |> Debug.log "  path"
-      |> Parser.parse parser
--}
+    Nothing ->
+      NotFound
 
 
 -- INTERNAL
 
-routeToPieces : Route -> String
-routeToPieces page =
-  --let
-    --_ = Debug.log "[Route.routeToPieces] page" page
-  --in
-  case page of
+
+matchRoute : Parser (Route -> a) a
+matchRoute =
+  oneOf
+    [ Parser.map Home (s "index.html")
+    --, Parser.map Home Parser.top
+    , Parser.map NewGame (s "new-game")
+    , Parser.map Game (s "game")
+    , Parser.map LoadGame (s "load-game")
+    , Parser.map HighScores (s "highscores")
+    , Parser.map Settings (s "settings")
+    , Parser.map Help (s "help")
+    ]
+
+routeToString : Route -> String
+routeToString route =
+  case route of
     NotFound ->
       "not-found"
 
     Home ->
       "index.html"
 
-    Help ->
-      "help"
+    NewGame ->
+      "new-game"
+
+    Game ->
+      "game"
+
+    LoadGame ->
+      "load-game"
 
     HighScores ->
       "highscores"
@@ -93,11 +80,5 @@ routeToPieces page =
     Settings ->
       "settings"
 
-    Game ->
-      "game"
-
-    NewGame ->
-      "new-game"
-
-    LoadGame ->
-      "load-game"
+    Help ->
+      "help"

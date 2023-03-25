@@ -16,12 +16,10 @@
 
     app.ports.storePlayer.subscribe(function(state) {
         localStorage.setItem('player', JSON.stringify(state));
-
     });
 
     app.ports.storeGameTime.subscribe(function(state) {
         localStorage.setItem('time', JSON.stringify(state));
-        app.ports.receiveTime.send(JSON.parse(state));
     });
 
     app.ports.storeLevel.subscribe(function(state) {

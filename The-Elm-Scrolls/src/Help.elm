@@ -22,11 +22,6 @@ init navKey =
   )
 
 
-getNavKey : Model -> Nav.Key
-getNavKey model =
-  model.navKey
-
-
 type Msg
   = HoverBack
   --| ClickedBack
@@ -51,11 +46,9 @@ update msg model =
       )
 
 
-view : Model -> { title : String, content : Html Msg }
+view : Model -> Html Msg
 view model =
-  { title = "Help"
-  , content =
-    div [ style "font-family" "monospace" ]
+  div [ style "font-family" "monospace" ]
       [ img [ src "assets/default_background_1920_969.png"
             , style "display" "block"
             , style "position" "relative"
@@ -76,4 +69,3 @@ view model =
                 ] []
           ]
       ]
-  }

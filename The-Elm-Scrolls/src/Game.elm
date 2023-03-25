@@ -69,9 +69,6 @@ type Msg
   | ClickResume
   | SaveGame
 
-getNavKey : Model -> Nav.Key
-getNavKey model =
-  model.navKey
 
 initPlayer : Level.Level -> Player
 initPlayer level =
@@ -1330,11 +1327,9 @@ viewTime left top dt =
       ]
       [ text ((String.fromInt minutes) ++ " : " ++ (String.fromInt seconds)) ]
 
-view : Model -> { title : String, content : Html Msg }
+view : Model -> Html Msg--{ title : String, content : Html Msg }
 view model =
-  { title = "Game"
-  , content =
-    div [ style "font-family" "monospace" ]
+  div [ style "font-family" "monospace" ]
       [ img [ src "assets/default_background_1920_969.png"
             , style "display" "block"
             , style "position" "relative"
@@ -1364,7 +1359,6 @@ view model =
       , viewDeathScreen 360 160 model.button_DS_respawn model.button_DS_return model.player
       , viewPlayerInput 820 835 model.keys  --820 861
       ]
-  }
 
 
 -- SUBSCRIPTIONS

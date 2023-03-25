@@ -4,6 +4,7 @@ import Browser.Navigation as Nav
 import Html exposing (Html, div, h1, a, text, img, input, p)
 import Html.Attributes exposing (src, style, type_)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
+
 import Route exposing (Route)
 
 
@@ -20,11 +21,6 @@ init navKey =
     }
   , Cmd.none
   )
-
-
-getNavKey : Model -> Nav.Key
-getNavKey model =
-  model.navKey
 
 
 type Msg
@@ -51,11 +47,9 @@ update msg model =
       )
 
 
-view : Model -> { title : String, content : Html Msg }
+view : Model -> Html Msg
 view model =
-  { title = "HighScores"
-  , content =
-    div [ style "font-family" "monospace" ]
+  div [ style "font-family" "monospace" ]
       [ img [ src "assets/default_background_1920_969.png"
             , style "display" "block"
             , style "position" "relative"
@@ -76,4 +70,3 @@ view model =
                 ] []
           ]
       ]
-  }

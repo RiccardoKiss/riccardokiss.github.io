@@ -7,5 +7,5 @@ import Html exposing (Html)
 view : { title : String, content : Html msg }
 view =
     { title = "NotFound"
-    , content = Html.text ""
+    , content = Html.text "NotFound"
     }

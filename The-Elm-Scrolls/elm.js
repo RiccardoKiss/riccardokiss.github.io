@@ -7120,100 +7120,50 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
-var $author$project$Main$NotFound = function (a) {
-	return {$: 'NotFound', a: a};
+var $author$project$Main$NotFoundPage = {$: 'NotFoundPage'};
+var $author$project$Main$GamePage = function (a) {
+	return {$: 'GamePage', a: a};
 };
-var $author$project$Main$Game = function (a) {
-	return {$: 'Game', a: a};
+var $author$project$Main$GamePageMsg = function (a) {
+	return {$: 'GamePageMsg', a: a};
 };
-var $author$project$Main$GotGameMsg = function (a) {
-	return {$: 'GotGameMsg', a: a};
+var $author$project$Main$HelpPage = function (a) {
+	return {$: 'HelpPage', a: a};
 };
-var $author$project$Main$GotHelpMsg = function (a) {
-	return {$: 'GotHelpMsg', a: a};
+var $author$project$Main$HelpPageMsg = function (a) {
+	return {$: 'HelpPageMsg', a: a};
 };
-var $author$project$Main$GotHighScoresMsg = function (a) {
-	return {$: 'GotHighScoresMsg', a: a};
+var $author$project$Main$HighScoresPage = function (a) {
+	return {$: 'HighScoresPage', a: a};
 };
-var $author$project$Main$GotHomeMsg = function (a) {
-	return {$: 'GotHomeMsg', a: a};
+var $author$project$Main$HighScoresPageMsg = function (a) {
+	return {$: 'HighScoresPageMsg', a: a};
 };
-var $author$project$Main$GotLoadGameMsg = function (a) {
-	return {$: 'GotLoadGameMsg', a: a};
+var $author$project$Main$HomePage = function (a) {
+	return {$: 'HomePage', a: a};
 };
-var $author$project$Main$GotNewGameMsg = function (a) {
-	return {$: 'GotNewGameMsg', a: a};
+var $author$project$Main$HomePageMsg = function (a) {
+	return {$: 'HomePageMsg', a: a};
 };
-var $author$project$Main$GotSettingsMsg = function (a) {
-	return {$: 'GotSettingsMsg', a: a};
+var $author$project$Main$LoadGamePage = function (a) {
+	return {$: 'LoadGamePage', a: a};
 };
-var $author$project$Main$Help = function (a) {
-	return {$: 'Help', a: a};
+var $author$project$Main$LoadGamePageMsg = function (a) {
+	return {$: 'LoadGamePageMsg', a: a};
 };
-var $author$project$Main$HighScores = function (a) {
-	return {$: 'HighScores', a: a};
+var $author$project$Main$NewGamePage = function (a) {
+	return {$: 'NewGamePage', a: a};
 };
-var $author$project$Main$Home = function (a) {
-	return {$: 'Home', a: a};
+var $author$project$Main$NewGamePageMsg = function (a) {
+	return {$: 'NewGamePageMsg', a: a};
 };
-var $author$project$Main$LoadGame = function (a) {
-	return {$: 'LoadGame', a: a};
+var $author$project$Main$SettingsPage = function (a) {
+	return {$: 'SettingsPage', a: a};
 };
-var $author$project$Main$NewGame = function (a) {
-	return {$: 'NewGame', a: a};
+var $author$project$Main$SettingsPageMsg = function (a) {
+	return {$: 'SettingsPageMsg', a: a};
 };
-var $author$project$Main$Settings = function (a) {
-	return {$: 'Settings', a: a};
-};
-var $author$project$Game$getNavKey = function (model) {
-	return model.navKey;
-};
-var $author$project$Help$getNavKey = function (model) {
-	return model.navKey;
-};
-var $author$project$HighScores$getNavKey = function (model) {
-	return model.navKey;
-};
-var $author$project$Home$getNavKey = function (model) {
-	return model.navKey;
-};
-var $author$project$LoadGame$getNavKey = function (model) {
-	return model.navKey;
-};
-var $author$project$NewGame$getNavKey = function (model) {
-	return model.navKey;
-};
-var $author$project$Settings$getNavKey = function (model) {
-	return model.navKey;
-};
-var $author$project$Main$getNavKey = function (model) {
-	switch (model.$) {
-		case 'NotFound':
-			var navKey = model.a;
-			return navKey;
-		case 'Home':
-			var modelHome = model.a;
-			return $author$project$Home$getNavKey(modelHome);
-		case 'NewGame':
-			var modelNewGame = model.a;
-			return $author$project$NewGame$getNavKey(modelNewGame);
-		case 'Game':
-			var modelGame = model.a;
-			return $author$project$Game$getNavKey(modelGame);
-		case 'LoadGame':
-			var modelLoadGame = model.a;
-			return $author$project$LoadGame$getNavKey(modelLoadGame);
-		case 'Settings':
-			var modelSettings = model.a;
-			return $author$project$Settings$getNavKey(modelSettings);
-		case 'Help':
-			var modelHelp = model.a;
-			return $author$project$Help$getNavKey(modelHelp);
-		default:
-			var modelHighScores = model.a;
-			return $author$project$HighScores$getNavKey(modelHighScores);
-	}
-};
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $author$project$Game$Resources = function (a) {
 	return {$: 'Resources', a: a};
 };
@@ -7368,7 +7318,6 @@ var $elm$core$Task$attempt = F2(
 							$elm$core$Result$Ok),
 						task))));
 	});
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm_explorations$webgl$WebGL$Texture$Resize = function (a) {
 	return {$: 'Resize', a: a};
 };
@@ -7499,101 +7448,198 @@ var $author$project$Settings$init = function (navKey) {
 		{button_back: 'assets/button/button_back.png', navKey: navKey, sound: $author$project$Settings$Off},
 		$elm$core$Platform$Cmd$none);
 };
-var $elm$core$Debug$log = _Debug_log;
-var $author$project$Main$updateWith = F4(
-	function (toModel, toMsg, model, _v0) {
-		var subModel = _v0.a;
-		var subCmd = _v0.b;
-		return _Utils_Tuple2(
-			toModel(subModel),
-			A2($elm$core$Platform$Cmd$map, toMsg, subCmd));
-	});
-var $author$project$Main$changeRouteTo = F2(
-	function (route, model) {
-		var navKey = $author$project$Main$getNavKey(model);
-		var _v0 = A2($elm$core$Debug$log, '[changeRouteTo] route', route);
-		switch (route.$) {
+var $author$project$Main$initPage = function (_v0) {
+	var model = _v0.a;
+	var existingCmds = _v0.b;
+	var _v1 = function () {
+		var _v2 = model.route;
+		switch (_v2.$) {
 			case 'NotFound':
-				return _Utils_Tuple2(
-					$author$project$Main$NotFound(navKey),
-					$elm$core$Platform$Cmd$none);
+				return _Utils_Tuple2($author$project$Main$NotFoundPage, $elm$core$Platform$Cmd$none);
 			case 'Home':
-				return A4(
-					$author$project$Main$updateWith,
-					$author$project$Main$Home,
-					$author$project$Main$GotHomeMsg,
-					model,
-					A2(
-						$elm$core$Debug$log,
-						'  [changeRouteTo] Home',
-						$author$project$Home$init(navKey)));
+				var _v3 = $author$project$Home$init(model.navKey);
+				var pageModel = _v3.a;
+				var pageCmds = _v3.b;
+				return _Utils_Tuple2(
+					$author$project$Main$HomePage(pageModel),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$HomePageMsg, pageCmds));
 			case 'NewGame':
-				return A4(
-					$author$project$Main$updateWith,
-					$author$project$Main$NewGame,
-					$author$project$Main$GotNewGameMsg,
-					model,
-					A2(
-						$elm$core$Debug$log,
-						'  [changeRouteTo] NewGame',
-						$author$project$NewGame$init(navKey)));
+				var _v4 = $author$project$NewGame$init(model.navKey);
+				var pageModel = _v4.a;
+				var pageCmds = _v4.b;
+				return _Utils_Tuple2(
+					$author$project$Main$NewGamePage(pageModel),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$NewGamePageMsg, pageCmds));
 			case 'Game':
-				return A4(
-					$author$project$Main$updateWith,
-					$author$project$Main$Game,
-					$author$project$Main$GotGameMsg,
-					model,
-					A2(
-						$elm$core$Debug$log,
-						'  [changeRouteTo] Game',
-						$author$project$Game$init(navKey)));
+				var _v5 = $author$project$Game$init(model.navKey);
+				var pageModel = _v5.a;
+				var pageCmds = _v5.b;
+				return _Utils_Tuple2(
+					$author$project$Main$GamePage(pageModel),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, pageCmds));
 			case 'LoadGame':
-				return A4(
-					$author$project$Main$updateWith,
-					$author$project$Main$LoadGame,
-					$author$project$Main$GotLoadGameMsg,
-					model,
-					A2(
-						$elm$core$Debug$log,
-						'  [changeRouteTo] LoadGame',
-						$author$project$LoadGame$init(navKey)));
+				var _v6 = $author$project$LoadGame$init(model.navKey);
+				var pageModel = _v6.a;
+				var pageCmds = _v6.b;
+				return _Utils_Tuple2(
+					$author$project$Main$LoadGamePage(pageModel),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$LoadGamePageMsg, pageCmds));
+			case 'HighScores':
+				var _v7 = $author$project$HighScores$init(model.navKey);
+				var pageModel = _v7.a;
+				var pageCmds = _v7.b;
+				return _Utils_Tuple2(
+					$author$project$Main$HighScoresPage(pageModel),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$HighScoresPageMsg, pageCmds));
 			case 'Settings':
-				return A4(
-					$author$project$Main$updateWith,
-					$author$project$Main$Settings,
-					$author$project$Main$GotSettingsMsg,
-					model,
-					A2(
-						$elm$core$Debug$log,
-						'  [changeRouteTo] Settings',
-						$author$project$Settings$init(navKey)));
-			case 'Help':
-				return A4(
-					$author$project$Main$updateWith,
-					$author$project$Main$Help,
-					$author$project$Main$GotHelpMsg,
-					model,
-					A2(
-						$elm$core$Debug$log,
-						'  [changeRouteTo] Help',
-						$author$project$Help$init(navKey)));
+				var _v8 = $author$project$Settings$init(model.navKey);
+				var pageModel = _v8.a;
+				var pageCmds = _v8.b;
+				return _Utils_Tuple2(
+					$author$project$Main$SettingsPage(pageModel),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$SettingsPageMsg, pageCmds));
 			default:
-				return A4(
-					$author$project$Main$updateWith,
-					$author$project$Main$HighScores,
-					$author$project$Main$GotHighScoresMsg,
-					model,
-					A2(
-						$elm$core$Debug$log,
-						'  [changeRouteTo] Help',
-						$author$project$HighScores$init(navKey)));
+				var _v9 = $author$project$Help$init(model.navKey);
+				var pageModel = _v9.a;
+				var pageCmds = _v9.b;
+				return _Utils_Tuple2(
+					$author$project$Main$HelpPage(pageModel),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$HelpPageMsg, pageCmds));
 		}
-	});
+	}();
+	var currentPageModel = _v1.a;
+	var mappedPageCmds = _v1.b;
+	return _Utils_Tuple2(
+		_Utils_update(
+			model,
+			{pageModel: currentPageModel}),
+		$elm$core$Platform$Cmd$batch(
+			_List_fromArray(
+				[existingCmds, mappedPageCmds])));
+};
+var $elm$core$Debug$log = _Debug_log;
 var $author$project$Route$NotFound = {$: 'NotFound'};
+var $author$project$Route$Game = {$: 'Game'};
+var $author$project$Route$Help = {$: 'Help'};
+var $author$project$Route$HighScores = {$: 'HighScores'};
+var $author$project$Route$Home = {$: 'Home'};
+var $author$project$Route$LoadGame = {$: 'LoadGame'};
+var $author$project$Route$NewGame = {$: 'NewGame'};
+var $author$project$Route$Settings = {$: 'Settings'};
+var $elm$url$Url$Parser$Parser = function (a) {
+	return {$: 'Parser', a: a};
+};
 var $elm$url$Url$Parser$State = F5(
 	function (visited, unvisited, params, frag, value) {
 		return {frag: frag, params: params, unvisited: unvisited, value: value, visited: visited};
 	});
+var $elm$url$Url$Parser$mapState = F2(
+	function (func, _v0) {
+		var visited = _v0.visited;
+		var unvisited = _v0.unvisited;
+		var params = _v0.params;
+		var frag = _v0.frag;
+		var value = _v0.value;
+		return A5(
+			$elm$url$Url$Parser$State,
+			visited,
+			unvisited,
+			params,
+			frag,
+			func(value));
+	});
+var $elm$url$Url$Parser$map = F2(
+	function (subValue, _v0) {
+		var parseArg = _v0.a;
+		return $elm$url$Url$Parser$Parser(
+			function (_v1) {
+				var visited = _v1.visited;
+				var unvisited = _v1.unvisited;
+				var params = _v1.params;
+				var frag = _v1.frag;
+				var value = _v1.value;
+				return A2(
+					$elm$core$List$map,
+					$elm$url$Url$Parser$mapState(value),
+					parseArg(
+						A5($elm$url$Url$Parser$State, visited, unvisited, params, frag, subValue)));
+			});
+	});
+var $elm$core$List$concatMap = F2(
+	function (f, list) {
+		return $elm$core$List$concat(
+			A2($elm$core$List$map, f, list));
+	});
+var $elm$url$Url$Parser$oneOf = function (parsers) {
+	return $elm$url$Url$Parser$Parser(
+		function (state) {
+			return A2(
+				$elm$core$List$concatMap,
+				function (_v0) {
+					var parser = _v0.a;
+					return parser(state);
+				},
+				parsers);
+		});
+};
+var $elm$url$Url$Parser$s = function (str) {
+	return $elm$url$Url$Parser$Parser(
+		function (_v0) {
+			var visited = _v0.visited;
+			var unvisited = _v0.unvisited;
+			var params = _v0.params;
+			var frag = _v0.frag;
+			var value = _v0.value;
+			if (!unvisited.b) {
+				return _List_Nil;
+			} else {
+				var next = unvisited.a;
+				var rest = unvisited.b;
+				return _Utils_eq(next, str) ? _List_fromArray(
+					[
+						A5(
+						$elm$url$Url$Parser$State,
+						A2($elm$core$List$cons, next, visited),
+						rest,
+						params,
+						frag,
+						value)
+					]) : _List_Nil;
+			}
+		});
+};
+var $author$project$Route$matchRoute = $elm$url$Url$Parser$oneOf(
+	_List_fromArray(
+		[
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$Home,
+			$elm$url$Url$Parser$s('index.html')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$NewGame,
+			$elm$url$Url$Parser$s('new-game')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$Game,
+			$elm$url$Url$Parser$s('game')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$LoadGame,
+			$elm$url$Url$Parser$s('load-game')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$HighScores,
+			$elm$url$Url$Parser$s('highscores')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$Settings,
+			$elm$url$Url$Parser$s('settings')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$Help,
+			$elm$url$Url$Parser$s('help'))
+		]));
 var $elm$url$Url$Parser$getFirstMatch = function (states) {
 	getFirstMatch:
 	while (true) {
@@ -8222,200 +8268,25 @@ var $elm$url$Url$Parser$parse = F2(
 					url.fragment,
 					$elm$core$Basics$identity)));
 	});
-var $author$project$Route$Game = {$: 'Game'};
-var $author$project$Route$Help = {$: 'Help'};
-var $author$project$Route$HighScores = {$: 'HighScores'};
-var $author$project$Route$Home = {$: 'Home'};
-var $author$project$Route$LoadGame = {$: 'LoadGame'};
-var $author$project$Route$NewGame = {$: 'NewGame'};
-var $author$project$Route$Settings = {$: 'Settings'};
-var $elm$url$Url$Parser$Parser = function (a) {
-	return {$: 'Parser', a: a};
-};
-var $elm$url$Url$Parser$mapState = F2(
-	function (func, _v0) {
-		var visited = _v0.visited;
-		var unvisited = _v0.unvisited;
-		var params = _v0.params;
-		var frag = _v0.frag;
-		var value = _v0.value;
-		return A5(
-			$elm$url$Url$Parser$State,
-			visited,
-			unvisited,
-			params,
-			frag,
-			func(value));
-	});
-var $elm$url$Url$Parser$map = F2(
-	function (subValue, _v0) {
-		var parseArg = _v0.a;
-		return $elm$url$Url$Parser$Parser(
-			function (_v1) {
-				var visited = _v1.visited;
-				var unvisited = _v1.unvisited;
-				var params = _v1.params;
-				var frag = _v1.frag;
-				var value = _v1.value;
-				return A2(
-					$elm$core$List$map,
-					$elm$url$Url$Parser$mapState(value),
-					parseArg(
-						A5($elm$url$Url$Parser$State, visited, unvisited, params, frag, subValue)));
-			});
-	});
-var $elm$core$List$concatMap = F2(
-	function (f, list) {
-		return $elm$core$List$concat(
-			A2($elm$core$List$map, f, list));
-	});
-var $elm$url$Url$Parser$oneOf = function (parsers) {
-	return $elm$url$Url$Parser$Parser(
-		function (state) {
-			return A2(
-				$elm$core$List$concatMap,
-				function (_v0) {
-					var parser = _v0.a;
-					return parser(state);
-				},
-				parsers);
-		});
-};
-var $elm$url$Url$Parser$s = function (str) {
-	return $elm$url$Url$Parser$Parser(
-		function (_v0) {
-			var visited = _v0.visited;
-			var unvisited = _v0.unvisited;
-			var params = _v0.params;
-			var frag = _v0.frag;
-			var value = _v0.value;
-			if (!unvisited.b) {
-				return _List_Nil;
-			} else {
-				var next = unvisited.a;
-				var rest = unvisited.b;
-				return _Utils_eq(next, str) ? _List_fromArray(
-					[
-						A5(
-						$elm$url$Url$Parser$State,
-						A2($elm$core$List$cons, next, visited),
-						rest,
-						params,
-						frag,
-						value)
-					]) : _List_Nil;
-			}
-		});
-};
-var $author$project$Route$parser = $elm$url$Url$Parser$oneOf(
-	_List_fromArray(
-		[
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$Home,
-			$elm$url$Url$Parser$s('index.html')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$Help,
-			$elm$url$Url$Parser$s('help')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$HighScores,
-			$elm$url$Url$Parser$s('highscores')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$Settings,
-			$elm$url$Url$Parser$s('settings')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$NewGame,
-			$elm$url$Url$Parser$s('new-game')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$LoadGame,
-			$elm$url$Url$Parser$s('load-game')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$Game,
-			$elm$url$Url$Parser$s('game'))
-		]));
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $author$project$Route$toRoute = function (string) {
-	var _v0 = A2($elm$core$Debug$log, '[Route.toRoute] string', string);
-	var _v1 = A2(
-		$elm$core$Debug$log,
-		'  [Route.toRoute] Url.fromString string',
-		$elm$url$Url$fromString(string));
-	if (_v1.$ === 'Nothing') {
-		return $author$project$Route$NotFound;
+var $author$project$Route$parseUrl = function (url) {
+	var _v0 = A2($elm$url$Url$Parser$parse, $author$project$Route$matchRoute, url);
+	if (_v0.$ === 'Just') {
+		var route = _v0.a;
+		return route;
 	} else {
-		var url = _v1.a;
-		return A2(
-			$elm$core$Maybe$withDefault,
-			$author$project$Route$NotFound,
-			A2($elm$url$Url$Parser$parse, $author$project$Route$parser, url));
+		return $author$project$Route$NotFound;
 	}
-};
-var $elm$url$Url$addPort = F2(
-	function (maybePort, starter) {
-		if (maybePort.$ === 'Nothing') {
-			return starter;
-		} else {
-			var port_ = maybePort.a;
-			return starter + (':' + $elm$core$String$fromInt(port_));
-		}
-	});
-var $elm$url$Url$addPrefixed = F3(
-	function (prefix, maybeSegment, starter) {
-		if (maybeSegment.$ === 'Nothing') {
-			return starter;
-		} else {
-			var segment = maybeSegment.a;
-			return _Utils_ap(
-				starter,
-				_Utils_ap(prefix, segment));
-		}
-	});
-var $elm$url$Url$toString = function (url) {
-	var http = function () {
-		var _v0 = url.protocol;
-		if (_v0.$ === 'Http') {
-			return 'http://';
-		} else {
-			return 'https://';
-		}
-	}();
-	return A3(
-		$elm$url$Url$addPrefixed,
-		'#',
-		url.fragment,
-		A3(
-			$elm$url$Url$addPrefixed,
-			'?',
-			url.query,
-			_Utils_ap(
-				A2(
-					$elm$url$Url$addPort,
-					url.port_,
-					_Utils_ap(http, url.host)),
-				url.path)));
 };
 var $author$project$Main$init = F3(
 	function (flags, url, navKey) {
+		var model = {
+			navKey: navKey,
+			pageModel: $author$project$Main$NotFoundPage,
+			route: $author$project$Route$parseUrl(url)
+		};
 		var _v0 = A2($elm$core$Debug$log, '[Main.init] url', url);
-		return A2(
-			$author$project$Main$changeRouteTo,
-			$author$project$Route$toRoute(
-				$elm$url$Url$toString(url)),
-			$author$project$Main$NotFound(navKey));
+		return $author$project$Main$initPage(
+			_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
 	});
 var $elm$core$Platform$Sub$map = _Platform_map;
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -8901,40 +8772,85 @@ var $author$project$LoadGame$subscriptions = function (_v0) {
 	return $author$project$LoadGame$receiveTime($author$project$LoadGame$ReceiveTimeFromJS);
 };
 var $author$project$Main$subscriptions = function (model) {
-	switch (model.$) {
-		case 'NotFound':
+	var _v0 = model.pageModel;
+	switch (_v0.$) {
+		case 'NotFoundPage':
 			return $elm$core$Platform$Sub$none;
-		case 'Home':
-			var modelHome = model.a;
+		case 'HomePage':
+			var modelHome = _v0.a;
 			return $elm$core$Platform$Sub$none;
-		case 'NewGame':
-			var modelNewGame = model.a;
+		case 'NewGamePage':
+			var modelNewGame = _v0.a;
 			return $elm$core$Platform$Sub$none;
-		case 'Game':
-			var modelGame = model.a;
+		case 'GamePage':
+			var modelGame = _v0.a;
 			return A2(
 				$elm$core$Platform$Sub$map,
-				$author$project$Main$GotGameMsg,
+				$author$project$Main$GamePageMsg,
 				$author$project$Game$subscriptions(modelGame));
-		case 'LoadGame':
-			var modelLoadGame = model.a;
+		case 'LoadGamePage':
+			var modelLoadGame = _v0.a;
 			return A2(
 				$elm$core$Platform$Sub$map,
-				$author$project$Main$GotLoadGameMsg,
+				$author$project$Main$LoadGamePageMsg,
 				$author$project$LoadGame$subscriptions(modelLoadGame));
-		case 'Settings':
-			var modelSettings = model.a;
+		case 'HighScoresPage':
+			var modelHighScores = _v0.a;
 			return $elm$core$Platform$Sub$none;
-		case 'Help':
-			var modelHelp = model.a;
+		case 'SettingsPage':
+			var modelSettings = _v0.a;
 			return $elm$core$Platform$Sub$none;
 		default:
-			var modelHighScores = model.a;
+			var modelHelp = _v0.a;
 			return $elm$core$Platform$Sub$none;
 	}
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $elm$url$Url$addPort = F2(
+	function (maybePort, starter) {
+		if (maybePort.$ === 'Nothing') {
+			return starter;
+		} else {
+			var port_ = maybePort.a;
+			return starter + (':' + $elm$core$String$fromInt(port_));
+		}
+	});
+var $elm$url$Url$addPrefixed = F3(
+	function (prefix, maybeSegment, starter) {
+		if (maybeSegment.$ === 'Nothing') {
+			return starter;
+		} else {
+			var segment = maybeSegment.a;
+			return _Utils_ap(
+				starter,
+				_Utils_ap(prefix, segment));
+		}
+	});
+var $elm$url$Url$toString = function (url) {
+	var http = function () {
+		var _v0 = url.protocol;
+		if (_v0.$ === 'Http') {
+			return 'http://';
+		} else {
+			return 'https://';
+		}
+	}();
+	return A3(
+		$elm$url$Url$addPrefixed,
+		'#',
+		url.fragment,
+		A3(
+			$elm$url$Url$addPrefixed,
+			'?',
+			url.query,
+			_Utils_ap(
+				A2(
+					$elm$url$Url$addPort,
+					url.port_,
+					_Utils_ap(http, url.host)),
+				url.path)));
+};
 var $ohanhi$keyboard$Keyboard$Escape = {$: 'Escape'};
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
@@ -11009,7 +10925,7 @@ var $author$project$Settings$update = F2(
 	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		var _v0 = _Utils_Tuple2(msg, model);
+		var _v0 = _Utils_Tuple2(msg, model.pageModel);
 		_v0$9:
 		while (true) {
 			switch (_v0.a.$) {
@@ -11021,109 +10937,139 @@ var $author$project$Main$update = F2(
 							model,
 							A2(
 								$elm$browser$Browser$Navigation$pushUrl,
-								$author$project$Main$getNavKey(model),
+								model.navKey,
 								$elm$url$Url$toString(url)));
 					} else {
-						var href = urlRequest.a;
+						var url = urlRequest.a;
 						return _Utils_Tuple2(
 							model,
-							$elm$browser$Browser$Navigation$load(href));
+							$elm$browser$Browser$Navigation$load(url));
 					}
 				case 'UrlChanged':
 					var url = _v0.a.a;
-					return A2(
-						$author$project$Main$changeRouteTo,
-						$author$project$Route$toRoute(
-							$elm$url$Url$toString(url)),
-						model);
-				case 'GotHomeMsg':
-					if (_v0.b.$ === 'Home') {
+					var newRoute = $author$project$Route$parseUrl(url);
+					return $author$project$Main$initPage(
+						_Utils_Tuple2(
+							_Utils_update(
+								model,
+								{route: newRoute}),
+							$elm$core$Platform$Cmd$none));
+				case 'HomePageMsg':
+					if (_v0.b.$ === 'HomePage') {
 						var subMsg = _v0.a.a;
 						var modelHome = _v0.b.a;
-						return A4(
-							$author$project$Main$updateWith,
-							$author$project$Main$Home,
-							$author$project$Main$GotHomeMsg,
-							model,
-							A2($author$project$Home$update, subMsg, modelHome));
+						var _v2 = A2($author$project$Home$update, subMsg, modelHome);
+						var updatedPageModel = _v2.a;
+						var updatedCmds = _v2.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									pageModel: $author$project$Main$HomePage(updatedPageModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$HomePageMsg, updatedCmds));
 					} else {
 						break _v0$9;
 					}
-				case 'GotNewGameMsg':
-					if (_v0.b.$ === 'NewGame') {
+				case 'NewGamePageMsg':
+					if (_v0.b.$ === 'NewGamePage') {
 						var subMsg = _v0.a.a;
 						var modelNewGame = _v0.b.a;
-						return A4(
-							$author$project$Main$updateWith,
-							$author$project$Main$NewGame,
-							$author$project$Main$GotNewGameMsg,
-							model,
-							A2($author$project$NewGame$update, subMsg, modelNewGame));
+						var _v3 = A2($author$project$NewGame$update, subMsg, modelNewGame);
+						var updatedPageModel = _v3.a;
+						var updatedCmds = _v3.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									pageModel: $author$project$Main$NewGamePage(updatedPageModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$NewGamePageMsg, updatedCmds));
 					} else {
 						break _v0$9;
 					}
-				case 'GotGameMsg':
-					if (_v0.b.$ === 'Game') {
+				case 'GamePageMsg':
+					if (_v0.b.$ === 'GamePage') {
 						var subMsg = _v0.a.a;
 						var modelGame = _v0.b.a;
-						return A4(
-							$author$project$Main$updateWith,
-							$author$project$Main$Game,
-							$author$project$Main$GotGameMsg,
-							model,
-							A2($author$project$Game$update, subMsg, modelGame));
+						var _v4 = A2($author$project$Game$update, subMsg, modelGame);
+						var updatedPageModel = _v4.a;
+						var updatedCmds = _v4.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									pageModel: $author$project$Main$GamePage(updatedPageModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, updatedCmds));
 					} else {
 						break _v0$9;
 					}
-				case 'GotLoadGameMsg':
-					if (_v0.b.$ === 'LoadGame') {
+				case 'LoadGamePageMsg':
+					if (_v0.b.$ === 'LoadGamePage') {
 						var subMsg = _v0.a.a;
 						var modelLoadGame = _v0.b.a;
-						return A4(
-							$author$project$Main$updateWith,
-							$author$project$Main$LoadGame,
-							$author$project$Main$GotLoadGameMsg,
-							model,
-							A2($author$project$LoadGame$update, subMsg, modelLoadGame));
+						var _v5 = A2($author$project$LoadGame$update, subMsg, modelLoadGame);
+						var updatedPageModel = _v5.a;
+						var updatedCmds = _v5.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									pageModel: $author$project$Main$LoadGamePage(updatedPageModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$LoadGamePageMsg, updatedCmds));
 					} else {
 						break _v0$9;
 					}
-				case 'GotSettingsMsg':
-					if (_v0.b.$ === 'Settings') {
+				case 'HighScoresPageMsg':
+					if (_v0.b.$ === 'HighScoresPage') {
+						var subMsg = _v0.a.a;
+						var modelHighScores = _v0.b.a;
+						var _v6 = A2($author$project$HighScores$update, subMsg, modelHighScores);
+						var updatedPageModel = _v6.a;
+						var updatedCmds = _v6.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									pageModel: $author$project$Main$HighScoresPage(updatedPageModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$HighScoresPageMsg, updatedCmds));
+					} else {
+						break _v0$9;
+					}
+				case 'SettingsPageMsg':
+					if (_v0.b.$ === 'SettingsPage') {
 						var subMsg = _v0.a.a;
 						var modelSettings = _v0.b.a;
-						return A4(
-							$author$project$Main$updateWith,
-							$author$project$Main$Settings,
-							$author$project$Main$GotSettingsMsg,
-							model,
-							A2($author$project$Settings$update, subMsg, modelSettings));
-					} else {
-						break _v0$9;
-					}
-				case 'GotHelpMsg':
-					if (_v0.b.$ === 'Help') {
-						var subMsg = _v0.a.a;
-						var modelHelp = _v0.b.a;
-						return A4(
-							$author$project$Main$updateWith,
-							$author$project$Main$Help,
-							$author$project$Main$GotHelpMsg,
-							model,
-							A2($author$project$Help$update, subMsg, modelHelp));
+						var _v7 = A2($author$project$Settings$update, subMsg, modelSettings);
+						var updatedPageModel = _v7.a;
+						var updatedCmds = _v7.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									pageModel: $author$project$Main$SettingsPage(updatedPageModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$SettingsPageMsg, updatedCmds));
 					} else {
 						break _v0$9;
 					}
 				default:
-					if (_v0.b.$ === 'HighScores') {
+					if (_v0.b.$ === 'HelpPage') {
 						var subMsg = _v0.a.a;
-						var modelHighScores = _v0.b.a;
-						return A4(
-							$author$project$Main$updateWith,
-							$author$project$Main$HighScores,
-							$author$project$Main$GotHighScoresMsg,
-							model,
-							A2($author$project$HighScores$update, subMsg, modelHighScores));
+						var modelHelp = _v0.b.a;
+						var _v8 = A2($author$project$Help$update, subMsg, modelHelp);
+						var updatedPageModel = _v8.a;
+						var updatedCmds = _v8.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									pageModel: $author$project$Main$HelpPage(updatedPageModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$HelpPageMsg, updatedCmds));
 					} else {
 						break _v0$9;
 					}
@@ -11132,8 +11078,11 @@ var $author$project$Main$update = F2(
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $elm$json$Json$Decode$value = _Json_decodeValue;
+var $elm$html$Html$h3 = _VirtualDom_node('h3');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$img = _VirtualDom_node('img');
 var $Zinggi$elm_game_resources$Game$Resources$getTexture = F2(
@@ -11909,8 +11858,6 @@ var $elm$core$String$padLeft = F3(
 			string);
 	});
 var $elm$html$Html$pre = _VirtualDom_node('pre');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Game$armorInfo = F5(
 	function (left, top, imgSize, armor, armorPiece) {
 		var armorPieceDefValue = function () {
@@ -12615,29 +12562,29 @@ var $elm$html$Html$Attributes$href = function (url) {
 		'href',
 		_VirtualDom_noJavaScriptUri(url));
 };
-var $author$project$Route$routeToPieces = function (page) {
-	switch (page.$) {
+var $author$project$Route$routeToString = function (route) {
+	switch (route.$) {
 		case 'NotFound':
 			return 'not-found';
 		case 'Home':
 			return 'index.html';
-		case 'Help':
-			return 'help';
+		case 'NewGame':
+			return 'new-game';
+		case 'Game':
+			return 'game';
+		case 'LoadGame':
+			return 'load-game';
 		case 'HighScores':
 			return 'highscores';
 		case 'Settings':
 			return 'settings';
-		case 'Game':
-			return 'game';
-		case 'NewGame':
-			return 'new-game';
 		default:
-			return 'load-game';
+			return 'help';
 	}
 };
 var $author$project$Route$href = function (targetRoute) {
 	return $elm$html$Html$Attributes$href(
-		$author$project$Route$routeToPieces(targetRoute));
+		$author$project$Route$routeToString(targetRoute));
 };
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -13334,177 +13281,168 @@ var $author$project$Game$viewTime = F3(
 				]));
 	});
 var $author$project$Game$view = function (model) {
-	return {
-		content: A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$img,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
-							A2($elm$html$Html$Attributes$style, 'display', 'block'),
-							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
-							A2($elm$html$Html$Attributes$style, 'left', '0px'),
-							A2($elm$html$Html$Attributes$style, 'top', '0px')
-						]),
-					_List_Nil),
-					A3(
-					$Zinggi$elm_2d_game$Game$TwoD$renderWithOptions,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '320px'),
-							A2($elm$html$Html$Attributes$style, 'top', '100px'),
-							A2($elm$html$Html$Attributes$style, 'border', 'solid 1px #FFF')
-						]),
-					{camera: model.camera, size: model.screen, time: model.time},
-					$author$project$Game$render(model)),
-					A4(
-					$author$project$Game$viewPlayerDebugInfo,
-					100,
-					100,
-					model.player,
-					$elm$core$List$head(model.level.enemies)),
-					A3($author$project$Game$viewTime, 950, 50, model.time),
-					A4($author$project$Game$viewDefenseBar, 448, 685, model.player.maxDefense, model.player.armor.totalDef),
-					A4($author$project$Game$viewHealthBar, 448, 725, model.player.maxHealth, model.player.currentHealth),
-					A4($author$project$Game$viewExpBar, 448, 765, model.player.maxExp, model.player.currentExp),
-					A5($author$project$Game$viewConsumable1, 336, 650, model.keys, model.time, model.player.healthPotions),
-					A5($author$project$Game$viewConsumable2, 1485, 650, model.keys, model.time, model.player.speedPotions),
-					A4($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.player),
-					A8($author$project$Game$viewPauseScreen, 360, 160, model.button_PS_resume, model.button_PS_settings, model.button_PS_help, model.button_PS_return, model.pauseToggle, model.player),
-					A5($author$project$Game$viewDeathScreen, 360, 160, model.button_DS_respawn, model.button_DS_return, model.player),
-					A3($author$project$Game$viewPlayerInput, 820, 835, model.keys)
-				])),
-		title: 'Game'
-	};
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
+						A2($elm$html$Html$Attributes$style, 'display', 'block'),
+						A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+						A2($elm$html$Html$Attributes$style, 'left', '0px'),
+						A2($elm$html$Html$Attributes$style, 'top', '0px')
+					]),
+				_List_Nil),
+				A3(
+				$Zinggi$elm_2d_game$Game$TwoD$renderWithOptions,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '320px'),
+						A2($elm$html$Html$Attributes$style, 'top', '100px'),
+						A2($elm$html$Html$Attributes$style, 'border', 'solid 1px #FFF')
+					]),
+				{camera: model.camera, size: model.screen, time: model.time},
+				$author$project$Game$render(model)),
+				A4(
+				$author$project$Game$viewPlayerDebugInfo,
+				100,
+				100,
+				model.player,
+				$elm$core$List$head(model.level.enemies)),
+				A3($author$project$Game$viewTime, 950, 50, model.time),
+				A4($author$project$Game$viewDefenseBar, 448, 685, model.player.maxDefense, model.player.armor.totalDef),
+				A4($author$project$Game$viewHealthBar, 448, 725, model.player.maxHealth, model.player.currentHealth),
+				A4($author$project$Game$viewExpBar, 448, 765, model.player.maxExp, model.player.currentExp),
+				A5($author$project$Game$viewConsumable1, 336, 650, model.keys, model.time, model.player.healthPotions),
+				A5($author$project$Game$viewConsumable2, 1485, 650, model.keys, model.time, model.player.speedPotions),
+				A4($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.player),
+				A8($author$project$Game$viewPauseScreen, 360, 160, model.button_PS_resume, model.button_PS_settings, model.button_PS_help, model.button_PS_return, model.pauseToggle, model.player),
+				A5($author$project$Game$viewDeathScreen, 360, 160, model.button_DS_respawn, model.button_DS_return, model.player),
+				A3($author$project$Game$viewPlayerInput, 820, 835, model.keys)
+			]));
 };
 var $author$project$Help$HoverBack = {$: 'HoverBack'};
 var $author$project$Help$MouseOut = {$: 'MouseOut'};
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $author$project$Help$view = function (model) {
-	return {
-		content: A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$img,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
-							A2($elm$html$Html$Attributes$style, 'display', 'block'),
-							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
-							A2($elm$html$Html$Attributes$style, 'left', '0px'),
-							A2($elm$html$Html$Attributes$style, 'top', '0px')
-						]),
-					_List_Nil),
-					A2(
-					$elm$html$Html$h1,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '800px'),
-							A2($elm$html$Html$Attributes$style, 'top', '100px')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Help')
-						])),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$Home)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_back),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '752px'),
-									A2($elm$html$Html$Attributes$style, 'top', '864px'),
-									$elm$html$Html$Events$onMouseOver($author$project$Help$HoverBack),
-									$elm$html$Html$Events$onMouseOut($author$project$Help$MouseOut)
-								]),
-							_List_Nil)
-						]))
-				])),
-		title: 'Help'
-	};
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
+						A2($elm$html$Html$Attributes$style, 'display', 'block'),
+						A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+						A2($elm$html$Html$Attributes$style, 'left', '0px'),
+						A2($elm$html$Html$Attributes$style, 'top', '0px')
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '800px'),
+						A2($elm$html$Html$Attributes$style, 'top', '100px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Help')
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$Home)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_back),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '752px'),
+								A2($elm$html$Html$Attributes$style, 'top', '864px'),
+								$elm$html$Html$Events$onMouseOver($author$project$Help$HoverBack),
+								$elm$html$Html$Events$onMouseOut($author$project$Help$MouseOut)
+							]),
+						_List_Nil)
+					]))
+			]));
 };
 var $author$project$HighScores$HoverBack = {$: 'HoverBack'};
 var $author$project$HighScores$MouseOut = {$: 'MouseOut'};
 var $author$project$HighScores$view = function (model) {
-	return {
-		content: A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$img,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
-							A2($elm$html$Html$Attributes$style, 'display', 'block'),
-							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
-							A2($elm$html$Html$Attributes$style, 'left', '0px'),
-							A2($elm$html$Html$Attributes$style, 'top', '0px')
-						]),
-					_List_Nil),
-					A2(
-					$elm$html$Html$h1,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '800px'),
-							A2($elm$html$Html$Attributes$style, 'top', '100px')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('High Scores')
-						])),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$Home)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_back),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '752px'),
-									A2($elm$html$Html$Attributes$style, 'top', '864px'),
-									$elm$html$Html$Events$onMouseOver($author$project$HighScores$HoverBack),
-									$elm$html$Html$Events$onMouseOut($author$project$HighScores$MouseOut)
-								]),
-							_List_Nil)
-						]))
-				])),
-		title: 'HighScores'
-	};
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
+						A2($elm$html$Html$Attributes$style, 'display', 'block'),
+						A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+						A2($elm$html$Html$Attributes$style, 'left', '0px'),
+						A2($elm$html$Html$Attributes$style, 'top', '0px')
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '800px'),
+						A2($elm$html$Html$Attributes$style, 'top', '100px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('High Scores')
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$Home)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_back),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '752px'),
+								A2($elm$html$Html$Attributes$style, 'top', '864px'),
+								$elm$html$Html$Events$onMouseOver($author$project$HighScores$HoverBack),
+								$elm$html$Html$Events$onMouseOut($author$project$HighScores$MouseOut)
+							]),
+						_List_Nil)
+					]))
+			]));
 };
 var $author$project$Home$HoverHelp = {$: 'HoverHelp'};
 var $author$project$Home$HoverHighScore = {$: 'HoverHighScore'};
@@ -13513,131 +13451,128 @@ var $author$project$Home$HoverNewGame = {$: 'HoverNewGame'};
 var $author$project$Home$HoverSettings = {$: 'HoverSettings'};
 var $author$project$Home$MouseOut = {$: 'MouseOut'};
 var $author$project$Home$view = function (model) {
-	return {
-		content: A2(
-			$elm$html$Html$div,
-			_List_Nil,
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$img,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$src('assets/mainMenu_background_1920_969.png'),
-							A2($elm$html$Html$Attributes$style, 'display', 'block'),
-							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
-							A2($elm$html$Html$Attributes$style, 'left', '0px'),
-							A2($elm$html$Html$Attributes$style, 'top', '0px')
-						]),
-					_List_Nil),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$NewGame)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_newGame),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '752px'),
-									A2($elm$html$Html$Attributes$style, 'top', '416px'),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverNewGame),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$LoadGame)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_loadGame),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '752px'),
-									A2($elm$html$Html$Attributes$style, 'top', '528px'),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverLoadGame),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$HighScores)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_highScore),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '752px'),
-									A2($elm$html$Html$Attributes$style, 'top', '640px'),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHighScore),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$Settings)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_settings),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '752px'),
-									A2($elm$html$Html$Attributes$style, 'top', '752px'),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverSettings),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$Help)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_help),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '752px'),
-									A2($elm$html$Html$Attributes$style, 'top', '864px'),
-									$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHelp),
-									$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
-								]),
-							_List_Nil)
-						]))
-				])),
-		title: 'Home'
-	};
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src('assets/mainMenu_background_1920_969.png'),
+						A2($elm$html$Html$Attributes$style, 'display', 'block'),
+						A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+						A2($elm$html$Html$Attributes$style, 'left', '0px'),
+						A2($elm$html$Html$Attributes$style, 'top', '0px')
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$NewGame)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_newGame),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '752px'),
+								A2($elm$html$Html$Attributes$style, 'top', '416px'),
+								$elm$html$Html$Events$onMouseOver($author$project$Home$HoverNewGame),
+								$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+							]),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$LoadGame)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_loadGame),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '752px'),
+								A2($elm$html$Html$Attributes$style, 'top', '528px'),
+								$elm$html$Html$Events$onMouseOver($author$project$Home$HoverLoadGame),
+								$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+							]),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$HighScores)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_highScore),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '752px'),
+								A2($elm$html$Html$Attributes$style, 'top', '640px'),
+								$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHighScore),
+								$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+							]),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$Settings)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_settings),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '752px'),
+								A2($elm$html$Html$Attributes$style, 'top', '752px'),
+								$elm$html$Html$Events$onMouseOver($author$project$Home$HoverSettings),
+								$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+							]),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$Help)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_help),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '752px'),
+								A2($elm$html$Html$Attributes$style, 'top', '864px'),
+								$elm$html$Html$Events$onMouseOver($author$project$Home$HoverHelp),
+								$elm$html$Html$Events$onMouseOut($author$project$Home$MouseOut)
+							]),
+						_List_Nil)
+					]))
+			]));
 };
 var $author$project$LoadGame$HoverBack = {$: 'HoverBack'};
 var $author$project$LoadGame$HoverGame1 = {$: 'HoverGame1'};
@@ -13645,120 +13580,117 @@ var $author$project$LoadGame$HoverGame2 = {$: 'HoverGame2'};
 var $author$project$LoadGame$HoverGame3 = {$: 'HoverGame3'};
 var $author$project$LoadGame$MouseOut = {$: 'MouseOut'};
 var $author$project$LoadGame$view = function (model) {
-	return {
-		content: A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$img,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
-							A2($elm$html$Html$Attributes$style, 'display', 'block'),
-							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
-							A2($elm$html$Html$Attributes$style, 'left', '0px'),
-							A2($elm$html$Html$Attributes$style, 'top', '0px')
-						]),
-					_List_Nil),
-					A2(
-					$elm$html$Html$h1,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '800px'),
-							A2($elm$html$Html$Attributes$style, 'top', '100px')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Load Game')
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '660px'),
-							A2($elm$html$Html$Attributes$style, 'top', '250px')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_game1),
-									$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame1),
-									$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
-								]),
-							_List_Nil),
-							A2(
-							$elm$html$Html$pre,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
-									A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Player1 time:'),
-									$elm$html$Html$text(
-									$elm$core$String$fromFloat(model.time1))
-								]))
-						])),
-					A2(
-					$elm$html$Html$img,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$src(model.button_game2),
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '660px'),
-							A2($elm$html$Html$Attributes$style, 'top', '428px'),
-							$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame2),
-							$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
-						]),
-					_List_Nil),
-					A2(
-					$elm$html$Html$img,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$src(model.button_game3),
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '660px'),
-							A2($elm$html$Html$Attributes$style, 'top', '606px'),
-							$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame3),
-							$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
-						]),
-					_List_Nil),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$Home)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_back),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '752px'),
-									A2($elm$html$Html$Attributes$style, 'top', '864px'),
-									$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverBack),
-									$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
-								]),
-							_List_Nil)
-						]))
-				])),
-		title: 'Load Game'
-	};
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
+						A2($elm$html$Html$Attributes$style, 'display', 'block'),
+						A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+						A2($elm$html$Html$Attributes$style, 'left', '0px'),
+						A2($elm$html$Html$Attributes$style, 'top', '0px')
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '800px'),
+						A2($elm$html$Html$Attributes$style, 'top', '100px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Load Game')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '660px'),
+						A2($elm$html$Html$Attributes$style, 'top', '250px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_game1),
+								$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame1),
+								$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$pre,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+								A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Player1 time:'),
+								$elm$html$Html$text(
+								$elm$core$String$fromFloat(model.time1))
+							]))
+					])),
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src(model.button_game2),
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '660px'),
+						A2($elm$html$Html$Attributes$style, 'top', '428px'),
+						$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame2),
+						$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src(model.button_game3),
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '660px'),
+						A2($elm$html$Html$Attributes$style, 'top', '606px'),
+						$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame3),
+						$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$Home)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_back),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '752px'),
+								A2($elm$html$Html$Attributes$style, 'top', '864px'),
+								$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverBack),
+								$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+							]),
+						_List_Nil)
+					]))
+			]));
 };
 var $author$project$NewGame$DifficultyTo = function (a) {
 	return {$: 'DifficultyTo', a: a};
@@ -13816,194 +13748,178 @@ var $author$project$NewGame$radio = F3(
 				]));
 	});
 var $author$project$NewGame$view = function (model) {
-	return {
-		content: A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$img,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
-							A2($elm$html$Html$Attributes$style, 'display', 'block'),
-							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
-							A2($elm$html$Html$Attributes$style, 'left', '0px'),
-							A2($elm$html$Html$Attributes$style, 'top', '0px')
-						]),
-					_List_Nil),
-					A2(
-					$elm$html$Html$h1,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '895px'),
-							A2($elm$html$Html$Attributes$style, 'top', '100px')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('New Game')
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '700px'),
-							A2($elm$html$Html$Attributes$style, 'top', '500px')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$h1,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Enter name:'),
-									A2(
-									$elm$html$Html$input,
-									_List_fromArray(
-										[
-											$elm$html$Html$Attributes$type_('input'),
-											A2($elm$html$Html$Attributes$style, 'margin-left', '40px')
-										]),
-									_List_Nil)
-								])),
-							A2(
-							$elm$html$Html$h1,
-							_List_fromArray(
-								[
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
-								]),
-							_List_fromArray(
-								[
-									A2(
-									$elm$html$Html$div,
-									_List_fromArray(
-										[
-											A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-											A2($elm$html$Html$Attributes$style, 'top', '20px')
-										]),
-									_List_fromArray(
-										[
-											$elm$html$Html$text('Difficulty:')
-										])),
-									A2(
-									$elm$html$Html$div,
-									_List_fromArray(
-										[
-											A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-											A2($elm$html$Html$Attributes$style, 'left', '150px'),
-											A2($elm$html$Html$Attributes$style, 'top', '0px')
-										]),
-									_List_fromArray(
-										[
-											A3(
-											$author$project$NewGame$radio,
-											$author$project$NewGame$DifficultyTo($author$project$NewGame$Easy),
-											_Utils_eq(model.difficulty, $author$project$NewGame$Easy),
-											'easy')
-										])),
-									A2(
-									$elm$html$Html$div,
-									_List_fromArray(
-										[
-											A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-											A2($elm$html$Html$Attributes$style, 'left', '360px'),
-											A2($elm$html$Html$Attributes$style, 'top', '0px')
-										]),
-									_List_fromArray(
-										[
-											A3(
-											$author$project$NewGame$radio,
-											$author$project$NewGame$DifficultyTo($author$project$NewGame$Medium),
-											_Utils_eq(model.difficulty, $author$project$NewGame$Medium),
-											'medium')
-										])),
-									A2(
-									$elm$html$Html$div,
-									_List_fromArray(
-										[
-											A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-											A2($elm$html$Html$Attributes$style, 'left', '610px'),
-											A2($elm$html$Html$Attributes$style, 'top', '0px')
-										]),
-									_List_fromArray(
-										[
-											A3(
-											$author$project$NewGame$radio,
-											$author$project$NewGame$DifficultyTo($author$project$NewGame$Hard),
-											_Utils_eq(model.difficulty, $author$project$NewGame$Hard),
-											'hard')
-										]))
-								]))
-						])),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$Home)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_back),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '524px'),
-									A2($elm$html$Html$Attributes$style, 'top', '864px'),
-									$elm$html$Html$Events$onMouseOver($author$project$NewGame$HoverBack),
-									$elm$html$Html$Events$onMouseOut($author$project$NewGame$MouseOut)
-								]),
-							_List_Nil)
-						])),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$Game)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_start),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '980px'),
-									A2($elm$html$Html$Attributes$style, 'top', '864px'),
-									$elm$html$Html$Events$onMouseOver($author$project$NewGame$HoverStart),
-									$elm$html$Html$Events$onMouseOut($author$project$NewGame$MouseOut)
-								]),
-							_List_Nil)
-						]))
-				])),
-		title: 'New Game'
-	};
-};
-var $author$project$NotFound$view = {
-	content: $elm$html$Html$text(''),
-	title: 'NotFound'
-};
-var $author$project$Page$view = function (_v0) {
-	var title = _v0.title;
-	var content = _v0.content;
-	return {
-		body: _List_fromArray(
-			[content]),
-		title: title + ' - The Elm Scrolls'
-	};
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
+						A2($elm$html$Html$Attributes$style, 'display', 'block'),
+						A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+						A2($elm$html$Html$Attributes$style, 'left', '0px'),
+						A2($elm$html$Html$Attributes$style, 'top', '0px')
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '895px'),
+						A2($elm$html$Html$Attributes$style, 'top', '100px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('New Game')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '700px'),
+						A2($elm$html$Html$Attributes$style, 'top', '500px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h1,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Enter name:'),
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$type_('input'),
+										A2($elm$html$Html$Attributes$style, 'margin-left', '40px')
+									]),
+								_List_Nil)
+							])),
+						A2(
+						$elm$html$Html$h1,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+										A2($elm$html$Html$Attributes$style, 'top', '20px')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Difficulty:')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+										A2($elm$html$Html$Attributes$style, 'left', '150px'),
+										A2($elm$html$Html$Attributes$style, 'top', '0px')
+									]),
+								_List_fromArray(
+									[
+										A3(
+										$author$project$NewGame$radio,
+										$author$project$NewGame$DifficultyTo($author$project$NewGame$Easy),
+										_Utils_eq(model.difficulty, $author$project$NewGame$Easy),
+										'easy')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+										A2($elm$html$Html$Attributes$style, 'left', '360px'),
+										A2($elm$html$Html$Attributes$style, 'top', '0px')
+									]),
+								_List_fromArray(
+									[
+										A3(
+										$author$project$NewGame$radio,
+										$author$project$NewGame$DifficultyTo($author$project$NewGame$Medium),
+										_Utils_eq(model.difficulty, $author$project$NewGame$Medium),
+										'medium')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+										A2($elm$html$Html$Attributes$style, 'left', '610px'),
+										A2($elm$html$Html$Attributes$style, 'top', '0px')
+									]),
+								_List_fromArray(
+									[
+										A3(
+										$author$project$NewGame$radio,
+										$author$project$NewGame$DifficultyTo($author$project$NewGame$Hard),
+										_Utils_eq(model.difficulty, $author$project$NewGame$Hard),
+										'hard')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$Home)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_back),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '524px'),
+								A2($elm$html$Html$Attributes$style, 'top', '864px'),
+								$elm$html$Html$Events$onMouseOver($author$project$NewGame$HoverBack),
+								$elm$html$Html$Events$onMouseOut($author$project$NewGame$MouseOut)
+							]),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$Game)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_start),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '980px'),
+								A2($elm$html$Html$Attributes$style, 'top', '864px'),
+								$elm$html$Html$Events$onMouseOver($author$project$NewGame$HoverStart),
+								$elm$html$Html$Events$onMouseOut($author$project$NewGame$MouseOut)
+							]),
+						_List_Nil)
+					]))
+			]));
 };
 var $author$project$Settings$HoverBack = {$: 'HoverBack'};
 var $author$project$Settings$MouseOut = {$: 'MouseOut'};
@@ -14029,156 +13945,184 @@ var $author$project$Settings$radio = F3(
 			]);
 	});
 var $author$project$Settings$view = function (model) {
-	return {
-		content: A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$img,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
-							A2($elm$html$Html$Attributes$style, 'display', 'block'),
-							A2($elm$html$Html$Attributes$style, 'position', 'relative'),
-							A2($elm$html$Html$Attributes$style, 'left', '0px'),
-							A2($elm$html$Html$Attributes$style, 'top', '0px')
-						]),
-					_List_Nil),
-					A2(
-					$elm$html$Html$h1,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '800px'),
-							A2($elm$html$Html$Attributes$style, 'top', '100px')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Settings')
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-							A2($elm$html$Html$Attributes$style, 'left', '700px'),
-							A2($elm$html$Html$Attributes$style, 'top', '500px')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$h1,
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src('assets/default_background_1920_969.png'),
+						A2($elm$html$Html$Attributes$style, 'display', 'block'),
+						A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+						A2($elm$html$Html$Attributes$style, 'left', '0px'),
+						A2($elm$html$Html$Attributes$style, 'top', '0px')
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '800px'),
+						A2($elm$html$Html$Attributes$style, 'top', '100px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Settings')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '700px'),
+						A2($elm$html$Html$Attributes$style, 'top', '500px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h1,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
+							]),
+						_Utils_ap(
 							_List_fromArray(
 								[
-									A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
+									$elm$html$Html$text('Sound:')
 								]),
 							_Utils_ap(
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Sound:')
-									]),
-								_Utils_ap(
-									A3(
-										$author$project$Settings$radio,
-										$author$project$Settings$SoundTo($author$project$Settings$Off),
-										_Utils_eq(model.sound, $author$project$Settings$Off),
-										'off'),
-									A3(
-										$author$project$Settings$radio,
-										$author$project$Settings$SoundTo($author$project$Settings$On),
-										_Utils_eq(model.sound, $author$project$Settings$On),
-										'on'))))
-						])),
-					A2(
-					$elm$html$Html$a,
-					_List_fromArray(
-						[
-							$author$project$Route$href($author$project$Route$Home)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$img,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$src(model.button_back),
-									A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-									A2($elm$html$Html$Attributes$style, 'left', '752px'),
-									A2($elm$html$Html$Attributes$style, 'top', '864px'),
-									$elm$html$Html$Events$onMouseOver($author$project$Settings$HoverBack),
-									$elm$html$Html$Events$onMouseOut($author$project$Settings$MouseOut)
-								]),
-							_List_Nil)
-						]))
-				])),
-		title: 'Settings'
-	};
+								A3(
+									$author$project$Settings$radio,
+									$author$project$Settings$SoundTo($author$project$Settings$Off),
+									_Utils_eq(model.sound, $author$project$Settings$Off),
+									'off'),
+								A3(
+									$author$project$Settings$radio,
+									$author$project$Settings$SoundTo($author$project$Settings$On),
+									_Utils_eq(model.sound, $author$project$Settings$On),
+									'on'))))
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$author$project$Route$href($author$project$Route$Home)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.button_back),
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '752px'),
+								A2($elm$html$Html$Attributes$style, 'top', '864px'),
+								$elm$html$Html$Events$onMouseOver($author$project$Settings$HoverBack),
+								$elm$html$Html$Events$onMouseOut($author$project$Settings$MouseOut)
+							]),
+						_List_Nil)
+					]))
+			]));
+};
+var $author$project$Main$viewBody = function (model) {
+	var _v0 = model.pageModel;
+	switch (_v0.$) {
+		case 'NotFoundPage':
+			return A2(
+				$elm$html$Html$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Oops! The page you requested was not found!')
+					]));
+		case 'HomePage':
+			var modelHome = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$HomePageMsg,
+				$author$project$Home$view(modelHome));
+		case 'NewGamePage':
+			var modelNewGame = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$NewGamePageMsg,
+				$author$project$NewGame$view(modelNewGame));
+		case 'GamePage':
+			var modelGame = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$GamePageMsg,
+				$author$project$Game$view(modelGame));
+		case 'LoadGamePage':
+			var modelLoadGame = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$LoadGamePageMsg,
+				$author$project$LoadGame$view(modelLoadGame));
+		case 'HighScoresPage':
+			var modelHighScores = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$HighScoresPageMsg,
+				$author$project$HighScores$view(modelHighScores));
+		case 'SettingsPage':
+			var modelSettings = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$SettingsPageMsg,
+				$author$project$Settings$view(modelSettings));
+		default:
+			var modelHelp = _v0.a;
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Main$HelpPageMsg,
+				$author$project$Help$view(modelHelp));
+	}
+};
+var $author$project$Main$viewTitle = function (model) {
+	var _v0 = model.pageModel;
+	switch (_v0.$) {
+		case 'NotFoundPage':
+			return 'Not Found';
+		case 'HomePage':
+			var modelHome = _v0.a;
+			return 'Home';
+		case 'NewGamePage':
+			var modelNewGame = _v0.a;
+			return 'New Game';
+		case 'GamePage':
+			var modelGame = _v0.a;
+			return 'Game';
+		case 'LoadGamePage':
+			var modelLoadGame = _v0.a;
+			return 'Load Game';
+		case 'HighScoresPage':
+			var modelHighScores = _v0.a;
+			return 'HighScores';
+		case 'SettingsPage':
+			var modelSettings = _v0.a;
+			return 'Settings';
+		default:
+			var modelHelp = _v0.a;
+			return 'Help';
+	}
 };
 var $author$project$Main$view = function (model) {
-	var viewPage = F2(
-		function (toMsg, content) {
-			var _v1 = $author$project$Page$view(content);
-			var title = _v1.title;
-			var body = _v1.body;
-			return {
-				body: A2(
-					$elm$core$List$map,
-					$elm$html$Html$map(toMsg),
-					body),
-				title: title
-			};
-		});
-	switch (model.$) {
-		case 'NotFound':
-			return $author$project$Page$view($author$project$NotFound$view);
-		case 'Home':
-			var modelHome = model.a;
-			return A2(
-				viewPage,
-				$author$project$Main$GotHomeMsg,
-				$author$project$Home$view(modelHome));
-		case 'NewGame':
-			var modelNewGame = model.a;
-			return A2(
-				viewPage,
-				$author$project$Main$GotNewGameMsg,
-				$author$project$NewGame$view(modelNewGame));
-		case 'Game':
-			var modelGame = model.a;
-			return A2(
-				viewPage,
-				$author$project$Main$GotGameMsg,
-				$author$project$Game$view(modelGame));
-		case 'LoadGame':
-			var modelLoadGame = model.a;
-			return A2(
-				viewPage,
-				$author$project$Main$GotLoadGameMsg,
-				$author$project$LoadGame$view(modelLoadGame));
-		case 'Settings':
-			var modelSettings = model.a;
-			return A2(
-				viewPage,
-				$author$project$Main$GotSettingsMsg,
-				$author$project$Settings$view(modelSettings));
-		case 'Help':
-			var modelHelp = model.a;
-			return A2(
-				viewPage,
-				$author$project$Main$GotHelpMsg,
-				$author$project$Help$view(modelHelp));
-		default:
-			var modelHighScores = model.a;
-			return A2(
-				viewPage,
-				$author$project$Main$GotHighScoresMsg,
-				$author$project$HighScores$view(modelHighScores));
-	}
+	return {
+		body: _List_fromArray(
+			[
+				$author$project$Main$viewBody(model)
+			]),
+		title: $author$project$Main$viewTitle(model) + ' - The Elm Scrolls'
+	};
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$UrlChanged, onUrlRequest: $author$project$Main$LinkClicked, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});

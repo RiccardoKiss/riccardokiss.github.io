@@ -29,11 +29,6 @@ init navKey =
   )
 
 
-getNavKey : Model -> Nav.Key
-getNavKey model =
-  model.navKey
-
-
 radio : msg -> Bool -> String -> List ( Html msg )
 radio  msg isChecked value =
   [ input [ type_ "radio"
@@ -75,11 +70,9 @@ update msg model =
       , Cmd.none
       )
 
-view : Model -> { title : String, content : Html Msg }
+view : Model -> Html Msg
 view model =
-  { title = "Settings"
-  , content =
-    div [ style "font-family" "monospace" ]
+  div [ style "font-family" "monospace" ]
       [ img [ src "assets/default_background_1920_969.png"
             , style "display" "block"
             , style "position" "relative"
@@ -110,4 +103,3 @@ view model =
                 ] []
           ]
       ]
-  }

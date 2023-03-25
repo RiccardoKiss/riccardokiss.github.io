@@ -33,11 +33,6 @@ init navKey =
   )
 
 
-getNavKey : Model -> Nav.Key
-getNavKey model =
-  model.navKey
-
-
 type Msg
   = HoverNewGame
   | HoverLoadGame
@@ -98,62 +93,59 @@ update msg model =
       )
 
 
-view : Model -> { title : String, content : Html Msg }
+view : Model -> Html Msg
 view model =
-  { title = "Home"
-  , content =
-      div []
-        [ img [src "assets/mainMenu_background_1920_969.png"
-              , style "display" "block"
-              , style "position" "relative"
-              , style "left" "0px"
-              , style "top" "0px"
+  div []
+    [ img [src "assets/mainMenu_background_1920_969.png"
+          , style "display" "block"
+          , style "position" "relative"
+          , style "left" "0px"
+          , style "top" "0px"
+          ] []
+    , a [ Route.href Route.NewGame ]
+        [ img [ src model.button_newGame
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "416px"
+              , onMouseOver HoverNewGame
+              , onMouseOut MouseOut
               ] []
-        , a [ Route.href Route.NewGame ]
-            [ img [ src model.button_newGame
-                  , style "position" "absolute"
-                  , style "left" "752px"
-                  , style "top" "416px"
-                  , onMouseOver HoverNewGame
-                  , onMouseOut MouseOut
-                  ] []
-            ]
-        , a [ Route.href Route.LoadGame ]
-            [ img [ src model.button_loadGame
-                  , style "position" "absolute"
-                  , style "left" "752px"
-                  , style "top" "528px"
-                  , onMouseOver HoverLoadGame
-                  , onMouseOut MouseOut
-                  ] []
-            ]
-        , a [ Route.href Route.HighScores ]
-            [ img [ src model.button_highScore
-                  , style "position" "absolute"
-                  , style "left" "752px"
-                  , style "top" "640px"
-                  , onMouseOver HoverHighScore
-                  , onMouseOut MouseOut
-                  ] []
-            ]
-        , a [ Route.href Route.Settings ]
-            [ img [ src model.button_settings
-                  , style "position" "absolute"
-                  , style "left" "752px"
-                  , style "top" "752px"
-                  , onMouseOver HoverSettings
-                  , onMouseOut MouseOut
-                  --, onClick ClickedSettings
-                  ] []
-            ]
-        , a [ Route.href Route.Help ]
-            [ img [ src model.button_help
-                  , style "position" "absolute"
-                  , style "left" "752px"
-                  , style "top" "864px"
-                  , onMouseOver HoverHelp
-                  , onMouseOut MouseOut
-                  ] []
-            ]
         ]
-  }
+    , a [ Route.href Route.LoadGame ]
+        [ img [ src model.button_loadGame
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "528px"
+              , onMouseOver HoverLoadGame
+              , onMouseOut MouseOut
+              ] []
+        ]
+    , a [ Route.href Route.HighScores ]
+        [ img [ src model.button_highScore
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "640px"
+              , onMouseOver HoverHighScore
+              , onMouseOut MouseOut
+              ] []
+        ]
+    , a [ Route.href Route.Settings ]
+        [ img [ src model.button_settings
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "752px"
+              , onMouseOver HoverSettings
+              , onMouseOut MouseOut
+              --, onClick ClickedSettings
+              ] []
+        ]
+    , a [ Route.href Route.Help ]
+        [ img [ src model.button_help
+              , style "position" "absolute"
+              , style "left" "752px"
+              , style "top" "864px"
+              , onMouseOver HoverHelp
+              , onMouseOut MouseOut
+              ] []
+        ]
+    ]

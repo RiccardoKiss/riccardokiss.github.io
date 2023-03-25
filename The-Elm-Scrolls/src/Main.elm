@@ -8,15 +8,13 @@ import Json.Decode as Decode
 import Debug exposing (..)
 
 import Route exposing (Route)
-import Page
 import Home
 import NewGame
-import LoadGame
-import Settings
-import HighScores
-import Help
-import NotFound
 import Game
+import LoadGame
+import HighScores
+import Settings
+import Help
 
 import Url.Builder
 import Browser.Events exposing (..)
@@ -48,76 +46,94 @@ main =
 -- MODEL
 
 
-type Model
-  = Home Home.Model
-  | NotFound Nav.Key
-  | NewGame NewGame.Model
-  | Game Game.Model
-  | LoadGame LoadGame.Model
-  | Settings Settings.Model
-  | HighScores HighScores.Model
-  | Help Help.Model
+type alias Model =
+  { pageModel : PageModel
+  , route : Route
+  , navKey : Nav.Key
+  }
+
+type PageModel
+  = HomePage Home.Model
+  | NotFoundPage --Nav.Key
+  | NewGamePage NewGame.Model
+  | GamePage Game.Model
+  | LoadGamePage LoadGame.Model
+  | HighScoresPage HighScores.Model
+  | SettingsPage Settings.Model
+  | HelpPage Help.Model
 
 
 init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
   let
     _ = Debug.log "[Main.init] url" url
+    model =
+      { route = Route.parseUrl url
+      , pageModel = NotFoundPage
+      , navKey = navKey
+      }
   in
-    changeRouteTo (Route.toRoute (Url.toString url)) (NotFound navKey)
+  initPage ( model, Cmd.none )
 
-
-changeRouteTo : Route -> Model -> ( Model, Cmd Msg )
-changeRouteTo route model =
+initPage : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+initPage ( model, existingCmds ) =
   let
-    navKey =
-      getNavKey model
-    _ = Debug.log "[changeRouteTo] route" route
+    ( currentPageModel, mappedPageCmds ) =
+      case model.route of
+        Route.NotFound ->
+          ( NotFoundPage, Cmd.none )
+
+        Route.Home ->
+          let
+            ( pageModel, pageCmds ) =
+              Home.init model.navKey
+          in
+          ( HomePage pageModel, Cmd.map HomePageMsg pageCmds )
+
+        Route.NewGame ->
+          let
+            ( pageModel, pageCmds ) =
+              NewGame.init model.navKey
+          in
+          ( NewGamePage pageModel, Cmd.map NewGamePageMsg pageCmds )
+
+        Route.Game ->
+          let
+            ( pageModel, pageCmds ) =
+              Game.init model.navKey
+          in
+          ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
+
+        Route.LoadGame ->
+          let
+            ( pageModel, pageCmds ) =
+              LoadGame.init model.navKey
+          in
+          ( LoadGamePage pageModel, Cmd.map LoadGamePageMsg pageCmds )
+
+        Route.HighScores ->
+          let
+            ( pageModel, pageCmds ) =
+              HighScores.init model.navKey
+          in
+          ( HighScoresPage pageModel, Cmd.map HighScoresPageMsg pageCmds )
+
+        Route.Settings ->
+          let
+            ( pageModel, pageCmds ) =
+              Settings.init model.navKey
+          in
+          ( SettingsPage pageModel, Cmd.map SettingsPageMsg pageCmds )
+
+        Route.Help ->
+          let
+            ( pageModel, pageCmds ) =
+              Help.init model.navKey
+          in
+          ( HelpPage pageModel, Cmd.map HelpPageMsg pageCmds )
   in
-  case route of
-    Route.NotFound ->
-      ( NotFound navKey, Cmd.none )
-
-    Route.Home ->
-      Home.init navKey
-        |> Debug.log "  [changeRouteTo] Home"
-        |> updateWith Home GotHomeMsg model
-
-    Route.NewGame ->
-      NewGame.init navKey
-        |> Debug.log "  [changeRouteTo] NewGame"
-        |> updateWith NewGame GotNewGameMsg model
-
-    Route.Game ->
-      Game.init navKey
-        |> Debug.log "  [changeRouteTo] Game"
-        |> updateWith Game GotGameMsg model
-
-    Route.LoadGame ->
-      LoadGame.init navKey
-        |> Debug.log "  [changeRouteTo] LoadGame"
-        |> updateWith LoadGame GotLoadGameMsg model
-
-    Route.Settings ->
-      Settings.init navKey
-        |> Debug.log "  [changeRouteTo] Settings"
-        |> updateWith Settings GotSettingsMsg model
-
-    Route.Help ->
-      Help.init navKey
-        |> Debug.log "  [changeRouteTo] Help"
-        |> updateWith Help GotHelpMsg model
-
-    Route.HighScores ->
-      HighScores.init navKey
-        |> Debug.log "  [changeRouteTo] Help"
-        |> updateWith HighScores GotHighScoresMsg model
-
-
-updateWith : (subModel -> Model) -> (subMsg -> Msg) -> Model -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
-updateWith toModel toMsg model ( subModel, subCmd ) =
-  ( toModel subModel
-  , Cmd.map toMsg subCmd
+  ( { model | pageModel = currentPageModel }
+  , Cmd.batch [ existingCmds, mappedPageCmds ]
   )
 
 
@@ -127,93 +143,165 @@ updateWith toModel toMsg model ( subModel, subCmd ) =
 type Msg
   = LinkClicked Browser.UrlRequest
   | UrlChanged Url.Url
-  | GotHomeMsg Home.Msg
-  | GotNewGameMsg NewGame.Msg
-  | GotGameMsg Game.Msg
-  | GotLoadGameMsg LoadGame.Msg
-  | GotSettingsMsg Settings.Msg
-  | GotHelpMsg Help.Msg
-  | GotHighScoresMsg HighScores.Msg
---  | GotPageNotFoundMsg
-
+  | HomePageMsg Home.Msg
+  | NewGamePageMsg NewGame.Msg
+  | GamePageMsg Game.Msg
+  | LoadGamePageMsg LoadGame.Msg
+  | HighScoresPageMsg HighScores.Msg
+  | SettingsPageMsg Settings.Msg
+  | HelpPageMsg Help.Msg
+--  | NotFoundPageMsg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  case ( msg, model ) of
+  case ( msg, model.pageModel ) of
     ( LinkClicked urlRequest, _ ) ->
       case urlRequest of
-        Browser.Internal url ->   -- https://github.com/rtfeldman/elm-spa-example/blob/cb32acd73c3d346d0064e7923049867d8ce67193/src/Main.elm#L213
+        Browser.Internal url ->
           ( model
-          , Nav.pushUrl (getNavKey model) (Url.toString url)
+          , Nav.pushUrl model.navKey ( Url.toString url )
           )
 
-        Browser.External href ->
+        Browser.External url ->
           ( model
-          , Nav.load href
+          , Nav.load url
           )
 
     ( UrlChanged url, _ ) ->
-      --( { model | url = url }, Cmd.none )
-      changeRouteTo (Route.toRoute (Url.toString url)) model
+      let
+        newRoute = Route.parseUrl url
+      in
+      ( { model | route = newRoute }, Cmd.none )
+      |> initPage
 
-    ( GotHomeMsg subMsg, Home modelHome ) ->
-      Home.update subMsg modelHome
-        |> updateWith Home GotHomeMsg model
+    ( HomePageMsg subMsg, HomePage modelHome ) ->
+      let
+        ( updatedPageModel, updatedCmds ) = Home.update subMsg modelHome
+      in
+      ( { model | pageModel = HomePage updatedPageModel }
+      , Cmd.map HomePageMsg updatedCmds
+      )
 
-    ( GotNewGameMsg subMsg, NewGame modelNewGame ) ->
-      NewGame.update subMsg modelNewGame
-        |> updateWith NewGame GotNewGameMsg model
+    ( NewGamePageMsg subMsg, NewGamePage modelNewGame ) ->
+      let
+        ( updatedPageModel, updatedCmds ) = NewGame.update subMsg modelNewGame
+      in
+      ( { model | pageModel = NewGamePage updatedPageModel }
+      , Cmd.map NewGamePageMsg updatedCmds
+      )
 
-    ( GotGameMsg subMsg, Game modelGame ) ->
-      Game.update subMsg modelGame
-        |> updateWith Game GotGameMsg model
+    ( GamePageMsg subMsg, GamePage modelGame ) ->
+      let
+        ( updatedPageModel, updatedCmds ) = Game.update subMsg modelGame
+      in
+      ( { model | pageModel = GamePage updatedPageModel }
+      , Cmd.map GamePageMsg updatedCmds
+      )
 
-    ( GotLoadGameMsg subMsg, LoadGame modelLoadGame ) ->
-      LoadGame.update subMsg modelLoadGame
-        |> updateWith LoadGame GotLoadGameMsg model
+    ( LoadGamePageMsg subMsg, LoadGamePage modelLoadGame ) ->
+      let
+        ( updatedPageModel, updatedCmds ) = LoadGame.update subMsg modelLoadGame
+      in
+      ( { model | pageModel = LoadGamePage updatedPageModel }
+      , Cmd.map LoadGamePageMsg updatedCmds
+      )
 
-    ( GotSettingsMsg subMsg, Settings modelSettings ) ->
-      Settings.update subMsg modelSettings
-        |> updateWith Settings GotSettingsMsg model
+    ( HighScoresPageMsg subMsg, HighScoresPage modelHighScores ) ->
+      let
+        ( updatedPageModel, updatedCmds ) = HighScores.update subMsg modelHighScores
+      in
+      ( { model | pageModel = HighScoresPage updatedPageModel }
+      , Cmd.map HighScoresPageMsg updatedCmds
+      )
 
-    ( GotHelpMsg subMsg, Help modelHelp ) ->
-      Help.update subMsg modelHelp
-        |> updateWith Help GotHelpMsg model
+    ( SettingsPageMsg subMsg, SettingsPage modelSettings ) ->
+      let
+        ( updatedPageModel, updatedCmds ) = Settings.update subMsg modelSettings
+      in
+      ( { model | pageModel = SettingsPage updatedPageModel }
+      , Cmd.map SettingsPageMsg updatedCmds
+      )
 
-    ( GotHighScoresMsg subMsg, HighScores modelHighScores ) ->
-      HighScores.update subMsg modelHighScores
-        |> updateWith HighScores GotHighScoresMsg model
+    ( HelpPageMsg subMsg, HelpPage modelHelp ) ->
+      let
+        ( updatedPageModel, updatedCmds ) = Help.update subMsg modelHelp
+      in
+      ( { model | pageModel = HelpPage updatedPageModel }
+      , Cmd.map HelpPageMsg updatedCmds
+      )
 
     ( _, _ ) ->
       ( model, Cmd.none )
 
 
-getNavKey : Model -> Nav.Key
-getNavKey model =
-  case model of
-    NotFound navKey ->
-      navKey
+-- VIEW
 
-    Home modelHome ->
-      Home.getNavKey modelHome
+view : Model -> Document Msg
+view model =
+  { title = ( viewTitle model ) ++ " - The Elm Scrolls"
+  , body = [ viewBody model ]
+  }
 
-    NewGame modelNewGame ->
-      NewGame.getNavKey modelNewGame
+viewTitle : Model -> String
+viewTitle model =
+  case model.pageModel of
+    NotFoundPage ->
+      "Not Found"
 
-    Game modelGame ->
-      Game.getNavKey modelGame
+    HomePage modelHome ->
+      "Home"
 
-    LoadGame modelLoadGame ->
-      LoadGame.getNavKey modelLoadGame
+    NewGamePage modelNewGame ->
+      "New Game"
 
-    Settings modelSettings ->
-      Settings.getNavKey modelSettings
+    GamePage modelGame ->
+      "Game"
 
-    Help modelHelp ->
-      Help.getNavKey modelHelp
+    LoadGamePage modelLoadGame ->
+      "Load Game"
 
-    HighScores modelHighScores ->
-      HighScores.getNavKey modelHighScores
+    HighScoresPage modelHighScores ->
+      "HighScores"
+
+    SettingsPage modelSettings ->
+      "Settings"
+
+    HelpPage modelHelp ->
+      "Help"
+
+viewBody : Model -> Html Msg
+viewBody model =
+  case model.pageModel of
+    NotFoundPage ->
+      h3 [] [ text "Oops! The page you requested was not found!" ]
+
+    HomePage modelHome ->
+      Home.view modelHome
+      |> Html.map HomePageMsg
+
+    NewGamePage modelNewGame ->
+      NewGame.view modelNewGame
+      |> Html.map NewGamePageMsg
+
+    GamePage modelGame ->
+      Game.view modelGame
+      |> Html.map GamePageMsg
+
+    LoadGamePage modelLoadGame ->
+      LoadGame.view modelLoadGame
+      |> Html.map LoadGamePageMsg
+
+    HighScoresPage modelHighScores ->
+      HighScores.view modelHighScores
+      |> Html.map HighScoresPageMsg
+
+    SettingsPage modelSettings ->
+      Settings.view modelSettings
+      |> Html.map SettingsPageMsg
+
+    HelpPage modelHelp ->
+      Help.view modelHelp
+      |> Html.map HelpPageMsg
 
 
 -- SUBSCRIPTIONS
@@ -221,68 +309,27 @@ getNavKey model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  case model of
-    NotFound _ ->
+  case model.pageModel of
+    NotFoundPage ->
       Sub.none
 
-    Home modelHome ->
+    HomePage modelHome ->
       Sub.none
 
-    NewGame modelNewGame ->
+    NewGamePage modelNewGame ->
       Sub.none
 
-    Game modelGame ->
-      Sub.map GotGameMsg (Game.subscriptions modelGame)
+    GamePage modelGame ->
+      Sub.map GamePageMsg (Game.subscriptions modelGame)
 
-    LoadGame modelLoadGame ->
-      Sub.map GotLoadGameMsg (LoadGame.subscriptions modelLoadGame)
+    LoadGamePage modelLoadGame ->
+      Sub.map LoadGamePageMsg (LoadGame.subscriptions modelLoadGame)
 
-    Settings modelSettings ->
+    HighScoresPage modelHighScores ->
       Sub.none
 
-    Help modelHelp ->
+    SettingsPage modelSettings ->
       Sub.none
 
-    HighScores modelHighScores ->
+    HelpPage modelHelp ->
       Sub.none
-
-
--- VIEW
-
-
-view : Model -> Document Msg
-view model =
-  let
-    viewPage toMsg content =
-      let
-        { title, body } =
-          Page.view content
-      in
-      { title = title
-      , body = List.map (Html.map toMsg) body
-      }
-  in
-  case model of
-    NotFound _ ->
-      Page.view NotFound.view
-
-    Home modelHome ->
-      viewPage GotHomeMsg (Home.view modelHome)
-
-    NewGame modelNewGame ->
-      viewPage GotNewGameMsg (NewGame.view modelNewGame)
-
-    Game modelGame ->
-      viewPage GotGameMsg (Game.view modelGame)
-
-    LoadGame modelLoadGame ->
-      viewPage GotLoadGameMsg (LoadGame.view modelLoadGame)
-
-    Settings modelSettings ->
-      viewPage GotSettingsMsg (Settings.view modelSettings)
-
-    Help modelHelp ->
-      viewPage GotHelpMsg (Help.view modelHelp)
-
-    HighScores modelHighScores ->
-      viewPage GotHighScoresMsg (HighScores.view modelHighScores)

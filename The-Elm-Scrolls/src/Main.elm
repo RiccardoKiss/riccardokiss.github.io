@@ -4,10 +4,12 @@ import Url exposing (Url)
 import Url.Parser as Parser exposing (Parser, (</>), parse, map, oneOf, top, s, string, int)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
-import Json.Decode as Decode
+import Json.Decode as Decode exposing (Decoder, decodeValue)
+import Json.Decode.Pipeline exposing (required, optional, hardcoded)
 import Debug exposing (..)
 
 import Route exposing (Route)
+import DecodingJson exposing (..)
 import Home
 import NewGame
 import Game
@@ -21,6 +23,7 @@ import Browser.Events exposing (..)
 import Browser.Dom exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+
 
 -- https://github.com/elm/package.elm-lang.org/blob/master/src/frontend/Main.elm
 -- https://package.elm-lang.org/packages/elm/url/latest/Url-Builder
@@ -67,11 +70,21 @@ init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
   let
     _ = Debug.log "[Main.init] url" url
+    _ = Debug.log "[Main.init] flags" flags
     model =
       { route = Route.parseUrl url
       , pageModel = NotFoundPage
       , navKey = navKey
       }
+    decodedFlags =
+      case Decode.decodeValue flagsDecoder flags of
+        Ok decoded -> decoded
+        Err _ ->
+          { save1 = DecodingJson.emptySave
+          , save2 = DecodingJson.emptySave
+          , save3 = DecodingJson.emptySave
+          }
+    _ = Debug.log "[Main.init] decodedFlags" decodedFlags
   in
   initPage ( model, Cmd.none )
 

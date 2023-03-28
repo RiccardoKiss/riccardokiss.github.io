@@ -200,20 +200,33 @@ updateSwordCoordinates playerDir playerX playerY sword =
 
 swordAttack : Sword -> List Keyboard.Key -> Sword
 swordAttack sword keys =
-  { sword
-    | action =
-        if List.member Keyboard.Spacebar keys then
-          Attack
-        else
-          NotAttack
-  }
+  if List.member Keyboard.Spacebar keys then
+    { sword
+      | action = Attack
+      , width =
+          if sword.dir == Up || sword.dir == Down then
+            0.5
+          else
+            1.0
+      , height =
+          if sword.dir == Up || sword.dir == Down then
+            1.0
+          else
+            0.5
+    }
+  else
+    { sword
+      | action = NotAttack
+      , width = 0.5
+      , height = 1.0
+    }
 
 woodSword : Sword
 woodSword =
   { x = 0
   , y = 0
-  , width = 1
-  , height = 0.5
+  , width = 0.5
+  , height = 1.0
   , action = NotAttack
   , swordType = Wood
   , dir = Idle
@@ -224,8 +237,8 @@ stoneSword : Sword
 stoneSword =
   { x = 0
   , y = 0
-  , width = 1
-  , height = 0.5
+  , width = 0.5
+  , height = 1.0
   , action = NotAttack
   , swordType = Stone
   , dir = Idle
@@ -236,8 +249,8 @@ ironSword : Sword
 ironSword =
   { x = 0
   , y = 0
-  , width = 1
-  , height = 0.5
+  , width = 0.5
+  , height = 1.0
   , action = NotAttack
   , swordType = Iron
   , dir = Idle
@@ -248,13 +261,33 @@ dragonSword : Sword
 dragonSword =
   { x = 0
   , y = 0
-  , width = 1
-  , height = 0.5
+  , width = 0.5
+  , height = 1.0
   , action = NotAttack
   , swordType = Dragon
   , dir = Idle
   , attack = 20
   }
+
+renderSword : Resources -> Sword -> Renderable
+renderSword resources sword =
+  let
+    swordImgPath =
+      case sword.action of
+        NotAttack ->
+          "assets/sword/sword_" ++ swordTypeToString sword ++ ".png"
+
+        Attack ->
+          "assets/sword/sword_" ++ swordTypeToString sword ++ "_attack_" ++ swordDirectionToString sword ++ ".png"
+  in
+  Render.spriteWithOptions
+    { texture = Resources.getTexture swordImgPath resources
+    , position = ( sword.x, sword.y, 0.1 )
+    , size = ( sword.width, sword.height )
+    , tiling = ( 1, 1 )
+    , rotation = 0 -- -1
+    , pivot = ( 0, 0)
+    }
 
 renderSwordIdle : Resources -> Sword -> Renderable
 renderSwordIdle resources sword =

@@ -78,8 +78,8 @@ initPlayer level =
   , vy = 0
   , baseSpeed = 3.0
   , currentSpeed = 3.0
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , dir = Player.Idle
   , sword = Sword.woodSword
   , armor = Armor.noneArmorSet
@@ -182,7 +182,14 @@ update msg model =
               model.pauseToggle
 
         }
-      , Cmd.none
+      , if List.member Keyboard.Escape keys && not model.pauseToggle then
+          Cmd.batch
+            [ saveTime model.time
+            , savePlayer model.player
+            , saveLevel model.level
+            ]
+        else
+          Cmd.none
       )
 
     Hover button ->
@@ -301,15 +308,25 @@ saveTime time =
 saveEnemy : Enemy -> List (String, Encode.Value)
 saveEnemy enemy =
   --Encode.object
-    [ ( "x", Encode.float enemy.x )
+    [ ( "initX", Encode.float enemy.initX )
+    , ( "initY", Encode.float enemy.initY )
+    , ( "initDir", Encode.string (enemyDirToString enemy) )
+    , ( "x", Encode.float enemy.x )
     , ( "y", Encode.float enemy.y )
     , ( "vx", Encode.float enemy.vx )
     , ( "vy", Encode.float enemy.vy )
-    , ( "speed", Encode.float enemy.speed )
     , ( "dir", Encode.string (enemyDirToString enemy) )
+    , ( "width", Encode.float enemy.width )
+    , ( "height", Encode.float enemy.height )
     , ( "enemyType", Encode.string (enemyTypeToString enemy) )
-    --, ( "maxHealth", Encode.int enemy.maxHealth )
-    , ( "currentHealth", Encode.int enemy.health )
+    , ( "distanceLoop", Encode.float enemy.distanceLoop )
+    , ( "speed", Encode.float enemy.speed )
+    , ( "attack", Encode.int enemy.attack )
+    , ( "health", Encode.int enemy.health )
+    , ( "expDrop", Encode.int enemy.expDrop )
+    , ( "detectPlayerRadius", Encode.float enemy.detectPlayerRadius )
+    , ( "hostile", Encode.bool enemy.hostile )
+    , ( "alive", Encode.bool enemy.alive )
     ]
 
 saveItem : Item -> List (String, Encode.Value)
@@ -317,7 +334,10 @@ saveItem item =
   --Encode.object
     [ ( "x", Encode.float item.x )
     , ( "y", Encode.float item.y )
+    , ( "width", Encode.float item.width )
+    , ( "height", Encode.float item.height )
     , ( "itemType", Encode.string (itemTypeToString item) )
+    , ( "pickable", Encode.bool item.pickable )
     ]
 
 saveLevel : Level -> Cmd msg
@@ -328,12 +348,24 @@ saveLevel level =
     encodeLevel =
       Encode.object
         [ ( "map", Encode.string (mapToString level) )
+        , ( "mapTexture", Encode.string level.mapTexture )
         , ( "enemies", Encode.list Encode.object encodeEnemies )
         , ( "items", Encode.list Encode.object encodeItems )
+        , ( "startX", Encode.float level.startX )
+        , ( "startY", Encode.float level.startY )
         ]
   in
   encodeLevel
   |> Ports.storeLevel
+
+savePotion : Potion ->  List (String, Encode.Value)
+savePotion potion =
+  [ ( "ratio", Encode.float potion.ratio )
+  , ( "duration", Encode.float potion.duration )
+  , ( "cooldown", Encode.float potion.cooldown )
+  , ( "timeOfLastUse", Encode.float potion.timeOfLastUse )
+  , ( "count", Encode.int potion.count )
+  ]
 
 savePlayer : Player -> Cmd msg
 savePlayer player =
@@ -342,11 +374,11 @@ savePlayer player =
       Encode.object
         [ ( "x", Encode.float player.x )
         , ( "y", Encode.float player.y )
-        , ( "vx", Encode.float player.vx )
-        , ( "vy", Encode.float player.vy )
+        --, ( "vx", Encode.float player.vx )
+        --, ( "vy", Encode.float player.vy )
         , ( "baseSpeed", Encode.float player.baseSpeed )
         , ( "currentSpeed", Encode.float player.currentSpeed )
-        , ( "dir", Encode.string (playerDirToString player) )
+        --, ( "dir", Encode.string (playerDirToString player) )
         , ( "sword", Encode.string (swordTypeToString player.sword) )
         , ( "armor", Encode.string (armorTypeToString player.armor) )
         , ( "maxDefense", Encode.int player.maxDefense )
@@ -355,8 +387,8 @@ savePlayer player =
         , ( "playerLevel", Encode.int player.playerLevel )
         , ( "maxExp", Encode.int player.maxExp )
         , ( "currentExp", Encode.int player.currentExp )
-        , ( "healthPotionsCount", Encode.int player.healthPotions.count )
-        , ( "speedPotionsCount", Encode.int player.speedPotions.count )
+        , ( "healthPotions", Encode.object (savePotion player.healthPotions) )
+        , ( "speedPotions", Encode.object (savePotion player.speedPotions) )
         ]
   in
   encodePlayer
@@ -699,7 +731,7 @@ render ({ resources, camera } as model) =
   List.concat
     [ renderBackground resources
     , [ Player.renderPlayer resources model.player
-      , renderSword resources model.player.sword model.keys
+      , Sword.renderSword resources model.player.sword
       ]
     , List.filter Enemy.isAlive model.level.enemies
       |> List.map (Enemy.renderEnemy resources)
@@ -1264,13 +1296,13 @@ viewPauseScreen left top pathResume pathSettings pathHelp pathReturn pauseToggle
               , style "left" "392px"
               , style "top" "450px"
               ]
-              [ --a [ Route.href Route.Home ]
-                   img [ src pathReturn
+              [ a [ Route.href Route.Home ]
+                  [ img [ src pathReturn
                         , onMouseOver (Hover PauseScreenReturn)
                         , onMouseOut (MouseOut PauseScreenReturn)
-                        , onClick SaveGame
+                        --, onClick SaveGame
                         ] []
-
+                  ]
               ]
         ]
   else

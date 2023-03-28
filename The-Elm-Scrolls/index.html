@@ -10,8 +10,33 @@
   <div id="elm"></div>
 </body>
 <script>
+    var storedPlayer = localStorage.getItem('player');
+    var storedTime = localStorage.getItem('time');
+    var storedLevel = localStorage.getItem('level');
+
+    var startingPlayer = storedPlayer ? JSON.parse(storedPlayer) : null;
+    var startingTime = storedTime ? JSON.parse(storedTime) : null;
+    var startingLevel = storedLevel ? JSON.parse(storedLevel) : null;
+
+    const flags = {
+      save1: {
+        name: null,
+        difficulty: null,
+        player: startingPlayer,
+        time: startingTime,
+        level: startingLevel
+      },
+      save2: null,
+      save3: null,
+      //settings: null,
+      //highscores: null
+    };
+
+    console.log("Flags: ", flags);
+
 	  var app = Elm.Main.init({
-      node: document.getElementById('elm')
+      node: document.getElementById('elm'),
+      flags : flags
     });
 
     app.ports.storePlayer.subscribe(function(state) {

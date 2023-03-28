@@ -207,25 +207,28 @@ swordPhysics keys player =
 
 renderPlayer : Resources -> Player -> Renderable
 renderPlayer resources player =
+  let
+    playerImgPath =
+      case player.dir of
+        Left ->
+          "assets/player/player_" ++ armorToTexturePath player.armor ++ "_left.png"
+
+        Right ->
+          "assets/player/player_" ++ armorToTexturePath player.armor ++ "_right.png"
+
+        Up ->
+          "assets/player/player_" ++ armorToTexturePath player.armor ++ "_up.png"
+
+        Down ->
+          "assets/player/player_" ++ armorToTexturePath player.armor ++ "_down.png"
+
+        Idle ->
+          "assets/player/player_" ++ armorToTexturePath player.armor ++ "_idle.png"
+  in
   Render.animatedSpriteWithOptions
     { position = ( player.x, player.y, -0.1 )
-    , size = ( 1, 2 )
-    , texture =
-        case player.dir of
-          Left ->
-            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_left.png") resources
-
-          Right ->
-            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_right.png") resources
-
-          Up ->
-            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_up.png") resources
-
-          Down ->
-            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_down.png") resources
-
-          Idle ->
-            Resources.getTexture ("assets/player/player_" ++ armorToTexturePath player.armor ++ "_idle.png") resources
+    , size = ( player.width, player.height ) --( 1, 2 )
+    , texture = Resources.getTexture playerImgPath resources
     , bottomLeft = ( 0, 0 )
     , topRight = ( 1, 1 )
     , duration = 1

@@ -102,8 +102,8 @@ itemStand : Float -> Float -> Item
 itemStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = ItemStand
   , pickable = False
   }
@@ -112,8 +112,8 @@ healthPotionStand : Float -> Float -> Item
 healthPotionStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = HealthPotion_ItemStand
   , pickable = True
   }
@@ -122,8 +122,8 @@ speedPotionStand : Float -> Float -> Item
 speedPotionStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = SpeedPotion_ItemStand
   , pickable = True
   }
@@ -132,8 +132,8 @@ woodSwordStand : Float -> Float -> Item
 woodSwordStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = WoodSword_ItemStand
   , pickable = True
   }
@@ -142,8 +142,8 @@ stoneSwordStand : Float -> Float -> Item
 stoneSwordStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = StoneSword_ItemStand
   , pickable = True
   }
@@ -152,8 +152,8 @@ ironSwordStand : Float -> Float -> Item
 ironSwordStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = IronSword_ItemStand
   , pickable = True
   }
@@ -162,8 +162,8 @@ dragonSwordStand : Float -> Float -> Item
 dragonSwordStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = DragonSword_ItemStand
   , pickable = True
   }
@@ -172,8 +172,8 @@ leatherArmorStand : Float -> Float -> Item
 leatherArmorStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = LeatherArmor_ItemStand
   , pickable = True
   }
@@ -182,8 +182,8 @@ silverArmorStand : Float -> Float -> Item
 silverArmorStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = SilverArmor_ItemStand
   , pickable = True
   }
@@ -192,8 +192,8 @@ dragonArmorStand : Float -> Float -> Item
 dragonArmorStand x y =
   { x = x
   , y = y
-  , width = 1
-  , height = 2
+  , width = 1.0
+  , height = 2.0
   , itemType = DragonArmor_ItemStand
   , pickable = True
   }
@@ -202,7 +202,7 @@ renderItemStand : Resources -> Item -> Renderable
 renderItemStand resources item =
   Render.animatedSpriteWithOptions
     { position = ( item.x, item.y, -0.1 )
-    , size = ( 1, 2 )
+    , size = ( item.width, item.height )  --( 1, 2 )
     , texture = Resources.getTexture ("assets/item/item_stand_" ++ itemTypeToString item ++ ".png") resources
     , bottomLeft = ( 0, 0 )
     , topRight = ( 1, 1 )

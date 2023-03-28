@@ -2,8 +2,8 @@ module NewGame exposing (..)
 
 import Browser.Navigation as Nav
 import Html exposing (Html, div, h1, a, text, img, input)
-import Html.Attributes exposing (src, style, type_, checked)
-import Html.Events exposing (onClick, onMouseOver, onMouseOut)
+import Html.Attributes exposing (src, style, type_, autofocus, value, checked)
+import Html.Events exposing (onClick, onInput, onMouseOver, onMouseOut)
 import Route exposing (Route)
 
 
@@ -17,6 +17,7 @@ type alias Model =
   { navKey : Nav.Key
   , button_back : String
   , button_start : String
+  , playerName : String
   , difficulty : Difficulty
   }
 
@@ -26,6 +27,7 @@ init navKey =
   ( { navKey = navKey
     , button_back = "assets/button/button_back.png"
     , button_start = "assets/button/button_start.png"
+    , playerName = ""
     , difficulty = Medium
     }
   , Cmd.none
@@ -53,6 +55,7 @@ type Msg
   = HoverBack
   | HoverStart
   | MouseOut
+  | NameChanged String
   | DifficultyTo Difficulty
 
 
@@ -81,9 +84,13 @@ update msg model =
       , Cmd.none
       )
 
+    NameChanged name ->
+      ( { model | playerName = name }
+      , Cmd.none
+      )
+
     DifficultyTo choice ->
-      ( { model
-        | difficulty = choice }
+      ( { model | difficulty = choice }
       , Cmd.none
       )
 
@@ -107,9 +114,16 @@ view model =
             ]
             [ h1 [ style "white-space" "nowrap" ]
                   [ text "Enter name:"
-                  , input [ type_ "input", style "margin-left" "40px" ] []
+                  , input [ type_ "text"
+                          , autofocus True
+                          , onInput NameChanged
+                          , value model.playerName
+                          , style "margin-left" "40px"
+                          ] []
                   ]
-            , h1 [ style "position" "absolute", style "white-space" "nowrap" ]
+            , h1 [ style "position" "absolute"
+                 , style "white-space" "nowrap"
+                 ]
                   [ div [ style "position" "absolute"
                         , style "top" "20px"
                         ] [ text "Difficulty:" ]

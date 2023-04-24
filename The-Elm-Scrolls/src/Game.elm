@@ -131,7 +131,7 @@ texturesList =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  case msg of
+  case msg of 
     Tick dt ->
       let
         playerWithExp = getExp model.level.enemies model.player

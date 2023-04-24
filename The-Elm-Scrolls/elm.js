@@ -8009,10 +8009,11 @@ var $author$project$LoadGame$init = function (navKey) {
 		{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_background.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey, time1: 0.0},
 		$elm$core$Platform$Cmd$none);
 };
+var $author$project$NewGame$First = {$: 'First'};
 var $author$project$NewGame$Medium = {$: 'Medium'};
 var $author$project$NewGame$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/button/button_back.png', button_start: 'assets/button/button_start.png', difficulty: $author$project$NewGame$Medium, navKey: navKey, playerName: ''},
+		{buttonBack: 'assets/button/button_back.png', buttonStart: 'assets/button/button_start.png', difficulty: $author$project$NewGame$Medium, navKey: navKey, playerName: '', savePosition: $author$project$NewGame$First},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Settings$Off = {$: 'Off'};
@@ -11488,6 +11489,47 @@ var $author$project$LoadGame$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$NewGame$difficultyToString = function (difficulty) {
+	switch (difficulty.$) {
+		case 'Easy':
+			return 'easy';
+		case 'Medium':
+			return 'medium';
+		default:
+			return 'hard';
+	}
+};
+var $elm$json$Json$Encode$null = _Json_encodeNull;
+var $author$project$Ports$storeSave1 = _Platform_outgoingPort('storeSave1', $elm$core$Basics$identity);
+var $author$project$Ports$storeSave2 = _Platform_outgoingPort('storeSave2', $elm$core$Basics$identity);
+var $author$project$Ports$storeSave3 = _Platform_outgoingPort('storeSave3', $elm$core$Basics$identity);
+var $author$project$NewGame$createSave = function (model) {
+	var encodeSave = $elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'name',
+				$elm$json$Json$Encode$string(model.playerName)),
+				_Utils_Tuple2(
+				'difficulty',
+				$elm$json$Json$Encode$string(
+					$author$project$NewGame$difficultyToString(model.difficulty))),
+				_Utils_Tuple2('player', $elm$json$Json$Encode$null),
+				_Utils_Tuple2('level', $elm$json$Json$Encode$null),
+				_Utils_Tuple2(
+				'time',
+				$elm$json$Json$Encode$float(0.0))
+			]));
+	var _v0 = model.savePosition;
+	switch (_v0.$) {
+		case 'First':
+			return $author$project$Ports$storeSave1(encodeSave);
+		case 'Second':
+			return $author$project$Ports$storeSave2(encodeSave);
+		default:
+			return $author$project$Ports$storeSave3(encodeSave);
+	}
+};
 var $author$project$NewGame$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -11495,19 +11537,19 @@ var $author$project$NewGame$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/button/button_back_hover.png'}),
+						{buttonBack: 'assets/button/button_back_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverStart':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_start: 'assets/button/button_start_hover.png'}),
-					$elm$core$Platform$Cmd$none);
+						{buttonStart: 'assets/button/button_start_hover.png'}),
+					$author$project$NewGame$createSave(model));
 			case 'MouseOut':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/button/button_back.png', button_start: 'assets/button/button_start.png'}),
+						{buttonBack: 'assets/button/button_back.png', buttonStart: 'assets/button/button_start.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'NameChanged':
 				var name = msg.a;
@@ -11516,12 +11558,19 @@ var $author$project$NewGame$update = F2(
 						model,
 						{playerName: name}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'DifficultyTo':
 				var choice = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{difficulty: choice}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var position = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{savePosition: position}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -14307,6 +14356,11 @@ var $author$project$NewGame$MouseOut = {$: 'MouseOut'};
 var $author$project$NewGame$NameChanged = function (a) {
 	return {$: 'NameChanged', a: a};
 };
+var $author$project$NewGame$SaveTo = function (a) {
+	return {$: 'SaveTo', a: a};
+};
+var $author$project$NewGame$Second = {$: 'Second'};
+var $author$project$NewGame$Third = {$: 'Third'};
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
 		return A2(
@@ -14470,7 +14524,7 @@ var $author$project$NewGame$view = function (model) {
 								_List_fromArray(
 									[
 										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-										A2($elm$html$Html$Attributes$style, 'left', '150px'),
+										A2($elm$html$Html$Attributes$style, 'left', '175px'),
 										A2($elm$html$Html$Attributes$style, 'top', '0px')
 									]),
 								_List_fromArray(
@@ -14486,7 +14540,7 @@ var $author$project$NewGame$view = function (model) {
 								_List_fromArray(
 									[
 										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-										A2($elm$html$Html$Attributes$style, 'left', '360px'),
+										A2($elm$html$Html$Attributes$style, 'left', '375px'),
 										A2($elm$html$Html$Attributes$style, 'top', '0px')
 									]),
 								_List_fromArray(
@@ -14502,7 +14556,7 @@ var $author$project$NewGame$view = function (model) {
 								_List_fromArray(
 									[
 										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-										A2($elm$html$Html$Attributes$style, 'left', '610px'),
+										A2($elm$html$Html$Attributes$style, 'left', '625px'),
 										A2($elm$html$Html$Attributes$style, 'top', '0px')
 									]),
 								_List_fromArray(
@@ -14512,6 +14566,76 @@ var $author$project$NewGame$view = function (model) {
 										$author$project$NewGame$DifficultyTo($author$project$NewGame$Hard),
 										_Utils_eq(model.difficulty, $author$project$NewGame$Hard),
 										'hard')
+									]))
+							])),
+						A2(
+						$elm$html$Html$h1,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'top', '150px'),
+								A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+										A2($elm$html$Html$Attributes$style, 'top', '20px')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Save position:')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+										A2($elm$html$Html$Attributes$style, 'left', '175px'),
+										A2($elm$html$Html$Attributes$style, 'top', '0px')
+									]),
+								_List_fromArray(
+									[
+										A3(
+										$author$project$NewGame$radio,
+										$author$project$NewGame$SaveTo($author$project$NewGame$First),
+										_Utils_eq(model.savePosition, $author$project$NewGame$First),
+										'1')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+										A2($elm$html$Html$Attributes$style, 'left', '375px'),
+										A2($elm$html$Html$Attributes$style, 'top', '0px')
+									]),
+								_List_fromArray(
+									[
+										A3(
+										$author$project$NewGame$radio,
+										$author$project$NewGame$SaveTo($author$project$NewGame$Second),
+										_Utils_eq(model.savePosition, $author$project$NewGame$Second),
+										'2')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+										A2($elm$html$Html$Attributes$style, 'left', '625px'),
+										A2($elm$html$Html$Attributes$style, 'top', '0px')
+									]),
+								_List_fromArray(
+									[
+										A3(
+										$author$project$NewGame$radio,
+										$author$project$NewGame$SaveTo($author$project$NewGame$Third),
+										_Utils_eq(model.savePosition, $author$project$NewGame$Third),
+										'3')
 									]))
 							]))
 					])),
@@ -14527,7 +14651,7 @@ var $author$project$NewGame$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.button_back),
+								$elm$html$Html$Attributes$src(model.buttonBack),
 								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 								A2($elm$html$Html$Attributes$style, 'left', '524px'),
 								A2($elm$html$Html$Attributes$style, 'top', '864px'),
@@ -14548,7 +14672,7 @@ var $author$project$NewGame$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.button_start),
+								$elm$html$Html$Attributes$src(model.buttonStart),
 								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 								A2($elm$html$Html$Attributes$style, 'left', '980px'),
 								A2($elm$html$Html$Attributes$style, 'top', '864px'),

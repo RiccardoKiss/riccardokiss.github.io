@@ -39,6 +39,16 @@
       flags : flags
     });
 
+    app.ports.storeSave1.subscribe(function(state) {
+        localStorage.setItem('save1', JSON.stringify(state));
+    });
+    app.ports.storeSave2.subscribe(function(state) {
+        localStorage.setItem('save2', JSON.stringify(state));
+    });
+    app.ports.storeSave3.subscribe(function(state) {
+        localStorage.setItem('save3', JSON.stringify(state));
+    });
+
     app.ports.storePlayer.subscribe(function(state) {
         localStorage.setItem('player', JSON.stringify(state));
     });

@@ -7205,7 +7205,7 @@ var $author$project$Sword$woodSword = {action: $author$project$Sword$NotAttack, 
 var $author$project$DecodingJson$emptySave = {
 	difficulty: 'easy',
 	level: $author$project$Level$level2,
-	name: 'Player',
+	name: 'empty',
 	player: {
 		armor: $author$project$Armor$noneArmorSet,
 		baseSpeed: 3.0,
@@ -8004,11 +8004,12 @@ var $author$project$Home$init = function (navKey) {
 		{button_help: 'assets/button/button_help.png', button_highScore: 'assets/button/button_highScore.png', button_loadGame: 'assets/button/button_loadGame.png', button_newGame: 'assets/button/button_newGame.png', button_settings: 'assets/button/button_settings.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
-var $author$project$LoadGame$init = function (navKey) {
-	return _Utils_Tuple2(
-		{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_background.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey, time1: 0.0},
-		$elm$core$Platform$Cmd$none);
-};
+var $author$project$LoadGame$init = F2(
+	function (flags, navKey) {
+		return _Utils_Tuple2(
+			{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_background.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey, time1: flags.save1.time},
+			$elm$core$Platform$Cmd$none);
+	});
 var $author$project$NewGame$First = {$: 'First'};
 var $author$project$NewGame$Medium = {$: 'Medium'};
 var $author$project$NewGame$init = function (navKey) {
@@ -8052,7 +8053,7 @@ var $author$project$Main$initPage = function (_v0) {
 					$author$project$Main$GamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, pageCmds));
 			case 'LoadGame':
-				var _v6 = $author$project$LoadGame$init(model.navKey);
+				var _v6 = A2($author$project$LoadGame$init, model.flags, model.navKey);
 				var pageModel = _v6.a;
 				var pageCmds = _v6.b;
 				return _Utils_Tuple2(
@@ -8853,11 +8854,6 @@ var $author$project$Route$parseUrl = function (url) {
 };
 var $author$project$Main$init = F3(
 	function (flags, url, navKey) {
-		var model = {
-			navKey: navKey,
-			pageModel: $author$project$Main$NotFoundPage,
-			route: $author$project$Route$parseUrl(url)
-		};
 		var decodedFlags = function () {
 			var _v3 = A2($elm$json$Json$Decode$decodeValue, $author$project$DecodingJson$flagsDecoder, flags);
 			if (_v3.$ === 'Ok') {
@@ -8867,6 +8863,12 @@ var $author$project$Main$init = F3(
 				return {save1: $author$project$DecodingJson$emptySave, save2: $author$project$DecodingJson$emptySave, save3: $author$project$DecodingJson$emptySave};
 			}
 		}();
+		var model = {
+			flags: decodedFlags,
+			navKey: navKey,
+			pageModel: $author$project$Main$NotFoundPage,
+			route: $author$project$Route$parseUrl(url)
+		};
 		var _v0 = A2($elm$core$Debug$log, '[Main.init] url', url);
 		var _v1 = A2($elm$core$Debug$log, '[Main.init] flags', flags);
 		var _v2 = A2($elm$core$Debug$log, '[Main.init] decodedFlags', decodedFlags);
@@ -14473,8 +14475,8 @@ var $author$project$NewGame$view = function (model) {
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-						A2($elm$html$Html$Attributes$style, 'left', '700px'),
-						A2($elm$html$Html$Attributes$style, 'top', '500px')
+						A2($elm$html$Html$Attributes$style, 'left', '500px'),
+						A2($elm$html$Html$Attributes$style, 'top', '250px')
 					]),
 				_List_fromArray(
 					[
@@ -14495,7 +14497,11 @@ var $author$project$NewGame$view = function (model) {
 										$elm$html$Html$Attributes$autofocus(true),
 										$elm$html$Html$Events$onInput($author$project$NewGame$NameChanged),
 										$elm$html$Html$Attributes$value(model.playerName),
-										A2($elm$html$Html$Attributes$style, 'margin-left', '40px')
+										A2($elm$html$Html$Attributes$style, 'margin-left', '40px'),
+										A2($elm$html$Html$Attributes$style, 'height', '2em'),
+										A2($elm$html$Html$Attributes$style, 'width', '500px'),
+										A2($elm$html$Html$Attributes$style, 'font-size', '28px'),
+										A2($elm$html$Html$Attributes$style, 'padding', '12px 20px')
 									]),
 								_List_Nil)
 							])),
@@ -14504,7 +14510,8 @@ var $author$project$NewGame$view = function (model) {
 						_List_fromArray(
 							[
 								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-								A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
+								A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap'),
+								A2($elm$html$Html$Attributes$style, 'top', '175px')
 							]),
 						_List_fromArray(
 							[
@@ -14573,7 +14580,7 @@ var $author$project$NewGame$view = function (model) {
 						_List_fromArray(
 							[
 								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-								A2($elm$html$Html$Attributes$style, 'top', '150px'),
+								A2($elm$html$Html$Attributes$style, 'top', '300px'),
 								A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
 							]),
 						_List_fromArray(

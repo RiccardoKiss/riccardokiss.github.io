@@ -53,6 +53,7 @@ type alias Model =
   { pageModel : PageModel
   , route : Route
   , navKey : Nav.Key
+  , flags : DecodingJson.Flags
   }
 
 type PageModel
@@ -66,16 +67,15 @@ type PageModel
   | HelpPage Help.Model
 
 
+--fakeFlags : Decode.Value
+--fakeFlags =
+
+
 init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
   let
     _ = Debug.log "[Main.init] url" url
     _ = Debug.log "[Main.init] flags" flags
-    model =
-      { route = Route.parseUrl url
-      , pageModel = NotFoundPage
-      , navKey = navKey
-      }
     decodedFlags =
       case Decode.decodeValue flagsDecoder flags of
         Ok decoded -> decoded
@@ -85,6 +85,12 @@ init flags url navKey =
           , save3 = DecodingJson.emptySave
           }
     _ = Debug.log "[Main.init] decodedFlags" decodedFlags
+    model =
+      { route = Route.parseUrl url
+      , pageModel = NotFoundPage
+      , navKey = navKey
+      , flags = decodedFlags
+      }
   in
   initPage ( model, Cmd.none )
 
@@ -120,7 +126,7 @@ initPage ( model, existingCmds ) =
         Route.LoadGame ->
           let
             ( pageModel, pageCmds ) =
-              LoadGame.init model.navKey
+              LoadGame.init model.flags model.navKey
           in
           ( LoadGamePage pageModel, Cmd.map LoadGamePageMsg pageCmds )
 

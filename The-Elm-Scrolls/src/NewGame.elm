@@ -159,8 +159,8 @@ view model =
            , style "top" "100px"
            ] [ text "New Game" ]
       , div [ style "position" "absolute"
-            , style "left" "700px"
-            , style "top" "500px"
+            , style "left" "500px"
+            , style "top" "250px"
             ]
             [ h1 [ style "white-space" "nowrap" ]
                   [ text "Enter name:"
@@ -169,10 +169,15 @@ view model =
                           , onInput NameChanged
                           , value model.playerName
                           , style "margin-left" "40px"
+                          , style "height" "2em"
+                          , style "width" "500px"
+                          , style "font-size" "28px"
+                          , style "padding" "12px 20px"
                           ] []
                   ]
             , h1  [ style "position" "absolute"
                   , style "white-space" "nowrap"
+                  , style "top" "175px"
                   ]
                   [ div [ style "position" "absolute"
                         , style "top" "20px"
@@ -194,7 +199,7 @@ view model =
                         [ radio ( DifficultyTo Hard ) ( model.difficulty == Hard ) "hard" ]
                   ]
             , h1  [ style "position" "absolute"
-                  , style "top" "150px"
+                  , style "top" "300px"
                   , style "white-space" "nowrap"
                   ]
                   [ div [ style "position" "absolute"

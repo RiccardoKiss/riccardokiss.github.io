@@ -279,7 +279,7 @@ itemDecoder =
 
 emptySave : Save
 emptySave =
-  { name = "Player"
+  { name = "empty"
   , difficulty = "easy"
   , player =
     { x = 56.0

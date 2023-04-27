@@ -7,6 +7,7 @@ import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 
 import Route exposing (Route)
 import Ports exposing (..)
+import DecodingJson exposing (..)
 
 
 type alias PlayerFromJS =
@@ -26,14 +27,14 @@ type alias Model =
 
 
 
-init : Nav.Key -> ( Model, Cmd Msg )
-init navKey =
+init : DecodingJson.Flags -> Nav.Key -> ( Model, Cmd Msg )
+init flags navKey =
   ( { navKey = navKey
     , button_game1 = "assets/button/button_loadGameInstance_background.png"
     , button_game2 = "assets/button/button_loadGameInstance_empty.png"
     , button_game3 = "assets/button/button_loadGameInstance_background.png"
     , button_back = "assets/button/button_back.png"
-    , time1 = 0.0
+    , time1 = flags.save1.time
     }
   , Cmd.none
   )

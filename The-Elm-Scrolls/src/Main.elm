@@ -80,9 +80,9 @@ init flags url navKey =
       case Decode.decodeValue flagsDecoder flags of
         Ok decoded -> decoded
         Err _ ->
-          { save1 = DecodingJson.emptySave
-          , save2 = DecodingJson.emptySave
-          , save3 = DecodingJson.emptySave
+          { save1 = Nothing  --DecodingJson.emptySave
+          , save2 = Nothing  --DecodingJson.emptySave
+          , save3 = Nothing  --DecodingJson.emptySave
           }
     _ = Debug.log "[Main.init] decodedFlags" decodedFlags
     model =
@@ -342,7 +342,7 @@ subscriptions model =
       Sub.map GamePageMsg (Game.subscriptions modelGame)
 
     LoadGamePage modelLoadGame ->
-      Sub.map LoadGamePageMsg (LoadGame.subscriptions modelLoadGame)
+      Sub.none  --Sub.map LoadGamePageMsg (LoadGame.subscriptions modelLoadGame)
 
     HighScoresPage modelHighScores ->
       Sub.none

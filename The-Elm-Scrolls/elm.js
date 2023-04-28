@@ -7122,175 +7122,21 @@ var $elm$core$Task$perform = F2(
 var $elm$browser$Browser$application = _Browser_application;
 var $author$project$Main$NotFoundPage = {$: 'NotFoundPage'};
 var $elm$json$Json$Decode$decodeValue = _Json_run;
-var $author$project$Player$Idle = {$: 'Idle'};
-var $author$project$Potion$healthPotion = F5(
-	function (rt, dur, cdr, sec, c) {
-		return {cooldown: cdr, count: c, duration: dur, ratio: rt, timeOfLastUse: sec};
-	});
-var $author$project$Level$Lvl2 = {$: 'Lvl2'};
-var $author$project$Enemy$Right = {$: 'Right'};
-var $author$project$Enemy$Skeleton = {$: 'Skeleton'};
-var $author$project$Enemy$skeleton = F3(
-	function (initX, initY, initDir) {
-		return {alive: true, attack: 3, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 3, health: 10, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
-	});
-var $author$project$Level$level2Enemies = _List_fromArray(
-	[
-		A3($author$project$Enemy$skeleton, 57, 17, $author$project$Enemy$Right)
-	]);
-var $author$project$Item$DragonArmor_ItemStand = {$: 'DragonArmor_ItemStand'};
-var $author$project$Item$dragonArmorStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$DragonArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Item$DragonSword_ItemStand = {$: 'DragonSword_ItemStand'};
-var $author$project$Item$dragonSwordStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$DragonSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Item$HealthPotion_ItemStand = {$: 'HealthPotion_ItemStand'};
-var $author$project$Item$healthPotionStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$HealthPotion_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Item$IronSword_ItemStand = {$: 'IronSword_ItemStand'};
-var $author$project$Item$ironSwordStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$IronSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Item$LeatherArmor_ItemStand = {$: 'LeatherArmor_ItemStand'};
-var $author$project$Item$leatherArmorStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$LeatherArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Item$SilverArmor_ItemStand = {$: 'SilverArmor_ItemStand'};
-var $author$project$Item$silverArmorStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$SilverArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Item$SpeedPotion_ItemStand = {$: 'SpeedPotion_ItemStand'};
-var $author$project$Item$speedPotionStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$SpeedPotion_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Item$StoneSword_ItemStand = {$: 'StoneSword_ItemStand'};
-var $author$project$Item$stoneSwordStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$StoneSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Level$level2Items = _List_fromArray(
-	[
-		A2($author$project$Item$healthPotionStand, 54, 9),
-		A2($author$project$Item$healthPotionStand, 53, 9),
-		A2($author$project$Item$speedPotionStand, 57, 9),
-		A2($author$project$Item$speedPotionStand, 58, 9),
-		A2($author$project$Item$stoneSwordStand, 53, 11),
-		A2($author$project$Item$ironSwordStand, 53, 13),
-		A2($author$project$Item$dragonSwordStand, 53, 15),
-		A2($author$project$Item$leatherArmorStand, 58, 11),
-		A2($author$project$Item$silverArmorStand, 58, 13),
-		A2($author$project$Item$dragonArmorStand, 58, 15)
-	]);
-var $author$project$Level$level2 = {enemies: $author$project$Level$level2Enemies, items: $author$project$Level$level2Items, map: $author$project$Level$Lvl2, mapTexture: 'assets/level/level_2_updated.png', startX: 56.0, startY: 9.0};
-var $author$project$Armor$None = {$: 'None'};
-var $author$project$Armor$noneArmorSet = {armorType: $author$project$Armor$None, chestDef: 1, helmetDef: 0, legsDef: 1, totalDef: 2};
-var $author$project$Potion$speedPotion = F5(
-	function (rt, dur, cdr, sec, c) {
-		return {cooldown: cdr, count: c, duration: dur, ratio: rt, timeOfLastUse: sec};
-	});
-var $author$project$Sword$Idle = {$: 'Idle'};
-var $author$project$Sword$NotAttack = {$: 'NotAttack'};
-var $author$project$Sword$Wood = {$: 'Wood'};
-var $author$project$Sword$woodSword = {action: $author$project$Sword$NotAttack, attack: 5, dir: $author$project$Sword$Idle, height: 1.0, swordType: $author$project$Sword$Wood, width: 0.5, x: 0, y: 0};
-var $author$project$DecodingJson$emptySave = {
-	difficulty: 'easy',
-	level: $author$project$Level$level2,
-	name: 'empty',
-	player: {
-		armor: $author$project$Armor$noneArmorSet,
-		baseSpeed: 3.0,
-		currentExp: 0,
-		currentHealth: 50,
-		currentSpeed: 3.0,
-		dir: $author$project$Player$Idle,
-		healthPotions: A5($author$project$Potion$healthPotion, 0.1, 0.0, 3.0, 0.0, 0),
-		height: 2.0,
-		maxDefense: 100,
-		maxExp: 5,
-		maxHealth: 100,
-		playerLevel: 1,
-		speedPotions: A5($author$project$Potion$speedPotion, 1.5, 5.0, 5.0, 0.0, 0),
-		sword: $author$project$Sword$woodSword,
-		vx: 0.0,
-		vy: 0.0,
-		width: 1.0,
-		x: 56.0,
-		y: 9.0
-	},
-	time: 0.0
-};
 var $author$project$DecodingJson$Flags = F3(
 	function (save1, save2, save3) {
 		return {save1: save1, save2: save2, save3: save3};
 	});
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
-var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$json$Json$Decode$null = _Json_decodeNull;
+var $elm$json$Json$Decode$map3 = _Json_map3;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
-var $elm$json$Json$Decode$value = _Json_decodeValue;
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder = F3(
-	function (path, valDecoder, fallback) {
-		var nullOr = function (decoder) {
-			return $elm$json$Json$Decode$oneOf(
-				_List_fromArray(
-					[
-						decoder,
-						$elm$json$Json$Decode$null(fallback)
-					]));
-		};
-		var handleResult = function (input) {
-			var _v0 = A2(
-				$elm$json$Json$Decode$decodeValue,
-				A2($elm$json$Json$Decode$at, path, $elm$json$Json$Decode$value),
-				input);
-			if (_v0.$ === 'Ok') {
-				var rawValue = _v0.a;
-				var _v1 = A2(
-					$elm$json$Json$Decode$decodeValue,
-					nullOr(valDecoder),
-					rawValue);
-				if (_v1.$ === 'Ok') {
-					var finalResult = _v1.a;
-					return $elm$json$Json$Decode$succeed(finalResult);
-				} else {
-					return A2(
-						$elm$json$Json$Decode$at,
-						path,
-						nullOr(valDecoder));
-				}
-			} else {
-				return $elm$json$Json$Decode$succeed(fallback);
-			}
-		};
-		return A2($elm$json$Json$Decode$andThen, handleResult, $elm$json$Json$Decode$value);
-	});
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional = F4(
-	function (key, valDecoder, fallback, decoder) {
-		return A2(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-			A3(
-				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder,
-				_List_fromArray(
-					[key]),
-				valDecoder,
-				fallback),
-			decoder);
-	});
+var $elm$json$Json$Decode$maybe = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
+				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
+			]));
+};
 var $author$project$DecodingJson$Save = F5(
 	function (name, difficulty, player, time, level) {
 		return {difficulty: difficulty, level: level, name: name, player: player, time: time};
@@ -7301,7 +7147,9 @@ var $author$project$Level$Level = F6(
 		return {enemies: enemies, items: items, map: map, mapTexture: mapTexture, startX: startX, startY: startY};
 	});
 var $author$project$Level$Lvl1 = {$: 'Lvl1'};
+var $author$project$Level$Lvl2 = {$: 'Lvl2'};
 var $author$project$Level$Lvl3 = {$: 'Lvl3'};
+var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $author$project$Enemy$Bandit = {$: 'Bandit'};
 var $author$project$Enemy$Down = {$: 'Down'};
 var $author$project$Enemy$Enemy = function (initX) {
@@ -7345,6 +7193,8 @@ var $author$project$Enemy$Enemy = function (initX) {
 };
 var $author$project$Enemy$Left = {$: 'Left'};
 var $author$project$Enemy$Prototype = {$: 'Prototype'};
+var $author$project$Enemy$Right = {$: 'Right'};
+var $author$project$Enemy$Skeleton = {$: 'Skeleton'};
 var $author$project$Enemy$Up = {$: 'Up'};
 var $author$project$Enemy$Zombie = {$: 'Zombie'};
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
@@ -7354,6 +7204,7 @@ var $elm$core$Basics$composeR = F3(
 		return g(
 			f(x));
 	});
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$hardcoded = A2($elm$core$Basics$composeR, $elm$json$Json$Decode$succeed, $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom);
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
@@ -7487,11 +7338,19 @@ var $author$project$DecodingJson$enemyDecoder = A3(
 																			'initX',
 																			$elm$json$Json$Decode$float,
 																			$elm$json$Json$Decode$succeed($author$project$Enemy$Enemy))))))))))))))))))));
+var $author$project$Item$DragonArmor_ItemStand = {$: 'DragonArmor_ItemStand'};
+var $author$project$Item$DragonSword_ItemStand = {$: 'DragonSword_ItemStand'};
+var $author$project$Item$HealthPotion_ItemStand = {$: 'HealthPotion_ItemStand'};
+var $author$project$Item$IronSword_ItemStand = {$: 'IronSword_ItemStand'};
 var $author$project$Item$Item = F6(
 	function (x, y, width, height, itemType, pickable) {
 		return {height: height, itemType: itemType, pickable: pickable, width: width, x: x, y: y};
 	});
 var $author$project$Item$ItemStand = {$: 'ItemStand'};
+var $author$project$Item$LeatherArmor_ItemStand = {$: 'LeatherArmor_ItemStand'};
+var $author$project$Item$SilverArmor_ItemStand = {$: 'SilverArmor_ItemStand'};
+var $author$project$Item$SpeedPotion_ItemStand = {$: 'SpeedPotion_ItemStand'};
+var $author$project$Item$StoneSword_ItemStand = {$: 'StoneSword_ItemStand'};
 var $author$project$Item$WoodSword_ItemStand = {$: 'WoodSword_ItemStand'};
 var $elm$json$Json$Decode$map6 = _Json_map6;
 var $author$project$DecodingJson$itemDecoder = A7(
@@ -7567,6 +7426,61 @@ var $author$project$DecodingJson$levelDecoder = A7(
 		$elm$json$Json$Decode$list($author$project$DecodingJson$itemDecoder)),
 	A2($elm$json$Json$Decode$field, 'startX', $elm$json$Json$Decode$float),
 	A2($elm$json$Json$Decode$field, 'startY', $elm$json$Json$Decode$float));
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$null = _Json_decodeNull;
+var $elm$json$Json$Decode$value = _Json_decodeValue;
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder = F3(
+	function (path, valDecoder, fallback) {
+		var nullOr = function (decoder) {
+			return $elm$json$Json$Decode$oneOf(
+				_List_fromArray(
+					[
+						decoder,
+						$elm$json$Json$Decode$null(fallback)
+					]));
+		};
+		var handleResult = function (input) {
+			var _v0 = A2(
+				$elm$json$Json$Decode$decodeValue,
+				A2($elm$json$Json$Decode$at, path, $elm$json$Json$Decode$value),
+				input);
+			if (_v0.$ === 'Ok') {
+				var rawValue = _v0.a;
+				var _v1 = A2(
+					$elm$json$Json$Decode$decodeValue,
+					nullOr(valDecoder),
+					rawValue);
+				if (_v1.$ === 'Ok') {
+					var finalResult = _v1.a;
+					return $elm$json$Json$Decode$succeed(finalResult);
+				} else {
+					return A2(
+						$elm$json$Json$Decode$at,
+						path,
+						nullOr(valDecoder));
+				}
+			} else {
+				return $elm$json$Json$Decode$succeed(fallback);
+			}
+		};
+		return A2($elm$json$Json$Decode$andThen, handleResult, $elm$json$Json$Decode$value);
+	});
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional = F4(
+	function (key, valDecoder, fallback, decoder) {
+		return A2(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+			A3(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder,
+				_List_fromArray(
+					[key]),
+				valDecoder,
+				fallback),
+			decoder);
+	});
+var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Player$Player = function (x) {
 	return function (y) {
 		return function (vx) {
@@ -7609,11 +7523,15 @@ var $author$project$Player$Player = function (x) {
 var $author$project$Armor$Dragon = {$: 'Dragon'};
 var $author$project$Armor$dragonArmorSet = {armorType: $author$project$Armor$Dragon, chestDef: 30, helmetDef: 30, legsDef: 30, totalDef: 90};
 var $author$project$Sword$Dragon = {$: 'Dragon'};
+var $author$project$Sword$Idle = {$: 'Idle'};
+var $author$project$Sword$NotAttack = {$: 'NotAttack'};
 var $author$project$Sword$dragonSword = {action: $author$project$Sword$NotAttack, attack: 20, dir: $author$project$Sword$Idle, height: 1.0, swordType: $author$project$Sword$Dragon, width: 0.5, x: 0, y: 0};
 var $author$project$Sword$Iron = {$: 'Iron'};
 var $author$project$Sword$ironSword = {action: $author$project$Sword$NotAttack, attack: 15, dir: $author$project$Sword$Idle, height: 1.0, swordType: $author$project$Sword$Iron, width: 0.5, x: 0, y: 0};
 var $author$project$Armor$Leather = {$: 'Leather'};
 var $author$project$Armor$leatherArmorSet = {armorType: $author$project$Armor$Leather, chestDef: 10, helmetDef: 10, legsDef: 10, totalDef: 30};
+var $author$project$Armor$None = {$: 'None'};
+var $author$project$Armor$noneArmorSet = {armorType: $author$project$Armor$None, chestDef: 1, helmetDef: 0, legsDef: 1, totalDef: 2};
 var $author$project$Potion$Potion = F5(
 	function (ratio, duration, cooldown, timeOfLastUse, count) {
 		return {cooldown: cooldown, count: count, duration: duration, ratio: ratio, timeOfLastUse: timeOfLastUse};
@@ -7631,6 +7549,8 @@ var $author$project$Armor$Silver = {$: 'Silver'};
 var $author$project$Armor$silverArmorSet = {armorType: $author$project$Armor$Silver, chestDef: 20, helmetDef: 20, legsDef: 20, totalDef: 60};
 var $author$project$Sword$Stone = {$: 'Stone'};
 var $author$project$Sword$stoneSword = {action: $author$project$Sword$NotAttack, attack: 10, dir: $author$project$Sword$Idle, height: 1.0, swordType: $author$project$Sword$Stone, width: 0.5, x: 0, y: 0};
+var $author$project$Sword$Wood = {$: 'Wood'};
+var $author$project$Sword$woodSword = {action: $author$project$Sword$NotAttack, attack: 5, dir: $author$project$Sword$Idle, height: 1.0, swordType: $author$project$Sword$Wood, width: 0.5, x: 0, y: 0};
 var $author$project$DecodingJson$playerDecoder = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'speedPotions',
@@ -7759,21 +7679,14 @@ var $author$project$DecodingJson$saveDecoder = A3(
 					'Player',
 					$elm$json$Json$Decode$succeed($author$project$DecodingJson$Save))))));
 var $author$project$DecodingJson$flagsDecoder = A4(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
-	'save3',
-	$author$project$DecodingJson$saveDecoder,
-	$author$project$DecodingJson$emptySave,
-	A4(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
-		'save2',
-		$author$project$DecodingJson$saveDecoder,
-		$author$project$DecodingJson$emptySave,
-		A4(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
-			'save1',
-			$author$project$DecodingJson$saveDecoder,
-			$author$project$DecodingJson$emptySave,
-			$elm$json$Json$Decode$succeed($author$project$DecodingJson$Flags))));
+	$elm$json$Json$Decode$map3,
+	$author$project$DecodingJson$Flags,
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'save1', $author$project$DecodingJson$saveDecoder)),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'save2', $author$project$DecodingJson$saveDecoder)),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'save3', $author$project$DecodingJson$saveDecoder)));
 var $author$project$Main$GamePage = function (a) {
 	return {$: 'GamePage', a: a};
 };
@@ -7840,6 +7753,14 @@ var $Zinggi$elm_game_resources$Game$Resources$R = function (a) {
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $Zinggi$elm_game_resources$Game$Resources$init = $Zinggi$elm_game_resources$Game$Resources$R($elm$core$Dict$empty);
+var $author$project$Potion$healthPotion = F5(
+	function (rt, dur, cdr, sec, c) {
+		return {cooldown: cdr, count: c, duration: dur, ratio: rt, timeOfLastUse: sec};
+	});
+var $author$project$Potion$speedPotion = F5(
+	function (rt, dur, cdr, sec, c) {
+		return {cooldown: cdr, count: c, duration: dur, ratio: rt, timeOfLastUse: sec};
+	});
 var $author$project$Game$initPlayer = function (level) {
 	return {
 		armor: $author$project$Armor$noneArmorSet,
@@ -7863,6 +7784,60 @@ var $author$project$Game$initPlayer = function (level) {
 		y: level.startY
 	};
 };
+var $author$project$Enemy$skeleton = F3(
+	function (initX, initY, initDir) {
+		return {alive: true, attack: 3, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 3, health: 10, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
+	});
+var $author$project$Level$level2Enemies = _List_fromArray(
+	[
+		A3($author$project$Enemy$skeleton, 57, 17, $author$project$Enemy$Right)
+	]);
+var $author$project$Item$dragonArmorStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$DragonArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Item$dragonSwordStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$DragonSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Item$healthPotionStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$HealthPotion_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Item$ironSwordStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$IronSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Item$leatherArmorStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$LeatherArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Item$silverArmorStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$SilverArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Item$speedPotionStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$SpeedPotion_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Item$stoneSwordStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$StoneSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Level$level2Items = _List_fromArray(
+	[
+		A2($author$project$Item$healthPotionStand, 54, 9),
+		A2($author$project$Item$healthPotionStand, 53, 9),
+		A2($author$project$Item$speedPotionStand, 57, 9),
+		A2($author$project$Item$speedPotionStand, 58, 9),
+		A2($author$project$Item$stoneSwordStand, 53, 11),
+		A2($author$project$Item$ironSwordStand, 53, 13),
+		A2($author$project$Item$dragonSwordStand, 53, 15),
+		A2($author$project$Item$leatherArmorStand, 58, 11),
+		A2($author$project$Item$silverArmorStand, 58, 13),
+		A2($author$project$Item$dragonArmorStand, 58, 15)
+	]);
+var $author$project$Level$level2 = {enemies: $author$project$Level$level2Enemies, items: $author$project$Level$level2Items, map: $author$project$Level$Lvl2, mapTexture: 'assets/level/level_2_updated.png', startX: 56.0, startY: 9.0};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -8007,7 +7982,7 @@ var $author$project$Home$init = function (navKey) {
 var $author$project$LoadGame$init = F2(
 	function (flags, navKey) {
 		return _Utils_Tuple2(
-			{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_background.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey, time1: flags.save1.time},
+			{buttonBack: 'assets/button/button_back.png', buttonGame1: 'assets/button/button_loadGameInstance_background.png', buttonGame2: 'assets/button/button_loadGameInstance_background.png', buttonGame3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey, save1: flags.save1, save2: flags.save2, save3: flags.save3},
 			$elm$core$Platform$Cmd$none);
 	});
 var $author$project$NewGame$First = {$: 'First'};
@@ -8860,7 +8835,7 @@ var $author$project$Main$init = F3(
 				var decoded = _v3.a;
 				return decoded;
 			} else {
-				return {save1: $author$project$DecodingJson$emptySave, save2: $author$project$DecodingJson$emptySave, save3: $author$project$DecodingJson$emptySave};
+				return {save1: $elm$core$Maybe$Nothing, save2: $elm$core$Maybe$Nothing, save3: $elm$core$Maybe$Nothing};
 			}
 		}();
 		var model = {
@@ -9343,13 +9318,6 @@ var $author$project$Game$subscriptions = function (model) {
 					$author$project$Game$Tick))
 			]));
 };
-var $author$project$LoadGame$ReceiveTimeFromJS = function (a) {
-	return {$: 'ReceiveTimeFromJS', a: a};
-};
-var $author$project$LoadGame$receiveTime = _Platform_incomingPort('receiveTime', $elm$json$Json$Decode$float);
-var $author$project$LoadGame$subscriptions = function (_v0) {
-	return $author$project$LoadGame$receiveTime($author$project$LoadGame$ReceiveTimeFromJS);
-};
 var $author$project$Main$subscriptions = function (model) {
 	var _v0 = model.pageModel;
 	switch (_v0.$) {
@@ -9369,10 +9337,7 @@ var $author$project$Main$subscriptions = function (model) {
 				$author$project$Game$subscriptions(modelGame));
 		case 'LoadGamePage':
 			var modelLoadGame = _v0.a;
-			return A2(
-				$elm$core$Platform$Sub$map,
-				$author$project$Main$LoadGamePageMsg,
-				$author$project$LoadGame$subscriptions(modelLoadGame));
+			return $elm$core$Platform$Sub$none;
 		case 'HighScoresPage':
 			var modelHighScores = _v0.a;
 			return $elm$core$Platform$Sub$none;
@@ -11456,38 +11421,31 @@ var $author$project$LoadGame$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_game1: 'assets/button/button_loadGameInstance_background_hover.png'}),
+						{buttonGame1: 'assets/button/button_loadGameInstance_background_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverGame2':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_game2: 'assets/button/button_loadGameInstance_empty_hover.png'}),
+						{buttonGame2: 'assets/button/button_loadGameInstance_background_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverGame3':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_game3: 'assets/button/button_loadGameInstance_background_hover.png'}),
+						{buttonGame3: 'assets/button/button_loadGameInstance_background_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverBack':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/button/button_back_hover.png'}),
-					$elm$core$Platform$Cmd$none);
-			case 'MouseOut':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{button_back: 'assets/button/button_back.png', button_game1: 'assets/button/button_loadGameInstance_background.png', button_game2: 'assets/button/button_loadGameInstance_empty.png', button_game3: 'assets/button/button_loadGameInstance_background.png'}),
+						{buttonBack: 'assets/button/button_back_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			default:
-				var data = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{time1: data}),
+						{buttonBack: 'assets/button/button_back.png', buttonGame1: 'assets/button/button_loadGameInstance_background.png', buttonGame2: 'assets/button/button_loadGameInstance_background.png', buttonGame3: 'assets/button/button_loadGameInstance_background.png'}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -14234,6 +14192,288 @@ var $author$project$LoadGame$HoverGame1 = {$: 'HoverGame1'};
 var $author$project$LoadGame$HoverGame2 = {$: 'HoverGame2'};
 var $author$project$LoadGame$HoverGame3 = {$: 'HoverGame3'};
 var $author$project$LoadGame$MouseOut = {$: 'MouseOut'};
+var $author$project$LoadGame$viewEmptyGame = A2(
+	$elm$html$Html$pre,
+	_List_fromArray(
+		[
+			A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+			A2($elm$html$Html$Attributes$style, 'left', '125px'),
+			A2($elm$html$Html$Attributes$style, 'top', '33px'),
+			A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+			A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
+			A2($elm$html$Html$Attributes$style, 'font-size', '3rem'),
+			A2($elm$html$Html$Attributes$style, 'margin', '0px')
+		]),
+	_List_fromArray(
+		[
+			$elm$html$Html$text('--- empty ---')
+		]));
+var $myrho$elm_round$Round$addSign = F2(
+	function (signed, str) {
+		var isNotZero = A2(
+			$elm$core$List$any,
+			function (c) {
+				return (!_Utils_eq(
+					c,
+					_Utils_chr('0'))) && (!_Utils_eq(
+					c,
+					_Utils_chr('.')));
+			},
+			$elm$core$String$toList(str));
+		return _Utils_ap(
+			(signed && isNotZero) ? '-' : '',
+			str);
+	});
+var $elm$core$Char$fromCode = _Char_fromCode;
+var $myrho$elm_round$Round$increaseNum = function (_v0) {
+	var head = _v0.a;
+	var tail = _v0.b;
+	if (_Utils_eq(
+		head,
+		_Utils_chr('9'))) {
+		var _v1 = $elm$core$String$uncons(tail);
+		if (_v1.$ === 'Nothing') {
+			return '01';
+		} else {
+			var headtail = _v1.a;
+			return A2(
+				$elm$core$String$cons,
+				_Utils_chr('0'),
+				$myrho$elm_round$Round$increaseNum(headtail));
+		}
+	} else {
+		var c = $elm$core$Char$toCode(head);
+		return ((c >= 48) && (c < 57)) ? A2(
+			$elm$core$String$cons,
+			$elm$core$Char$fromCode(c + 1),
+			tail) : '0';
+	}
+};
+var $elm$core$Basics$isInfinite = _Basics_isInfinite;
+var $elm$core$Basics$isNaN = _Basics_isNaN;
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$String$padRight = F3(
+	function (n, _char, string) {
+		return _Utils_ap(
+			string,
+			A2(
+				$elm$core$String$repeat,
+				n - $elm$core$String$length(string),
+				$elm$core$String$fromChar(_char)));
+	});
+var $elm$core$String$reverse = _String_reverse;
+var $myrho$elm_round$Round$splitComma = function (str) {
+	var _v0 = A2($elm$core$String$split, '.', str);
+	if (_v0.b) {
+		if (_v0.b.b) {
+			var before = _v0.a;
+			var _v1 = _v0.b;
+			var after = _v1.a;
+			return _Utils_Tuple2(before, after);
+		} else {
+			var before = _v0.a;
+			return _Utils_Tuple2(before, '0');
+		}
+	} else {
+		return _Utils_Tuple2('0', '0');
+	}
+};
+var $elm$core$Tuple$mapFirst = F2(
+	function (func, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return _Utils_Tuple2(
+			func(x),
+			y);
+	});
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $myrho$elm_round$Round$toDecimal = function (fl) {
+	var _v0 = A2(
+		$elm$core$String$split,
+		'e',
+		$elm$core$String$fromFloat(
+			$elm$core$Basics$abs(fl)));
+	if (_v0.b) {
+		if (_v0.b.b) {
+			var num = _v0.a;
+			var _v1 = _v0.b;
+			var exp = _v1.a;
+			var e = A2(
+				$elm$core$Maybe$withDefault,
+				0,
+				$elm$core$String$toInt(
+					A2($elm$core$String$startsWith, '+', exp) ? A2($elm$core$String$dropLeft, 1, exp) : exp));
+			var _v2 = $myrho$elm_round$Round$splitComma(num);
+			var before = _v2.a;
+			var after = _v2.b;
+			var total = _Utils_ap(before, after);
+			var zeroed = (e < 0) ? A2(
+				$elm$core$Maybe$withDefault,
+				'0',
+				A2(
+					$elm$core$Maybe$map,
+					function (_v3) {
+						var a = _v3.a;
+						var b = _v3.b;
+						return a + ('.' + b);
+					},
+					A2(
+						$elm$core$Maybe$map,
+						$elm$core$Tuple$mapFirst($elm$core$String$fromChar),
+						$elm$core$String$uncons(
+							_Utils_ap(
+								A2(
+									$elm$core$String$repeat,
+									$elm$core$Basics$abs(e),
+									'0'),
+								total))))) : A3(
+				$elm$core$String$padRight,
+				e + 1,
+				_Utils_chr('0'),
+				total);
+			return _Utils_ap(
+				(fl < 0) ? '-' : '',
+				zeroed);
+		} else {
+			var num = _v0.a;
+			return _Utils_ap(
+				(fl < 0) ? '-' : '',
+				num);
+		}
+	} else {
+		return '';
+	}
+};
+var $myrho$elm_round$Round$roundFun = F3(
+	function (functor, s, fl) {
+		if ($elm$core$Basics$isInfinite(fl) || $elm$core$Basics$isNaN(fl)) {
+			return $elm$core$String$fromFloat(fl);
+		} else {
+			var signed = fl < 0;
+			var _v0 = $myrho$elm_round$Round$splitComma(
+				$myrho$elm_round$Round$toDecimal(
+					$elm$core$Basics$abs(fl)));
+			var before = _v0.a;
+			var after = _v0.b;
+			var r = $elm$core$String$length(before) + s;
+			var normalized = _Utils_ap(
+				A2($elm$core$String$repeat, (-r) + 1, '0'),
+				A3(
+					$elm$core$String$padRight,
+					r,
+					_Utils_chr('0'),
+					_Utils_ap(before, after)));
+			var totalLen = $elm$core$String$length(normalized);
+			var roundDigitIndex = A2($elm$core$Basics$max, 1, r);
+			var increase = A2(
+				functor,
+				signed,
+				A3($elm$core$String$slice, roundDigitIndex, totalLen, normalized));
+			var remains = A3($elm$core$String$slice, 0, roundDigitIndex, normalized);
+			var num = increase ? $elm$core$String$reverse(
+				A2(
+					$elm$core$Maybe$withDefault,
+					'1',
+					A2(
+						$elm$core$Maybe$map,
+						$myrho$elm_round$Round$increaseNum,
+						$elm$core$String$uncons(
+							$elm$core$String$reverse(remains))))) : remains;
+			var numLen = $elm$core$String$length(num);
+			var numZeroed = (num === '0') ? num : ((s <= 0) ? _Utils_ap(
+				num,
+				A2(
+					$elm$core$String$repeat,
+					$elm$core$Basics$abs(s),
+					'0')) : ((_Utils_cmp(
+				s,
+				$elm$core$String$length(after)) < 0) ? (A3($elm$core$String$slice, 0, numLen - s, num) + ('.' + A3($elm$core$String$slice, numLen - s, numLen, num))) : _Utils_ap(
+				before + '.',
+				A3(
+					$elm$core$String$padRight,
+					s,
+					_Utils_chr('0'),
+					after))));
+			return A2($myrho$elm_round$Round$addSign, signed, numZeroed);
+		}
+	});
+var $myrho$elm_round$Round$round = $myrho$elm_round$Round$roundFun(
+	F2(
+		function (signed, str) {
+			var _v0 = $elm$core$String$uncons(str);
+			if (_v0.$ === 'Nothing') {
+				return false;
+			} else {
+				if ('5' === _v0.a.a.valueOf()) {
+					if (_v0.a.b === '') {
+						var _v1 = _v0.a;
+						return !signed;
+					} else {
+						var _v2 = _v0.a;
+						return true;
+					}
+				} else {
+					var _v3 = _v0.a;
+					var _int = _v3.a;
+					return function (i) {
+						return ((i > 53) && signed) || ((i >= 53) && (!signed));
+					}(
+						$elm$core$Char$toCode(_int));
+				}
+			}
+		}));
+var $author$project$LoadGame$viewSavedGame = function (save) {
+	return A2(
+		$elm$html$Html$pre,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+				A2($elm$html$Html$Attributes$style, 'left', '35px'),
+				A2($elm$html$Html$Attributes$style, 'top', '20px'),
+				A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+				A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
+				A2($elm$html$Html$Attributes$style, 'margin', '0px'),
+				A2($elm$html$Html$Attributes$style, 'font-size', '1.5rem')
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Name: ' + save.name),
+				$elm$html$Html$text('\tDifficulty: ' + save.difficulty),
+				$elm$html$Html$text(
+				'\nGame: ' + $author$project$Level$mapToString(save.level)),
+				$elm$html$Html$text(
+				'\tTime: ' + (A2($myrho$elm_round$Round$round, 3, save.time) + 's')),
+				$elm$html$Html$text(
+				'\nPlayer LvL: ' + $elm$core$String$fromInt(save.player.playerLevel)),
+				$elm$html$Html$text(
+				'\tHealth: ' + (A2($myrho$elm_round$Round$round, 2, (save.player.currentHealth / save.player.maxHealth) * 100.0) + '%'))
+			]));
+};
+var $author$project$LoadGame$viewLoadGameInfo = function (save) {
+	if (save.$ === 'Just') {
+		var s = save.a;
+		return $author$project$LoadGame$viewSavedGame(s);
+	} else {
+		return $author$project$LoadGame$viewEmptyGame;
+	}
+};
 var $author$project$LoadGame$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -14259,8 +14499,9 @@ var $author$project$LoadGame$view = function (model) {
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-						A2($elm$html$Html$Attributes$style, 'left', '800px'),
-						A2($elm$html$Html$Attributes$style, 'top', '100px')
+						A2($elm$html$Html$Attributes$style, 'left', '760px'),
+						A2($elm$html$Html$Attributes$style, 'top', '50px'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '5rem')
 					]),
 				_List_fromArray(
 					[
@@ -14280,50 +14521,55 @@ var $author$project$LoadGame$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.button_game1),
+								$elm$html$Html$Attributes$src(model.buttonGame1),
 								$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame1),
 								$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
 							]),
 						_List_Nil),
-						A2(
-						$elm$html$Html$pre,
-						_List_fromArray(
-							[
-								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-								A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
-								A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Player1 time:'),
-								$elm$html$Html$text(
-								$elm$core$String$fromFloat(model.time1))
-							]))
+						$author$project$LoadGame$viewLoadGameInfo(model.save1)
 					])),
 				A2(
-				$elm$html$Html$img,
+				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$src(model.button_game2),
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 						A2($elm$html$Html$Attributes$style, 'left', '660px'),
-						A2($elm$html$Html$Attributes$style, 'top', '428px'),
-						$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame2),
-						$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+						A2($elm$html$Html$Attributes$style, 'top', '428px')
 					]),
-				_List_Nil),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.buttonGame2),
+								$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame2),
+								$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+							]),
+						_List_Nil),
+						$author$project$LoadGame$viewLoadGameInfo(model.save2)
+					])),
 				A2(
-				$elm$html$Html$img,
+				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$src(model.button_game3),
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 						A2($elm$html$Html$Attributes$style, 'left', '660px'),
-						A2($elm$html$Html$Attributes$style, 'top', '606px'),
-						$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame3),
-						$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+						A2($elm$html$Html$Attributes$style, 'top', '606px')
 					]),
-				_List_Nil),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(model.buttonGame3),
+								$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame3),
+								$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+							]),
+						_List_Nil),
+						$author$project$LoadGame$viewLoadGameInfo(model.save3)
+					])),
 				A2(
 				$elm$html$Html$a,
 				_List_fromArray(
@@ -14336,7 +14582,7 @@ var $author$project$LoadGame$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.button_back),
+								$elm$html$Html$Attributes$src(model.buttonBack),
 								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 								A2($elm$html$Html$Attributes$style, 'left', '752px'),
 								A2($elm$html$Html$Attributes$style, 'top', '864px'),

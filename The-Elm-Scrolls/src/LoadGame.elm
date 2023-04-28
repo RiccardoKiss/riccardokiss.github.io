@@ -1,40 +1,48 @@
-port module LoadGame exposing (..)
+module LoadGame exposing (..)
 
 import Browser.Navigation as Nav
 import Html exposing (Html, div, h1, a, text, img, pre)
 import Html.Attributes exposing (src, style)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
+import Round
 
 import Route exposing (Route)
 import Ports exposing (..)
 import DecodingJson exposing (..)
+import Level
 
 
-type alias PlayerFromJS =
-  { currentHealth : Int
-  , armor : String
-  , sword : String
+type alias Save =
+  { name : String
+  , difficulty : String
+  , time : Float
+  , level : Int
+  , playerLevel : Int
+  , playerHealth : Float
   }
 
 type alias Model =
   { navKey : Nav.Key
-  , button_game1 : String
-  , button_game2 : String
-  , button_game3 : String
-  , button_back : String
-  , time1 : Float
+  , buttonGame1 : String
+  , buttonGame2 : String
+  , buttonGame3 : String
+  , buttonBack : String
+  , save1 : Maybe DecodingJson.Save
+  , save2 : Maybe DecodingJson.Save
+  , save3 : Maybe DecodingJson.Save
   }
-
 
 
 init : DecodingJson.Flags -> Nav.Key -> ( Model, Cmd Msg )
 init flags navKey =
   ( { navKey = navKey
-    , button_game1 = "assets/button/button_loadGameInstance_background.png"
-    , button_game2 = "assets/button/button_loadGameInstance_empty.png"
-    , button_game3 = "assets/button/button_loadGameInstance_background.png"
-    , button_back = "assets/button/button_back.png"
-    , time1 = flags.save1.time
+    , buttonGame1 = "assets/button/button_loadGameInstance_background.png"
+    , buttonGame2 = "assets/button/button_loadGameInstance_background.png"
+    , buttonGame3 = "assets/button/button_loadGameInstance_background.png"
+    , buttonBack = "assets/button/button_back.png"
+    , save1 = flags.save1
+    , save2 = flags.save2
+    , save3 = flags.save3
     }
   , Cmd.none
   )
@@ -47,7 +55,6 @@ type Msg
   | HoverGame3
   --| ClickedBack
   | MouseOut
-  | ReceiveTimeFromJS Float
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -55,56 +62,81 @@ update msg model =
   case msg of
     HoverGame1 ->
       ( { model
-        | button_game1 = "assets/button/button_loadGameInstance_background_hover.png"
+        | buttonGame1 = "assets/button/button_loadGameInstance_background_hover.png"
         }
       , Cmd.none
       )
 
     HoverGame2 ->
       ( { model
-        | button_game2 = "assets/button/button_loadGameInstance_empty_hover.png"
+        | buttonGame2 = "assets/button/button_loadGameInstance_background_hover.png"
         }
       , Cmd.none
       )
 
     HoverGame3 ->
       ( { model
-        | button_game3 = "assets/button/button_loadGameInstance_background_hover.png"
+        | buttonGame3 = "assets/button/button_loadGameInstance_background_hover.png"
         }
       , Cmd.none
       )
 
     HoverBack ->
       ( { model
-        | button_back = "assets/button/button_back_hover.png"
+        | buttonBack = "assets/button/button_back_hover.png"
         }
       , Cmd.none
       )
 
     MouseOut ->
       ( { model
-        | button_game1 = "assets/button/button_loadGameInstance_background.png"
-          , button_game2 = "assets/button/button_loadGameInstance_empty.png"
-          , button_game3 = "assets/button/button_loadGameInstance_background.png"
-          , button_back = "assets/button/button_back.png"
+        | buttonGame1 = "assets/button/button_loadGameInstance_background.png"
+        , buttonGame2 = "assets/button/button_loadGameInstance_background.png"
+        , buttonGame3 = "assets/button/button_loadGameInstance_background.png"
+        , buttonBack = "assets/button/button_back.png"
         }
       , Cmd.none
       )
 
-    ReceiveTimeFromJS data ->
-      {-let
-        playerFromJS =
-          { currentHealth = data.currentHealth
-          , armor = data.armor
-          , sword = data.sword
-          }
-      in-}
-      ( { model
-        | time1 = data
-        }
-      , Cmd.none
-      )
 
+viewLoadGameInfo : Maybe DecodingJson.Save -> Html Msg
+viewLoadGameInfo save =
+  case save of
+    Just s ->
+      viewSavedGame s
+
+    Nothing ->
+      viewEmptyGame
+
+viewSavedGame : DecodingJson.Save -> Html Msg
+viewSavedGame save =
+  pre [ style "position" "absolute"
+      , style "left" "35px"
+      , style "top" "20px"
+      , style "font-family" "Consolas"
+      , style "font-weight" "bolder"
+      , style "margin" "0px"
+      , style "font-size" "1.5rem"
+      ]
+      [ text ("Name: " ++ save.name)
+      , text ("\tDifficulty: " ++ save.difficulty)
+      , text ("\nGame: " ++ Level.mapToString save.level)
+      , text ("\tTime: " ++ (Round.round 3 save.time) ++ "s")
+      , text ("\nPlayer LvL: " ++ String.fromInt save.player.playerLevel)
+      , text ("\tHealth: " ++ (Round.round 2 (toFloat save.player.currentHealth / toFloat save.player.maxHealth * 100.0)) ++ "%")
+      ]
+
+viewEmptyGame : Html Msg
+viewEmptyGame =
+  pre [ style "position" "absolute"
+      , style "left" "125px"
+      , style "top" "33px"
+      , style "font-family" "Consolas"
+      , style "font-weight" "bolder"
+      , style "font-size" "3rem"
+      , style "margin" "0px"
+      ]
+      [ text "--- empty ---" ]
 
 view : Model -> Html Msg
 view model =
@@ -116,45 +148,43 @@ view model =
             , style "top" "0px"
             ] []
       , h1 [ style "position" "absolute"
-           , style "left" "800px"
-           , style "top" "100px"
+           , style "left" "760px"
+           , style "top" "50px"
+           , style "font-size" "5rem"
            --, style "font" "bold 48px Tahoma"
            ] [ text "Load Game" ]
       , div [ style "position" "absolute"
             , style "left" "660px"
             , style "top" "250px"
             ]
-            [ img [ src model.button_game1 --600 128
+            [ img [ src model.buttonGame1 --600 128
                   , onMouseOver HoverGame1
                   , onMouseOut MouseOut
                   ] []
-            , pre [ style "position" "absolute"
-                  --, style "left" "500px"
-                  --, style "top" "25px"
-                  , style "font-family" "Consolas"
-                  , style "font-weight" "bolder"
-                  --, style "font-size" "1.75em"
-                  ]
-                  [ text "Player1 time:"
-                  , text (String.fromFloat model.time1)
-                  ]
+            , viewLoadGameInfo model.save1
             ]
-      , img [ src model.button_game2
-            , style "position" "absolute"
+      , div [ style "position" "absolute"
             , style "left" "660px"
             , style "top" "428px"
-            , onMouseOver HoverGame2
-            , onMouseOut MouseOut
-            ] []
-      , img [ src model.button_game3
-            , style "position" "absolute"
+            ]
+            [ img [ src model.buttonGame2
+                  , onMouseOver HoverGame2
+                  , onMouseOut MouseOut
+                  ] []
+            , viewLoadGameInfo model.save2
+            ]
+      , div [ style "position" "absolute"
             , style "left" "660px"
             , style "top" "606px"
-            , onMouseOver HoverGame3
-            , onMouseOut MouseOut
-            ] []
+            ]
+            [ img [ src model.buttonGame3
+                  , onMouseOver HoverGame3
+                  , onMouseOut MouseOut
+                  ] []
+            , viewLoadGameInfo model.save3
+            ]
       , a [ Route.href Route.Home ]
-          [ img [ src model.button_back
+          [ img [ src model.buttonBack
                 , style "position" "absolute"
                 , style "left" "752px"
                 , style "top" "864px"
@@ -163,10 +193,3 @@ view model =
                 ] []
           ]
       ]
-
-
-port receiveTime : (Float -> msg) -> Sub msg
-
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-  receiveTime ReceiveTimeFromJS

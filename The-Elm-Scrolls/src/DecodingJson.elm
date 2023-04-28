@@ -21,19 +21,23 @@ type alias Save =
   }
 
 type alias Flags =
-  { save1 : Save
-  , save2 : Save
-  , save3 : Save
+  { save1 : Maybe Save
+  , save2 : Maybe Save
+  , save3 : Maybe Save
   --, settings :
   --, highscores :
   }
 
 flagsDecoder : Decoder Flags
 flagsDecoder =
-  D.succeed Flags
-  |> optional "save1" saveDecoder emptySave
-  |> optional "save2" saveDecoder emptySave
-  |> optional "save3" saveDecoder emptySave
+  D.map3 Flags
+    (D.maybe (D.field "save1" saveDecoder))
+    (D.maybe (D.field "save2" saveDecoder))
+    (D.maybe (D.field "save3" saveDecoder))
+  --D.succeed Flags
+  --|> optional "save1" saveDecoder emptySave
+  --|> optional "save2" saveDecoder emptySave
+  --|> optional "save3" saveDecoder emptySave
 
 
 saveDecoder : Decoder Save

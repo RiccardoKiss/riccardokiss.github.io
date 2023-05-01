@@ -7,9 +7,8 @@ import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 import Round
 
 import Route exposing (Route)
-import Ports exposing (..)
 import DecodingJson exposing (..)
-import Level
+import Level exposing (mapToString)
 
 
 type alias Save =
@@ -153,14 +152,15 @@ view model =
            , style "font-size" "5rem"
            --, style "font" "bold 48px Tahoma"
            ] [ text "Load Game" ]
-      , div [ style "position" "absolute"
+      , a [ style "position" "absolute"
             , style "left" "660px"
             , style "top" "250px"
+            , Route.href Route.Game
+            , style "text-decoration" "none"
+            , onMouseOver HoverGame1
+            , onMouseOut MouseOut
             ]
-            [ img [ src model.buttonGame1 --600 128
-                  , onMouseOver HoverGame1
-                  , onMouseOut MouseOut
-                  ] []
+            [ img [ src model.buttonGame1 ] []  --600 128
             , viewLoadGameInfo model.save1
             ]
       , div [ style "position" "absolute"

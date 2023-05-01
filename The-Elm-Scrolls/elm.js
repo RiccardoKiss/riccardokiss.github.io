@@ -7936,33 +7936,55 @@ var $author$project$Sword$textures = _List_fromArray(
 var $author$project$Game$texturesList = $elm$core$List$concat(
 	_List_fromArray(
 		[$author$project$Level$textures, $author$project$Player$textures, $author$project$Enemy$textures, $author$project$Sword$textures, $author$project$Item$textures]));
-var $author$project$Game$init = function (navKey) {
-	return _Utils_Tuple2(
-		{
-			button_DS_respawn: 'assets/button/button_DS_respawn.png',
-			button_DS_return: 'assets/button/button_DS_return_MainMenu.png',
-			button_PS_help: 'assets/button/button_help.png',
-			button_PS_resume: 'assets/button/button_resume.png',
-			button_PS_return: 'assets/button/button_return_MainMenu.png',
-			button_PS_settings: 'assets/button/button_settings.png',
-			camera: A2(
-				$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
-				32 * 16,
-				_Utils_Tuple2(0, 0)),
-			keys: _List_Nil,
-			level: $author$project$Level$level2,
-			navKey: navKey,
-			pauseToggle: false,
-			player: $author$project$Game$initPlayer($author$project$Level$level2),
-			resources: $Zinggi$elm_game_resources$Game$Resources$init,
-			screen: _Utils_Tuple2(1280, 720),
-			time: 0
-		},
-		A2(
-			$elm$core$Platform$Cmd$map,
-			$author$project$Game$Resources,
-			$Zinggi$elm_game_resources$Game$Resources$loadTextures($author$project$Game$texturesList)));
-};
+var $author$project$Game$init = F2(
+	function (save, navKey) {
+		return _Utils_Tuple2(
+			{
+				button_DS_respawn: 'assets/button/button_DS_respawn.png',
+				button_DS_return: 'assets/button/button_DS_return_MainMenu.png',
+				button_PS_help: 'assets/button/button_help.png',
+				button_PS_resume: 'assets/button/button_resume.png',
+				button_PS_return: 'assets/button/button_return_MainMenu.png',
+				button_PS_settings: 'assets/button/button_settings.png',
+				camera: A2(
+					$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
+					32 * 16,
+					_Utils_Tuple2(0, 0)),
+				keys: _List_Nil,
+				level: function () {
+					if (save.$ === 'Just') {
+						var s = save.a;
+						return s.level;
+					} else {
+						return $author$project$Level$level2;
+					}
+				}(),
+				navKey: navKey,
+				pauseToggle: false,
+				player: function () {
+					if (save.$ === 'Just') {
+						var s = save.a;
+						return s.player;
+					} else {
+						return $author$project$Game$initPlayer($author$project$Level$level2);
+					}
+				}(),
+				resources: $Zinggi$elm_game_resources$Game$Resources$init,
+				screen: _Utils_Tuple2(1280, 720),
+				time: function () {
+					if (save.$ === 'Just') {
+						var s = save.a;
+						return s.time;
+					} else {
+						return 0;
+					}
+				}()
+			},
+			A2(
+				$elm$core$Platform$Cmd$map,
+				$author$project$Game$Resources,
+				$Zinggi$elm_game_resources$Game$Resources$loadTextures($author$project$Game$texturesList)));
+	});
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Help$init = function (navKey) {
 	return _Utils_Tuple2(
@@ -8021,7 +8043,7 @@ var $author$project$Main$initPage = function (_v0) {
 					$author$project$Main$NewGamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$NewGamePageMsg, pageCmds));
 			case 'Game':
-				var _v5 = $author$project$Game$init(model.navKey);
+				var _v5 = A2($author$project$Game$init, model.flags.save1, model.navKey);
 				var pageModel = _v5.a;
 				var pageCmds = _v5.b;
 				return _Utils_Tuple2(
@@ -14508,12 +14530,16 @@ var $author$project$LoadGame$view = function (model) {
 						$elm$html$Html$text('Load Game')
 					])),
 				A2(
-				$elm$html$Html$div,
+				$elm$html$Html$a,
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 						A2($elm$html$Html$Attributes$style, 'left', '660px'),
-						A2($elm$html$Html$Attributes$style, 'top', '250px')
+						A2($elm$html$Html$Attributes$style, 'top', '250px'),
+						$author$project$Route$href($author$project$Route$Game),
+						A2($elm$html$Html$Attributes$style, 'text-decoration', 'none'),
+						$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame1),
+						$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
 					]),
 				_List_fromArray(
 					[
@@ -14521,9 +14547,7 @@ var $author$project$LoadGame$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.buttonGame1),
-								$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame1),
-								$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+								$elm$html$Html$Attributes$src(model.buttonGame1)
 							]),
 						_List_Nil),
 						$author$project$LoadGame$viewLoadGameInfo(model.save1)

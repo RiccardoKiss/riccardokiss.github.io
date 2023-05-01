@@ -18,6 +18,7 @@ import Task
 import Array
 
 import Route exposing (Route)
+import DecodingJson exposing (..)
 import Ports exposing (..)
 import Tilemap exposing (..)
 import Level exposing (..)
@@ -94,14 +95,32 @@ initPlayer level =
   , speedPotions = Potion.speedPotion 1.5 5.0 5.0 0.0 0
   }
 
-init : Nav.Key -> ( Model, Cmd Msg )
-init navKey =
+init : Maybe DecodingJson.Save -> Nav.Key -> ( Model, Cmd Msg )
+init save navKey =
   ( { navKey = navKey
-    , level = Level.level2
-    , player = initPlayer Level.level2
+    , level =
+        case save of
+          Just s ->
+            s.level
+
+          Nothing ->
+            Level.level2
+    , player =
+        case save of
+          Just s ->
+            s.player
+
+          Nothing ->
+            initPlayer Level.level2
     , resources = Resources.init
     , keys = []
-    , time = 0
+    , time =
+        case save of
+          Just s ->
+            s.time
+
+          Nothing ->
+            0
     , screen = ( 1280, 720 )
     , camera = Camera.fixedArea (32 * 16) ( 0, 0 ) --(16 * 8) ( 0, 0 )
     , pauseToggle = False
@@ -131,7 +150,7 @@ texturesList =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  case msg of 
+  case msg of
     Tick dt ->
       let
         playerWithExp = getExp model.level.enemies model.player

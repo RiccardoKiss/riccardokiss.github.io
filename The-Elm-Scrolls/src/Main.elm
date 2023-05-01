@@ -119,7 +119,7 @@ initPage ( model, existingCmds ) =
         Route.Game ->
           let
             ( pageModel, pageCmds ) =
-              Game.init model.navKey
+              Game.init model.flags.save1 model.navKey
           in
           ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
 

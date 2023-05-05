@@ -8,12 +8,8 @@ import Json.Encode as Encode
 
 import Route exposing (Route)
 import Ports exposing (..)
+import DecodingJson exposing (Difficulty, difficultyToString)
 
-
-type Difficulty
-  = Easy
-  | Medium
-  | Hard
 
 type SavePosition
   = First
@@ -25,7 +21,7 @@ type alias Model =
   , buttonBack : String
   , buttonStart : String
   , playerName : String
-  , difficulty : Difficulty
+  , difficulty : DecodingJson.Difficulty
   , savePosition : SavePosition
   }
 
@@ -36,7 +32,7 @@ init navKey =
     , buttonBack = "assets/button/button_back.png"
     , buttonStart = "assets/button/button_start.png"
     , playerName = ""
-    , difficulty = Medium
+    , difficulty = DecodingJson.Easy
     , savePosition = First
     }
   , Cmd.none
@@ -48,7 +44,7 @@ type Msg
   | HoverStart
   | MouseOut
   | NameChanged String
-  | DifficultyTo Difficulty
+  | DifficultyTo DecodingJson.Difficulty
   | SaveTo SavePosition
 
 
@@ -63,6 +59,12 @@ update msg model =
       )
 
     HoverStart ->
+      let
+        _ = Debug.log "[NewGame.HoverStart] name" model.playerName
+        _ = Debug.log "[NewGame.HoverStart] diff" model.difficulty
+        _ = Debug.log "[NewGame.HoverStart] pos" model.savePosition
+      in
+
       ( { model
         | buttonStart = "assets/button/button_start_hover.png"
         }
@@ -95,10 +97,14 @@ update msg model =
 createSave : Model -> Cmd msg
 createSave model =
   let
-    encodeSave =
+    encodedSave =
       Encode.object
-        [ ( "name", Encode.string model.playerName )
-        , ( "difficulty", Encode.string (difficultyToString model.difficulty) )
+        [ ( "name", if model.playerName == "" then
+                      Encode.null
+                    else
+                      Encode.string model.playerName
+          )
+        , ( "difficulty", Encode.string (DecodingJson.difficultyToString model.difficulty) )
         , ( "player", Encode.null )
         , ( "level", Encode.null )
         , ( "time", Encode.float 0.0 )
@@ -106,28 +112,14 @@ createSave model =
   in
   case model.savePosition of
     First ->
-      encodeSave
-      |> Ports.storeSave1
+      Ports.storeSave1 encodedSave
 
     Second ->
-      encodeSave
-      |> Ports.storeSave2
+      Ports.storeSave2 encodedSave
 
     Third ->
-      encodeSave
-      |> Ports.storeSave3
+      Ports.storeSave3 encodedSave
 
-difficultyToString : Difficulty -> String
-difficultyToString difficulty =
-  case difficulty of
-    Easy ->
-      "easy"
-
-    Medium ->
-      "medium"
-
-    Hard ->
-      "hard"
 
 radio : Msg -> Bool -> String -> Html Msg
 radio  msg isChecked value =
@@ -186,17 +178,17 @@ view model =
                         , style "left" "175px"
                         , style "top" "0px"
                         ]
-                        [ radio ( DifficultyTo Easy ) ( model.difficulty == Easy ) "easy" ]
+                        [ radio ( DifficultyTo DecodingJson.Easy ) ( model.difficulty == DecodingJson.Easy ) "easy" ]
                   , div [ style "position" "absolute"
                         , style "left" "375px"
                         , style "top" "0px"
                         ]
-                        [ radio ( DifficultyTo Medium ) ( model.difficulty == Medium ) "medium" ]
+                        [ radio ( DifficultyTo DecodingJson.Medium ) ( model.difficulty == DecodingJson.Medium ) "medium" ]
                   , div [ style "position" "absolute"
                         , style "left" "625px"
                         , style "top" "0px"
                         ]
-                        [ radio ( DifficultyTo Hard ) ( model.difficulty == Hard ) "hard" ]
+                        [ radio ( DifficultyTo DecodingJson.Hard ) ( model.difficulty == DecodingJson.Hard ) "hard" ]
                   ]
             , h1  [ style "position" "absolute"
                   , style "top" "300px"
@@ -231,7 +223,16 @@ view model =
                 , onMouseOut MouseOut
                 ] []
           ]
-      , a [ Route.href Route.Game ]
+      , a [ case model.savePosition of
+              First ->
+                Route.href Route.Game1
+
+              Second ->
+                Route.href Route.Game2
+
+              Third ->
+                Route.href Route.Game3
+          ]
           [ img [ src model.buttonStart
                 , style "position" "absolute"
                 , style "left" "980px"

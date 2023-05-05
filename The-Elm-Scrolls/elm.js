@@ -7141,6 +7141,27 @@ var $author$project$DecodingJson$Save = F5(
 	function (name, difficulty, player, time, level) {
 		return {difficulty: difficulty, level: level, name: name, player: player, time: time};
 	});
+var $author$project$DecodingJson$Easy = {$: 'Easy'};
+var $author$project$DecodingJson$Hard = {$: 'Hard'};
+var $author$project$DecodingJson$Medium = {$: 'Medium'};
+var $elm$json$Json$Decode$andThen = _Json_andThen;
+var $elm$json$Json$Decode$fail = _Json_fail;
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $author$project$DecodingJson$difficultyDecoder = A2(
+	$elm$json$Json$Decode$andThen,
+	function (string) {
+		switch (string) {
+			case 'easy':
+				return $elm$json$Json$Decode$succeed($author$project$DecodingJson$Easy);
+			case 'medium':
+				return $elm$json$Json$Decode$succeed($author$project$DecodingJson$Medium);
+			case 'hard':
+				return $elm$json$Json$Decode$succeed($author$project$DecodingJson$Hard);
+			default:
+				return $elm$json$Json$Decode$fail('Invalid Difficulty');
+		}
+	},
+	$elm$json$Json$Decode$string);
 var $elm$json$Json$Decode$float = _Json_decodeFloat;
 var $author$project$Level$Level = F6(
 	function (map, mapTexture, enemies, items, startX, startY) {
@@ -7149,7 +7170,6 @@ var $author$project$Level$Level = F6(
 var $author$project$Level$Lvl1 = {$: 'Lvl1'};
 var $author$project$Level$Lvl2 = {$: 'Lvl2'};
 var $author$project$Level$Lvl3 = {$: 'Lvl3'};
-var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $author$project$Enemy$Bandit = {$: 'Bandit'};
 var $author$project$Enemy$Down = {$: 'Down'};
 var $author$project$Enemy$Enemy = function (initX) {
@@ -7198,7 +7218,6 @@ var $author$project$Enemy$Skeleton = {$: 'Skeleton'};
 var $author$project$Enemy$Up = {$: 'Up'};
 var $author$project$Enemy$Zombie = {$: 'Zombie'};
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
-var $elm$json$Json$Decode$fail = _Json_fail;
 var $elm$core$Basics$composeR = F3(
 	function (f, g, x) {
 		return g(
@@ -7214,7 +7233,6 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2($elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
 var $author$project$DecodingJson$enemyDecoder = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'alive',
@@ -7426,60 +7444,7 @@ var $author$project$DecodingJson$levelDecoder = A7(
 		$elm$json$Json$Decode$list($author$project$DecodingJson$itemDecoder)),
 	A2($elm$json$Json$Decode$field, 'startX', $elm$json$Json$Decode$float),
 	A2($elm$json$Json$Decode$field, 'startY', $elm$json$Json$Decode$float));
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$json$Json$Decode$null = _Json_decodeNull;
-var $elm$json$Json$Decode$value = _Json_decodeValue;
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder = F3(
-	function (path, valDecoder, fallback) {
-		var nullOr = function (decoder) {
-			return $elm$json$Json$Decode$oneOf(
-				_List_fromArray(
-					[
-						decoder,
-						$elm$json$Json$Decode$null(fallback)
-					]));
-		};
-		var handleResult = function (input) {
-			var _v0 = A2(
-				$elm$json$Json$Decode$decodeValue,
-				A2($elm$json$Json$Decode$at, path, $elm$json$Json$Decode$value),
-				input);
-			if (_v0.$ === 'Ok') {
-				var rawValue = _v0.a;
-				var _v1 = A2(
-					$elm$json$Json$Decode$decodeValue,
-					nullOr(valDecoder),
-					rawValue);
-				if (_v1.$ === 'Ok') {
-					var finalResult = _v1.a;
-					return $elm$json$Json$Decode$succeed(finalResult);
-				} else {
-					return A2(
-						$elm$json$Json$Decode$at,
-						path,
-						nullOr(valDecoder));
-				}
-			} else {
-				return $elm$json$Json$Decode$succeed(fallback);
-			}
-		};
-		return A2($elm$json$Json$Decode$andThen, handleResult, $elm$json$Json$Decode$value);
-	});
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional = F4(
-	function (key, valDecoder, fallback, decoder) {
-		return A2(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-			A3(
-				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder,
-				_List_fromArray(
-					[key]),
-				valDecoder,
-				fallback),
-			decoder);
-	});
+var $elm$json$Json$Decode$map5 = _Json_map5;
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Player$Player = function (x) {
 	return function (y) {
@@ -7536,7 +7501,6 @@ var $author$project$Potion$Potion = F5(
 	function (ratio, duration, cooldown, timeOfLastUse, count) {
 		return {cooldown: cooldown, count: count, duration: duration, ratio: ratio, timeOfLastUse: timeOfLastUse};
 	});
-var $elm$json$Json$Decode$map5 = _Json_map5;
 var $author$project$DecodingJson$potionDecoder = A6(
 	$elm$json$Json$Decode$map5,
 	$author$project$Potion$Potion,
@@ -7655,29 +7619,17 @@ var $author$project$DecodingJson$playerDecoder = A3(
 																			'x',
 																			$elm$json$Json$Decode$float,
 																			$elm$json$Json$Decode$succeed($author$project$Player$Player))))))))))))))))))));
-var $author$project$DecodingJson$saveDecoder = A3(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-	'level',
-	$author$project$DecodingJson$levelDecoder,
-	A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-		'time',
-		$elm$json$Json$Decode$float,
-		A3(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-			'player',
-			$author$project$DecodingJson$playerDecoder,
-			A4(
-				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
-				'difficulty',
-				$elm$json$Json$Decode$string,
-				'easy',
-				A4(
-					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
-					'name',
-					$elm$json$Json$Decode$string,
-					'Player',
-					$elm$json$Json$Decode$succeed($author$project$DecodingJson$Save))))));
+var $author$project$DecodingJson$saveDecoder = A6(
+	$elm$json$Json$Decode$map5,
+	$author$project$DecodingJson$Save,
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string)),
+	A2($elm$json$Json$Decode$field, 'difficulty', $author$project$DecodingJson$difficultyDecoder),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'player', $author$project$DecodingJson$playerDecoder)),
+	A2($elm$json$Json$Decode$field, 'time', $elm$json$Json$Decode$float),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'level', $author$project$DecodingJson$levelDecoder)));
 var $author$project$DecodingJson$flagsDecoder = A4(
 	$elm$json$Json$Decode$map3,
 	$author$project$DecodingJson$Flags,
@@ -7687,6 +7639,7 @@ var $author$project$DecodingJson$flagsDecoder = A4(
 		A2($elm$json$Json$Decode$field, 'save2', $author$project$DecodingJson$saveDecoder)),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'save3', $author$project$DecodingJson$saveDecoder)));
+var $author$project$Game$First = {$: 'First'};
 var $author$project$Main$GamePage = function (a) {
 	return {$: 'GamePage', a: a};
 };
@@ -7723,12 +7676,14 @@ var $author$project$Main$NewGamePage = function (a) {
 var $author$project$Main$NewGamePageMsg = function (a) {
 	return {$: 'NewGamePageMsg', a: a};
 };
+var $author$project$Game$Second = {$: 'Second'};
 var $author$project$Main$SettingsPage = function (a) {
 	return {$: 'SettingsPage', a: a};
 };
 var $author$project$Main$SettingsPageMsg = function (a) {
 	return {$: 'SettingsPageMsg', a: a};
 };
+var $author$project$Game$Third = {$: 'Third'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $author$project$Game$Resources = function (a) {
 	return {$: 'Resources', a: a};
@@ -7911,6 +7866,7 @@ var $Zinggi$elm_game_resources$Game$Resources$loadTextures = function (urls) {
 			},
 			urls));
 };
+var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $elm$core$List$append = F2(
 	function (xs, ys) {
@@ -7936,8 +7892,10 @@ var $author$project$Sword$textures = _List_fromArray(
 var $author$project$Game$texturesList = $elm$core$List$concat(
 	_List_fromArray(
 		[$author$project$Level$textures, $author$project$Player$textures, $author$project$Enemy$textures, $author$project$Sword$textures, $author$project$Item$textures]));
-var $author$project$Game$init = F2(
-	function (save, navKey) {
+var $author$project$Game$init = F3(
+	function (save, pos, navKey) {
+		var _v0 = A2($elm$core$Debug$log, '[Game.init] save', save);
+		var _v1 = A2($elm$core$Debug$log, '[Game.init] pos', pos);
 		return _Utils_Tuple2(
 			{
 				button_DS_respawn: 'assets/button/button_DS_respawn.png',
@@ -7950,13 +7908,41 @@ var $author$project$Game$init = F2(
 					$Zinggi$elm_2d_game$Game$TwoD$Camera$fixedArea,
 					32 * 16,
 					_Utils_Tuple2(0, 0)),
+				difficulty: function () {
+					if (save.$ === 'Just') {
+						var s = save.a;
+						return s.difficulty;
+					} else {
+						return $author$project$DecodingJson$Easy;
+					}
+				}(),
 				keys: _List_Nil,
 				level: function () {
 					if (save.$ === 'Just') {
 						var s = save.a;
-						return s.level;
+						var _v4 = s.level;
+						if (_v4.$ === 'Just') {
+							var lvl = _v4.a;
+							return lvl;
+						} else {
+							return $author$project$Level$level2;
+						}
 					} else {
 						return $author$project$Level$level2;
+					}
+				}(),
+				name: function () {
+					if (save.$ === 'Just') {
+						var s = save.a;
+						var _v6 = s.name;
+						if (_v6.$ === 'Just') {
+							var name = _v6.a;
+							return name;
+						} else {
+							return 'PLAYER';
+						}
+					} else {
+						return 'PLAYER';
 					}
 				}(),
 				navKey: navKey,
@@ -7964,19 +7950,26 @@ var $author$project$Game$init = F2(
 				player: function () {
 					if (save.$ === 'Just') {
 						var s = save.a;
-						return s.player;
+						var _v8 = s.player;
+						if (_v8.$ === 'Just') {
+							var p = _v8.a;
+							return p;
+						} else {
+							return $author$project$Game$initPlayer($author$project$Level$level2);
+						}
 					} else {
 						return $author$project$Game$initPlayer($author$project$Level$level2);
 					}
 				}(),
 				resources: $Zinggi$elm_game_resources$Game$Resources$init,
+				savePosition: pos,
 				screen: _Utils_Tuple2(1280, 720),
 				time: function () {
 					if (save.$ === 'Just') {
 						var s = save.a;
 						return s.time;
 					} else {
-						return 0;
+						return 0.0;
 					}
 				}()
 			},
@@ -8001,17 +7994,22 @@ var $author$project$Home$init = function (navKey) {
 		{button_help: 'assets/button/button_help.png', button_highScore: 'assets/button/button_highScore.png', button_loadGame: 'assets/button/button_loadGame.png', button_newGame: 'assets/button/button_newGame.png', button_settings: 'assets/button/button_settings.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
+var $elm$json$Json$Encode$null = _Json_encodeNull;
+var $author$project$Ports$loadedLoadGame = _Platform_outgoingPort(
+	'loadedLoadGame',
+	function ($) {
+		return $elm$json$Json$Encode$null;
+	});
 var $author$project$LoadGame$init = F2(
 	function (flags, navKey) {
 		return _Utils_Tuple2(
 			{buttonBack: 'assets/button/button_back.png', buttonGame1: 'assets/button/button_loadGameInstance_background.png', buttonGame2: 'assets/button/button_loadGameInstance_background.png', buttonGame3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey, save1: flags.save1, save2: flags.save2, save3: flags.save3},
-			$elm$core$Platform$Cmd$none);
+			$author$project$Ports$loadedLoadGame(_Utils_Tuple0));
 	});
 var $author$project$NewGame$First = {$: 'First'};
-var $author$project$NewGame$Medium = {$: 'Medium'};
 var $author$project$NewGame$init = function (navKey) {
 	return _Utils_Tuple2(
-		{buttonBack: 'assets/button/button_back.png', buttonStart: 'assets/button/button_start.png', difficulty: $author$project$NewGame$Medium, navKey: navKey, playerName: '', savePosition: $author$project$NewGame$First},
+		{buttonBack: 'assets/button/button_back.png', buttonStart: 'assets/button/button_start.png', difficulty: $author$project$DecodingJson$Easy, navKey: navKey, playerName: '', savePosition: $author$project$NewGame$First},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Settings$Off = {$: 'Off'};
@@ -8042,38 +8040,52 @@ var $author$project$Main$initPage = function (_v0) {
 				return _Utils_Tuple2(
 					$author$project$Main$NewGamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$NewGamePageMsg, pageCmds));
-			case 'Game':
-				var _v5 = A2($author$project$Game$init, model.flags.save1, model.navKey);
+			case 'Game1':
+				var _v5 = A3($author$project$Game$init, model.flags.save1, $author$project$Game$First, model.navKey);
 				var pageModel = _v5.a;
 				var pageCmds = _v5.b;
 				return _Utils_Tuple2(
 					$author$project$Main$GamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, pageCmds));
-			case 'LoadGame':
-				var _v6 = A2($author$project$LoadGame$init, model.flags, model.navKey);
+			case 'Game2':
+				var _v6 = A3($author$project$Game$init, model.flags.save2, $author$project$Game$Second, model.navKey);
 				var pageModel = _v6.a;
 				var pageCmds = _v6.b;
+				return _Utils_Tuple2(
+					$author$project$Main$GamePage(pageModel),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, pageCmds));
+			case 'Game3':
+				var _v7 = A3($author$project$Game$init, model.flags.save3, $author$project$Game$Third, model.navKey);
+				var pageModel = _v7.a;
+				var pageCmds = _v7.b;
+				return _Utils_Tuple2(
+					$author$project$Main$GamePage(pageModel),
+					A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, pageCmds));
+			case 'LoadGame':
+				var _v8 = A2($author$project$LoadGame$init, model.flags, model.navKey);
+				var pageModel = _v8.a;
+				var pageCmds = _v8.b;
 				return _Utils_Tuple2(
 					$author$project$Main$LoadGamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$LoadGamePageMsg, pageCmds));
 			case 'HighScores':
-				var _v7 = $author$project$HighScores$init(model.navKey);
-				var pageModel = _v7.a;
-				var pageCmds = _v7.b;
+				var _v9 = $author$project$HighScores$init(model.navKey);
+				var pageModel = _v9.a;
+				var pageCmds = _v9.b;
 				return _Utils_Tuple2(
 					$author$project$Main$HighScoresPage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$HighScoresPageMsg, pageCmds));
 			case 'Settings':
-				var _v8 = $author$project$Settings$init(model.navKey);
-				var pageModel = _v8.a;
-				var pageCmds = _v8.b;
+				var _v10 = $author$project$Settings$init(model.navKey);
+				var pageModel = _v10.a;
+				var pageCmds = _v10.b;
 				return _Utils_Tuple2(
 					$author$project$Main$SettingsPage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$SettingsPageMsg, pageCmds));
 			default:
-				var _v9 = $author$project$Help$init(model.navKey);
-				var pageModel = _v9.a;
-				var pageCmds = _v9.b;
+				var _v11 = $author$project$Help$init(model.navKey);
+				var pageModel = _v11.a;
+				var pageCmds = _v11.b;
 				return _Utils_Tuple2(
 					$author$project$Main$HelpPage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$HelpPageMsg, pageCmds));
@@ -8089,9 +8101,10 @@ var $author$project$Main$initPage = function (_v0) {
 			_List_fromArray(
 				[existingCmds, mappedPageCmds])));
 };
-var $elm$core$Debug$log = _Debug_log;
 var $author$project$Route$NotFound = {$: 'NotFound'};
-var $author$project$Route$Game = {$: 'Game'};
+var $author$project$Route$Game1 = {$: 'Game1'};
+var $author$project$Route$Game2 = {$: 'Game2'};
+var $author$project$Route$Game3 = {$: 'Game3'};
 var $author$project$Route$Help = {$: 'Help'};
 var $author$project$Route$HighScores = {$: 'HighScores'};
 var $author$project$Route$Home = {$: 'Home'};
@@ -8193,8 +8206,16 @@ var $author$project$Route$matchRoute = $elm$url$Url$Parser$oneOf(
 			$elm$url$Url$Parser$s('new-game')),
 			A2(
 			$elm$url$Url$Parser$map,
-			$author$project$Route$Game,
-			$elm$url$Url$Parser$s('game')),
+			$author$project$Route$Game1,
+			$elm$url$Url$Parser$s('game1')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$Game2,
+			$elm$url$Url$Parser$s('game2')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$Game3,
+			$elm$url$Url$Parser$s('game3')),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$LoadGame,
@@ -9340,6 +9361,13 @@ var $author$project$Game$subscriptions = function (model) {
 					$author$project$Game$Tick))
 			]));
 };
+var $author$project$LoadGame$Reload = function (a) {
+	return {$: 'Reload', a: a};
+};
+var $author$project$Ports$reloadLoadGame = _Platform_incomingPort('reloadLoadGame', $elm$json$Json$Decode$bool);
+var $author$project$LoadGame$subscriptions = function (_v0) {
+	return $author$project$Ports$reloadLoadGame($author$project$LoadGame$Reload);
+};
 var $author$project$Main$subscriptions = function (model) {
 	var _v0 = model.pageModel;
 	switch (_v0.$) {
@@ -9359,7 +9387,10 @@ var $author$project$Main$subscriptions = function (model) {
 				$author$project$Game$subscriptions(modelGame));
 		case 'LoadGamePage':
 			var modelLoadGame = _v0.a;
-			return $elm$core$Platform$Sub$none;
+			return A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Main$LoadGamePageMsg,
+				$author$project$LoadGame$subscriptions(modelLoadGame));
 		case 'HighScoresPage':
 			var modelHighScores = _v0.a;
 			return $elm$core$Platform$Sub$none;
@@ -9418,6 +9449,354 @@ var $elm$url$Url$toString = function (url) {
 				url.path)));
 };
 var $ohanhi$keyboard$Keyboard$Escape = {$: 'Escape'};
+var $author$project$DecodingJson$difficultyToString = function (difficulty) {
+	switch (difficulty.$) {
+		case 'Easy':
+			return 'easy';
+		case 'Medium':
+			return 'medium';
+		default:
+			return 'hard';
+	}
+};
+var $elm$json$Json$Encode$float = _Json_wrap;
+var $elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v0, obj) {
+					var k = _v0.a;
+					var v = _v0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(_Utils_Tuple0),
+			pairs));
+};
+var $elm$json$Json$Encode$list = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				$elm$core$List$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(_Utils_Tuple0),
+				entries));
+	});
+var $author$project$Level$mapToString = function (level) {
+	var _v0 = level.map;
+	switch (_v0.$) {
+		case 'Lvl1':
+			return 'Lvl1';
+		case 'Lvl2':
+			return 'Lvl2';
+		default:
+			return 'Lvl3';
+	}
+};
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $author$project$Enemy$enemyDirToString = function (enemy) {
+	var _v0 = enemy.dir;
+	switch (_v0.$) {
+		case 'Left':
+			return 'left';
+		case 'Right':
+			return 'right';
+		case 'Up':
+			return 'up';
+		default:
+			return 'down';
+	}
+};
+var $author$project$Enemy$enemyTypeToString = function (enemy) {
+	var _v0 = enemy.enemyType;
+	switch (_v0.$) {
+		case 'Bandit':
+			return 'bandit';
+		case 'Zombie':
+			return 'zombie';
+		case 'Skeleton':
+			return 'skeleton';
+		default:
+			return 'enemy';
+	}
+};
+var $elm$json$Json$Encode$int = _Json_wrap;
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $author$project$Game$saveEnemy = function (enemy) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'initX',
+			$elm$json$Json$Encode$float(enemy.initX)),
+			_Utils_Tuple2(
+			'initY',
+			$elm$json$Json$Encode$float(enemy.initY)),
+			_Utils_Tuple2(
+			'initDir',
+			$elm$json$Json$Encode$string(
+				$author$project$Enemy$enemyDirToString(enemy))),
+			_Utils_Tuple2(
+			'x',
+			$elm$json$Json$Encode$float(enemy.x)),
+			_Utils_Tuple2(
+			'y',
+			$elm$json$Json$Encode$float(enemy.y)),
+			_Utils_Tuple2(
+			'vx',
+			$elm$json$Json$Encode$float(enemy.vx)),
+			_Utils_Tuple2(
+			'vy',
+			$elm$json$Json$Encode$float(enemy.vy)),
+			_Utils_Tuple2(
+			'dir',
+			$elm$json$Json$Encode$string(
+				$author$project$Enemy$enemyDirToString(enemy))),
+			_Utils_Tuple2(
+			'width',
+			$elm$json$Json$Encode$float(enemy.width)),
+			_Utils_Tuple2(
+			'height',
+			$elm$json$Json$Encode$float(enemy.height)),
+			_Utils_Tuple2(
+			'enemyType',
+			$elm$json$Json$Encode$string(
+				$author$project$Enemy$enemyTypeToString(enemy))),
+			_Utils_Tuple2(
+			'distanceLoop',
+			$elm$json$Json$Encode$float(enemy.distanceLoop)),
+			_Utils_Tuple2(
+			'speed',
+			$elm$json$Json$Encode$float(enemy.speed)),
+			_Utils_Tuple2(
+			'attack',
+			$elm$json$Json$Encode$int(enemy.attack)),
+			_Utils_Tuple2(
+			'health',
+			$elm$json$Json$Encode$int(enemy.health)),
+			_Utils_Tuple2(
+			'expDrop',
+			$elm$json$Json$Encode$int(enemy.expDrop)),
+			_Utils_Tuple2(
+			'detectPlayerRadius',
+			$elm$json$Json$Encode$float(enemy.detectPlayerRadius)),
+			_Utils_Tuple2(
+			'hostile',
+			$elm$json$Json$Encode$bool(enemy.hostile)),
+			_Utils_Tuple2(
+			'alive',
+			$elm$json$Json$Encode$bool(enemy.alive))
+		]);
+};
+var $author$project$Item$itemTypeToString = function (item) {
+	var _v0 = item.itemType;
+	switch (_v0.$) {
+		case 'ItemStand':
+			return 'empty';
+		case 'HealthPotion_ItemStand':
+			return 'health_potion_idle';
+		case 'SpeedPotion_ItemStand':
+			return 'speed_potion_idle';
+		case 'WoodSword_ItemStand':
+			return 'sword_wood_idle';
+		case 'StoneSword_ItemStand':
+			return 'sword_stone_idle';
+		case 'IronSword_ItemStand':
+			return 'sword_iron_idle';
+		case 'DragonSword_ItemStand':
+			return 'sword_dragon_idle';
+		case 'LeatherArmor_ItemStand':
+			return 'leather_chest';
+		case 'SilverArmor_ItemStand':
+			return 'silver_chest';
+		default:
+			return 'dragon_chest';
+	}
+};
+var $author$project$Game$saveItem = function (item) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'x',
+			$elm$json$Json$Encode$float(item.x)),
+			_Utils_Tuple2(
+			'y',
+			$elm$json$Json$Encode$float(item.y)),
+			_Utils_Tuple2(
+			'width',
+			$elm$json$Json$Encode$float(item.width)),
+			_Utils_Tuple2(
+			'height',
+			$elm$json$Json$Encode$float(item.height)),
+			_Utils_Tuple2(
+			'itemType',
+			$elm$json$Json$Encode$string(
+				$author$project$Item$itemTypeToString(item))),
+			_Utils_Tuple2(
+			'pickable',
+			$elm$json$Json$Encode$bool(item.pickable))
+		]);
+};
+var $author$project$Game$saveLevel = function (level) {
+	var encodeItems = A2($elm$core$List$map, $author$project$Game$saveItem, level.items);
+	var encodeEnemies = A2($elm$core$List$map, $author$project$Game$saveEnemy, level.enemies);
+	var encodeLevel = _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'map',
+			$elm$json$Json$Encode$string(
+				$author$project$Level$mapToString(level))),
+			_Utils_Tuple2(
+			'mapTexture',
+			$elm$json$Json$Encode$string(level.mapTexture)),
+			_Utils_Tuple2(
+			'enemies',
+			A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$object, encodeEnemies)),
+			_Utils_Tuple2(
+			'items',
+			A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$object, encodeItems)),
+			_Utils_Tuple2(
+			'startX',
+			$elm$json$Json$Encode$float(level.startX)),
+			_Utils_Tuple2(
+			'startY',
+			$elm$json$Json$Encode$float(level.startY))
+		]);
+	return encodeLevel;
+};
+var $author$project$Armor$armorTypeToString = function (armor) {
+	var _v0 = armor.armorType;
+	switch (_v0.$) {
+		case 'None':
+			return 'none';
+		case 'Leather':
+			return 'leather';
+		case 'Silver':
+			return 'silver';
+		default:
+			return 'dragon';
+	}
+};
+var $author$project$Game$savePotion = function (potion) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'ratio',
+			$elm$json$Json$Encode$float(potion.ratio)),
+			_Utils_Tuple2(
+			'duration',
+			$elm$json$Json$Encode$float(potion.duration)),
+			_Utils_Tuple2(
+			'cooldown',
+			$elm$json$Json$Encode$float(potion.cooldown)),
+			_Utils_Tuple2(
+			'timeOfLastUse',
+			$elm$json$Json$Encode$float(potion.timeOfLastUse)),
+			_Utils_Tuple2(
+			'count',
+			$elm$json$Json$Encode$int(potion.count))
+		]);
+};
+var $author$project$Sword$swordTypeToString = function (sword) {
+	var _v0 = sword.swordType;
+	switch (_v0.$) {
+		case 'Wood':
+			return 'wood';
+		case 'Stone':
+			return 'stone';
+		case 'Iron':
+			return 'iron';
+		default:
+			return 'dragon';
+	}
+};
+var $author$project$Game$savePlayer = function (player) {
+	var encodePlayer = _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'x',
+			$elm$json$Json$Encode$float(player.x)),
+			_Utils_Tuple2(
+			'y',
+			$elm$json$Json$Encode$float(player.y)),
+			_Utils_Tuple2(
+			'baseSpeed',
+			$elm$json$Json$Encode$float(player.baseSpeed)),
+			_Utils_Tuple2(
+			'currentSpeed',
+			$elm$json$Json$Encode$float(player.currentSpeed)),
+			_Utils_Tuple2(
+			'sword',
+			$elm$json$Json$Encode$string(
+				$author$project$Sword$swordTypeToString(player.sword))),
+			_Utils_Tuple2(
+			'armor',
+			$elm$json$Json$Encode$string(
+				$author$project$Armor$armorTypeToString(player.armor))),
+			_Utils_Tuple2(
+			'maxDefense',
+			$elm$json$Json$Encode$int(player.maxDefense)),
+			_Utils_Tuple2(
+			'maxHealth',
+			$elm$json$Json$Encode$int(player.maxHealth)),
+			_Utils_Tuple2(
+			'currentHealth',
+			$elm$json$Json$Encode$int(player.currentHealth)),
+			_Utils_Tuple2(
+			'playerLevel',
+			$elm$json$Json$Encode$int(player.playerLevel)),
+			_Utils_Tuple2(
+			'maxExp',
+			$elm$json$Json$Encode$int(player.maxExp)),
+			_Utils_Tuple2(
+			'currentExp',
+			$elm$json$Json$Encode$int(player.currentExp)),
+			_Utils_Tuple2(
+			'healthPotions',
+			$elm$json$Json$Encode$object(
+				$author$project$Game$savePotion(player.healthPotions))),
+			_Utils_Tuple2(
+			'speedPotions',
+			$elm$json$Json$Encode$object(
+				$author$project$Game$savePotion(player.speedPotions)))
+		]);
+	return encodePlayer;
+};
+var $author$project$Ports$storeSave1 = _Platform_outgoingPort('storeSave1', $elm$core$Basics$identity);
+var $author$project$Ports$storeSave2 = _Platform_outgoingPort('storeSave2', $elm$core$Basics$identity);
+var $author$project$Ports$storeSave3 = _Platform_outgoingPort('storeSave3', $elm$core$Basics$identity);
+var $author$project$Game$encodeSave = function (model) {
+	var encodedSave = $elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'name',
+				$elm$json$Json$Encode$string(model.name)),
+				_Utils_Tuple2(
+				'difficulty',
+				$elm$json$Json$Encode$string(
+					$author$project$DecodingJson$difficultyToString(model.difficulty))),
+				_Utils_Tuple2(
+				'player',
+				$elm$json$Json$Encode$object(
+					$author$project$Game$savePlayer(model.player))),
+				_Utils_Tuple2(
+				'level',
+				$elm$json$Json$Encode$object(
+					$author$project$Game$saveLevel(model.level))),
+				_Utils_Tuple2(
+				'time',
+				$elm$json$Json$Encode$float(model.time))
+			]));
+	var _v0 = model.savePosition;
+	switch (_v0.$) {
+		case 'First':
+			return $author$project$Ports$storeSave1(encodedSave);
+		case 'Second':
+			return $author$project$Ports$storeSave2(encodedSave);
+		default:
+			return $author$project$Ports$storeSave3(encodedSave);
+	}
+};
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -10466,317 +10845,6 @@ var $author$project$Game$playerTick = F6(
 							time,
 							A3($author$project$Player$applyHealthPotion, keys, time, player))))));
 	});
-var $elm$json$Json$Encode$float = _Json_wrap;
-var $elm$json$Json$Encode$list = F2(
-	function (func, entries) {
-		return _Json_wrap(
-			A3(
-				$elm$core$List$foldl,
-				_Json_addEntry(func),
-				_Json_emptyArray(_Utils_Tuple0),
-				entries));
-	});
-var $author$project$Level$mapToString = function (level) {
-	var _v0 = level.map;
-	switch (_v0.$) {
-		case 'Lvl1':
-			return 'Lvl1';
-		case 'Lvl2':
-			return 'Lvl2';
-		default:
-			return 'Lvl3';
-	}
-};
-var $elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, obj) {
-					var k = _v0.a;
-					var v = _v0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $author$project$Enemy$enemyDirToString = function (enemy) {
-	var _v0 = enemy.dir;
-	switch (_v0.$) {
-		case 'Left':
-			return 'left';
-		case 'Right':
-			return 'right';
-		case 'Up':
-			return 'up';
-		default:
-			return 'down';
-	}
-};
-var $author$project$Enemy$enemyTypeToString = function (enemy) {
-	var _v0 = enemy.enemyType;
-	switch (_v0.$) {
-		case 'Bandit':
-			return 'bandit';
-		case 'Zombie':
-			return 'zombie';
-		case 'Skeleton':
-			return 'skeleton';
-		default:
-			return 'enemy';
-	}
-};
-var $elm$json$Json$Encode$int = _Json_wrap;
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $author$project$Game$saveEnemy = function (enemy) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'initX',
-			$elm$json$Json$Encode$float(enemy.initX)),
-			_Utils_Tuple2(
-			'initY',
-			$elm$json$Json$Encode$float(enemy.initY)),
-			_Utils_Tuple2(
-			'initDir',
-			$elm$json$Json$Encode$string(
-				$author$project$Enemy$enemyDirToString(enemy))),
-			_Utils_Tuple2(
-			'x',
-			$elm$json$Json$Encode$float(enemy.x)),
-			_Utils_Tuple2(
-			'y',
-			$elm$json$Json$Encode$float(enemy.y)),
-			_Utils_Tuple2(
-			'vx',
-			$elm$json$Json$Encode$float(enemy.vx)),
-			_Utils_Tuple2(
-			'vy',
-			$elm$json$Json$Encode$float(enemy.vy)),
-			_Utils_Tuple2(
-			'dir',
-			$elm$json$Json$Encode$string(
-				$author$project$Enemy$enemyDirToString(enemy))),
-			_Utils_Tuple2(
-			'width',
-			$elm$json$Json$Encode$float(enemy.width)),
-			_Utils_Tuple2(
-			'height',
-			$elm$json$Json$Encode$float(enemy.height)),
-			_Utils_Tuple2(
-			'enemyType',
-			$elm$json$Json$Encode$string(
-				$author$project$Enemy$enemyTypeToString(enemy))),
-			_Utils_Tuple2(
-			'distanceLoop',
-			$elm$json$Json$Encode$float(enemy.distanceLoop)),
-			_Utils_Tuple2(
-			'speed',
-			$elm$json$Json$Encode$float(enemy.speed)),
-			_Utils_Tuple2(
-			'attack',
-			$elm$json$Json$Encode$int(enemy.attack)),
-			_Utils_Tuple2(
-			'health',
-			$elm$json$Json$Encode$int(enemy.health)),
-			_Utils_Tuple2(
-			'expDrop',
-			$elm$json$Json$Encode$int(enemy.expDrop)),
-			_Utils_Tuple2(
-			'detectPlayerRadius',
-			$elm$json$Json$Encode$float(enemy.detectPlayerRadius)),
-			_Utils_Tuple2(
-			'hostile',
-			$elm$json$Json$Encode$bool(enemy.hostile)),
-			_Utils_Tuple2(
-			'alive',
-			$elm$json$Json$Encode$bool(enemy.alive))
-		]);
-};
-var $author$project$Item$itemTypeToString = function (item) {
-	var _v0 = item.itemType;
-	switch (_v0.$) {
-		case 'ItemStand':
-			return 'empty';
-		case 'HealthPotion_ItemStand':
-			return 'health_potion_idle';
-		case 'SpeedPotion_ItemStand':
-			return 'speed_potion_idle';
-		case 'WoodSword_ItemStand':
-			return 'sword_wood_idle';
-		case 'StoneSword_ItemStand':
-			return 'sword_stone_idle';
-		case 'IronSword_ItemStand':
-			return 'sword_iron_idle';
-		case 'DragonSword_ItemStand':
-			return 'sword_dragon_idle';
-		case 'LeatherArmor_ItemStand':
-			return 'leather_chest';
-		case 'SilverArmor_ItemStand':
-			return 'silver_chest';
-		default:
-			return 'dragon_chest';
-	}
-};
-var $author$project$Game$saveItem = function (item) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'x',
-			$elm$json$Json$Encode$float(item.x)),
-			_Utils_Tuple2(
-			'y',
-			$elm$json$Json$Encode$float(item.y)),
-			_Utils_Tuple2(
-			'width',
-			$elm$json$Json$Encode$float(item.width)),
-			_Utils_Tuple2(
-			'height',
-			$elm$json$Json$Encode$float(item.height)),
-			_Utils_Tuple2(
-			'itemType',
-			$elm$json$Json$Encode$string(
-				$author$project$Item$itemTypeToString(item))),
-			_Utils_Tuple2(
-			'pickable',
-			$elm$json$Json$Encode$bool(item.pickable))
-		]);
-};
-var $author$project$Ports$storeLevel = _Platform_outgoingPort('storeLevel', $elm$core$Basics$identity);
-var $author$project$Game$saveLevel = function (level) {
-	var encodeItems = A2($elm$core$List$map, $author$project$Game$saveItem, level.items);
-	var encodeEnemies = A2($elm$core$List$map, $author$project$Game$saveEnemy, level.enemies);
-	var encodeLevel = $elm$json$Json$Encode$object(
-		_List_fromArray(
-			[
-				_Utils_Tuple2(
-				'map',
-				$elm$json$Json$Encode$string(
-					$author$project$Level$mapToString(level))),
-				_Utils_Tuple2(
-				'mapTexture',
-				$elm$json$Json$Encode$string(level.mapTexture)),
-				_Utils_Tuple2(
-				'enemies',
-				A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$object, encodeEnemies)),
-				_Utils_Tuple2(
-				'items',
-				A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$object, encodeItems)),
-				_Utils_Tuple2(
-				'startX',
-				$elm$json$Json$Encode$float(level.startX)),
-				_Utils_Tuple2(
-				'startY',
-				$elm$json$Json$Encode$float(level.startY))
-			]));
-	return $author$project$Ports$storeLevel(encodeLevel);
-};
-var $author$project$Armor$armorTypeToString = function (armor) {
-	var _v0 = armor.armorType;
-	switch (_v0.$) {
-		case 'None':
-			return 'none';
-		case 'Leather':
-			return 'leather';
-		case 'Silver':
-			return 'silver';
-		default:
-			return 'dragon';
-	}
-};
-var $author$project$Game$savePotion = function (potion) {
-	return _List_fromArray(
-		[
-			_Utils_Tuple2(
-			'ratio',
-			$elm$json$Json$Encode$float(potion.ratio)),
-			_Utils_Tuple2(
-			'duration',
-			$elm$json$Json$Encode$float(potion.duration)),
-			_Utils_Tuple2(
-			'cooldown',
-			$elm$json$Json$Encode$float(potion.cooldown)),
-			_Utils_Tuple2(
-			'timeOfLastUse',
-			$elm$json$Json$Encode$float(potion.timeOfLastUse)),
-			_Utils_Tuple2(
-			'count',
-			$elm$json$Json$Encode$int(potion.count))
-		]);
-};
-var $author$project$Ports$storePlayer = _Platform_outgoingPort('storePlayer', $elm$core$Basics$identity);
-var $author$project$Sword$swordTypeToString = function (sword) {
-	var _v0 = sword.swordType;
-	switch (_v0.$) {
-		case 'Wood':
-			return 'wood';
-		case 'Stone':
-			return 'stone';
-		case 'Iron':
-			return 'iron';
-		default:
-			return 'dragon';
-	}
-};
-var $author$project$Game$savePlayer = function (player) {
-	var encodePlayer = $elm$json$Json$Encode$object(
-		_List_fromArray(
-			[
-				_Utils_Tuple2(
-				'x',
-				$elm$json$Json$Encode$float(player.x)),
-				_Utils_Tuple2(
-				'y',
-				$elm$json$Json$Encode$float(player.y)),
-				_Utils_Tuple2(
-				'baseSpeed',
-				$elm$json$Json$Encode$float(player.baseSpeed)),
-				_Utils_Tuple2(
-				'currentSpeed',
-				$elm$json$Json$Encode$float(player.currentSpeed)),
-				_Utils_Tuple2(
-				'sword',
-				$elm$json$Json$Encode$string(
-					$author$project$Sword$swordTypeToString(player.sword))),
-				_Utils_Tuple2(
-				'armor',
-				$elm$json$Json$Encode$string(
-					$author$project$Armor$armorTypeToString(player.armor))),
-				_Utils_Tuple2(
-				'maxDefense',
-				$elm$json$Json$Encode$int(player.maxDefense)),
-				_Utils_Tuple2(
-				'maxHealth',
-				$elm$json$Json$Encode$int(player.maxHealth)),
-				_Utils_Tuple2(
-				'currentHealth',
-				$elm$json$Json$Encode$int(player.currentHealth)),
-				_Utils_Tuple2(
-				'playerLevel',
-				$elm$json$Json$Encode$int(player.playerLevel)),
-				_Utils_Tuple2(
-				'maxExp',
-				$elm$json$Json$Encode$int(player.maxExp)),
-				_Utils_Tuple2(
-				'currentExp',
-				$elm$json$Json$Encode$int(player.currentExp)),
-				_Utils_Tuple2(
-				'healthPotions',
-				$elm$json$Json$Encode$object(
-					$author$project$Game$savePotion(player.healthPotions))),
-				_Utils_Tuple2(
-				'speedPotions',
-				$elm$json$Json$Encode$object(
-					$author$project$Game$savePotion(player.speedPotions)))
-			]));
-	return $author$project$Ports$storePlayer(encodePlayer);
-};
-var $author$project$Ports$storeGameTime = _Platform_outgoingPort('storeGameTime', $elm$core$Basics$identity);
-var $author$project$Game$saveTime = function (time) {
-	var encodeTime = $elm$json$Json$Encode$float(time);
-	return $author$project$Ports$storeGameTime(encodeTime);
-};
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {
 		var url = _v0.a;
@@ -11258,13 +11326,7 @@ var $author$project$Game$update = F2(
 							keys: model.pauseToggle ? _List_Nil : keys,
 							pauseToggle: (model.player.currentHealth > 0) ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Escape, keys) ? (!model.pauseToggle) : model.pauseToggle) : model.pauseToggle
 						}),
-					(A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Escape, keys) && (!model.pauseToggle)) ? $elm$core$Platform$Cmd$batch(
-						_List_fromArray(
-							[
-								$author$project$Game$saveTime(model.time),
-								$author$project$Game$savePlayer(model.player),
-								$author$project$Game$saveLevel(model.level)
-							])) : $elm$core$Platform$Cmd$none);
+					(A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Escape, keys) && (!model.pauseToggle)) ? $author$project$Game$encodeSave(model) : $elm$core$Platform$Cmd$none);
 			case 'Hover':
 				var button = msg.a;
 				switch (button.$) {
@@ -11354,13 +11416,7 @@ var $author$project$Game$update = F2(
 			default:
 				return _Utils_Tuple2(
 					model,
-					$elm$core$Platform$Cmd$batch(
-						_List_fromArray(
-							[
-								$author$project$Game$saveTime(model.time),
-								$author$project$Game$savePlayer(model.player),
-								$author$project$Game$saveLevel(model.level)
-							])));
+					$author$project$Game$encodeSave(model));
 		}
 	});
 var $author$project$Help$update = F2(
@@ -11436,6 +11492,7 @@ var $author$project$Home$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $elm$browser$Browser$Navigation$reload = _Browser_reload(false);
 var $author$project$LoadGame$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -11463,39 +11520,28 @@ var $author$project$LoadGame$update = F2(
 						model,
 						{buttonBack: 'assets/button/button_back_hover.png'}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'MouseOut':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{buttonBack: 'assets/button/button_back.png', buttonGame1: 'assets/button/button_loadGameInstance_background.png', buttonGame2: 'assets/button/button_loadGameInstance_background.png', buttonGame3: 'assets/button/button_loadGameInstance_background.png'}),
 					$elm$core$Platform$Cmd$none);
+			default:
+				var reloadPage = msg.a;
+				return reloadPage ? _Utils_Tuple2(model, $elm$browser$Browser$Navigation$reload) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$NewGame$difficultyToString = function (difficulty) {
-	switch (difficulty.$) {
-		case 'Easy':
-			return 'easy';
-		case 'Medium':
-			return 'medium';
-		default:
-			return 'hard';
-	}
-};
-var $elm$json$Json$Encode$null = _Json_encodeNull;
-var $author$project$Ports$storeSave1 = _Platform_outgoingPort('storeSave1', $elm$core$Basics$identity);
-var $author$project$Ports$storeSave2 = _Platform_outgoingPort('storeSave2', $elm$core$Basics$identity);
-var $author$project$Ports$storeSave3 = _Platform_outgoingPort('storeSave3', $elm$core$Basics$identity);
 var $author$project$NewGame$createSave = function (model) {
-	var encodeSave = $elm$json$Json$Encode$object(
+	var encodedSave = $elm$json$Json$Encode$object(
 		_List_fromArray(
 			[
 				_Utils_Tuple2(
 				'name',
-				$elm$json$Json$Encode$string(model.playerName)),
+				(model.playerName === '') ? $elm$json$Json$Encode$null : $elm$json$Json$Encode$string(model.playerName)),
 				_Utils_Tuple2(
 				'difficulty',
 				$elm$json$Json$Encode$string(
-					$author$project$NewGame$difficultyToString(model.difficulty))),
+					$author$project$DecodingJson$difficultyToString(model.difficulty))),
 				_Utils_Tuple2('player', $elm$json$Json$Encode$null),
 				_Utils_Tuple2('level', $elm$json$Json$Encode$null),
 				_Utils_Tuple2(
@@ -11505,11 +11551,11 @@ var $author$project$NewGame$createSave = function (model) {
 	var _v0 = model.savePosition;
 	switch (_v0.$) {
 		case 'First':
-			return $author$project$Ports$storeSave1(encodeSave);
+			return $author$project$Ports$storeSave1(encodedSave);
 		case 'Second':
-			return $author$project$Ports$storeSave2(encodeSave);
+			return $author$project$Ports$storeSave2(encodedSave);
 		default:
-			return $author$project$Ports$storeSave3(encodeSave);
+			return $author$project$Ports$storeSave3(encodedSave);
 	}
 };
 var $author$project$NewGame$update = F2(
@@ -11522,6 +11568,9 @@ var $author$project$NewGame$update = F2(
 						{buttonBack: 'assets/button/button_back_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'HoverStart':
+				var _v1 = A2($elm$core$Debug$log, '[NewGame.HoverStart] name', model.playerName);
+				var _v2 = A2($elm$core$Debug$log, '[NewGame.HoverStart] diff', model.difficulty);
+				var _v3 = A2($elm$core$Debug$log, '[NewGame.HoverStart] pos', model.savePosition);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -11734,7 +11783,8 @@ var $author$project$Main$update = F2(
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
-var $elm$html$Html$h3 = _VirtualDom_node('h3');
+var $elm$json$Json$Decode$value = _Json_decodeValue;
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
@@ -12823,8 +12873,8 @@ var $author$project$Game$swordInfo = F4(
 						]))
 				]));
 	});
-var $author$project$Game$viewPlayerInfo = F3(
-	function (left, top, player) {
+var $author$project$Game$viewPlayerInfo = F4(
+	function (left, top, playerName, player) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -12853,7 +12903,7 @@ var $author$project$Game$viewPlayerInfo = F3(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('<player_name>')
+							$elm$html$Html$text(playerName)
 						])),
 					A2(
 					$elm$html$Html$pre,
@@ -12880,8 +12930,8 @@ var $author$project$Game$viewPlayerInfo = F3(
 						]))
 				]));
 	});
-var $author$project$Game$viewCharacterScreen = F4(
-	function (left, top, keys, player) {
+var $author$project$Game$viewCharacterScreen = F5(
+	function (left, top, keys, name, player) {
 		var itemsImgSize = '64';
 		var characterImgPath = function () {
 			var _v0 = player.armor.armorType;
@@ -12946,7 +12996,7 @@ var $author$project$Game$viewCharacterScreen = F4(
 					A5($author$project$Game$armorInfo, 375, 196, itemsImgSize, player.armor, $author$project$Armor$Chestplate),
 					A5($author$project$Game$armorInfo, 375, 292, itemsImgSize, player.armor, $author$project$Armor$Legs),
 					A4($author$project$Game$swordInfo, 375, 388, itemsImgSize, player.sword),
-					A3($author$project$Game$viewPlayerInfo, 766, 75, player),
+					A4($author$project$Game$viewPlayerInfo, 766, 75, name, player),
 					A3($author$project$Game$healthPotionInfo, 710, 310, player.healthPotions),
 					A3($author$project$Game$speedPotionInfo, 710, 420, player.speedPotions)
 				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
@@ -13198,8 +13248,12 @@ var $author$project$Route$routeToString = function (route) {
 			return 'index.html';
 		case 'NewGame':
 			return 'new-game';
-		case 'Game':
-			return 'game';
+		case 'Game1':
+			return 'game1';
+		case 'Game2':
+			return 'game2';
+		case 'Game3':
+			return 'game3';
 		case 'LoadGame':
 			return 'load-game';
 		case 'HighScores':
@@ -13237,8 +13291,8 @@ var $elm$html$Html$Events$onMouseOver = function (msg) {
 		'mouseover',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $author$project$Game$viewDeathScreen = F5(
-	function (left, top, pathRespawn, pathReturn, player) {
+var $author$project$Game$viewDeathScreen = F6(
+	function (left, top, pathRespawn, pathReturn, player, pos) {
 		return (!player.currentHealth) ? A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -13278,7 +13332,16 @@ var $author$project$Game$viewDeathScreen = F5(
 							$elm$html$Html$a,
 							_List_fromArray(
 								[
-									$author$project$Route$href($author$project$Route$Game)
+									function () {
+									switch (pos.$) {
+										case 'First':
+											return $author$project$Route$href($author$project$Route$Game1);
+										case 'Second':
+											return $author$project$Route$href($author$project$Route$Game2);
+										default:
+											return $author$project$Route$href($author$project$Route$Game3);
+									}
+								}()
 								]),
 							_List_fromArray(
 								[
@@ -13710,8 +13773,8 @@ var $author$project$Game$viewPauseScreen = F8(
 						]))
 				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
 	});
-var $author$project$Game$viewPlayerDebugInfo = F4(
-	function (left, top, player, enemy) {
+var $author$project$Game$viewPlayerDebugInfo = F5(
+	function (left, top, name, diff, player) {
 		return A2(
 			$elm$html$Html$pre,
 			_List_fromArray(
@@ -13728,7 +13791,9 @@ var $author$project$Game$viewPlayerDebugInfo = F4(
 				]),
 			_List_fromArray(
 				[
-					$elm$html$Html$text('Player'),
+					$elm$html$Html$text('name: ' + name),
+					$elm$html$Html$text(
+					'\ndifficulty: ' + $author$project$DecodingJson$difficultyToString(diff)),
 					$elm$html$Html$text(
 					'\nx: ' + $elm$core$String$fromFloat(player.x)),
 					$elm$html$Html$text(
@@ -13946,27 +14011,21 @@ var $author$project$Game$view = function (model) {
 					]),
 				{camera: model.camera, size: model.screen, time: model.time},
 				$author$project$Game$render(model)),
-				A4(
-				$author$project$Game$viewPlayerDebugInfo,
-				100,
-				100,
-				model.player,
-				$elm$core$List$head(model.level.enemies)),
+				A5($author$project$Game$viewPlayerDebugInfo, 100, 100, model.name, model.difficulty, model.player),
 				A3($author$project$Game$viewTime, 950, 50, model.time),
 				A4($author$project$Game$viewDefenseBar, 448, 685, model.player.maxDefense, model.player.armor.totalDef),
 				A4($author$project$Game$viewHealthBar, 448, 725, model.player.maxHealth, model.player.currentHealth),
 				A4($author$project$Game$viewExpBar, 448, 765, model.player.maxExp, model.player.currentExp),
 				A5($author$project$Game$viewConsumable1, 336, 650, model.keys, model.time, model.player.healthPotions),
 				A5($author$project$Game$viewConsumable2, 1485, 650, model.keys, model.time, model.player.speedPotions),
-				A4($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.player),
+				A5($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.name, model.player),
 				A8($author$project$Game$viewPauseScreen, 360, 160, model.button_PS_resume, model.button_PS_settings, model.button_PS_help, model.button_PS_return, model.pauseToggle, model.player),
-				A5($author$project$Game$viewDeathScreen, 360, 160, model.button_DS_respawn, model.button_DS_return, model.player),
+				A6($author$project$Game$viewDeathScreen, 360, 160, model.button_DS_respawn, model.button_DS_return, model.player, model.savePosition),
 				A3($author$project$Game$viewPlayerInput, 820, 835, model.keys)
 			]));
 };
 var $author$project$Help$HoverBack = {$: 'HoverBack'};
 var $author$project$Help$MouseOut = {$: 'MouseOut'};
-var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $author$project$Help$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -14462,6 +14521,42 @@ var $myrho$elm_round$Round$round = $myrho$elm_round$Round$roundFun(
 			}
 		}));
 var $author$project$LoadGame$viewSavedGame = function (save) {
+	var playerName = function () {
+		var _v3 = save.name;
+		if (_v3.$ === 'Just') {
+			var name = _v3.a;
+			return name;
+		} else {
+			return 'PLAYER';
+		}
+	}();
+	var playerLvl = function () {
+		var _v2 = save.player;
+		if (_v2.$ === 'Just') {
+			var player = _v2.a;
+			return $elm$core$String$fromInt(player.playerLevel);
+		} else {
+			return '-';
+		}
+	}();
+	var playerHp = function () {
+		var _v1 = save.player;
+		if (_v1.$ === 'Just') {
+			var player = _v1.a;
+			return A2($myrho$elm_round$Round$round, 2, (player.currentHealth / player.maxHealth) * 100.0) + '%';
+		} else {
+			return '-';
+		}
+	}();
+	var gameLvl = function () {
+		var _v0 = save.level;
+		if (_v0.$ === 'Just') {
+			var level = _v0.a;
+			return $author$project$Level$mapToString(level);
+		} else {
+			return '-';
+		}
+	}();
 	return A2(
 		$elm$html$Html$pre,
 		_List_fromArray(
@@ -14476,16 +14571,14 @@ var $author$project$LoadGame$viewSavedGame = function (save) {
 			]),
 		_List_fromArray(
 			[
-				$elm$html$Html$text('Name: ' + save.name),
-				$elm$html$Html$text('\tDifficulty: ' + save.difficulty),
+				$elm$html$Html$text('Name: ' + playerName),
 				$elm$html$Html$text(
-				'\nGame: ' + $author$project$Level$mapToString(save.level)),
+				'\tDifficulty: ' + $author$project$DecodingJson$difficultyToString(save.difficulty)),
+				$elm$html$Html$text('\nGame: ' + gameLvl),
 				$elm$html$Html$text(
 				'\tTime: ' + (A2($myrho$elm_round$Round$round, 3, save.time) + 's')),
-				$elm$html$Html$text(
-				'\nPlayer LvL: ' + $elm$core$String$fromInt(save.player.playerLevel)),
-				$elm$html$Html$text(
-				'\tHealth: ' + (A2($myrho$elm_round$Round$round, 2, (save.player.currentHealth / save.player.maxHealth) * 100.0) + '%'))
+				$elm$html$Html$text('\nPlayer LvL: ' + playerLvl),
+				$elm$html$Html$text('\tHealth: ' + playerHp)
 			]));
 };
 var $author$project$LoadGame$viewLoadGameInfo = function (save) {
@@ -14536,7 +14629,7 @@ var $author$project$LoadGame$view = function (model) {
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 						A2($elm$html$Html$Attributes$style, 'left', '660px'),
 						A2($elm$html$Html$Attributes$style, 'top', '250px'),
-						$author$project$Route$href($author$project$Route$Game),
+						$author$project$Route$href($author$project$Route$Game1),
 						A2($elm$html$Html$Attributes$style, 'text-decoration', 'none'),
 						$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame1),
 						$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
@@ -14553,12 +14646,16 @@ var $author$project$LoadGame$view = function (model) {
 						$author$project$LoadGame$viewLoadGameInfo(model.save1)
 					])),
 				A2(
-				$elm$html$Html$div,
+				$elm$html$Html$a,
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 						A2($elm$html$Html$Attributes$style, 'left', '660px'),
-						A2($elm$html$Html$Attributes$style, 'top', '428px')
+						A2($elm$html$Html$Attributes$style, 'top', '428px'),
+						$author$project$Route$href($author$project$Route$Game2),
+						A2($elm$html$Html$Attributes$style, 'text-decoration', 'none'),
+						$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame2),
+						$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
 					]),
 				_List_fromArray(
 					[
@@ -14566,20 +14663,22 @@ var $author$project$LoadGame$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.buttonGame2),
-								$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame2),
-								$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+								$elm$html$Html$Attributes$src(model.buttonGame2)
 							]),
 						_List_Nil),
 						$author$project$LoadGame$viewLoadGameInfo(model.save2)
 					])),
 				A2(
-				$elm$html$Html$div,
+				$elm$html$Html$a,
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 						A2($elm$html$Html$Attributes$style, 'left', '660px'),
-						A2($elm$html$Html$Attributes$style, 'top', '606px')
+						A2($elm$html$Html$Attributes$style, 'top', '606px'),
+						$author$project$Route$href($author$project$Route$Game3),
+						A2($elm$html$Html$Attributes$style, 'text-decoration', 'none'),
+						$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame3),
+						$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
 					]),
 				_List_fromArray(
 					[
@@ -14587,9 +14686,7 @@ var $author$project$LoadGame$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.buttonGame3),
-								$elm$html$Html$Events$onMouseOver($author$project$LoadGame$HoverGame3),
-								$elm$html$Html$Events$onMouseOut($author$project$LoadGame$MouseOut)
+								$elm$html$Html$Attributes$src(model.buttonGame3)
 							]),
 						_List_Nil),
 						$author$project$LoadGame$viewLoadGameInfo(model.save3)
@@ -14620,8 +14717,6 @@ var $author$project$LoadGame$view = function (model) {
 var $author$project$NewGame$DifficultyTo = function (a) {
 	return {$: 'DifficultyTo', a: a};
 };
-var $author$project$NewGame$Easy = {$: 'Easy'};
-var $author$project$NewGame$Hard = {$: 'Hard'};
 var $author$project$NewGame$HoverBack = {$: 'HoverBack'};
 var $author$project$NewGame$HoverStart = {$: 'HoverStart'};
 var $author$project$NewGame$MouseOut = {$: 'MouseOut'};
@@ -14654,6 +14749,10 @@ var $elm$html$Html$Events$stopPropagationOn = F2(
 			$elm$virtual_dom$VirtualDom$on,
 			event,
 			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
 	});
 var $elm$html$Html$Events$targetValue = A2(
 	$elm$json$Json$Decode$at,
@@ -14808,8 +14907,8 @@ var $author$project$NewGame$view = function (model) {
 									[
 										A3(
 										$author$project$NewGame$radio,
-										$author$project$NewGame$DifficultyTo($author$project$NewGame$Easy),
-										_Utils_eq(model.difficulty, $author$project$NewGame$Easy),
+										$author$project$NewGame$DifficultyTo($author$project$DecodingJson$Easy),
+										_Utils_eq(model.difficulty, $author$project$DecodingJson$Easy),
 										'easy')
 									])),
 								A2(
@@ -14824,8 +14923,8 @@ var $author$project$NewGame$view = function (model) {
 									[
 										A3(
 										$author$project$NewGame$radio,
-										$author$project$NewGame$DifficultyTo($author$project$NewGame$Medium),
-										_Utils_eq(model.difficulty, $author$project$NewGame$Medium),
+										$author$project$NewGame$DifficultyTo($author$project$DecodingJson$Medium),
+										_Utils_eq(model.difficulty, $author$project$DecodingJson$Medium),
 										'medium')
 									])),
 								A2(
@@ -14840,8 +14939,8 @@ var $author$project$NewGame$view = function (model) {
 									[
 										A3(
 										$author$project$NewGame$radio,
-										$author$project$NewGame$DifficultyTo($author$project$NewGame$Hard),
-										_Utils_eq(model.difficulty, $author$project$NewGame$Hard),
+										$author$project$NewGame$DifficultyTo($author$project$DecodingJson$Hard),
+										_Utils_eq(model.difficulty, $author$project$DecodingJson$Hard),
 										'hard')
 									]))
 							])),
@@ -14941,7 +15040,17 @@ var $author$project$NewGame$view = function (model) {
 				$elm$html$Html$a,
 				_List_fromArray(
 					[
-						$author$project$Route$href($author$project$Route$Game)
+						function () {
+						var _v0 = model.savePosition;
+						switch (_v0.$) {
+							case 'First':
+								return $author$project$Route$href($author$project$Route$Game1);
+							case 'Second':
+								return $author$project$Route$href($author$project$Route$Game2);
+							default:
+								return $author$project$Route$href($author$project$Route$Game3);
+						}
+					}()
 					]),
 				_List_fromArray(
 					[
@@ -15076,7 +15185,7 @@ var $author$project$Main$viewBody = function (model) {
 	switch (_v0.$) {
 		case 'NotFoundPage':
 			return A2(
-				$elm$html$Html$h3,
+				$elm$html$Html$h1,
 				_List_Nil,
 				_List_fromArray(
 					[

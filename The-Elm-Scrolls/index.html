@@ -10,24 +10,19 @@
   <div id="elm"></div>
 </body>
 <script>
-    var storedPlayer = localStorage.getItem('player');
-    var storedTime = localStorage.getItem('time');
-    var storedLevel = localStorage.getItem('level');
 
-    var startingPlayer = storedPlayer ? JSON.parse(storedPlayer) : null;
-    var startingTime = storedTime ? JSON.parse(storedTime) : null;
-    var startingLevel = storedLevel ? JSON.parse(storedLevel) : null;
+    var storedSave1 = localStorage.getItem('save1');
+    var storedSave2 = localStorage.getItem('save2');
+    var storedSave3 = localStorage.getItem('save3');
+
+    var retrievedSave1 = storedSave1 ? JSON.parse(storedSave1) : null;
+    var retrievedSave2 = storedSave2 ? JSON.parse(storedSave2) : null;
+    var retrievedSave3 = storedSave3 ? JSON.parse(storedSave3) : null;
 
     const flags = {
-      save1: {
-        name: null,
-        difficulty: null,
-        player: startingPlayer,
-        time: startingTime,
-        level: startingLevel
-      },
-      save2: null,
-      save3: null,
+      save1: retrievedSave1,
+      save2: retrievedSave2,
+      save3: retrievedSave3,
       //settings: null,
       //highscores: null
     };
@@ -40,26 +35,22 @@
     });
 
     app.ports.storeSave1.subscribe(function(state) {
-        localStorage.setItem('save1', JSON.stringify(state));
+      localStorage.setItem('save1', JSON.stringify(state));
     });
     app.ports.storeSave2.subscribe(function(state) {
-        localStorage.setItem('save2', JSON.stringify(state));
+      localStorage.setItem('save2', JSON.stringify(state));
     });
     app.ports.storeSave3.subscribe(function(state) {
-        localStorage.setItem('save3', JSON.stringify(state));
+      localStorage.setItem('save3', JSON.stringify(state));
     });
 
-    app.ports.storePlayer.subscribe(function(state) {
-        localStorage.setItem('player', JSON.stringify(state));
+    app.ports.loadedLoadGame.subscribe(function(state) {
+      let reload = localStorage.getItem('reloadLoadGame');
+      reload = reload ? JSON.parse(reload) : true;
+      app.ports.reloadLoadGame.send(reload);
+      localStorage.setItem('reloadLoadGame', JSON.stringify(!reload));
     });
 
-    app.ports.storeGameTime.subscribe(function(state) {
-        localStorage.setItem('time', JSON.stringify(state));
-    });
-
-    app.ports.storeLevel.subscribe(function(state) {
-        localStorage.setItem('level', JSON.stringify(state));
-    });
 </script>
 </html>
 

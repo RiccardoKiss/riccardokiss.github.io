@@ -7,6 +7,7 @@ import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 import Round
 
 import Route exposing (Route)
+import Ports exposing (..)
 import DecodingJson exposing (..)
 import Level exposing (mapToString)
 
@@ -43,7 +44,7 @@ init flags navKey =
     , save2 = flags.save2
     , save3 = flags.save3
     }
-  , Cmd.none
+  , Ports.loadedLoadGame ()
   )
 
 
@@ -54,6 +55,7 @@ type Msg
   | HoverGame3
   --| ClickedBack
   | MouseOut
+  | Reload Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -97,6 +99,12 @@ update msg model =
       , Cmd.none
       )
 
+    Reload reloadPage ->
+      if reloadPage then
+        ( model, Nav.reload )
+      else
+        ( model, Cmd.none )
+
 
 viewLoadGameInfo : Maybe DecodingJson.Save -> Html Msg
 viewLoadGameInfo save =
@@ -109,6 +117,39 @@ viewLoadGameInfo save =
 
 viewSavedGame : DecodingJson.Save -> Html Msg
 viewSavedGame save =
+  let
+    playerName =
+      case save.name of
+        Just name ->
+          name
+
+        Nothing ->
+          "PLAYER"
+
+    gameLvl =
+      case save.level of
+        Just level ->
+          Level.mapToString level
+
+        Nothing ->
+          "-"
+
+    playerLvl =
+      case save.player of
+        Just player ->
+          String.fromInt player.playerLevel
+
+        Nothing ->
+          "-"
+
+    playerHp =
+      case save.player of
+        Just player ->
+          (Round.round 2 (toFloat player.currentHealth / toFloat player.maxHealth * 100.0)) ++ "%"
+
+        Nothing ->
+          "-"
+  in
   pre [ style "position" "absolute"
       , style "left" "35px"
       , style "top" "20px"
@@ -117,12 +158,12 @@ viewSavedGame save =
       , style "margin" "0px"
       , style "font-size" "1.5rem"
       ]
-      [ text ("Name: " ++ save.name)
-      , text ("\tDifficulty: " ++ save.difficulty)
-      , text ("\nGame: " ++ Level.mapToString save.level)
+      [ text ("Name: " ++ playerName)
+      , text ("\tDifficulty: " ++ DecodingJson.difficultyToString save.difficulty)
+      , text ("\nGame: " ++ gameLvl)
       , text ("\tTime: " ++ (Round.round 3 save.time) ++ "s")
-      , text ("\nPlayer LvL: " ++ String.fromInt save.player.playerLevel)
-      , text ("\tHealth: " ++ (Round.round 2 (toFloat save.player.currentHealth / toFloat save.player.maxHealth * 100.0)) ++ "%")
+      , text ("\nPlayer LvL: " ++ playerLvl)
+      , text ("\tHealth: " ++ playerHp)
       ]
 
 viewEmptyGame : Html Msg
@@ -153,36 +194,38 @@ view model =
            --, style "font" "bold 48px Tahoma"
            ] [ text "Load Game" ]
       , a [ style "position" "absolute"
-            , style "left" "660px"
-            , style "top" "250px"
-            , Route.href Route.Game
-            , style "text-decoration" "none"
-            , onMouseOver HoverGame1
-            , onMouseOut MouseOut
-            ]
-            [ img [ src model.buttonGame1 ] []  --600 128
-            , viewLoadGameInfo model.save1
-            ]
-      , div [ style "position" "absolute"
-            , style "left" "660px"
-            , style "top" "428px"
-            ]
-            [ img [ src model.buttonGame2
-                  , onMouseOver HoverGame2
-                  , onMouseOut MouseOut
-                  ] []
-            , viewLoadGameInfo model.save2
-            ]
-      , div [ style "position" "absolute"
-            , style "left" "660px"
-            , style "top" "606px"
-            ]
-            [ img [ src model.buttonGame3
-                  , onMouseOver HoverGame3
-                  , onMouseOut MouseOut
-                  ] []
-            , viewLoadGameInfo model.save3
-            ]
+          , style "left" "660px"
+          , style "top" "250px"
+          , Route.href Route.Game1
+          , style "text-decoration" "none"
+          , onMouseOver HoverGame1
+          , onMouseOut MouseOut
+          ]
+          [ img [ src model.buttonGame1 ] []  --600 128
+          , viewLoadGameInfo model.save1
+          ]
+      , a [ style "position" "absolute"
+          , style "left" "660px"
+          , style "top" "428px"
+          , Route.href Route.Game2
+          , style "text-decoration" "none"
+          , onMouseOver HoverGame2
+          , onMouseOut MouseOut
+          ]
+          [ img [ src model.buttonGame2 ] []
+          , viewLoadGameInfo model.save2
+          ]
+      , a [ style "position" "absolute"
+          , style "left" "660px"
+          , style "top" "606px"
+          , Route.href Route.Game3
+          , style "text-decoration" "none"
+          , onMouseOver HoverGame3
+          , onMouseOut MouseOut
+          ]
+          [ img [ src model.buttonGame3 ] []
+          , viewLoadGameInfo model.save3
+          ]
       , a [ Route.href Route.Home ]
           [ img [ src model.buttonBack
                 , style "position" "absolute"
@@ -193,3 +236,11 @@ view model =
                 ] []
           ]
       ]
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+  reloadLoadGame Reload

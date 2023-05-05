@@ -34,6 +34,9 @@ import Potion exposing (..)
 
 type alias Model =
   { navKey : Nav.Key
+  , savePosition : SavePosition
+  , name : String
+  , difficulty : DecodingJson.Difficulty
   , level :  Level.Level
   , player : Player
   , resources : Resources
@@ -52,6 +55,11 @@ type alias Model =
 
 type alias Input =
   { x : Int, y : Int }
+
+type SavePosition
+  = First
+  | Second
+  | Third
 
 type Button
   = DeathScreenRespawn
@@ -95,20 +103,69 @@ initPlayer level =
   , speedPotions = Potion.speedPotion 1.5 5.0 5.0 0.0 0
   }
 
-init : Maybe DecodingJson.Save -> Nav.Key -> ( Model, Cmd Msg )
-init save navKey =
+init : Maybe DecodingJson.Save -> SavePosition -> Nav.Key -> ( Model, Cmd Msg )
+init save pos navKey =
+  let
+    _ = Debug.log "[Game.init] save" save
+    _ = Debug.log "[Game.init] pos" pos
+  in
   ( { navKey = navKey
+    , savePosition = pos
+    , name =
+        case save of
+          Just s ->
+            case s.name of
+              Just name ->
+                name
+
+              Nothing ->
+                "PLAYER"
+
+          Nothing ->
+            "PLAYER"
+
+    , difficulty =
+        case save of
+          Just s ->
+            s.difficulty
+            {-
+            case s.difficulty of
+              "easy" ->
+                DecodingJson.Easy
+
+              "medium" ->
+                DecodingJson.Medium
+
+              "hard" ->
+                DecodingJson.Hard
+
+              _ ->
+                DecodingJson.Easy
+                -}
+          Nothing ->
+            DecodingJson.Easy
+
     , level =
         case save of
           Just s ->
-            s.level
+            case s.level of
+              Just lvl ->
+                lvl
+
+              Nothing ->
+                Level.level2
 
           Nothing ->
             Level.level2
     , player =
         case save of
           Just s ->
-            s.player
+            case s.player of
+              Just p ->
+                p
+
+              Nothing ->
+                initPlayer Level.level2
 
           Nothing ->
             initPlayer Level.level2
@@ -120,7 +177,7 @@ init save navKey =
             s.time
 
           Nothing ->
-            0
+            0.0
     , screen = ( 1280, 720 )
     , camera = Camera.fixedArea (32 * 16) ( 0, 0 ) --(16 * 8) ( 0, 0 )
     , pauseToggle = False
@@ -202,11 +259,12 @@ update msg model =
 
         }
       , if List.member Keyboard.Escape keys && not model.pauseToggle then
-          Cmd.batch
-            [ saveTime model.time
-            , savePlayer model.player
-            , saveLevel model.level
-            ]
+          encodeSave model
+          --Cmd.batch
+          --  [ saveTime model.time
+          --  , savePlayer model.player
+          --  , saveLevel model.level
+          --  ]
         else
           Cmd.none
       )
@@ -306,23 +364,36 @@ update msg model =
 
     SaveGame ->
       ( model
-      ,  Cmd.batch
-          [ saveTime model.time
-          , savePlayer model.player
-          , saveLevel model.level
-          ]
+      , encodeSave model
+      --,  Cmd.batch
+      --    [ saveTime model.time
+      --    , savePlayer model.player
+      --    , saveLevel model.level
+      --    ]
       )
 
 
-saveTime : Float -> Cmd msg
-saveTime time =
+encodeSave : Model -> Cmd msg
+encodeSave model =
   let
-    encodeTime =
-      Encode.float time
-        --[ ( "time", Encode.float time ) ]
+    encodedSave =
+      Encode.object
+        [ ( "name", Encode.string model.name )
+        , ( "difficulty", Encode.string (DecodingJson.difficultyToString model.difficulty) )
+        , ( "player", Encode.object (savePlayer model.player) )
+        , ( "level", Encode.object (saveLevel model.level) )
+        , ( "time", Encode.float model.time )
+        ]
   in
-  encodeTime
-  |> Ports.storeGameTime
+  case model.savePosition of
+    First ->
+      Ports.storeSave1 encodedSave
+
+    Second ->
+      Ports.storeSave2 encodedSave
+
+    Third ->
+      Ports.storeSave3 encodedSave
 
 saveEnemy : Enemy -> List (String, Encode.Value)
 saveEnemy enemy =
@@ -359,13 +430,13 @@ saveItem item =
     , ( "pickable", Encode.bool item.pickable )
     ]
 
-saveLevel : Level -> Cmd msg
+saveLevel : Level -> List (String, Encode.Value)--Cmd msg
 saveLevel level =
   let
     encodeEnemies = List.map saveEnemy level.enemies
     encodeItems = List.map saveItem level.items
     encodeLevel =
-      Encode.object
+      --Encode.object
         [ ( "map", Encode.string (mapToString level) )
         , ( "mapTexture", Encode.string level.mapTexture )
         , ( "enemies", Encode.list Encode.object encodeEnemies )
@@ -375,9 +446,9 @@ saveLevel level =
         ]
   in
   encodeLevel
-  |> Ports.storeLevel
+  --|> Ports.storeLevel
 
-savePotion : Potion ->  List (String, Encode.Value)
+savePotion : Potion -> List (String, Encode.Value)
 savePotion potion =
   [ ( "ratio", Encode.float potion.ratio )
   , ( "duration", Encode.float potion.duration )
@@ -386,11 +457,11 @@ savePotion potion =
   , ( "count", Encode.int potion.count )
   ]
 
-savePlayer : Player -> Cmd msg
+savePlayer : Player -> List (String, Encode.Value)--Cmd msg
 savePlayer player =
   let
     encodePlayer =
-      Encode.object
+      --Encode.object
         [ ( "x", Encode.float player.x )
         , ( "y", Encode.float player.y )
         --, ( "vx", Encode.float player.vx )
@@ -411,7 +482,7 @@ savePlayer player =
         ]
   in
   encodePlayer
-  |> Ports.storePlayer
+  --|> Ports.storePlayer
 
 
 playerTick :
@@ -989,13 +1060,14 @@ viewPlayerInput left top keys =
             ] [ img [ src (keyButtonTexture "spacebar" keys) ] [] ]
       ]
 
-viewPlayerDebugInfo : Int -> Int -> Player -> Maybe Enemy -> Html Msg
-viewPlayerDebugInfo left top player enemy =
+viewPlayerDebugInfo : Int -> Int -> String -> DecodingJson.Difficulty -> Player -> Html Msg
+viewPlayerDebugInfo left top name diff player =
   pre [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
       ]
-      [ text "Player"
+      [ text ("name: " ++ name)
+      , text ("\ndifficulty: " ++ DecodingJson.difficultyToString diff)
       --, text ("\nlvl: " ++ String.fromInt player.playerLevel)
       --, text ("\nmaxEXP: " ++ String.fromInt player.maxExp)
       --, text ("\ncurEXP: " ++ String.fromInt player.currentExp)
@@ -1012,39 +1084,10 @@ viewPlayerDebugInfo left top player enemy =
       --, text ("\ncurHP: " ++ String.fromInt player.currentHealth)
       --, text ("\nHP potions: " ++ String.fromInt player.healthPotionCount)
       --, text ("\nSPD potions: " ++ String.fromInt player.speedPotionCount)
-      {-, text ("\neX: " ++ case enemy of
-          Just en ->
-            String.fromFloat en.x
-
-          Nothing ->
-            ""
-            )
-      , text ("\neY: " ++ case enemy of
-          Just en ->
-            String.fromFloat en.y
-
-          Nothing ->
-            ""
-            )
-      , text ("\neVX: " ++ case enemy of
-          Just en ->
-            String.fromFloat en.vx
-
-          Nothing ->
-            ""
-            )
-      , text ("\neVY: " ++ case enemy of
-          Just en ->
-            String.fromFloat en.vy
-
-          Nothing ->
-            ""
-            )
-      -}
       ]
 
-viewPlayerInfo : Int -> Int -> Player -> Html Msg
-viewPlayerInfo left top player =
+viewPlayerInfo : Int -> Int -> String -> Player -> Html Msg
+viewPlayerInfo left top playerName player =
   div [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
@@ -1055,7 +1098,7 @@ viewPlayerInfo left top player =
             , style "font-weight" "bolder"
             , style "font-size" "1.75em"
             ]
-            [ text  "<player_name>" ]
+            [ text  playerName ]
       , pre [ style "position" "absolute"
             , style "margin-top" "1.5em"
             , style "font-size" "1.5em"
@@ -1216,8 +1259,8 @@ speedPotionInfo left top speedPotion =
             ]
       ]
 
-viewCharacterScreen : Int -> Int -> List Keyboard.Key -> Player -> Html Msg
-viewCharacterScreen left top keys player =
+viewCharacterScreen : Int -> Int -> List Keyboard.Key -> String -> Player -> Html Msg
+viewCharacterScreen left top keys name player =
   let
     itemsImgSize = "64" --"128"
     characterImgPath =
@@ -1252,7 +1295,7 @@ viewCharacterScreen left top keys player =
         , armorInfo 375 196 itemsImgSize player.armor Armor.Chestplate
         , armorInfo 375 292 itemsImgSize player.armor Armor.Legs
         , swordInfo 375 388 itemsImgSize player.sword
-        , viewPlayerInfo 766 75 player
+        , viewPlayerInfo 766 75 name player
         , healthPotionInfo 710 310 player.healthPotions
         , speedPotionInfo 710 420 player.speedPotions
         ]
@@ -1327,8 +1370,8 @@ viewPauseScreen left top pathResume pathSettings pathHelp pathReturn pauseToggle
   else
     div [] []
 
-viewDeathScreen : Int -> Int -> String -> String -> Player -> Html Msg
-viewDeathScreen left top pathRespawn pathReturn player =
+viewDeathScreen : Int -> Int -> String -> String -> Player -> SavePosition -> Html Msg
+viewDeathScreen left top pathRespawn pathReturn player pos =
   if player.currentHealth == 0 then
     div [ style "left" (String.fromInt left ++ "px")
         , style "top" (String.fromInt top ++ "px")
@@ -1342,7 +1385,16 @@ viewDeathScreen left top pathRespawn pathReturn player =
               , style "left" "390px"
               , style "top" "300px"
               ]
-              [ a [ Route.href Route.Game ]
+              [ a [ case pos of
+                      First ->
+                        Route.href Route.Game1
+
+                      Second ->
+                        Route.href Route.Game2
+
+                      Third ->
+                        Route.href Route.Game3
+                  ]
                 [ img [ src pathRespawn
                       , onMouseOver (Hover DeathScreenRespawn)
                       , onMouseOut (MouseOut DeathScreenRespawn)
@@ -1398,16 +1450,16 @@ view model =
             , size = model.screen  -- (1280, 720)
             }
               (render model)
-      , viewPlayerDebugInfo 100 100 model.player (List.head model.level.enemies)
+      , viewPlayerDebugInfo 100 100 model.name model.difficulty model.player
       , viewTime 950 50 model.time
       , viewDefenseBar 448 685 model.player.maxDefense model.player.armor.totalDef
       , viewHealthBar 448 725 model.player.maxHealth model.player.currentHealth
       , viewExpBar 448 765 model.player.maxExp model.player.currentExp
       , viewConsumable1 336 650 model.keys model.time model.player.healthPotions
       , viewConsumable2 1485 650 model.keys model.time model.player.speedPotions
-      , viewCharacterScreen 360 160 model.keys model.player
+      , viewCharacterScreen 360 160 model.keys model.name model.player
       , viewPauseScreen 360 160 model.button_PS_resume model.button_PS_settings model.button_PS_help model.button_PS_return model.pauseToggle model.player
-      , viewDeathScreen 360 160 model.button_DS_respawn model.button_DS_return model.player
+      , viewDeathScreen 360 160 model.button_DS_respawn model.button_DS_return model.player model.savePosition
       , viewPlayerInput 820 835 model.keys  --820 861
       ]
 

@@ -10,7 +10,9 @@ import Url.Parser as Parser exposing (Parser, parse, map, oneOf, s)
 type Route
   = Home
   | NewGame
-  | Game
+  | Game1
+  | Game2
+  | Game3
   | LoadGame
   | HighScores
   | Settings
@@ -49,7 +51,9 @@ matchRoute =
     [ Parser.map Home (s "index.html")
     --, Parser.map Home Parser.top
     , Parser.map NewGame (s "new-game")
-    , Parser.map Game (s "game")
+    , Parser.map Game1 (s "game1")
+    , Parser.map Game2 (s "game2")
+    , Parser.map Game3 (s "game3")
     , Parser.map LoadGame (s "load-game")
     , Parser.map HighScores (s "highscores")
     , Parser.map Settings (s "settings")
@@ -68,8 +72,14 @@ routeToString route =
     NewGame ->
       "new-game"
 
-    Game ->
-      "game"
+    Game1 ->
+      "game1"
+
+    Game2 ->
+      "game2"
+
+    Game3 ->
+      "game3"
 
     LoadGame ->
       "load-game"

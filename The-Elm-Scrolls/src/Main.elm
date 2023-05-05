@@ -116,10 +116,24 @@ initPage ( model, existingCmds ) =
           in
           ( NewGamePage pageModel, Cmd.map NewGamePageMsg pageCmds )
 
-        Route.Game ->
+        Route.Game1 ->
           let
             ( pageModel, pageCmds ) =
-              Game.init model.flags.save1 model.navKey
+              Game.init model.flags.save1 Game.First model.navKey
+          in
+          ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
+
+        Route.Game2 ->
+          let
+            ( pageModel, pageCmds ) =
+              Game.init model.flags.save2 Game.Second model.navKey
+          in
+          ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
+
+        Route.Game3 ->
+          let
+            ( pageModel, pageCmds ) =
+              Game.init model.flags.save3 Game.Third model.navKey
           in
           ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
 
@@ -292,7 +306,7 @@ viewBody : Model -> Html Msg
 viewBody model =
   case model.pageModel of
     NotFoundPage ->
-      h3 [] [ text "Oops! The page you requested was not found!" ]
+      h1 [] [ text "Oops! The page you requested was not found!" ]
 
     HomePage modelHome ->
       Home.view modelHome
@@ -342,7 +356,7 @@ subscriptions model =
       Sub.map GamePageMsg (Game.subscriptions modelGame)
 
     LoadGamePage modelLoadGame ->
-      Sub.none  --Sub.map LoadGamePageMsg (LoadGame.subscriptions modelLoadGame)
+      Sub.map LoadGamePageMsg (LoadGame.subscriptions modelLoadGame)
 
     HighScoresPage modelHighScores ->
       Sub.none

@@ -12,12 +12,17 @@ import Enemy exposing (Enemy, Direction, EnemyType)
 import Item exposing (Item, ItemType)
 
 
+type Difficulty
+  = Easy
+  | Medium
+  | Hard
+
 type alias Save =
-  { name : String
-  , difficulty : String
-  , player : Player
+  { name : Maybe String
+  , difficulty : Difficulty
+  , player : Maybe Player
   , time : Float
-  , level : Level
+  , level : Maybe Level
   }
 
 type alias Flags =
@@ -27,6 +32,18 @@ type alias Flags =
   --, settings :
   --, highscores :
   }
+
+difficultyToString : Difficulty -> String
+difficultyToString difficulty =
+  case difficulty of
+    Easy ->
+      "easy"
+
+    Medium ->
+      "medium"
+
+    Hard ->
+      "hard"
 
 flagsDecoder : Decoder Flags
 flagsDecoder =
@@ -42,12 +59,57 @@ flagsDecoder =
 
 saveDecoder : Decoder Save
 saveDecoder =
+  D.map5 Save
+    (D.maybe (D.field "name" D.string))
+    ((D.field "difficulty" difficultyDecoder))
+    (D.maybe (D.field "player" playerDecoder))
+    ((D.field "time" D.float))
+    (D.maybe (D.field "level" levelDecoder))
+  {-
   D.succeed Save
-  |> optional "name" D.string "Player"
-  |> optional "difficulty" D.string "easy"
+  |> optional "name" D.string "PLAYER"
+  |> required "difficulty"
+      (D.string
+        |> D.andThen
+          (\string ->
+            case string of
+              "easy" ->
+                D.succeed Easy
+
+              "medium" ->
+                D.succeed Medium
+
+              "hard" ->
+                D.succeed Hard
+
+              _ ->
+                D.fail "Invalid difficulty"
+          )
+      )
   |> required "player" playerDecoder
   |> required "time" D.float
   |> required "level" levelDecoder
+-}
+
+difficultyDecoder : Decoder Difficulty
+difficultyDecoder =
+  D.string
+    |> D.andThen
+      (\string ->
+          case string of
+            "easy" ->
+              D.succeed Easy
+
+            "medium" ->
+              D.succeed Medium
+
+            "hard" ->
+              D.succeed Hard
+
+            _ ->
+              D.fail "Invalid Difficulty"
+      )
+
 
 playerDecoder : Decoder Player.Player
 playerDecoder =
@@ -281,10 +343,11 @@ itemDecoder =
     )
     (D.field "pickable" D.bool)
 
+{-
 emptySave : Save
 emptySave =
-  { name = "empty"
-  , difficulty = "easy"
+  { name = Nothing
+  , difficulty = Easy
   , player =
     { x = 56.0
     , y = 9.0
@@ -309,3 +372,4 @@ emptySave =
   , time = 0.0
   , level = Level.level2
   }
+-}

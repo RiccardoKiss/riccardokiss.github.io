@@ -7866,6 +7866,12 @@ var $Zinggi$elm_game_resources$Game$Resources$loadTextures = function (urls) {
 			},
 			urls));
 };
+var $elm$json$Json$Encode$null = _Json_encodeNull;
+var $author$project$Ports$loadedPage = _Platform_outgoingPort(
+	'loadedPage',
+	function ($) {
+		return $elm$json$Json$Encode$null;
+	});
 var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $elm$core$List$append = F2(
@@ -7973,10 +7979,15 @@ var $author$project$Game$init = F3(
 					}
 				}()
 			},
-			A2(
-				$elm$core$Platform$Cmd$map,
-				$author$project$Game$Resources,
-				$Zinggi$elm_game_resources$Game$Resources$loadTextures($author$project$Game$texturesList)));
+			$elm$core$Platform$Cmd$batch(
+				_List_fromArray(
+					[
+						$author$project$Ports$loadedPage(_Utils_Tuple0),
+						A2(
+						$elm$core$Platform$Cmd$map,
+						$author$project$Game$Resources,
+						$Zinggi$elm_game_resources$Game$Resources$loadTextures($author$project$Game$texturesList))
+					])));
 	});
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Help$init = function (navKey) {
@@ -7994,17 +8005,11 @@ var $author$project$Home$init = function (navKey) {
 		{button_help: 'assets/button/button_help.png', button_highScore: 'assets/button/button_highScore.png', button_loadGame: 'assets/button/button_loadGame.png', button_newGame: 'assets/button/button_newGame.png', button_settings: 'assets/button/button_settings.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
-var $elm$json$Json$Encode$null = _Json_encodeNull;
-var $author$project$Ports$loadedLoadGame = _Platform_outgoingPort(
-	'loadedLoadGame',
-	function ($) {
-		return $elm$json$Json$Encode$null;
-	});
 var $author$project$LoadGame$init = F2(
 	function (flags, navKey) {
 		return _Utils_Tuple2(
 			{buttonBack: 'assets/button/button_back.png', buttonGame1: 'assets/button/button_loadGameInstance_background.png', buttonGame2: 'assets/button/button_loadGameInstance_background.png', buttonGame3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey, save1: flags.save1, save2: flags.save2, save3: flags.save3},
-			$author$project$Ports$loadedLoadGame(_Utils_Tuple0));
+			$author$project$Ports$loadedPage(_Utils_Tuple0));
 	});
 var $author$project$NewGame$First = {$: 'First'};
 var $author$project$NewGame$init = function (navKey) {
@@ -8899,6 +8904,9 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Game$Keys = function (a) {
 	return {$: 'Keys', a: a};
 };
+var $author$project$Game$Reload = function (a) {
+	return {$: 'Reload', a: a};
+};
 var $author$project$Game$Tick = function (a) {
 	return {$: 'Tick', a: a};
 };
@@ -9031,6 +9039,7 @@ var $elm$browser$Browser$AnimationManager$onAnimationFrameDelta = function (tagg
 		$elm$browser$Browser$AnimationManager$Delta(tagger));
 };
 var $elm$browser$Browser$Events$onAnimationFrameDelta = $elm$browser$Browser$AnimationManager$onAnimationFrameDelta;
+var $author$project$Ports$reloadPage = _Platform_incomingPort('reloadPage', $elm$json$Json$Decode$bool);
 var $ohanhi$keyboard$Keyboard$Down = function (a) {
 	return {$: 'Down', a: a};
 };
@@ -9358,15 +9367,15 @@ var $author$project$Game$subscriptions = function (model) {
 					function (dt) {
 						return dt / 1000;
 					},
-					$author$project$Game$Tick))
+					$author$project$Game$Tick)),
+				$author$project$Ports$reloadPage($author$project$Game$Reload)
 			]));
 };
 var $author$project$LoadGame$Reload = function (a) {
 	return {$: 'Reload', a: a};
 };
-var $author$project$Ports$reloadLoadGame = _Platform_incomingPort('reloadLoadGame', $elm$json$Json$Decode$bool);
 var $author$project$LoadGame$subscriptions = function (_v0) {
-	return $author$project$Ports$reloadLoadGame($author$project$LoadGame$Reload);
+	return $author$project$Ports$reloadPage($author$project$LoadGame$Reload);
 };
 var $author$project$Main$subscriptions = function (model) {
 	var _v0 = model.pageModel;
@@ -10845,6 +10854,7 @@ var $author$project$Game$playerTick = F6(
 							time,
 							A3($author$project$Player$applyHealthPotion, keys, time, player))))));
 	});
+var $elm$browser$Browser$Navigation$reload = _Browser_reload(false);
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {
 		var url = _v0.a;
@@ -11413,10 +11423,13 @@ var $author$project$Game$update = F2(
 						model,
 						{pauseToggle: false}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'SaveGame':
 				return _Utils_Tuple2(
 					model,
 					$author$project$Game$encodeSave(model));
+			default:
+				var rel = msg.a;
+				return rel ? _Utils_Tuple2(model, $elm$browser$Browser$Navigation$reload) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Help$update = F2(
@@ -11492,7 +11505,6 @@ var $author$project$Home$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $elm$browser$Browser$Navigation$reload = _Browser_reload(false);
 var $author$project$LoadGame$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -11527,8 +11539,8 @@ var $author$project$LoadGame$update = F2(
 						{buttonBack: 'assets/button/button_back.png', buttonGame1: 'assets/button/button_loadGameInstance_background.png', buttonGame2: 'assets/button/button_loadGameInstance_background.png', buttonGame3: 'assets/button/button_loadGameInstance_background.png'}),
 					$elm$core$Platform$Cmd$none);
 			default:
-				var reloadPage = msg.a;
-				return reloadPage ? _Utils_Tuple2(model, $elm$browser$Browser$Navigation$reload) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				var rel = msg.a;
+				return rel ? _Utils_Tuple2(model, $elm$browser$Browser$Navigation$reload) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$NewGame$createSave = function (model) {

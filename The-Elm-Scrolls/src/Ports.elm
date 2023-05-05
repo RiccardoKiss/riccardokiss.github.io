@@ -7,6 +7,5 @@ port storeSave1 : E.Value -> Cmd msg
 port storeSave2 : E.Value -> Cmd msg
 port storeSave3 : E.Value -> Cmd msg
 
-port loadedLoadGame : () -> Cmd msg
-port reloadLoadGame : (Bool -> msg) -> Sub msg
---port reloadGame : (Model -> msg) -> Sub msg
+port loadedPage : () -> Cmd msg
+port reloadPage : (Bool -> msg) -> Sub msg

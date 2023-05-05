@@ -77,6 +77,7 @@ type Msg
   | MouseOut Button
   | ClickResume
   | SaveGame
+  | Reload Bool
 
 
 initPlayer : Level.Level -> Player
@@ -188,7 +189,10 @@ init save pos navKey =
     , button_PS_help = "assets/button/button_help.png"
     , button_PS_return = "assets/button/button_return_MainMenu.png"
     }
-  , Cmd.map Resources ( Resources.loadTextures texturesList )
+  , Cmd.batch
+      [ Ports.loadedPage ()
+      , Cmd.map Resources ( Resources.loadTextures texturesList )
+      ]
   )
 
 texturesList : List String
@@ -371,6 +375,12 @@ update msg model =
       --    , saveLevel model.level
       --    ]
       )
+
+    Reload rel ->
+      if rel then
+        ( model, Nav.reload )
+      else
+        ( model, Cmd.none )
 
 
 encodeSave : Model -> Cmd msg
@@ -1472,4 +1482,5 @@ subscriptions model =
   Sub.batch
     [ Sub.map Keys Keyboard.subscriptions
     , onAnimationFrameDelta ((\dt -> dt / 1000) >> Tick)
+    , Ports.reloadPage Reload
     ]

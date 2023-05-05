@@ -44,7 +44,7 @@ init flags navKey =
     , save2 = flags.save2
     , save3 = flags.save3
     }
-  , Ports.loadedLoadGame ()
+  , Ports.loadedPage ()
   )
 
 
@@ -99,8 +99,8 @@ update msg model =
       , Cmd.none
       )
 
-    Reload reloadPage ->
-      if reloadPage then
+    Reload rel ->
+      if rel then
         ( model, Nav.reload )
       else
         ( model, Cmd.none )
@@ -243,4 +243,4 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-  reloadLoadGame Reload
+  Ports.reloadPage Reload

@@ -44,11 +44,11 @@
       localStorage.setItem('save3', JSON.stringify(state));
     });
 
-    app.ports.loadedLoadGame.subscribe(function(state) {
-      let reload = localStorage.getItem('reloadLoadGame');
+    app.ports.loadedPage.subscribe(function(state) {
+      let reload = localStorage.getItem('reloadPage');
       reload = reload ? JSON.parse(reload) : true;
-      app.ports.reloadLoadGame.send(reload);
-      localStorage.setItem('reloadLoadGame', JSON.stringify(!reload));
+      app.ports.reloadPage.send(reload);
+      localStorage.setItem('reloadPage', JSON.stringify(!reload));
     });
 
 </script>

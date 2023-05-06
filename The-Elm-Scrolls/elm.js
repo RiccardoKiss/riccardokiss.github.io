@@ -8018,9 +8018,10 @@ var $author$project$NewGame$init = function (navKey) {
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Settings$Off = {$: 'Off'};
+var $author$project$Settings$WASD = {$: 'WASD'};
 var $author$project$Settings$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/button/button_back.png', navKey: navKey, sound: $author$project$Settings$Off},
+		{buttonBack: 'assets/button/button_back.png', movement: $author$project$Settings$WASD, navKey: navKey, sound: $author$project$Settings$Off},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Main$initPage = function (_v0) {
@@ -11624,20 +11625,27 @@ var $author$project$Settings$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/button/button_back_hover.png'}),
+						{buttonBack: 'assets/button/button_back_hover.png'}),
 					$elm$core$Platform$Cmd$none);
 			case 'MouseOut':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{button_back: 'assets/button/button_back.png'}),
+						{buttonBack: 'assets/button/button_back.png'}),
+					$elm$core$Platform$Cmd$none);
+			case 'SoundTo':
+				var choice = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{sound: choice}),
 					$elm$core$Platform$Cmd$none);
 			default:
 				var choice = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{sound: choice}),
+						{movement: choice}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -14844,8 +14852,10 @@ var $author$project$NewGame$view = function (model) {
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-						A2($elm$html$Html$Attributes$style, 'left', '895px'),
-						A2($elm$html$Html$Attributes$style, 'top', '100px')
+						A2($elm$html$Html$Attributes$style, 'left', '800px'),
+						A2($elm$html$Html$Attributes$style, 'top', '100px'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '5em'),
+						A2($elm$html$Html$Attributes$style, 'margin', '0px')
 					]),
 				_List_fromArray(
 					[
@@ -15081,29 +15091,219 @@ var $author$project$NewGame$view = function (model) {
 					]))
 			]));
 };
+var $author$project$Settings$Arrows = {$: 'Arrows'};
 var $author$project$Settings$HoverBack = {$: 'HoverBack'};
 var $author$project$Settings$MouseOut = {$: 'MouseOut'};
+var $author$project$Settings$MovementTo = function (a) {
+	return {$: 'MovementTo', a: a};
+};
 var $author$project$Settings$On = {$: 'On'};
 var $author$project$Settings$SoundTo = function (a) {
 	return {$: 'SoundTo', a: a};
 };
 var $author$project$Settings$radio = F3(
 	function (msg, isChecked, value) {
-		return _List_fromArray(
-			[
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('radio'),
-						A2($elm$html$Html$Attributes$style, 'margin-left', '40px'),
-						$elm$html$Html$Events$onClick(msg),
-						$elm$html$Html$Attributes$checked(isChecked)
-					]),
-				_List_Nil),
-				$elm$html$Html$text(value)
-			]);
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					$elm$html$Html$Events$onClick(msg)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$type_('radio'),
+							A2($elm$html$Html$Attributes$style, 'margin-left', '40px'),
+							A2($elm$html$Html$Attributes$style, 'width', '5em'),
+							A2($elm$html$Html$Attributes$style, 'height', '5em'),
+							$elm$html$Html$Attributes$checked(isChecked)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '110%'),
+							A2($elm$html$Html$Attributes$style, 'top', '25%')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(value)
+						]))
+				]));
 	});
+var $author$project$Settings$viewMovementKeys = function (mov) {
+	if (mov.$ === 'WASD') {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'left', '150px'),
+					A2($elm$html$Html$Attributes$style, 'top', '0px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '52px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/button/w_48_48.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/button/a_48_48.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '52px'),
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/button/s_48_48.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '104px'),
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/button/d_48_48.png')
+								]),
+							_List_Nil)
+						]))
+				]));
+	} else {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'left', '150px'),
+					A2($elm$html$Html$Attributes$style, 'top', '0px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '52px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/button/arrowUp_48_48.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/button/arrowLeft_48_48.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '52px'),
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/button/arrowDown_48_48.png')
+								]),
+							_List_Nil)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '104px'),
+							A2($elm$html$Html$Attributes$style, 'top', '52px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src('assets/button/arrowRight_48_48.png')
+								]),
+							_List_Nil)
+						]))
+				]));
+	}
+};
 var $author$project$Settings$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -15130,44 +15330,127 @@ var $author$project$Settings$view = function (model) {
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 						A2($elm$html$Html$Attributes$style, 'left', '800px'),
-						A2($elm$html$Html$Attributes$style, 'top', '100px')
+						A2($elm$html$Html$Attributes$style, 'top', '100px'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '5em'),
+						A2($elm$html$Html$Attributes$style, 'margin', '0px')
 					]),
 				_List_fromArray(
 					[
 						$elm$html$Html$text('Settings')
 					])),
 				A2(
-				$elm$html$Html$div,
+				$elm$html$Html$h1,
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-						A2($elm$html$Html$Attributes$style, 'left', '700px'),
-						A2($elm$html$Html$Attributes$style, 'top', '500px')
+						A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap'),
+						A2($elm$html$Html$Attributes$style, 'left', '500px'),
+						A2($elm$html$Html$Attributes$style, 'top', '300px')
 					]),
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$h1,
+						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap')
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'top', '10px'),
+								A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
 							]),
-						_Utils_ap(
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Sound:')
-								]),
-							_Utils_ap(
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Sound:')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '175px'),
+								A2($elm$html$Html$Attributes$style, 'top', '0px')
+							]),
+						_List_fromArray(
+							[
 								A3(
-									$author$project$Settings$radio,
-									$author$project$Settings$SoundTo($author$project$Settings$Off),
-									_Utils_eq(model.sound, $author$project$Settings$Off),
-									'off'),
+								$author$project$Settings$radio,
+								$author$project$Settings$SoundTo($author$project$Settings$Off),
+								_Utils_eq(model.sound, $author$project$Settings$Off),
+								'off')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '600px'),
+								A2($elm$html$Html$Attributes$style, 'top', '0px')
+							]),
+						_List_fromArray(
+							[
 								A3(
-									$author$project$Settings$radio,
-									$author$project$Settings$SoundTo($author$project$Settings$On),
-									_Utils_eq(model.sound, $author$project$Settings$On),
-									'on'))))
+								$author$project$Settings$radio,
+								$author$project$Settings$SoundTo($author$project$Settings$On),
+								_Utils_eq(model.sound, $author$project$Settings$On),
+								'on')
+							]))
+					])),
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'white-space', 'nowrap'),
+						A2($elm$html$Html$Attributes$style, 'left', '500px'),
+						A2($elm$html$Html$Attributes$style, 'top', '550px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'top', '10px'),
+								A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Movement:')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '180px'),
+								A2($elm$html$Html$Attributes$style, 'top', '0px')
+							]),
+						_List_fromArray(
+							[
+								A3(
+								$author$project$Settings$radio,
+								$author$project$Settings$MovementTo($author$project$Settings$WASD),
+								_Utils_eq(model.movement, $author$project$Settings$WASD),
+								''),
+								$author$project$Settings$viewMovementKeys($author$project$Settings$WASD)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+								A2($elm$html$Html$Attributes$style, 'left', '605px'),
+								A2($elm$html$Html$Attributes$style, 'top', '0px')
+							]),
+						_List_fromArray(
+							[
+								A3(
+								$author$project$Settings$radio,
+								$author$project$Settings$MovementTo($author$project$Settings$Arrows),
+								_Utils_eq(model.movement, $author$project$Settings$Arrows),
+								''),
+								$author$project$Settings$viewMovementKeys($author$project$Settings$Arrows)
+							]))
 					])),
 				A2(
 				$elm$html$Html$a,
@@ -15181,7 +15464,7 @@ var $author$project$Settings$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.button_back),
+								$elm$html$Html$Attributes$src(model.buttonBack),
 								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 								A2($elm$html$Html$Attributes$style, 'left', '752px'),
 								A2($elm$html$Html$Attributes$style, 'top', '864px'),

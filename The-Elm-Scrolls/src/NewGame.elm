@@ -147,8 +147,10 @@ view model =
             , style "top" "0px"
             ] []
       , h1 [ style "position" "absolute"
-           , style "left" "895px"
+           , style "left" "800px"
            , style "top" "100px"
+           , style "font-size" "5em"
+           , style "margin" "0px"
            ] [ text "New Game" ]
       , div [ style "position" "absolute"
             , style "left" "500px"

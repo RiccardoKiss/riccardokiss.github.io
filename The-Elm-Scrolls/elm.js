@@ -11618,6 +11618,36 @@ var $author$project$NewGame$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$Ports$storeSettings = _Platform_outgoingPort('storeSettings', $elm$core$Basics$identity);
+var $author$project$Settings$saveSettings = function (model) {
+	var soundToString = function () {
+		var _v1 = model.sound;
+		if (_v1.$ === 'On') {
+			return 'on';
+		} else {
+			return 'off';
+		}
+	}();
+	var movementToString = function () {
+		var _v0 = model.movement;
+		if (_v0.$ === 'WASD') {
+			return 'wasd';
+		} else {
+			return 'arrows';
+		}
+	}();
+	var encodedSettings = $elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'sound',
+				$elm$json$Json$Encode$string(soundToString)),
+				_Utils_Tuple2(
+				'movement',
+				$elm$json$Json$Encode$string(movementToString))
+			]));
+	return $author$project$Ports$storeSettings(encodedSettings);
+};
 var $author$project$Settings$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -11626,7 +11656,7 @@ var $author$project$Settings$update = F2(
 					_Utils_update(
 						model,
 						{buttonBack: 'assets/button/button_back_hover.png'}),
-					$elm$core$Platform$Cmd$none);
+					$author$project$Settings$saveSettings(model));
 			case 'MouseOut':
 				return _Utils_Tuple2(
 					_Utils_update(

@@ -4,7 +4,10 @@ import Browser.Navigation as Nav
 import Html exposing (Html, div, h1, a, text, img, input)
 import Html.Attributes exposing (src, style, type_, checked)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
+import Json.Encode as Encode
+
 import Route exposing (Route)
+import Ports exposing (..)
 
 
 type Sound
@@ -49,7 +52,7 @@ update msg model =
       ( { model
         | buttonBack = "assets/button/button_back_hover.png"
         }
-      , Cmd.none
+      , saveSettings model
       )
 
     MouseOut ->
@@ -71,6 +74,30 @@ update msg model =
       , Cmd.none
       )
 
+saveSettings : Model -> Cmd msg
+saveSettings model =
+  let
+    soundToString =
+      case model.sound of
+        On ->
+          "on"
+
+        Off ->
+          "off"
+    movementToString =
+      case model.movement of
+        WASD ->
+          "wasd"
+
+        Arrows ->
+          "arrows"
+    encodedSettings =
+      Encode.object
+        [ ( "sound", Encode.string soundToString )
+        , ( "movement", Encode.string movementToString )
+        ]
+  in
+  Ports.storeSettings encodedSettings
 
 radio : Msg -> Bool -> String -> Html Msg
 radio  msg isChecked value =

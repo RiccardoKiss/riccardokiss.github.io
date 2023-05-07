@@ -19,11 +19,14 @@
     var retrievedSave2 = storedSave2 ? JSON.parse(storedSave2) : null;
     var retrievedSave3 = storedSave3 ? JSON.parse(storedSave3) : null;
 
+    var storedSettings = localStorage.getItem('settings');
+    var retrievedSettings = storedSettings ? JSON.parse(storedSettings) : null;
+
     const flags = {
       save1: retrievedSave1,
       save2: retrievedSave2,
       save3: retrievedSave3,
-      //settings: null,
+      settings: retrievedSettings,
       //highscores: null
     };
 
@@ -42,6 +45,10 @@
     });
     app.ports.storeSave3.subscribe(function(state) {
       localStorage.setItem('save3', JSON.stringify(state));
+    });
+
+    app.ports.storeSettings.subscribe(function(state) {
+      localStorage.setItem('settings', JSON.stringify(state));
     });
 
     app.ports.loadedPage.subscribe(function(state) {

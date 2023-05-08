@@ -7122,12 +7122,12 @@ var $elm$core$Task$perform = F2(
 var $elm$browser$Browser$application = _Browser_application;
 var $author$project$Main$NotFoundPage = {$: 'NotFoundPage'};
 var $elm$json$Json$Decode$decodeValue = _Json_run;
-var $author$project$DecodingJson$Flags = F3(
-	function (save1, save2, save3) {
-		return {save1: save1, save2: save2, save3: save3};
+var $author$project$DecodingJson$Flags = F4(
+	function (save1, save2, save3, settings) {
+		return {save1: save1, save2: save2, save3: save3, settings: settings};
 	});
 var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$map3 = _Json_map3;
+var $elm$json$Json$Decode$map4 = _Json_map4;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
 var $elm$json$Json$Decode$maybe = function (decoder) {
 	return $elm$json$Json$Decode$oneOf(
@@ -7630,15 +7630,56 @@ var $author$project$DecodingJson$saveDecoder = A6(
 	A2($elm$json$Json$Decode$field, 'time', $elm$json$Json$Decode$float),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'level', $author$project$DecodingJson$levelDecoder)));
-var $author$project$DecodingJson$flagsDecoder = A4(
-	$elm$json$Json$Decode$map3,
+var $author$project$DecodingJson$Settings = F2(
+	function (music, movement) {
+		return {movement: movement, music: music};
+	});
+var $author$project$Settings$Arrows = {$: 'Arrows'};
+var $author$project$Settings$WASD = {$: 'WASD'};
+var $author$project$DecodingJson$movementDecoder = A2(
+	$elm$json$Json$Decode$andThen,
+	function (string) {
+		switch (string) {
+			case 'wasd':
+				return $elm$json$Json$Decode$succeed($author$project$Settings$WASD);
+			case 'arrows':
+				return $elm$json$Json$Decode$succeed($author$project$Settings$Arrows);
+			default:
+				return $elm$json$Json$Decode$fail('Invalid Movement');
+		}
+	},
+	$elm$json$Json$Decode$string);
+var $author$project$Settings$Off = {$: 'Off'};
+var $author$project$Settings$On = {$: 'On'};
+var $author$project$DecodingJson$musicDecoder = A2(
+	$elm$json$Json$Decode$andThen,
+	function (string) {
+		switch (string) {
+			case 'on':
+				return $elm$json$Json$Decode$succeed($author$project$Settings$On);
+			case 'off':
+				return $elm$json$Json$Decode$succeed($author$project$Settings$Off);
+			default:
+				return $elm$json$Json$Decode$fail('Invalid Music');
+		}
+	},
+	$elm$json$Json$Decode$string);
+var $author$project$DecodingJson$settingsDecoder = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$DecodingJson$Settings,
+	A2($elm$json$Json$Decode$field, 'music', $author$project$DecodingJson$musicDecoder),
+	A2($elm$json$Json$Decode$field, 'movement', $author$project$DecodingJson$movementDecoder));
+var $author$project$DecodingJson$flagsDecoder = A5(
+	$elm$json$Json$Decode$map4,
 	$author$project$DecodingJson$Flags,
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'save1', $author$project$DecodingJson$saveDecoder)),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'save2', $author$project$DecodingJson$saveDecoder)),
 	$elm$json$Json$Decode$maybe(
-		A2($elm$json$Json$Decode$field, 'save3', $author$project$DecodingJson$saveDecoder)));
+		A2($elm$json$Json$Decode$field, 'save3', $author$project$DecodingJson$saveDecoder)),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'settings', $author$project$DecodingJson$settingsDecoder)));
 var $author$project$Game$First = {$: 'First'};
 var $author$project$Main$GamePage = function (a) {
 	return {$: 'GamePage', a: a};
@@ -7898,10 +7939,11 @@ var $author$project$Sword$textures = _List_fromArray(
 var $author$project$Game$texturesList = $elm$core$List$concat(
 	_List_fromArray(
 		[$author$project$Level$textures, $author$project$Player$textures, $author$project$Enemy$textures, $author$project$Sword$textures, $author$project$Item$textures]));
-var $author$project$Game$init = F3(
-	function (save, pos, navKey) {
+var $author$project$Game$init = F4(
+	function (save, pos, settings, navKey) {
 		var _v0 = A2($elm$core$Debug$log, '[Game.init] save', save);
 		var _v1 = A2($elm$core$Debug$log, '[Game.init] pos', pos);
+		var _v2 = A2($elm$core$Debug$log, '[Game.init] settings', settings);
 		return _Utils_Tuple2(
 			{
 				button_DS_respawn: 'assets/button/button_DS_respawn.png',
@@ -7926,9 +7968,9 @@ var $author$project$Game$init = F3(
 				level: function () {
 					if (save.$ === 'Just') {
 						var s = save.a;
-						var _v4 = s.level;
-						if (_v4.$ === 'Just') {
-							var lvl = _v4.a;
+						var _v5 = s.level;
+						if (_v5.$ === 'Just') {
+							var lvl = _v5.a;
 							return lvl;
 						} else {
 							return $author$project$Level$level2;
@@ -7937,12 +7979,28 @@ var $author$project$Game$init = F3(
 						return $author$project$Level$level2;
 					}
 				}(),
+				movement: function () {
+					if (settings.$ === 'Just') {
+						var s = settings.a;
+						return s.movement;
+					} else {
+						return $author$project$Settings$WASD;
+					}
+				}(),
+				music: function () {
+					if (settings.$ === 'Just') {
+						var s = settings.a;
+						return s.music;
+					} else {
+						return $author$project$Settings$Off;
+					}
+				}(),
 				name: function () {
 					if (save.$ === 'Just') {
 						var s = save.a;
-						var _v6 = s.name;
-						if (_v6.$ === 'Just') {
-							var name = _v6.a;
+						var _v9 = s.name;
+						if (_v9.$ === 'Just') {
+							var name = _v9.a;
 							return name;
 						} else {
 							return 'PLAYER';
@@ -7956,9 +8014,9 @@ var $author$project$Game$init = F3(
 				player: function () {
 					if (save.$ === 'Just') {
 						var s = save.a;
-						var _v8 = s.player;
-						if (_v8.$ === 'Just') {
-							var p = _v8.a;
+						var _v11 = s.player;
+						if (_v11.$ === 'Just') {
+							var p = _v11.a;
 							return p;
 						} else {
 							return $author$project$Game$initPlayer($author$project$Level$level2);
@@ -8003,13 +8061,13 @@ var $author$project$HighScores$init = function (navKey) {
 var $author$project$Home$init = function (navKey) {
 	return _Utils_Tuple2(
 		{button_help: 'assets/button/button_help.png', button_highScore: 'assets/button/button_highScore.png', button_loadGame: 'assets/button/button_loadGame.png', button_newGame: 'assets/button/button_newGame.png', button_settings: 'assets/button/button_settings.png', navKey: navKey},
-		$elm$core$Platform$Cmd$none);
+		$author$project$Ports$loadedPage(_Utils_Tuple0));
 };
 var $author$project$LoadGame$init = F2(
 	function (flags, navKey) {
 		return _Utils_Tuple2(
 			{buttonBack: 'assets/button/button_back.png', buttonGame1: 'assets/button/button_loadGameInstance_background.png', buttonGame2: 'assets/button/button_loadGameInstance_background.png', buttonGame3: 'assets/button/button_loadGameInstance_background.png', navKey: navKey, save1: flags.save1, save2: flags.save2, save3: flags.save3},
-			$author$project$Ports$loadedPage(_Utils_Tuple0));
+			$elm$core$Platform$Cmd$none);
 	});
 var $author$project$NewGame$First = {$: 'First'};
 var $author$project$NewGame$init = function (navKey) {
@@ -8017,11 +8075,9 @@ var $author$project$NewGame$init = function (navKey) {
 		{buttonBack: 'assets/button/button_back.png', buttonStart: 'assets/button/button_start.png', difficulty: $author$project$DecodingJson$Easy, navKey: navKey, playerName: '', savePosition: $author$project$NewGame$First},
 		$elm$core$Platform$Cmd$none);
 };
-var $author$project$Settings$Off = {$: 'Off'};
-var $author$project$Settings$WASD = {$: 'WASD'};
 var $author$project$Settings$init = function (navKey) {
 	return _Utils_Tuple2(
-		{buttonBack: 'assets/button/button_back.png', movement: $author$project$Settings$WASD, navKey: navKey, sound: $author$project$Settings$Off},
+		{buttonBack: 'assets/button/button_back.png', movement: $author$project$Settings$WASD, music: $author$project$Settings$Off, navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Main$initPage = function (_v0) {
@@ -8047,21 +8103,21 @@ var $author$project$Main$initPage = function (_v0) {
 					$author$project$Main$NewGamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$NewGamePageMsg, pageCmds));
 			case 'Game1':
-				var _v5 = A3($author$project$Game$init, model.flags.save1, $author$project$Game$First, model.navKey);
+				var _v5 = A4($author$project$Game$init, model.flags.save1, $author$project$Game$First, model.flags.settings, model.navKey);
 				var pageModel = _v5.a;
 				var pageCmds = _v5.b;
 				return _Utils_Tuple2(
 					$author$project$Main$GamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, pageCmds));
 			case 'Game2':
-				var _v6 = A3($author$project$Game$init, model.flags.save2, $author$project$Game$Second, model.navKey);
+				var _v6 = A4($author$project$Game$init, model.flags.save2, $author$project$Game$Second, model.flags.settings, model.navKey);
 				var pageModel = _v6.a;
 				var pageCmds = _v6.b;
 				return _Utils_Tuple2(
 					$author$project$Main$GamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, pageCmds));
 			case 'Game3':
-				var _v7 = A3($author$project$Game$init, model.flags.save3, $author$project$Game$Third, model.navKey);
+				var _v7 = A4($author$project$Game$init, model.flags.save3, $author$project$Game$Third, model.flags.settings, model.navKey);
 				var pageModel = _v7.a;
 				var pageCmds = _v7.b;
 				return _Utils_Tuple2(
@@ -8879,12 +8935,12 @@ var $author$project$Route$parseUrl = function (url) {
 var $author$project$Main$init = F3(
 	function (flags, url, navKey) {
 		var decodedFlags = function () {
-			var _v3 = A2($elm$json$Json$Decode$decodeValue, $author$project$DecodingJson$flagsDecoder, flags);
-			if (_v3.$ === 'Ok') {
-				var decoded = _v3.a;
+			var _v2 = A2($elm$json$Json$Decode$decodeValue, $author$project$DecodingJson$flagsDecoder, flags);
+			if (_v2.$ === 'Ok') {
+				var decoded = _v2.a;
 				return decoded;
 			} else {
-				return {save1: $elm$core$Maybe$Nothing, save2: $elm$core$Maybe$Nothing, save3: $elm$core$Maybe$Nothing};
+				return {save1: $elm$core$Maybe$Nothing, save2: $elm$core$Maybe$Nothing, save3: $elm$core$Maybe$Nothing, settings: $elm$core$Maybe$Nothing};
 			}
 		}();
 		var model = {
@@ -8894,8 +8950,7 @@ var $author$project$Main$init = F3(
 			route: $author$project$Route$parseUrl(url)
 		};
 		var _v0 = A2($elm$core$Debug$log, '[Main.init] url', url);
-		var _v1 = A2($elm$core$Debug$log, '[Main.init] flags', flags);
-		var _v2 = A2($elm$core$Debug$log, '[Main.init] decodedFlags', decodedFlags);
+		var _v1 = A2($elm$core$Debug$log, '[Main.init] decodedFlags', decodedFlags);
 		return $author$project$Main$initPage(
 			_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
 	});
@@ -9372,6 +9427,12 @@ var $author$project$Game$subscriptions = function (model) {
 				$author$project$Ports$reloadPage($author$project$Game$Reload)
 			]));
 };
+var $author$project$Home$Reload = function (a) {
+	return {$: 'Reload', a: a};
+};
+var $author$project$Home$subscriptions = function (_v0) {
+	return $author$project$Ports$reloadPage($author$project$Home$Reload);
+};
 var $author$project$LoadGame$Reload = function (a) {
 	return {$: 'Reload', a: a};
 };
@@ -9385,7 +9446,10 @@ var $author$project$Main$subscriptions = function (model) {
 			return $elm$core$Platform$Sub$none;
 		case 'HomePage':
 			var modelHome = _v0.a;
-			return $elm$core$Platform$Sub$none;
+			return A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Main$HomePageMsg,
+				$author$project$Home$subscriptions(modelHome));
 		case 'NewGamePage':
 			var modelNewGame = _v0.a;
 			return $elm$core$Platform$Sub$none;
@@ -10507,6 +10571,22 @@ var $author$project$Player$applySpeedPotion = F3(
 			player,
 			{currentSpeed: player.baseSpeed})) : player;
 	});
+var $ohanhi$keyboard$Keyboard$ArrowDown = {$: 'ArrowDown'};
+var $ohanhi$keyboard$Keyboard$ArrowLeft = {$: 'ArrowLeft'};
+var $ohanhi$keyboard$Keyboard$ArrowRight = {$: 'ArrowRight'};
+var $ohanhi$keyboard$Keyboard$ArrowUp = {$: 'ArrowUp'};
+var $ohanhi$keyboard$Keyboard$Arrows$boolToInt = function (bool) {
+	return bool ? 1 : 0;
+};
+var $ohanhi$keyboard$Keyboard$Arrows$arrows = function (keys) {
+	var toInt = function (key) {
+		return $ohanhi$keyboard$Keyboard$Arrows$boolToInt(
+			A2($elm$core$List$member, key, keys));
+	};
+	var x = toInt($ohanhi$keyboard$Keyboard$ArrowRight) - toInt($ohanhi$keyboard$Keyboard$ArrowLeft);
+	var y = toInt($ohanhi$keyboard$Keyboard$ArrowUp) - toInt($ohanhi$keyboard$Keyboard$ArrowDown);
+	return {x: x, y: y};
+};
 var $author$project$Enemy$getAttack = function (enemy) {
 	return enemy.attack;
 };
@@ -10818,9 +10898,6 @@ var $author$project$Player$walk = F2(
 				vy: player.currentSpeed * y
 			});
 	});
-var $ohanhi$keyboard$Keyboard$Arrows$boolToInt = function (bool) {
-	return bool ? 1 : 0;
-};
 var $ohanhi$keyboard$Keyboard$Arrows$wasd = function (keys) {
 	var toInt = function (_char) {
 		return $ohanhi$keyboard$Keyboard$Arrows$boolToInt(
@@ -10833,9 +10910,15 @@ var $ohanhi$keyboard$Keyboard$Arrows$wasd = function (keys) {
 	var y = toInt('W') - toInt('S');
 	return {x: x, y: y};
 };
-var $author$project$Game$playerTick = F6(
-	function (dt, time, lvl, keys, enemyList, player) {
-		var moveInput = $ohanhi$keyboard$Keyboard$Arrows$wasd(keys);
+var $author$project$Game$playerTick = F7(
+	function (dt, time, lvl, keys, movement, enemyList, player) {
+		var moveInput = function () {
+			if (movement.$ === 'WASD') {
+				return $ohanhi$keyboard$Keyboard$Arrows$wasd(keys);
+			} else {
+				return $ohanhi$keyboard$Keyboard$Arrows$arrows(keys);
+			}
+		}();
 		return A2(
 			$author$project$Game$playerAttacked,
 			enemyList,
@@ -11071,10 +11154,6 @@ var $ohanhi$keyboard$Keyboard$modifierKey = function (_v0) {
 			return $elm$core$Maybe$Nothing;
 	}
 };
-var $ohanhi$keyboard$Keyboard$ArrowDown = {$: 'ArrowDown'};
-var $ohanhi$keyboard$Keyboard$ArrowLeft = {$: 'ArrowLeft'};
-var $ohanhi$keyboard$Keyboard$ArrowRight = {$: 'ArrowRight'};
-var $ohanhi$keyboard$Keyboard$ArrowUp = {$: 'ArrowUp'};
 var $ohanhi$keyboard$Keyboard$End = {$: 'End'};
 var $ohanhi$keyboard$Keyboard$Home = {$: 'Home'};
 var $ohanhi$keyboard$Keyboard$PageDown = {$: 'PageDown'};
@@ -11314,7 +11393,7 @@ var $author$project$Game$update = F2(
 								model.camera),
 							level: A4($author$project$Game$levelTick, dt, model.pauseToggle, model.player, model.level),
 							pauseToggle: (!model.player.currentHealth) ? true : model.pauseToggle,
-							player: A6($author$project$Game$playerTick, dt, model.time, model.level, model.keys, enemies, playerWithExp),
+							player: A7($author$project$Game$playerTick, dt, model.time, model.level, model.keys, model.movement, enemies, playerWithExp),
 							time: model.pauseToggle ? model.time : (model.time + dt)
 						}),
 					$elm$core$Platform$Cmd$none);
@@ -11498,12 +11577,15 @@ var $author$project$Home$update = F2(
 						model,
 						{button_help: 'assets/button/button_help_hover.png'}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'MouseOut':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{button_help: 'assets/button/button_help.png', button_highScore: 'assets/button/button_highScore.png', button_loadGame: 'assets/button/button_loadGame.png', button_newGame: 'assets/button/button_newGame.png', button_settings: 'assets/button/button_settings.png'}),
 					$elm$core$Platform$Cmd$none);
+			default:
+				var rel = msg.a;
+				return rel ? _Utils_Tuple2(model, $elm$browser$Browser$Navigation$reload) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$LoadGame$update = F2(
@@ -11620,8 +11702,8 @@ var $author$project$NewGame$update = F2(
 	});
 var $author$project$Ports$storeSettings = _Platform_outgoingPort('storeSettings', $elm$core$Basics$identity);
 var $author$project$Settings$saveSettings = function (model) {
-	var soundToString = function () {
-		var _v1 = model.sound;
+	var musicToString = function () {
+		var _v1 = model.music;
 		if (_v1.$ === 'On') {
 			return 'on';
 		} else {
@@ -11640,8 +11722,8 @@ var $author$project$Settings$saveSettings = function (model) {
 		_List_fromArray(
 			[
 				_Utils_Tuple2(
-				'sound',
-				$elm$json$Json$Encode$string(soundToString)),
+				'music',
+				$elm$json$Json$Encode$string(musicToString)),
 				_Utils_Tuple2(
 				'movement',
 				$elm$json$Json$Encode$string(movementToString))
@@ -11663,12 +11745,12 @@ var $author$project$Settings$update = F2(
 						model,
 						{buttonBack: 'assets/button/button_back.png'}),
 					$elm$core$Platform$Cmd$none);
-			case 'SoundTo':
+			case 'MusicTo':
 				var choice = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{sound: choice}),
+						{music: choice}),
 					$elm$core$Platform$Cmd$none);
 			default:
 				var choice = msg.a;
@@ -11834,12 +11916,58 @@ var $author$project$Main$update = F2(
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $elm$json$Json$Decode$value = _Json_decodeValue;
+var $elm$html$Html$audio = _VirtualDom_node('audio');
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$autoplay = $elm$html$Html$Attributes$boolProperty('autoplay');
+var $elm$html$Html$Attributes$controls = $elm$html$Html$Attributes$boolProperty('controls');
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$Attributes$loop = $elm$html$Html$Attributes$boolProperty('loop');
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $author$project$Main$backgroundMusic = function (settings) {
+	if (settings.$ === 'Just') {
+		var s = settings.a;
+		var _v1 = s.music;
+		if (_v1.$ === 'On') {
+			return A2(
+				$elm$html$Html$audio,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src('assets/audio/music/CaveLoop.wav'),
+						$elm$html$Html$Attributes$autoplay(true),
+						$elm$html$Html$Attributes$controls(false),
+						$elm$html$Html$Attributes$loop(true)
+					]),
+				_List_Nil);
+		} else {
+			return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+		}
+	} else {
+		return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+	}
+};
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$img = _VirtualDom_node('img');
 var $Zinggi$elm_game_resources$Game$Resources$getTexture = F2(
 	function (url, _v0) {
@@ -12531,19 +12659,6 @@ var $Zinggi$elm_2d_game$Game$TwoD$renderWithOptions = F3(
 					_Utils_Tuple2(wf, hf)),
 				objects));
 	});
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
-var $elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
-};
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$Armor$Chestplate = {$: 'Chestplate'};
@@ -13868,31 +13983,25 @@ var $elm$core$String$replace = F3(
 			A2($elm$core$String$split, before, string));
 	});
 var $author$project$Game$keyButtonTexture = F2(
-	function (key_button, keys) {
-		var assetPath = 'assets/button/' + (key_button + '_48_48.png');
+	function (keyButton, keys) {
+		var assetPath = 'assets/button/' + (keyButton + '_48_48.png');
 		var pressedPath = A3($elm$core$String$replace, '.', '_pressed.', assetPath);
-		return (key_button === 'spacebar') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? 'assets/button/spacebar_192_48_pressed.png' : 'assets/button/spacebar_192_48.png') : ((key_button === 'q') ? (A2(
-			$elm$core$List$member,
-			$ohanhi$keyboard$Keyboard$Character('Q'),
-			keys) ? 'assets/button/consumable_key_pressed.png' : assetPath) : ((key_button === 'e') ? (A2(
-			$elm$core$List$member,
-			$ohanhi$keyboard$Keyboard$Character('E'),
-			keys) ? pressedPath : assetPath) : ((key_button === 'w') ? (A2(
+		return (keyButton === 'spacebar') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$Spacebar, keys) ? 'assets/button/spacebar_192_48_pressed.png' : 'assets/button/spacebar_192_48.png') : ((keyButton === 'w') ? (A2(
 			$elm$core$List$member,
 			$ohanhi$keyboard$Keyboard$Character('W'),
-			keys) ? pressedPath : assetPath) : ((key_button === 'a') ? (A2(
+			keys) ? pressedPath : assetPath) : ((keyButton === 'a') ? (A2(
 			$elm$core$List$member,
 			$ohanhi$keyboard$Keyboard$Character('A'),
-			keys) ? pressedPath : assetPath) : ((key_button === 's') ? (A2(
+			keys) ? pressedPath : assetPath) : ((keyButton === 's') ? (A2(
 			$elm$core$List$member,
 			$ohanhi$keyboard$Keyboard$Character('S'),
-			keys) ? pressedPath : assetPath) : ((key_button === 'd') ? (A2(
+			keys) ? pressedPath : assetPath) : ((keyButton === 'd') ? (A2(
 			$elm$core$List$member,
 			$ohanhi$keyboard$Keyboard$Character('D'),
-			keys) ? pressedPath : assetPath) : ((key_button === 'arrowUp') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowUp, keys) ? pressedPath : assetPath) : ((key_button === 'arrowRight') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowRight, keys) ? pressedPath : assetPath) : ((key_button === 'arrowDown') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowDown, keys) ? pressedPath : assetPath) : ((key_button === 'arrowLeft') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowLeft, keys) ? pressedPath : assetPath) : ''))))))))));
+			keys) ? pressedPath : assetPath) : ((keyButton === 'arrowUp') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowUp, keys) ? pressedPath : assetPath) : ((keyButton === 'arrowRight') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowRight, keys) ? pressedPath : assetPath) : ((keyButton === 'arrowDown') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowDown, keys) ? pressedPath : assetPath) : ((keyButton === 'arrowLeft') ? (A2($elm$core$List$member, $ohanhi$keyboard$Keyboard$ArrowLeft, keys) ? pressedPath : assetPath) : ''))))))));
 	});
-var $author$project$Game$viewPlayerInput = F3(
-	function (left, top, keys) {
+var $author$project$Game$viewPlayerInput = F4(
+	function (left, top, keys, movement) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -13923,7 +14032,13 @@ var $author$project$Game$viewPlayerInput = F3(
 							_List_fromArray(
 								[
 									$elm$html$Html$Attributes$src(
-									A2($author$project$Game$keyButtonTexture, 'w', keys))
+									function () {
+										if (movement.$ === 'WASD') {
+											return A2($author$project$Game$keyButtonTexture, 'w', keys);
+										} else {
+											return A2($author$project$Game$keyButtonTexture, 'arrowUp', keys);
+										}
+									}())
 								]),
 							_List_Nil)
 						])),
@@ -13941,7 +14056,13 @@ var $author$project$Game$viewPlayerInput = F3(
 							_List_fromArray(
 								[
 									$elm$html$Html$Attributes$src(
-									A2($author$project$Game$keyButtonTexture, 'a', keys))
+									function () {
+										if (movement.$ === 'WASD') {
+											return A2($author$project$Game$keyButtonTexture, 'a', keys);
+										} else {
+											return A2($author$project$Game$keyButtonTexture, 'arrowLeft', keys);
+										}
+									}())
 								]),
 							_List_Nil)
 						])),
@@ -13960,7 +14081,13 @@ var $author$project$Game$viewPlayerInput = F3(
 							_List_fromArray(
 								[
 									$elm$html$Html$Attributes$src(
-									A2($author$project$Game$keyButtonTexture, 's', keys))
+									function () {
+										if (movement.$ === 'WASD') {
+											return A2($author$project$Game$keyButtonTexture, 's', keys);
+										} else {
+											return A2($author$project$Game$keyButtonTexture, 'arrowDown', keys);
+										}
+									}())
 								]),
 							_List_Nil)
 						])),
@@ -13979,7 +14106,13 @@ var $author$project$Game$viewPlayerInput = F3(
 							_List_fromArray(
 								[
 									$elm$html$Html$Attributes$src(
-									A2($author$project$Game$keyButtonTexture, 'd', keys))
+									function () {
+										if (movement.$ === 'WASD') {
+											return A2($author$project$Game$keyButtonTexture, 'd', keys);
+										} else {
+											return A2($author$project$Game$keyButtonTexture, 'arrowRight', keys);
+										}
+									}())
 								]),
 							_List_Nil)
 						])),
@@ -14071,7 +14204,7 @@ var $author$project$Game$view = function (model) {
 				A5($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.name, model.player),
 				A8($author$project$Game$viewPauseScreen, 360, 160, model.button_PS_resume, model.button_PS_settings, model.button_PS_help, model.button_PS_return, model.pauseToggle, model.player),
 				A6($author$project$Game$viewDeathScreen, 360, 160, model.button_DS_respawn, model.button_DS_return, model.player, model.savePosition),
-				A3($author$project$Game$viewPlayerInput, 820, 835, model.keys)
+				A4($author$project$Game$viewPlayerInput, 820, 835, model.keys, model.movement)
 			]));
 };
 var $author$project$Help$HoverBack = {$: 'HoverBack'};
@@ -14778,13 +14911,6 @@ var $author$project$NewGame$SaveTo = function (a) {
 };
 var $author$project$NewGame$Second = {$: 'Second'};
 var $author$project$NewGame$Third = {$: 'Third'};
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
 var $elm$html$Html$Attributes$autofocus = $elm$html$Html$Attributes$boolProperty('autofocus');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$Events$alwaysStop = function (x) {
@@ -15121,15 +15247,13 @@ var $author$project$NewGame$view = function (model) {
 					]))
 			]));
 };
-var $author$project$Settings$Arrows = {$: 'Arrows'};
 var $author$project$Settings$HoverBack = {$: 'HoverBack'};
 var $author$project$Settings$MouseOut = {$: 'MouseOut'};
 var $author$project$Settings$MovementTo = function (a) {
 	return {$: 'MovementTo', a: a};
 };
-var $author$project$Settings$On = {$: 'On'};
-var $author$project$Settings$SoundTo = function (a) {
-	return {$: 'SoundTo', a: a};
+var $author$project$Settings$MusicTo = function (a) {
+	return {$: 'MusicTo', a: a};
 };
 var $author$project$Settings$radio = F3(
 	function (msg, isChecked, value) {
@@ -15389,7 +15513,7 @@ var $author$project$Settings$view = function (model) {
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('Sound:')
+								$elm$html$Html$text('Music:')
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -15403,8 +15527,8 @@ var $author$project$Settings$view = function (model) {
 							[
 								A3(
 								$author$project$Settings$radio,
-								$author$project$Settings$SoundTo($author$project$Settings$Off),
-								_Utils_eq(model.sound, $author$project$Settings$Off),
+								$author$project$Settings$MusicTo($author$project$Settings$Off),
+								_Utils_eq(model.music, $author$project$Settings$Off),
 								'off')
 							])),
 						A2(
@@ -15419,8 +15543,8 @@ var $author$project$Settings$view = function (model) {
 							[
 								A3(
 								$author$project$Settings$radio,
-								$author$project$Settings$SoundTo($author$project$Settings$On),
-								_Utils_eq(model.sound, $author$project$Settings$On),
+								$author$project$Settings$MusicTo($author$project$Settings$On),
+								_Utils_eq(model.music, $author$project$Settings$On),
 								'on')
 							]))
 					])),
@@ -15592,7 +15716,8 @@ var $author$project$Main$view = function (model) {
 	return {
 		body: _List_fromArray(
 			[
-				$author$project$Main$viewBody(model)
+				$author$project$Main$viewBody(model),
+				$author$project$Main$backgroundMusic(model.flags.settings)
 			]),
 		title: $author$project$Main$viewTitle(model) + ' - The Elm Scrolls'
 	};

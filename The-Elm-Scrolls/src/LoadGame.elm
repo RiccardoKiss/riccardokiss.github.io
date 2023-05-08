@@ -44,7 +44,7 @@ init flags navKey =
     , save2 = flags.save2
     , save3 = flags.save3
     }
-  , Ports.loadedPage ()
+  , Cmd.none--Ports.loadedPage ()
   )
 
 

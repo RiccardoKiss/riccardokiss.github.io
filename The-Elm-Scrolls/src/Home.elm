@@ -8,6 +8,7 @@ import Html.Attributes exposing (src, style)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 
 import Route exposing (Route)
+import Ports exposing (..)
 
 
 type alias Model =
@@ -29,7 +30,7 @@ init navKey =
     , button_settings = "assets/button/button_settings.png"
     , button_help = "assets/button/button_help.png"
     }
-  , Cmd.none
+  , Ports.loadedPage ()
   )
 
 
@@ -39,8 +40,8 @@ type Msg
   | HoverHighScore
   | HoverSettings
   | HoverHelp
-  --| ClickedSettings
   | MouseOut
+  | Reload Bool
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -91,6 +92,12 @@ update msg model =
         }
       , Cmd.none
       )
+
+    Reload rel ->
+      if rel then
+        ( model, Nav.reload )
+      else
+        ( model, Cmd.none )
 
 
 view : Model -> Html Msg
@@ -149,3 +156,11 @@ view model =
               ] []
         ]
     ]
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+  Ports.reloadPage Reload

@@ -10,6 +10,7 @@ import Potion exposing (Potion)
 import Level exposing (Level)
 import Enemy exposing (Enemy, Direction, EnemyType)
 import Item exposing (Item, ItemType)
+import Settings exposing (..)
 
 
 type Difficulty
@@ -25,11 +26,16 @@ type alias Save =
   , level : Maybe Level
   }
 
+type alias Settings =
+  { music : Music
+  , movement : Movement
+  }
+
 type alias Flags =
   { save1 : Maybe Save
   , save2 : Maybe Save
   , save3 : Maybe Save
-  --, settings :
+  , settings : Maybe Settings
   --, highscores :
   }
 
@@ -47,14 +53,53 @@ difficultyToString difficulty =
 
 flagsDecoder : Decoder Flags
 flagsDecoder =
-  D.map3 Flags
+  D.map4 Flags
     (D.maybe (D.field "save1" saveDecoder))
     (D.maybe (D.field "save2" saveDecoder))
     (D.maybe (D.field "save3" saveDecoder))
+    (D.maybe (D.field "settings" settingsDecoder))
   --D.succeed Flags
   --|> optional "save1" saveDecoder emptySave
   --|> optional "save2" saveDecoder emptySave
   --|> optional "save3" saveDecoder emptySave
+
+settingsDecoder : Decoder Settings
+settingsDecoder =
+  D.map2 Settings
+    (D.field "music" musicDecoder)
+    (D.field "movement" movementDecoder)
+
+musicDecoder : Decoder Music
+musicDecoder =
+  D.string
+    |> D.andThen
+      (\string ->
+          case string of
+            "on" ->
+              D.succeed On
+
+            "off" ->
+              D.succeed Off
+
+            _ ->
+              D.fail "Invalid Music"
+      )
+
+movementDecoder : Decoder Movement
+movementDecoder =
+  D.string
+    |> D.andThen
+      (\string ->
+          case string of
+            "wasd" ->
+              D.succeed WASD
+
+            "arrows" ->
+              D.succeed Arrows
+
+            _ ->
+              D.fail "Invalid Movement"
+      )
 
 
 saveDecoder : Decoder Save

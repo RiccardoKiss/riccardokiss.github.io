@@ -10,7 +10,7 @@ import Route exposing (Route)
 import Ports exposing (..)
 
 
-type Sound
+type Music
   = On
   | Off
 
@@ -21,7 +21,7 @@ type Movement
 type alias Model =
   { navKey : Nav.Key
   , buttonBack : String
-  , sound : Sound
+  , music : Music
   , movement : Movement
   }
 
@@ -30,7 +30,7 @@ init : Nav.Key -> ( Model, Cmd Msg )
 init navKey =
   ( { navKey = navKey
     , buttonBack = "assets/button/button_back.png"
-    , sound = Off
+    , music = Off
     , movement = WASD
     }
   , Cmd.none
@@ -41,7 +41,7 @@ type Msg
   = HoverBack
   --| ClickedBack
   | MouseOut
-  | SoundTo Sound
+  | MusicTo Music
   | MovementTo Movement
 
 
@@ -62,9 +62,9 @@ update msg model =
       , Cmd.none
       )
 
-    SoundTo choice ->
+    MusicTo choice ->
       ( { model
-        | sound = choice }
+        | music = choice }
       , Cmd.none
       )
 
@@ -77,8 +77,8 @@ update msg model =
 saveSettings : Model -> Cmd msg
 saveSettings model =
   let
-    soundToString =
-      case model.sound of
+    musicToString =
+      case model.music of
         On ->
           "on"
 
@@ -93,7 +93,7 @@ saveSettings model =
           "arrows"
     encodedSettings =
       Encode.object
-        [ ( "sound", Encode.string soundToString )
+        [ ( "music", Encode.string musicToString )
         , ( "movement", Encode.string movementToString )
         ]
   in
@@ -106,7 +106,6 @@ radio  msg isChecked value =
               , style "margin-left" "40px"
               , style "width" "5em"
               , style "height" "5em"
-              --, onClick msg
               , checked isChecked
               ] []
       , div [ style "position" "absolute"
@@ -183,17 +182,17 @@ view model =
            [ div [ style "position" "absolute"
                  , style "top" "10px"
                  , style "font-size" "1.5em"
-                 ] [ text "Sound:" ]
+                 ] [ text "Music:" ]
            , div [ style "position" "absolute"
                  , style "left" "175px"
                  , style "top" "0px"
                  ]
-                 [ radio ( SoundTo Off ) ( model.sound == Off ) "off" ]
+                 [ radio ( MusicTo Off ) ( model.music == Off ) "off" ]
            , div [ style "position" "absolute"
                  , style "left" "600px"
                  , style "top" "0px"
                  ]
-                 [ radio ( SoundTo On ) ( model.sound == On ) "on" ]
+                 [ radio ( MusicTo On ) ( model.music == On ) "on" ]
            ]
       , h1 [ style "position" "absolute"
            , style "white-space" "nowrap"

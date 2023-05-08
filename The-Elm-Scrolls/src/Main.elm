@@ -67,15 +67,10 @@ type PageModel
   | HelpPage Help.Model
 
 
---fakeFlags : Decode.Value
---fakeFlags =
-
-
 init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
   let
     _ = Debug.log "[Main.init] url" url
-    _ = Debug.log "[Main.init] flags" flags
     decodedFlags =
       case Decode.decodeValue flagsDecoder flags of
         Ok decoded -> decoded
@@ -83,6 +78,7 @@ init flags url navKey =
           { save1 = Nothing  --DecodingJson.emptySave
           , save2 = Nothing  --DecodingJson.emptySave
           , save3 = Nothing  --DecodingJson.emptySave
+          , settings = Nothing
           }
     _ = Debug.log "[Main.init] decodedFlags" decodedFlags
     model =
@@ -119,21 +115,21 @@ initPage ( model, existingCmds ) =
         Route.Game1 ->
           let
             ( pageModel, pageCmds ) =
-              Game.init model.flags.save1 Game.First model.navKey
+              Game.init model.flags.save1 Game.First model.flags.settings model.navKey
           in
           ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
 
         Route.Game2 ->
           let
             ( pageModel, pageCmds ) =
-              Game.init model.flags.save2 Game.Second model.navKey
+              Game.init model.flags.save2 Game.Second model.flags.settings model.navKey
           in
           ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
 
         Route.Game3 ->
           let
             ( pageModel, pageCmds ) =
-              Game.init model.flags.save3 Game.Third model.navKey
+              Game.init model.flags.save3 Game.Third model.flags.settings model.navKey
           in
           ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
 
@@ -183,7 +179,7 @@ type Msg
   | HighScoresPageMsg HighScores.Msg
   | SettingsPageMsg Settings.Msg
   | HelpPageMsg Help.Msg
---  | NotFoundPageMsg
+--| NotFoundPageMsg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -272,7 +268,10 @@ update msg model =
 view : Model -> Document Msg
 view model =
   { title = ( viewTitle model ) ++ " - The Elm Scrolls"
-  , body = [ viewBody model ]
+  , body =
+      [ viewBody model
+      , backgroundMusic model.flags.settings
+      ]
   }
 
 viewTitle : Model -> String
@@ -336,6 +335,23 @@ viewBody model =
       Help.view modelHelp
       |> Html.map HelpPageMsg
 
+backgroundMusic : Maybe DecodingJson.Settings -> Html Msg
+backgroundMusic settings =
+  case settings of
+    Just s ->
+      case s.music of
+        Settings.On ->
+          audio [ src "assets/audio/music/CaveLoop.wav"
+                , autoplay True
+                , controls False
+                , loop True
+                ] []
+
+        Settings.Off ->
+          div [] []
+
+    Nothing ->
+      div [] []
 
 -- SUBSCRIPTIONS
 
@@ -347,7 +363,7 @@ subscriptions model =
       Sub.none
 
     HomePage modelHome ->
-      Sub.none
+      Sub.map HomePageMsg (Home.subscriptions modelHome)
 
     NewGamePage modelNewGame ->
       Sub.none

@@ -28,6 +28,8 @@ import Enemy exposing (..)
 import Item exposing (..)
 import Armor exposing (..)
 import Potion exposing (..)
+import Settings exposing (..)
+
 
 -- MODEL
 
@@ -45,6 +47,8 @@ type alias Model =
   , screen : ( Int, Int )
   , camera : Camera
   , pauseToggle : Bool
+  , music : Settings.Music
+  , movement : Settings.Movement
   , button_DS_respawn : String
   , button_DS_return : String
   , button_PS_resume : String
@@ -104,11 +108,12 @@ initPlayer level =
   , speedPotions = Potion.speedPotion 1.5 5.0 5.0 0.0 0
   }
 
-init : Maybe DecodingJson.Save -> SavePosition -> Nav.Key -> ( Model, Cmd Msg )
-init save pos navKey =
+init : Maybe DecodingJson.Save -> SavePosition -> Maybe DecodingJson.Settings -> Nav.Key -> ( Model, Cmd Msg )
+init save pos settings navKey =
   let
     _ = Debug.log "[Game.init] save" save
     _ = Debug.log "[Game.init] pos" pos
+    _ = Debug.log "[Game.init] settings" settings
   in
   ( { navKey = navKey
     , savePosition = pos
@@ -182,6 +187,20 @@ init save pos navKey =
     , screen = ( 1280, 720 )
     , camera = Camera.fixedArea (32 * 16) ( 0, 0 ) --(16 * 8) ( 0, 0 )
     , pauseToggle = False
+    , music =
+        case settings of
+          Just s ->
+            s.music
+
+          Nothing ->
+            Settings.Off
+    , movement =
+        case settings of
+          Just s ->
+            s.movement
+
+          Nothing ->
+            Settings.WASD
     , button_DS_respawn = "assets/button/button_DS_respawn.png"
     , button_DS_return = "assets/button/button_DS_return_MainMenu.png"
     , button_PS_resume = "assets/button/button_resume.png"
@@ -219,7 +238,7 @@ update msg model =
         --items = List.filter Item.isPickable model.level.items
       in
       ( { model
-          | player = playerTick dt model.time model.level model.keys enemies playerWithExp
+          | player = playerTick dt model.time model.level model.keys model.movement enemies playerWithExp
           , level =  levelTick dt model.pauseToggle model.player model.level --enemies model.level.items
           , pauseToggle =
               if model.player.currentHealth == 0 then
@@ -500,14 +519,19 @@ playerTick :
   -> Float
   -> Level
   -> List Keyboard.Key
+  -> Settings.Movement
   -> List Enemy
   -> Player
   -> Player
-playerTick dt time lvl keys enemyList player =
+playerTick dt time lvl keys movement enemyList player =
   let
     moveInput =
-      Keyboard.Arrows.wasd keys
-      --Keyboard.Arrows.arrows keys
+      case movement of
+        WASD ->
+          Keyboard.Arrows.wasd keys
+
+        Arrows ->
+          Keyboard.Arrows.arrows keys
   in
   player
   |> Player.applyHealthPotion keys time
@@ -759,62 +783,52 @@ dmgDoneToEnemy sword enemy =
   else 0
 
 keyButtonTexture : String -> List Keyboard.Key -> String
-keyButtonTexture key_button keys =
+keyButtonTexture keyButton keys =
   let
-    assetPath = "assets/button/" ++ key_button ++ "_48_48.png"
+    assetPath = "assets/button/" ++ keyButton ++ "_48_48.png"
     pressedPath = String.replace "." "_pressed." assetPath
   in
-  if key_button == "spacebar" then
+  if keyButton == "spacebar" then
     if List.member (Keyboard.Spacebar) keys then
       "assets/button/spacebar_192_48_pressed.png"
     else
       "assets/button/spacebar_192_48.png"
-  else if key_button == "q" then
-    if List.member (Keyboard.Character "Q") keys then
-      "assets/button/consumable_key_pressed.png"--pressedPath
-    else
-      assetPath
-  else if key_button == "e" then
-    if List.member (Keyboard.Character "E") keys then
-      pressedPath
-    else
-      assetPath
-  else if key_button == "w" then
+  else if keyButton == "w" then
     if List.member (Keyboard.Character "W") keys then
       pressedPath
     else
       assetPath
-  else if key_button == "a" then
+  else if keyButton == "a" then
     if List.member (Keyboard.Character "A") keys then
       pressedPath
     else
       assetPath
-  else if key_button == "s" then
+  else if keyButton == "s" then
     if List.member (Keyboard.Character "S") keys then
       pressedPath
     else
       assetPath
-  else if key_button == "d" then
+  else if keyButton == "d" then
     if List.member (Keyboard.Character "D") keys then
       pressedPath
     else
       assetPath
-  else if key_button == "arrowUp" then
+  else if keyButton == "arrowUp" then
     if List.member Keyboard.ArrowUp keys then
       pressedPath
     else
       assetPath
-  else if key_button == "arrowRight" then
+  else if keyButton == "arrowRight" then
     if List.member Keyboard.ArrowRight keys then
       pressedPath
     else
       assetPath
-  else if key_button == "arrowDown" then
+  else if keyButton == "arrowDown" then
     if List.member Keyboard.ArrowDown keys then
       pressedPath
     else
       assetPath
-  else if key_button == "arrowLeft" then
+  else if keyButton == "arrowLeft" then
     if List.member Keyboard.ArrowLeft keys then
       pressedPath
     else
@@ -1043,27 +1057,50 @@ viewConsumable2 left top keys time speedPotion =
             ]
       ]
 
-viewPlayerInput : Int -> Int -> List Keyboard.Key -> Html Msg
-viewPlayerInput left top keys =
+viewPlayerInput : Int -> Int -> List Keyboard.Key -> Settings.Movement -> Html Msg
+viewPlayerInput left top keys movement =
   div [ style "position" "absolute"
       , style "left" (String.fromInt left ++ "px")
       , style "top" (String.fromInt top ++ "px")
       ]
       [ div [ style "position" "absolute"
             , style "left" "52px"
-            ] [ img [ src (keyButtonTexture "w" keys) ] [] ]
+            ] [ img [ src (case movement of
+                            WASD ->
+                              keyButtonTexture "w" keys
+                            Arrows ->
+                              keyButtonTexture "arrowUp" keys
+                          )
+                    ] [] ]
       , div [ style "position" "absolute"
-            --, style "left" "34px"
             , style "top" "52px"
-            ] [ img [ src (keyButtonTexture "a" keys) ] [] ]
+            ] [ img [ src (case movement of
+                            WASD ->
+                              keyButtonTexture "a" keys
+                            Arrows ->
+                              keyButtonTexture "arrowLeft" keys
+                          )
+                    ] [] ]
       , div [ style "position" "absolute"
             , style "left" "52px"
             , style "top" "52px"
-            ] [ img [ src (keyButtonTexture "s" keys) ] [] ]
+            ] [ img [ src (case movement of
+                            WASD ->
+                              keyButtonTexture "s" keys
+                            Arrows ->
+                              keyButtonTexture "arrowDown" keys
+                          )
+                    ] [] ]
       , div [ style "position" "absolute"
             , style "left" "104px"
             , style "top" "52px"
-            ] [ img [ src (keyButtonTexture "d" keys) ] [] ]
+            ] [ img [ src (case movement of
+                            WASD ->
+                              keyButtonTexture "d" keys
+                            Arrows ->
+                              keyButtonTexture "arrowRight" keys
+                          )
+                    ] [] ]
       , div [ style "position" "absolute"
             , style "left" "260px"
             , style "top" "52px"
@@ -1470,7 +1507,7 @@ view model =
       , viewCharacterScreen 360 160 model.keys model.name model.player
       , viewPauseScreen 360 160 model.button_PS_resume model.button_PS_settings model.button_PS_help model.button_PS_return model.pauseToggle model.player
       , viewDeathScreen 360 160 model.button_DS_respawn model.button_DS_return model.player model.savePosition
-      , viewPlayerInput 820 835 model.keys  --820 861
+      , viewPlayerInput 820 835 model.keys model.movement  --820 861
       ]
 
 

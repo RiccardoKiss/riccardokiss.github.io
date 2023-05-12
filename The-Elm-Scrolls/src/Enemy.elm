@@ -32,7 +32,6 @@ type Direction
   | Right
   | Up
   | Down
-  --| Idle
 
 type EnemyType
   = Bandit
@@ -162,9 +161,9 @@ getExpDrop : Enemy -> Int
 getExpDrop enemy =
   enemy.expDrop
 
-enemyDirToString : Enemy -> String
-enemyDirToString enemy =
-  case enemy.dir of
+enemyDirToString : Direction -> String
+enemyDirToString dir =
+  case dir of
     Left ->
       "left"
 
@@ -176,9 +175,6 @@ enemyDirToString enemy =
 
     Down ->
       "down"
-
-    --Idle ->
-      --"idle"
 
 enemyTypeToString : Enemy -> String
 enemyTypeToString enemy =

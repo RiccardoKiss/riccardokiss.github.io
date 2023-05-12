@@ -84,10 +84,10 @@ type Msg
   | Reload Bool
 
 
-initPlayer : Level.Level -> Player
-initPlayer level =
-  { x = level.startX --56
-  , y = level.startY --9
+initPlayer : Player
+initPlayer =
+  { x = Level.level1.startX --55.5
+  , y = Level.level1.startY --9.0
   , vx = 0
   , vy = 0
   , baseSpeed = 3.0
@@ -98,7 +98,6 @@ initPlayer level =
   , sword = Sword.woodSword
   , armor = Armor.noneArmorSet
   , maxDefense = 100
-  --, currentDefense = 10
   , maxHealth = 100
   , currentHealth = 50
   , playerLevel = 1
@@ -125,7 +124,7 @@ init save pos settings navKey =
                 name
 
               Nothing ->
-                "PLAYER"
+                "PLAYER"      -- default player name if none was entered
 
           Nothing ->
             "PLAYER"
@@ -149,7 +148,7 @@ init save pos settings navKey =
                 DecodingJson.Easy
                 -}
           Nothing ->
-            DecodingJson.Easy
+            DecodingJson.Easy   -- default difficulty
 
     , level =
         case save of
@@ -159,10 +158,10 @@ init save pos settings navKey =
                 lvl
 
               Nothing ->
-                Level.level2
+                Level.level1
 
           Nothing ->
-            Level.level2
+            Level.level1
     , player =
         case save of
           Just s ->
@@ -171,10 +170,10 @@ init save pos settings navKey =
                 p
 
               Nothing ->
-                initPlayer Level.level2
+                initPlayer
 
           Nothing ->
-            initPlayer Level.level2
+            initPlayer
     , resources = Resources.init
     , keys = []
     , time =
@@ -282,12 +281,7 @@ update msg model =
 
         }
       , if List.member Keyboard.Escape keys && not model.pauseToggle then
-          encodeSave model
-          --Cmd.batch
-          --  [ saveTime model.time
-          --  , savePlayer model.player
-          --  , saveLevel model.level
-          --  ]
+          encodeSave model  -- save current game instance into local storage when pause is toggled
         else
           Cmd.none
       )
@@ -388,11 +382,6 @@ update msg model =
     SaveGame ->
       ( model
       , encodeSave model
-      --,  Cmd.batch
-      --    [ saveTime model.time
-      --    , savePlayer model.player
-      --    , saveLevel model.level
-      --    ]
       )
 
     Reload rel ->
@@ -429,12 +418,12 @@ saveEnemy enemy =
   --Encode.object
     [ ( "initX", Encode.float enemy.initX )
     , ( "initY", Encode.float enemy.initY )
-    , ( "initDir", Encode.string (enemyDirToString enemy) )
+    , ( "initDir", Encode.string (enemyDirToString enemy.initDir) )
     , ( "x", Encode.float enemy.x )
     , ( "y", Encode.float enemy.y )
     , ( "vx", Encode.float enemy.vx )
     , ( "vy", Encode.float enemy.vy )
-    , ( "dir", Encode.string (enemyDirToString enemy) )
+    , ( "dir", Encode.string (enemyDirToString enemy.dir) )
     , ( "width", Encode.float enemy.width )
     , ( "height", Encode.float enemy.height )
     , ( "enemyType", Encode.string (enemyTypeToString enemy) )
@@ -472,10 +461,11 @@ saveLevel level =
         , ( "items", Encode.list Encode.object encodeItems )
         , ( "startX", Encode.float level.startX )
         , ( "startY", Encode.float level.startY )
+        , ( "endX", Encode.float level.endX )
+        , ( "endY", Encode.float level.endY )
         ]
   in
   encodeLevel
-  --|> Ports.storeLevel
 
 savePotion : Potion -> List (String, Encode.Value)
 savePotion potion =
@@ -511,7 +501,6 @@ savePlayer player =
         ]
   in
   encodePlayer
-  --|> Ports.storePlayer
 
 
 playerTick :
@@ -670,7 +659,6 @@ enemyPhysics dt lvl player enemy =
   let
     newX = enemy.x + dt * enemy.vx
     xDiff = abs (player.x - newX)
-    --_ = Debug.log "[XDiff]" xDiff
     newY = enemy.y + dt * enemy.vy
     tileType =
       if enemy.dir == Enemy.Left then
@@ -841,21 +829,21 @@ keyButtonTexture keyButton keys =
 
 
 render : Model -> List Renderable
-render ({ resources, camera } as model) =
+render model =
   List.concat
-    [ renderBackground resources
-    , [ Player.renderPlayer resources model.player
-      , Sword.renderSword resources model.player.sword
+    [ renderBackground model.resources model.level.mapTexture
+    , [ Player.renderPlayer model.resources model.player
+      , Sword.renderSword model.resources model.player.sword
       ]
     , List.filter Enemy.isAlive model.level.enemies
-      |> List.map (Enemy.renderEnemy resources)
-    , List.map (Item.renderItemStand resources) model.level.items
+      |> List.map (Enemy.renderEnemy model.resources)
+    , List.map (Item.renderItemStand model.resources) model.level.items
     ]
 
-renderBackground : Resources -> List Renderable
-renderBackground resources =
+renderBackground : Resources -> String -> List Renderable
+renderBackground resources mapTexture =
   [ Render.spriteZ
-    { texture = Resources.getTexture "assets/level/level_2_updated.png" resources
+    { texture = Resources.getTexture mapTexture resources
     , position = ( 0, 0, -0.9 )
     , size = ( 128, 128 )
     }

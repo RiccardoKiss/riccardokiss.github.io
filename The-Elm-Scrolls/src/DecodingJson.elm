@@ -58,10 +58,6 @@ flagsDecoder =
     (D.maybe (D.field "save2" saveDecoder))
     (D.maybe (D.field "save3" saveDecoder))
     (D.maybe (D.field "settings" settingsDecoder))
-  --D.succeed Flags
-  --|> optional "save1" saveDecoder emptySave
-  --|> optional "save2" saveDecoder emptySave
-  --|> optional "save3" saveDecoder emptySave
 
 settingsDecoder : Decoder Settings
 settingsDecoder =
@@ -230,19 +226,19 @@ potionDecoder =
 
 levelDecoder : Decoder Level.Level
 levelDecoder =
-  D.map6 Level.Level
+  D.map8 Level.Level
     (D.field "map"
       (D.string
         |> D.andThen
           (\string ->
             case string of
-              "Lvl1" ->
+              "LvL1" ->
                 D.succeed Level.Lvl1
 
-              "Lvl2" ->
+              "LvL2" ->
                 D.succeed Level.Lvl2
 
-              "Lvl3" ->
+              "LvL3" ->
                 D.succeed Level.Lvl3
 
               _ ->
@@ -255,6 +251,8 @@ levelDecoder =
     (D.field "items" (D.list itemDecoder))
     (D.field "startX" D.float)
     (D.field "startY" D.float)
+    (D.field "endX" D.float)
+    (D.field "endY" D.float)
 
 enemyDecoder : Decoder Enemy.Enemy
 enemyDecoder =

@@ -114,3 +114,43 @@ level2 =
   , endX = 106.0
   , endY = 59.0
   }
+
+level3Enemies : List Enemy
+level3Enemies =
+  []
+
+level3Items : List Item
+level3Items =
+  [ speedPotionStand 74 29
+  , healthPotionStand 77 29
+  , speedPotionStand 34 46
+  , healthPotionStand 37 46
+  , speedPotionStand 22 65
+  , healthPotionStand 22 62
+  , speedPotionStand 45 81
+  , healthPotionStand 45 78
+  , speedPotionStand 81 93
+  , healthPotionStand 81 90
+  , speedPotionStand 101 81
+  , healthPotionStand 101 78
+  , speedPotionStand 101 49
+  , healthPotionStand 101 46
+  , speedPotionStand 26 113
+  , healthPotionStand 26 110
+  , dragonArmorStand 28 111
+  , speedPotionStand 102 98
+  , healthPotionStand 105 98
+  , dragonSwordStand 104 100
+  ]
+
+level3 : Level
+level3 =
+  { map = Lvl3
+  , mapTexture = "assets/level/level_3.png"
+  , enemies = level3Enemies
+  , items = level3Items
+  , startX = 63.5
+  , startY = 63.5
+  , endX = 108.0
+  , endY = 31.0
+  }

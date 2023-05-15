@@ -86,12 +86,12 @@ type Msg
 
 initPlayer : Player
 initPlayer =
-  { x = Level.level1.startX --55.5
-  , y = Level.level1.startY --9.0
+  { x = Level.level1StartCoordinates.x
+  , y = Level.level1StartCoordinates.y
   , vx = 0
   , vy = 0
-  , baseSpeed = 3.0
-  , currentSpeed = 3.0
+  , baseSpeed = 5.0--3.0
+  , currentSpeed = 5.0--3.0
   , width = 1.0
   , height = 2.0
   , dir = Player.Idle
@@ -154,14 +154,22 @@ init save pos settings navKey =
         case save of
           Just s ->
             case s.level of
-              Just lvl ->
+              Just lvl ->     -- loading game instance from local storage
                 lvl
 
-              Nothing ->
-                Level.level1
+              Nothing ->      -- creating new game instance
+                case s.difficulty of
+                  DecodingJson.Easy ->
+                    Level.level1 Level.Easy
+
+                  DecodingJson.Medium ->
+                    Level.level1 Level.Medium
+
+                  DecodingJson.Hard ->
+                    Level.level1 Level.Hard
 
           Nothing ->
-            Level.level1
+            Level.level1 Level.Easy
     , player =
         case save of
           Just s ->
@@ -232,13 +240,22 @@ update msg model =
   case msg of
     Tick dt ->
       let
+        exitReached = ((floor model.player.x) == (floor model.level.endX)) && ((floor model.player.y) == (floor model.level.endY))
         playerWithExp = getExp model.level.enemies model.player
         enemies = List.filter Enemy.isAlive model.level.enemies
         --items = List.filter Item.isPickable model.level.items
       in
       ( { model
-          | player = playerTick dt model.time model.level model.keys model.movement enemies playerWithExp
-          , level =  levelTick dt model.pauseToggle model.player model.level --enemies model.level.items
+          | player =
+              if exitReached then
+                initNextLevelPlayer model.level model.player
+              else
+                playerTick dt model.time model.level model.keys model.movement enemies playerWithExp
+          , level =
+              if exitReached then
+                initNextLevel model.difficulty model.level
+              else
+                levelTick dt model.pauseToggle model.player model.level
           , pauseToggle =
               if model.player.currentHealth == 0 then
                 True
@@ -502,6 +519,45 @@ savePlayer player =
   in
   encodePlayer
 
+initNextLevelPlayer : Level -> Player -> Player
+initNextLevelPlayer currentLevel player =
+  case currentLevel.map of
+    Lvl1 ->
+      { player
+        | x = Level.level2StartCoordinates.x
+        , y = Level.level2StartCoordinates.y
+      }
+    Lvl2 ->
+      { player
+        | x = Level.level3StartCoordinates.x
+        , y = Level.level3StartCoordinates.y
+      }
+    Lvl3 ->
+      player
+
+initNextLevel : DecodingJson.Difficulty -> Level -> Level
+initNextLevel difficulty currentLevel =
+  let
+    levelDifficulty =
+      case difficulty of
+        DecodingJson.Easy ->
+          Level.Easy
+
+        DecodingJson.Medium ->
+          Level.Medium
+
+        DecodingJson.Hard ->
+          Level.Hard
+  in
+  case currentLevel.map of
+    Lvl1 ->
+      Level.level2 levelDifficulty
+
+    Lvl2 ->
+      Level.level3 levelDifficulty
+
+    Lvl3 ->
+      currentLevel
 
 playerTick :
   Float
@@ -549,7 +605,7 @@ playerPhysics dt lvl player =
     | x =
         case tileType of
           Just tile ->
-            if tile == 'T' then
+            if tile == 'T' || tile == 'E' then
               if List.isEmpty newTileItemStand then   -- if item stand is not on the new tile, player can move
                 newX
               else player.x
@@ -559,7 +615,7 @@ playerPhysics dt lvl player =
     , y =
         case tileType of
           Just tile ->
-            if tile == 'T' then
+            if tile == 'T' || tile == 'E' then
               if List.isEmpty newTileItemStand then   -- if item stand is not on the new tile, player can move
                 newY
               else player.y
@@ -618,24 +674,26 @@ getExp enemyList player =
       |> List.map Enemy.getExpDrop
       |> List.sum
   in
-  if player.currentExp + expGained <= player.maxExp then
+  if player.currentExp + expGained <= player.maxExp then    -- if EXP gained does not exceed player level
     { player
       | currentExp = player.currentExp + expGained
     }
-  else
+  else    -- when player levels up, his health also increases
     { player
       | playerLevel = player.playerLevel + 1
       , currentExp = player.currentExp + expGained - player.maxExp
+      , maxHealth = player.maxHealth + 10
+      , currentHealth = player.currentHealth + 10
     }
 
 levelTick : Float -> Bool -> Player -> Level.Level -> Level.Level
 levelTick dt pauseToggle player level =
   if pauseToggle then
-    level
+    level     -- while game is paused, do not update enemies and item stands
   else
   { level
-    | enemies = enemiesTick dt player level
-    , items = itemsTick dt player level
+    | enemies = enemiesTick dt player level   -- update all enemies
+    , items = itemsTick dt player level       -- update all item stands
   }
 
 itemsTick : Float -> Player -> Level.Level -> List Item

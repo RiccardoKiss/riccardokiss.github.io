@@ -7729,6 +7729,9 @@ var $author$project$Main$SettingsPageMsg = function (a) {
 };
 var $author$project$Game$Third = {$: 'Third'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $author$project$Level$Easy = {$: 'Easy'};
+var $author$project$Level$Hard = {$: 'Hard'};
+var $author$project$Level$Medium = {$: 'Medium'};
 var $author$project$Game$Resources = function (a) {
 	return {$: 'Resources', a: a};
 };
@@ -7756,64 +7759,70 @@ var $author$project$Potion$healthPotion = F5(
 	function (rt, dur, cdr, sec, c) {
 		return {cooldown: cdr, count: c, duration: dur, ratio: rt, timeOfLastUse: sec};
 	});
+var $author$project$Level$level1StartCoordinates = {x: 55.5, y: 9.0};
 var $author$project$Potion$speedPotion = F5(
 	function (rt, dur, cdr, sec, c) {
 		return {cooldown: cdr, count: c, duration: dur, ratio: rt, timeOfLastUse: sec};
 	});
-var $author$project$Game$initPlayer = function (level) {
-	return {
-		armor: $author$project$Armor$noneArmorSet,
-		baseSpeed: 13.0,
-		currentExp: 0,
-		currentHealth: 50,
-		currentSpeed: 13.0,
-		dir: $author$project$Player$Idle,
-		healthPotions: A5($author$project$Potion$healthPotion, 0.1, 0.0, 3.0, 0.0, 0),
-		height: 2.0,
-		maxDefense: 100,
-		maxExp: 5,
-		maxHealth: 100,
-		playerLevel: 1,
-		speedPotions: A5($author$project$Potion$speedPotion, 1.5, 5.0, 5.0, 0.0, 0),
-		sword: $author$project$Sword$woodSword,
-		vx: 0,
-		vy: 0,
-		width: 1.0,
-		x: level.startX,
-		y: level.startY
-	};
+var $author$project$Game$initPlayer = {
+	armor: $author$project$Armor$noneArmorSet,
+	baseSpeed: 5.0,
+	currentExp: 0,
+	currentHealth: 50,
+	currentSpeed: 5.0,
+	dir: $author$project$Player$Idle,
+	healthPotions: A5($author$project$Potion$healthPotion, 0.1, 0.0, 3.0, 0.0, 0),
+	height: 2.0,
+	maxDefense: 100,
+	maxExp: 5,
+	maxHealth: 100,
+	playerLevel: 1,
+	speedPotions: A5($author$project$Potion$speedPotion, 1.5, 5.0, 5.0, 0.0, 0),
+	sword: $author$project$Sword$woodSword,
+	vx: 0,
+	vy: 0,
+	width: 1.0,
+	x: $author$project$Level$level1StartCoordinates.x,
+	y: $author$project$Level$level1StartCoordinates.y
 };
+var $author$project$Level$applyDifficultyToEnemy = F2(
+	function (difficulty, enemy) {
+		switch (difficulty.$) {
+			case 'Easy':
+				return _Utils_update(
+					enemy,
+					{health: enemy.health * 1});
+			case 'Medium':
+				return _Utils_update(
+					enemy,
+					{health: enemy.health * 2});
+			default:
+				return _Utils_update(
+					enemy,
+					{health: enemy.health * 3});
+		}
+	});
 var $author$project$Enemy$skeleton = F3(
 	function (initX, initY, initDir) {
 		return {alive: true, attack: 3, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 3, health: 10, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
 	});
-var $author$project$Level$level1Enemies = _List_fromArray(
-	[
-		A3($author$project$Enemy$skeleton, 57, 17, $author$project$Enemy$Right)
-	]);
-var $author$project$Item$dragonArmorStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$DragonArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Item$dragonSwordStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$DragonSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
+var $author$project$Level$level1Enemies = function (difficulty) {
+	var enemies = _List_fromArray(
+		[
+			A3($author$project$Enemy$skeleton, 57, 17, $author$project$Enemy$Right)
+		]);
+	return A2(
+		$elm$core$List$map,
+		$author$project$Level$applyDifficultyToEnemy(difficulty),
+		enemies);
+};
 var $author$project$Item$healthPotionStand = F2(
 	function (x, y) {
 		return {height: 2.0, itemType: $author$project$Item$HealthPotion_ItemStand, pickable: true, width: 1.0, x: x, y: y};
 	});
-var $author$project$Item$ironSwordStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$IronSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
 var $author$project$Item$leatherArmorStand = F2(
 	function (x, y) {
 		return {height: 2.0, itemType: $author$project$Item$LeatherArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
-	});
-var $author$project$Item$silverArmorStand = F2(
-	function (x, y) {
-		return {height: 2.0, itemType: $author$project$Item$SilverArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
 	});
 var $author$project$Item$speedPotionStand = F2(
 	function (x, y) {
@@ -7825,18 +7834,25 @@ var $author$project$Item$stoneSwordStand = F2(
 	});
 var $author$project$Level$level1Items = _List_fromArray(
 	[
-		A2($author$project$Item$healthPotionStand, 54, 9),
 		A2($author$project$Item$healthPotionStand, 53, 9),
-		A2($author$project$Item$speedPotionStand, 57, 9),
 		A2($author$project$Item$speedPotionStand, 58, 9),
-		A2($author$project$Item$stoneSwordStand, 53, 11),
-		A2($author$project$Item$ironSwordStand, 53, 13),
-		A2($author$project$Item$dragonSwordStand, 53, 15),
-		A2($author$project$Item$leatherArmorStand, 58, 11),
-		A2($author$project$Item$silverArmorStand, 58, 13),
-		A2($author$project$Item$dragonArmorStand, 58, 15)
+		A2($author$project$Item$stoneSwordStand, 46, 72),
+		A2($author$project$Item$leatherArmorStand, 110, 17),
+		A2($author$project$Item$speedPotionStand, 108, 16),
+		A2($author$project$Item$speedPotionStand, 112, 16)
 	]);
-var $author$project$Level$level1 = {endX: 81.0, endY: 79.0, enemies: $author$project$Level$level1Enemies, items: $author$project$Level$level1Items, map: $author$project$Level$Lvl1, mapTexture: 'assets/level/level_1_updated.png', startX: 55.5, startY: 9.0};
+var $author$project$Level$level1 = function (difficulty) {
+	return {
+		endX: 81.0,
+		endY: 79.0,
+		enemies: $author$project$Level$level1Enemies(difficulty),
+		items: $author$project$Level$level1Items,
+		map: $author$project$Level$Lvl1,
+		mapTexture: 'assets/level/level_1.png',
+		startX: $author$project$Level$level1StartCoordinates.x,
+		startY: $author$project$Level$level1StartCoordinates.y
+	};
+};
 var $Zinggi$elm_game_resources$Game$Resources$LoadedTexture = F2(
 	function (a, b) {
 		return {$: 'LoadedTexture', a: a, b: b};
@@ -7934,7 +7950,7 @@ var $author$project$Enemy$textures = _List_fromArray(
 var $author$project$Item$textures = _List_fromArray(
 	['assets/item/item_stand_empty.png', 'assets/item/item_stand_health_potion_idle.png', 'assets/item/item_stand_speed_potion_idle.png', 'assets/item/item_stand_sword_wood_idle.png', 'assets/item/item_stand_sword_stone_idle.png', 'assets/item/item_stand_sword_iron_idle.png', 'assets/item/item_stand_sword_dragon_idle.png', 'assets/item/item_stand_leather_chest.png', 'assets/item/item_stand_silver_chest.png', 'assets/item/item_stand_dragon_chest.png']);
 var $author$project$Level$textures = _List_fromArray(
-	['assets/level/level_1_updated.png']);
+	['assets/level/level_1.png', 'assets/level/level_2.png', 'assets/level/level_3.png']);
 var $author$project$Player$textures = _List_fromArray(
 	['assets/player/player_EEE_idle.png', 'assets/player/player_EEE_right.png', 'assets/player/player_EEE_left.png', 'assets/player/player_EEE_up.png', 'assets/player/player_EEE_down.png', 'assets/player/player_LLL_idle.png', 'assets/player/player_LLL_right.png', 'assets/player/player_LLL_left.png', 'assets/player/player_LLL_up.png', 'assets/player/player_LLL_down.png', 'assets/player/player_SSS_idle.png', 'assets/player/player_SSS_right.png', 'assets/player/player_SSS_left.png', 'assets/player/player_SSS_up.png', 'assets/player/player_SSS_down.png', 'assets/player/player_DDD_idle.png', 'assets/player/player_DDD_right.png', 'assets/player/player_DDD_left.png', 'assets/player/player_DDD_up.png', 'assets/player/player_DDD_down.png']);
 var $author$project$Sword$textures = _List_fromArray(
@@ -7976,10 +7992,18 @@ var $author$project$Game$init = F4(
 							var lvl = _v5.a;
 							return lvl;
 						} else {
-							return $author$project$Level$level1;
+							var _v6 = s.difficulty;
+							switch (_v6.$) {
+								case 'Easy':
+									return $author$project$Level$level1($author$project$Level$Easy);
+								case 'Medium':
+									return $author$project$Level$level1($author$project$Level$Medium);
+								default:
+									return $author$project$Level$level1($author$project$Level$Hard);
+							}
 						}
 					} else {
-						return $author$project$Level$level1;
+						return $author$project$Level$level1($author$project$Level$Easy);
 					}
 				}(),
 				movement: function () {
@@ -8001,9 +8025,9 @@ var $author$project$Game$init = F4(
 				name: function () {
 					if (save.$ === 'Just') {
 						var s = save.a;
-						var _v9 = s.name;
-						if (_v9.$ === 'Just') {
-							var name = _v9.a;
+						var _v10 = s.name;
+						if (_v10.$ === 'Just') {
+							var name = _v10.a;
 							return name;
 						} else {
 							return 'PLAYER';
@@ -8017,15 +8041,15 @@ var $author$project$Game$init = F4(
 				player: function () {
 					if (save.$ === 'Just') {
 						var s = save.a;
-						var _v11 = s.player;
-						if (_v11.$ === 'Just') {
-							var p = _v11.a;
+						var _v12 = s.player;
+						if (_v12.$ === 'Just') {
+							var p = _v12.a;
 							return p;
 						} else {
-							return $author$project$Game$initPlayer($author$project$Level$level1);
+							return $author$project$Game$initPlayer;
 						}
 					} else {
-						return $author$project$Game$initPlayer($author$project$Level$level1);
+						return $author$project$Game$initPlayer;
 					}
 				}(),
 				resources: $Zinggi$elm_game_resources$Game$Resources$init,
@@ -9910,7 +9934,138 @@ var $author$project$Game$getExp = F2(
 			player,
 			{currentExp: player.currentExp + expGained}) : _Utils_update(
 			player,
-			{currentExp: (player.currentExp + expGained) - player.maxExp, playerLevel: player.playerLevel + 1});
+			{currentExp: (player.currentExp + expGained) - player.maxExp, currentHealth: player.currentHealth + 10, maxHealth: player.maxHealth + 10, playerLevel: player.playerLevel + 1});
+	});
+var $author$project$Level$level2Enemies = function (difficulty) {
+	return _List_Nil;
+};
+var $author$project$Item$ironSwordStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$IronSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Item$silverArmorStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$SilverArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Level$level2Items = _List_fromArray(
+	[
+		A2($author$project$Item$speedPotionStand, 16, 28),
+		A2($author$project$Item$healthPotionStand, 16, 9),
+		A2($author$project$Item$speedPotionStand, 35, 9),
+		A2($author$project$Item$healthPotionStand, 35, 28),
+		A2($author$project$Item$ironSwordStand, 53, 70),
+		A2($author$project$Item$healthPotionStand, 48, 76),
+		A2($author$project$Item$speedPotionStand, 48, 65),
+		A2($author$project$Item$speedPotionStand, 59, 76),
+		A2($author$project$Item$healthPotionStand, 59, 65),
+		A2($author$project$Item$silverArmorStand, 106, 78),
+		A2($author$project$Item$speedPotionStand, 107, 80),
+		A2($author$project$Item$healthPotionStand, 76, 13),
+		A2($author$project$Item$speedPotionStand, 79, 13),
+		A2($author$project$Item$healthPotionStand, 80, 57),
+		A2($author$project$Item$speedPotionStand, 80, 60),
+		A2($author$project$Item$healthPotionStand, 68, 97),
+		A2($author$project$Item$speedPotionStand, 71, 97),
+		A2($author$project$Item$healthPotionStand, 107, 116),
+		A2($author$project$Item$speedPotionStand, 107, 113)
+	]);
+var $author$project$Level$level2StartCoordinates = {x: 47.0, y: 18.0};
+var $author$project$Level$level2 = function (difficulty) {
+	return {
+		endX: 106.0,
+		endY: 59.0,
+		enemies: $author$project$Level$level2Enemies(difficulty),
+		items: $author$project$Level$level2Items,
+		map: $author$project$Level$Lvl2,
+		mapTexture: 'assets/level/level_2.png',
+		startX: $author$project$Level$level2StartCoordinates.x,
+		startY: $author$project$Level$level2StartCoordinates.y
+	};
+};
+var $author$project$Level$level3Enemies = function (difficulty) {
+	return _List_Nil;
+};
+var $author$project$Item$dragonArmorStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$DragonArmor_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Item$dragonSwordStand = F2(
+	function (x, y) {
+		return {height: 2.0, itemType: $author$project$Item$DragonSword_ItemStand, pickable: true, width: 1.0, x: x, y: y};
+	});
+var $author$project$Level$level3Items = _List_fromArray(
+	[
+		A2($author$project$Item$speedPotionStand, 74, 29),
+		A2($author$project$Item$healthPotionStand, 77, 29),
+		A2($author$project$Item$speedPotionStand, 34, 46),
+		A2($author$project$Item$healthPotionStand, 37, 46),
+		A2($author$project$Item$speedPotionStand, 22, 65),
+		A2($author$project$Item$healthPotionStand, 22, 62),
+		A2($author$project$Item$speedPotionStand, 45, 81),
+		A2($author$project$Item$healthPotionStand, 45, 78),
+		A2($author$project$Item$speedPotionStand, 81, 93),
+		A2($author$project$Item$healthPotionStand, 81, 90),
+		A2($author$project$Item$speedPotionStand, 101, 81),
+		A2($author$project$Item$healthPotionStand, 101, 78),
+		A2($author$project$Item$speedPotionStand, 101, 49),
+		A2($author$project$Item$healthPotionStand, 101, 46),
+		A2($author$project$Item$speedPotionStand, 26, 113),
+		A2($author$project$Item$healthPotionStand, 26, 110),
+		A2($author$project$Item$dragonArmorStand, 28, 111),
+		A2($author$project$Item$speedPotionStand, 102, 98),
+		A2($author$project$Item$healthPotionStand, 105, 98),
+		A2($author$project$Item$dragonSwordStand, 104, 100)
+	]);
+var $author$project$Level$level3StartCoordinates = {x: 63.5, y: 63.5};
+var $author$project$Level$level3 = function (difficulty) {
+	return {
+		endX: 108.0,
+		endY: 31.0,
+		enemies: $author$project$Level$level3Enemies(difficulty),
+		items: $author$project$Level$level3Items,
+		map: $author$project$Level$Lvl3,
+		mapTexture: 'assets/level/level_3.png',
+		startX: $author$project$Level$level3StartCoordinates.x,
+		startY: $author$project$Level$level3StartCoordinates.y
+	};
+};
+var $author$project$Game$initNextLevel = F2(
+	function (difficulty, currentLevel) {
+		var levelDifficulty = function () {
+			switch (difficulty.$) {
+				case 'Easy':
+					return $author$project$Level$Easy;
+				case 'Medium':
+					return $author$project$Level$Medium;
+				default:
+					return $author$project$Level$Hard;
+			}
+		}();
+		var _v0 = currentLevel.map;
+		switch (_v0.$) {
+			case 'Lvl1':
+				return $author$project$Level$level2(levelDifficulty);
+			case 'Lvl2':
+				return $author$project$Level$level3(levelDifficulty);
+			default:
+				return currentLevel;
+		}
+	});
+var $author$project$Game$initNextLevelPlayer = F2(
+	function (currentLevel, player) {
+		var _v0 = currentLevel.map;
+		switch (_v0.$) {
+			case 'Lvl1':
+				return _Utils_update(
+					player,
+					{x: $author$project$Level$level2StartCoordinates.x, y: $author$project$Level$level2StartCoordinates.y});
+			case 'Lvl2':
+				return _Utils_update(
+					player,
+					{x: $author$project$Level$level3StartCoordinates.x, y: $author$project$Level$level3StartCoordinates.y});
+			default:
+				return player;
+		}
 	});
 var $author$project$Enemy$isAlive = function (enemy) {
 	return enemy.alive ? true : false;
@@ -10214,35 +10369,35 @@ var $author$project$Tilemap$level1TileMap = $elm$core$Array$fromList(
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
@@ -10388,227 +10543,227 @@ var $author$project$Tilemap$level2TileMap = $elm$core$Array$fromList(
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFFFFFFFFFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXFFFFFFXXXXXXXXXXFTTTTFXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFFFFFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFFFFFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTETTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXFFFFFFFFFFFFFFXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXFTTTTTTTTTTTTFXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFFFFFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXFTTTTTTTTTTTTFXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXFTTTTTTTTTTTTFXXFTTTTFXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXFTTTTTTTTTTTTFFFFTTTTFXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXFTTTTTTTTTTTTFFFFTTTTFXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXFTTTTTTTTTTTTFXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFFFFFFFFFTTTTFXXXXXXXXXXFTTTTFXXFTTTTTTTTTTTTFXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFFFFFFFFFTTTTFXXXXXXXXXXFTTTTFXXFTTTTTTTTTTTTFXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXFFFFFFFFFFFFFFXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFFFFFTTTTFXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXFFFFFTTTTFXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFFFFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXFTTTTTTETFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXFFFFFTTTTFXXXXXXXXXXFTTTTFFFFFXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFFFFFFFFFTTTTFXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFFFFFFFFFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFFFFFFFFFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFFFFFFFFFFFFTTTTFFFFFFFFFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFFFFFFFFFFFFTTTTFFFFFFFFFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFFFFFFFFFTTTTFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFFFFFFFFFTTTTFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
@@ -10654,221 +10809,221 @@ var $author$project$Tilemap$level3TileMap = $elm$core$Array$fromList(
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXFTTTTFFFFFFFFTTTTFFFFFFFFFFFFTTTTFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXFFFFTTTTFXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFFFFFXXXXXXFFFFFFFFFFFFFFFFFFFFFFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFFFFFFFFFXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXFTTTTFFFFFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXFTTTTFFFFFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXFTTTTTTTTFXXXXXXXXXXFFFFFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTFXXFTTTTFXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTFFFFTTTTFXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTFFFFTTTTFXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFTTTTFFFFFXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXFFFFFFFFFTTTTFFFFFFFFFXXXXXXFFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXFFFFFFFFFTTTTFFFFFFFFFXXXXXXFFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFTTTTFFFFTTTTFXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXFTTTTFXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFFFFFTTTTFFFFFFFFTTTTFFFFXXXXXXXFTTTTFFFFTTTTFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFFFFFTTTTFFFFFFFFTTTTFFFFFFFFFFFFTTTTFFFFTTTTFFFFTTTTFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFTTTTFFFFFFFFFFFFTTTTFFFFTTTTFFFFTTTTFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXFTTTTFXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFTTTTFFFFTTTTFXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFTTTTFFFFTTTTFXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFTTTTFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXFFFFFFFFFTTTTFFFFFFFFFXXXXXXFFFFFFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTFFFFFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFFFFFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXFFFFFFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXFFFFFFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFFFFFFXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFXXXXXXFTTTTFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXFFFFFXXXXXXXFTTTTTTTTFFFFFXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFXXXXXXFTTTTFFFFFFFFTTTTFXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTTTFFFFFXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXFFFFFFXXXXXXFTTTTTTTTTTTTTTTTTTTTTTETFXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXFFFFFFXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFFFFFTTTTFXXXXXXFFFFFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXFTTTTFFFFFFFFTTTTTTTTFFFFFXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFFFFFFFFTTTTFXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFFFFFFFFTTTTFXXXXXXFTTTTTTTTFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFFFFFFFFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTFXXXXXXXXXXFTTTTFFFFFFFFFFFFFFFFFFFFTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFFFFFFXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
+			$elm$core$Array$fromList(
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTETTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFXXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFFFFFFFFFFFFFFTTTTTTFFFFFFFFFFFXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFTTTTTTFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
-			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXFFFFFFFFXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
@@ -11233,9 +11388,11 @@ var $author$project$Game$playerPhysics = F3(
 				x: function () {
 					if (tileType.$ === 'Just') {
 						var tile = tileType.a;
-						return _Utils_eq(
+						return (_Utils_eq(
 							tile,
-							_Utils_chr('T')) ? ($elm$core$List$isEmpty(newTileItemStand) ? newX : player.x) : player.x;
+							_Utils_chr('T')) || _Utils_eq(
+							tile,
+							_Utils_chr('E'))) ? ($elm$core$List$isEmpty(newTileItemStand) ? newX : player.x) : player.x;
 					} else {
 						return player.x;
 					}
@@ -11243,9 +11400,11 @@ var $author$project$Game$playerPhysics = F3(
 				y: function () {
 					if (tileType.$ === 'Just') {
 						var tile = tileType.a;
-						return _Utils_eq(
+						return (_Utils_eq(
 							tile,
-							_Utils_chr('T')) ? ($elm$core$List$isEmpty(newTileItemStand) ? newY : player.y) : player.y;
+							_Utils_chr('T')) || _Utils_eq(
+							tile,
+							_Utils_chr('E'))) ? ($elm$core$List$isEmpty(newTileItemStand) ? newY : player.y) : player.y;
 					} else {
 						return player.y;
 					}
@@ -11910,6 +12069,11 @@ var $author$project$Game$update = F2(
 			case 'Tick':
 				var dt = msg.a;
 				var playerWithExp = A2($author$project$Game$getExp, model.level.enemies, model.player);
+				var exitReached = _Utils_eq(
+					$elm$core$Basics$floor(model.player.x),
+					$elm$core$Basics$floor(model.level.endX)) && _Utils_eq(
+					$elm$core$Basics$floor(model.player.y),
+					$elm$core$Basics$floor(model.level.endY));
 				var enemies = A2($elm$core$List$filter, $author$project$Enemy$isAlive, model.level.enemies);
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -11919,9 +12083,9 @@ var $author$project$Game$update = F2(
 								$Zinggi$elm_2d_game$Game$TwoD$Camera$moveTo,
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
-							level: A4($author$project$Game$levelTick, dt, model.pauseToggle, model.player, model.level),
+							level: exitReached ? A2($author$project$Game$initNextLevel, model.difficulty, model.level) : A4($author$project$Game$levelTick, dt, model.pauseToggle, model.player, model.level),
 							pauseToggle: (!model.player.currentHealth) ? true : model.pauseToggle,
-							player: A7($author$project$Game$playerTick, dt, model.time, model.level, model.keys, model.movement, enemies, playerWithExp),
+							player: exitReached ? A2($author$project$Game$initNextLevelPlayer, model.level, model.player) : A7($author$project$Game$playerTick, dt, model.time, model.level, model.keys, model.movement, enemies, playerWithExp),
 							time: model.pauseToggle ? model.time : (model.time + dt)
 						}),
 					$elm$core$Platform$Cmd$none);

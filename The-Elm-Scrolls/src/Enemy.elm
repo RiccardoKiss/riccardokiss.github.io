@@ -77,7 +77,7 @@ prototype initX initY initDir =
   }
 
 bandit : Float -> Float -> Direction -> Enemy
-bandit initX initY initDir =
+bandit initX initY initDir  =
   { initX = initX
   , initY = initY
   , initDir = initDir

@@ -16,6 +16,7 @@ import Keyboard exposing (..)
 import Keyboard.Arrows
 import Task
 import Array
+import Round
 
 import Route exposing (Route)
 import DecodingJson exposing (..)
@@ -257,7 +258,9 @@ update msg model =
               else
                 levelTick dt model.pauseToggle model.player model.level
           , pauseToggle =
-              if model.player.currentHealth == 0 then
+              if model.player.currentHealth == 0 then   --pause the game, when player dies
+                True
+              else if exitReached && model.level.map == Lvl3 then   -- pause the game, when player reaches exit in last level
                 True
               else
                 model.pauseToggle
@@ -396,9 +399,12 @@ update msg model =
       , Cmd.none
       )
 
-    SaveGame ->
+    FinishedGame ->
       ( model
-      , encodeSave model
+      , Cmd.batch
+          [ encodeSave model
+          , -- port na ulozenie do localStorage highScore
+          ]
       )
 
     Reload rel ->
@@ -1395,9 +1401,78 @@ viewCharacterScreen left top keys name player =
   else
     div [] []
 
-viewPauseScreen : Int -> Int -> String -> String -> String -> String -> Bool -> Player -> Html Msg
-viewPauseScreen left top pathResume pathSettings pathHelp pathReturn pauseToggle player =
-  if pauseToggle && player.currentHealth > 0 then
+viewEndScreen : Int -> Int -> String -> Model -> Html Msg
+viewEndScreen left top pathReturn model =
+  let
+    exitReached = ((floor model.player.x) == (floor model.level.endX)) && ((floor model.player.y) == (floor model.level.endY))
+    difficultyPenalty =
+      case model.difficulty of
+        DecodingJson.Easy ->
+          3.0
+
+        DecodingJson.Medium ->
+          2.0
+
+        DecodingJson.Hard ->
+          1.0
+
+    score = ((toFloat model.player.playerLevel) / model.time / difficultyPenalty) * 1000.0
+  in
+  if exitReached && model.level.map == Lvl3 then
+    div [ style "left" (String.fromInt left ++ "px")
+        , style "top" (String.fromInt top ++ "px")
+        , style "position" "absolute"
+        , style "font-family" "monospace"
+        ]
+        [ img [ src "assets/background_1200_600.png"
+              , style "position" "absolute"
+              ] []
+        , pre [ style "position" "absolute"
+              , style "left" "470px"
+              , style "top" "25px"
+              , style "font-family" "Consolas"
+              , style "font-weight" "bolder"
+              , style "font-size" "2em"
+              ]
+              [ text "CONGRATULATIONS" ]
+        , pre [ style "position" "absolute"
+              , style "left" "350px"
+              , style "top" "200px"
+              , style "font-family" "Consolas"
+              , style "font-size" "1.5em"
+              ]
+              [ text "You finished the game with a score of" ]
+        , pre [ style "position" "absolute"
+              , style "left" "560px"
+              , style "top" "250px"
+              , style "font-family" "Consolas"
+              , style "font-weight" "bolder"
+              , style "font-size" "1.75em"
+              ]
+              [ text (Round.round 2 score) ]
+        , div [ style "position" "absolute"
+              , style "left" "392px"
+              , style "top" "450px"
+              ]
+              [ a [ Route.href Route.Home
+                  , onMouseOver FinishedGame
+                  ]
+                  [ img [ src pathReturn
+                        , onMouseOver (Hover PauseScreenReturn)
+                        , onMouseOut (MouseOut PauseScreenReturn)
+                        ] []
+                  ]
+              ]
+        ]
+  else
+    div [] []
+
+viewPauseScreen : Int -> Int -> String -> String -> String -> String -> Bool -> Player -> Level -> Html Msg
+viewPauseScreen left top pathResume pathSettings pathHelp pathReturn pauseToggle player level =
+  let
+    exitReached = ((floor player.x) == (floor level.endX)) && ((floor player.y) == (floor level.endY))
+  in
+  if pauseToggle && player.currentHealth > 0 && not exitReached then
     div [ style "left" (String.fromInt left ++ "px")
         , style "top" (String.fromInt top ++ "px")
         , style "position" "absolute"
@@ -1551,7 +1626,8 @@ view model =
       , viewConsumable1 336 650 model.keys model.time model.player.healthPotions
       , viewConsumable2 1485 650 model.keys model.time model.player.speedPotions
       , viewCharacterScreen 360 160 model.keys model.name model.player
-      , viewPauseScreen 360 160 model.button_PS_resume model.button_PS_settings model.button_PS_help model.button_PS_return model.pauseToggle model.player
+      , viewEndScreen 360 160 model.button_PS_return model
+      , viewPauseScreen 360 160 model.button_PS_resume model.button_PS_settings model.button_PS_help model.button_PS_return model.pauseToggle model.player model.level
       , viewDeathScreen 360 160 model.button_DS_respawn model.button_DS_return model.player model.savePosition
       , viewPlayerInput 820 835 model.keys model.movement  --820 861
       ]

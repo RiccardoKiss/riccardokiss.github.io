@@ -7836,9 +7836,21 @@ var $author$project$Level$level1Items = _List_fromArray(
 	[
 		A2($author$project$Item$healthPotionStand, 53, 9),
 		A2($author$project$Item$speedPotionStand, 58, 9),
+		A2($author$project$Item$healthPotionStand, 74, 12),
+		A2($author$project$Item$speedPotionStand, 78, 12),
+		A2($author$project$Item$healthPotionStand, 27, 37),
+		A2($author$project$Item$speedPotionStand, 31, 37),
+		A2($author$project$Item$healthPotionStand, 23, 53),
+		A2($author$project$Item$speedPotionStand, 23, 49),
+		A2($author$project$Item$healthPotionStand, 90, 53),
+		A2($author$project$Item$speedPotionStand, 90, 49),
+		A2($author$project$Item$healthPotionStand, 100, 44),
+		A2($author$project$Item$speedPotionStand, 104, 44),
 		A2($author$project$Item$stoneSwordStand, 46, 72),
+		A2($author$project$Item$healthPotionStand, 44, 73),
+		A2($author$project$Item$speedPotionStand, 48, 73),
 		A2($author$project$Item$leatherArmorStand, 110, 17),
-		A2($author$project$Item$speedPotionStand, 108, 16),
+		A2($author$project$Item$healthPotionStand, 108, 16),
 		A2($author$project$Item$speedPotionStand, 112, 16)
 	]);
 var $author$project$Level$level1 = function (difficulty) {
@@ -12084,7 +12096,7 @@ var $author$project$Game$update = F2(
 								_Utils_Tuple2(model.player.x, model.player.y),
 								model.camera),
 							level: exitReached ? A2($author$project$Game$initNextLevel, model.difficulty, model.level) : A4($author$project$Game$levelTick, dt, model.pauseToggle, model.player, model.level),
-							pauseToggle: (!model.player.currentHealth) ? true : model.pauseToggle,
+							pauseToggle: (!model.player.currentHealth) ? true : ((exitReached && _Utils_eq(model.level.map, $author$project$Level$Lvl3)) ? true : model.pauseToggle),
 							player: exitReached ? A2($author$project$Game$initNextLevelPlayer, model.level, model.player) : A7($author$project$Game$playerTick, dt, model.time, model.level, model.keys, model.movement, enemies, playerWithExp),
 							time: model.pauseToggle ? model.time : (model.time + dt)
 						}),
@@ -14317,6 +14329,362 @@ var $author$project$Game$viewDefenseBar = F4(
 					A2($author$project$Game$viewDefenseInfo, maxDef, currDef)
 				]));
 	});
+var $author$project$Game$PauseScreenReturn = {$: 'PauseScreenReturn'};
+var $author$project$Game$SaveGame = {$: 'SaveGame'};
+var $myrho$elm_round$Round$addSign = F2(
+	function (signed, str) {
+		var isNotZero = A2(
+			$elm$core$List$any,
+			function (c) {
+				return (!_Utils_eq(
+					c,
+					_Utils_chr('0'))) && (!_Utils_eq(
+					c,
+					_Utils_chr('.')));
+			},
+			$elm$core$String$toList(str));
+		return _Utils_ap(
+			(signed && isNotZero) ? '-' : '',
+			str);
+	});
+var $elm$core$Char$fromCode = _Char_fromCode;
+var $myrho$elm_round$Round$increaseNum = function (_v0) {
+	var head = _v0.a;
+	var tail = _v0.b;
+	if (_Utils_eq(
+		head,
+		_Utils_chr('9'))) {
+		var _v1 = $elm$core$String$uncons(tail);
+		if (_v1.$ === 'Nothing') {
+			return '01';
+		} else {
+			var headtail = _v1.a;
+			return A2(
+				$elm$core$String$cons,
+				_Utils_chr('0'),
+				$myrho$elm_round$Round$increaseNum(headtail));
+		}
+	} else {
+		var c = $elm$core$Char$toCode(head);
+		return ((c >= 48) && (c < 57)) ? A2(
+			$elm$core$String$cons,
+			$elm$core$Char$fromCode(c + 1),
+			tail) : '0';
+	}
+};
+var $elm$core$Basics$isInfinite = _Basics_isInfinite;
+var $elm$core$Basics$isNaN = _Basics_isNaN;
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$String$padRight = F3(
+	function (n, _char, string) {
+		return _Utils_ap(
+			string,
+			A2(
+				$elm$core$String$repeat,
+				n - $elm$core$String$length(string),
+				$elm$core$String$fromChar(_char)));
+	});
+var $elm$core$String$reverse = _String_reverse;
+var $myrho$elm_round$Round$splitComma = function (str) {
+	var _v0 = A2($elm$core$String$split, '.', str);
+	if (_v0.b) {
+		if (_v0.b.b) {
+			var before = _v0.a;
+			var _v1 = _v0.b;
+			var after = _v1.a;
+			return _Utils_Tuple2(before, after);
+		} else {
+			var before = _v0.a;
+			return _Utils_Tuple2(before, '0');
+		}
+	} else {
+		return _Utils_Tuple2('0', '0');
+	}
+};
+var $elm$core$Tuple$mapFirst = F2(
+	function (func, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return _Utils_Tuple2(
+			func(x),
+			y);
+	});
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $myrho$elm_round$Round$toDecimal = function (fl) {
+	var _v0 = A2(
+		$elm$core$String$split,
+		'e',
+		$elm$core$String$fromFloat(
+			$elm$core$Basics$abs(fl)));
+	if (_v0.b) {
+		if (_v0.b.b) {
+			var num = _v0.a;
+			var _v1 = _v0.b;
+			var exp = _v1.a;
+			var e = A2(
+				$elm$core$Maybe$withDefault,
+				0,
+				$elm$core$String$toInt(
+					A2($elm$core$String$startsWith, '+', exp) ? A2($elm$core$String$dropLeft, 1, exp) : exp));
+			var _v2 = $myrho$elm_round$Round$splitComma(num);
+			var before = _v2.a;
+			var after = _v2.b;
+			var total = _Utils_ap(before, after);
+			var zeroed = (e < 0) ? A2(
+				$elm$core$Maybe$withDefault,
+				'0',
+				A2(
+					$elm$core$Maybe$map,
+					function (_v3) {
+						var a = _v3.a;
+						var b = _v3.b;
+						return a + ('.' + b);
+					},
+					A2(
+						$elm$core$Maybe$map,
+						$elm$core$Tuple$mapFirst($elm$core$String$fromChar),
+						$elm$core$String$uncons(
+							_Utils_ap(
+								A2(
+									$elm$core$String$repeat,
+									$elm$core$Basics$abs(e),
+									'0'),
+								total))))) : A3(
+				$elm$core$String$padRight,
+				e + 1,
+				_Utils_chr('0'),
+				total);
+			return _Utils_ap(
+				(fl < 0) ? '-' : '',
+				zeroed);
+		} else {
+			var num = _v0.a;
+			return _Utils_ap(
+				(fl < 0) ? '-' : '',
+				num);
+		}
+	} else {
+		return '';
+	}
+};
+var $myrho$elm_round$Round$roundFun = F3(
+	function (functor, s, fl) {
+		if ($elm$core$Basics$isInfinite(fl) || $elm$core$Basics$isNaN(fl)) {
+			return $elm$core$String$fromFloat(fl);
+		} else {
+			var signed = fl < 0;
+			var _v0 = $myrho$elm_round$Round$splitComma(
+				$myrho$elm_round$Round$toDecimal(
+					$elm$core$Basics$abs(fl)));
+			var before = _v0.a;
+			var after = _v0.b;
+			var r = $elm$core$String$length(before) + s;
+			var normalized = _Utils_ap(
+				A2($elm$core$String$repeat, (-r) + 1, '0'),
+				A3(
+					$elm$core$String$padRight,
+					r,
+					_Utils_chr('0'),
+					_Utils_ap(before, after)));
+			var totalLen = $elm$core$String$length(normalized);
+			var roundDigitIndex = A2($elm$core$Basics$max, 1, r);
+			var increase = A2(
+				functor,
+				signed,
+				A3($elm$core$String$slice, roundDigitIndex, totalLen, normalized));
+			var remains = A3($elm$core$String$slice, 0, roundDigitIndex, normalized);
+			var num = increase ? $elm$core$String$reverse(
+				A2(
+					$elm$core$Maybe$withDefault,
+					'1',
+					A2(
+						$elm$core$Maybe$map,
+						$myrho$elm_round$Round$increaseNum,
+						$elm$core$String$uncons(
+							$elm$core$String$reverse(remains))))) : remains;
+			var numLen = $elm$core$String$length(num);
+			var numZeroed = (num === '0') ? num : ((s <= 0) ? _Utils_ap(
+				num,
+				A2(
+					$elm$core$String$repeat,
+					$elm$core$Basics$abs(s),
+					'0')) : ((_Utils_cmp(
+				s,
+				$elm$core$String$length(after)) < 0) ? (A3($elm$core$String$slice, 0, numLen - s, num) + ('.' + A3($elm$core$String$slice, numLen - s, numLen, num))) : _Utils_ap(
+				before + '.',
+				A3(
+					$elm$core$String$padRight,
+					s,
+					_Utils_chr('0'),
+					after))));
+			return A2($myrho$elm_round$Round$addSign, signed, numZeroed);
+		}
+	});
+var $myrho$elm_round$Round$round = $myrho$elm_round$Round$roundFun(
+	F2(
+		function (signed, str) {
+			var _v0 = $elm$core$String$uncons(str);
+			if (_v0.$ === 'Nothing') {
+				return false;
+			} else {
+				if ('5' === _v0.a.a.valueOf()) {
+					if (_v0.a.b === '') {
+						var _v1 = _v0.a;
+						return !signed;
+					} else {
+						var _v2 = _v0.a;
+						return true;
+					}
+				} else {
+					var _v3 = _v0.a;
+					var _int = _v3.a;
+					return function (i) {
+						return ((i > 53) && signed) || ((i >= 53) && (!signed));
+					}(
+						$elm$core$Char$toCode(_int));
+				}
+			}
+		}));
+var $author$project$Game$viewEndScreen = F4(
+	function (left, top, pathReturn, model) {
+		var exitReached = _Utils_eq(
+			$elm$core$Basics$floor(model.player.x),
+			$elm$core$Basics$floor(model.level.endX)) && _Utils_eq(
+			$elm$core$Basics$floor(model.player.y),
+			$elm$core$Basics$floor(model.level.endY));
+		var difficultyPenalty = function () {
+			var _v0 = model.difficulty;
+			switch (_v0.$) {
+				case 'Easy':
+					return 3.0;
+				case 'Medium':
+					return 2.0;
+				default:
+					return 1.0;
+			}
+		}();
+		var score = ((model.player.playerLevel / model.time) / difficultyPenalty) * 1000.0;
+		return (exitReached && _Utils_eq(model.level.map, $author$project$Level$Lvl3)) ? A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$Attributes$style,
+					'left',
+					$elm$core$String$fromInt(left) + 'px'),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'top',
+					$elm$core$String$fromInt(top) + 'px'),
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+					A2($elm$html$Html$Attributes$style, 'font-family', 'monospace')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('assets/background_1200_600.png'),
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute')
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '470px'),
+							A2($elm$html$Html$Attributes$style, 'top', '25px'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '2em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('CONGRATULATIONS')
+						])),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '350px'),
+							A2($elm$html$Html$Attributes$style, 'top', '200px'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('You finished the game with a score of')
+						])),
+					A2(
+					$elm$html$Html$pre,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '560px'),
+							A2($elm$html$Html$Attributes$style, 'top', '250px'),
+							A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+							A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
+							A2($elm$html$Html$Attributes$style, 'font-size', '1.75em')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							A2($myrho$elm_round$Round$round, 2, score))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+							A2($elm$html$Html$Attributes$style, 'left', '392px'),
+							A2($elm$html$Html$Attributes$style, 'top', '450px')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$author$project$Route$href($author$project$Route$Home),
+									$elm$html$Html$Events$onMouseOver($author$project$Game$SaveGame)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(pathReturn),
+											$elm$html$Html$Events$onMouseOver(
+											$author$project$Game$Hover($author$project$Game$PauseScreenReturn)),
+											$elm$html$Html$Events$onMouseOut(
+											$author$project$Game$MouseOut($author$project$Game$PauseScreenReturn))
+										]),
+									_List_Nil)
+								]))
+						]))
+				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
+	});
 var $author$project$Game$viewExpInfo = F2(
 	function (maxExp, currExp) {
 		return A2(
@@ -14460,7 +14828,6 @@ var $author$project$Game$viewHealthBar = F4(
 var $author$project$Game$ClickResume = {$: 'ClickResume'};
 var $author$project$Game$PauseScreenHelp = {$: 'PauseScreenHelp'};
 var $author$project$Game$PauseScreenResume = {$: 'PauseScreenResume'};
-var $author$project$Game$PauseScreenReturn = {$: 'PauseScreenReturn'};
 var $author$project$Game$PauseScreenSettings = {$: 'PauseScreenSettings'};
 var $elm$html$Html$Events$onClick = function (msg) {
 	return A2(
@@ -14468,9 +14835,14 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $author$project$Game$viewPauseScreen = F8(
-	function (left, top, pathResume, pathSettings, pathHelp, pathReturn, pauseToggle, player) {
-		return (pauseToggle && (player.currentHealth > 0)) ? A2(
+var $author$project$Game$viewPauseScreen = F9(
+	function (left, top, pathResume, pathSettings, pathHelp, pathReturn, pauseToggle, player, level) {
+		var exitReached = _Utils_eq(
+			$elm$core$Basics$floor(player.x),
+			$elm$core$Basics$floor(level.endX)) && _Utils_eq(
+			$elm$core$Basics$floor(player.y),
+			$elm$core$Basics$floor(level.endY));
+		return (pauseToggle && ((player.currentHealth > 0) && (!exitReached))) ? A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
@@ -14893,7 +15265,8 @@ var $author$project$Game$view = function (model) {
 				A5($author$project$Game$viewConsumable1, 336, 650, model.keys, model.time, model.player.healthPotions),
 				A5($author$project$Game$viewConsumable2, 1485, 650, model.keys, model.time, model.player.speedPotions),
 				A5($author$project$Game$viewCharacterScreen, 360, 160, model.keys, model.name, model.player),
-				A8($author$project$Game$viewPauseScreen, 360, 160, model.button_PS_resume, model.button_PS_settings, model.button_PS_help, model.button_PS_return, model.pauseToggle, model.player),
+				A4($author$project$Game$viewEndScreen, 360, 160, model.button_PS_return, model),
+				A9($author$project$Game$viewPauseScreen, 360, 160, model.button_PS_resume, model.button_PS_settings, model.button_PS_help, model.button_PS_return, model.pauseToggle, model.player, model.level),
 				A6($author$project$Game$viewDeathScreen, 360, 160, model.button_DS_respawn, model.button_DS_return, model.player, model.savePosition),
 				A4($author$project$Game$viewPlayerInput, 820, 835, model.keys, model.movement)
 			]));
@@ -15163,237 +15536,6 @@ var $author$project$LoadGame$viewEmptyGame = A2(
 		[
 			$elm$html$Html$text('--- empty ---')
 		]));
-var $myrho$elm_round$Round$addSign = F2(
-	function (signed, str) {
-		var isNotZero = A2(
-			$elm$core$List$any,
-			function (c) {
-				return (!_Utils_eq(
-					c,
-					_Utils_chr('0'))) && (!_Utils_eq(
-					c,
-					_Utils_chr('.')));
-			},
-			$elm$core$String$toList(str));
-		return _Utils_ap(
-			(signed && isNotZero) ? '-' : '',
-			str);
-	});
-var $elm$core$Char$fromCode = _Char_fromCode;
-var $myrho$elm_round$Round$increaseNum = function (_v0) {
-	var head = _v0.a;
-	var tail = _v0.b;
-	if (_Utils_eq(
-		head,
-		_Utils_chr('9'))) {
-		var _v1 = $elm$core$String$uncons(tail);
-		if (_v1.$ === 'Nothing') {
-			return '01';
-		} else {
-			var headtail = _v1.a;
-			return A2(
-				$elm$core$String$cons,
-				_Utils_chr('0'),
-				$myrho$elm_round$Round$increaseNum(headtail));
-		}
-	} else {
-		var c = $elm$core$Char$toCode(head);
-		return ((c >= 48) && (c < 57)) ? A2(
-			$elm$core$String$cons,
-			$elm$core$Char$fromCode(c + 1),
-			tail) : '0';
-	}
-};
-var $elm$core$Basics$isInfinite = _Basics_isInfinite;
-var $elm$core$Basics$isNaN = _Basics_isNaN;
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$String$padRight = F3(
-	function (n, _char, string) {
-		return _Utils_ap(
-			string,
-			A2(
-				$elm$core$String$repeat,
-				n - $elm$core$String$length(string),
-				$elm$core$String$fromChar(_char)));
-	});
-var $elm$core$String$reverse = _String_reverse;
-var $myrho$elm_round$Round$splitComma = function (str) {
-	var _v0 = A2($elm$core$String$split, '.', str);
-	if (_v0.b) {
-		if (_v0.b.b) {
-			var before = _v0.a;
-			var _v1 = _v0.b;
-			var after = _v1.a;
-			return _Utils_Tuple2(before, after);
-		} else {
-			var before = _v0.a;
-			return _Utils_Tuple2(before, '0');
-		}
-	} else {
-		return _Utils_Tuple2('0', '0');
-	}
-};
-var $elm$core$Tuple$mapFirst = F2(
-	function (func, _v0) {
-		var x = _v0.a;
-		var y = _v0.b;
-		return _Utils_Tuple2(
-			func(x),
-			y);
-	});
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $myrho$elm_round$Round$toDecimal = function (fl) {
-	var _v0 = A2(
-		$elm$core$String$split,
-		'e',
-		$elm$core$String$fromFloat(
-			$elm$core$Basics$abs(fl)));
-	if (_v0.b) {
-		if (_v0.b.b) {
-			var num = _v0.a;
-			var _v1 = _v0.b;
-			var exp = _v1.a;
-			var e = A2(
-				$elm$core$Maybe$withDefault,
-				0,
-				$elm$core$String$toInt(
-					A2($elm$core$String$startsWith, '+', exp) ? A2($elm$core$String$dropLeft, 1, exp) : exp));
-			var _v2 = $myrho$elm_round$Round$splitComma(num);
-			var before = _v2.a;
-			var after = _v2.b;
-			var total = _Utils_ap(before, after);
-			var zeroed = (e < 0) ? A2(
-				$elm$core$Maybe$withDefault,
-				'0',
-				A2(
-					$elm$core$Maybe$map,
-					function (_v3) {
-						var a = _v3.a;
-						var b = _v3.b;
-						return a + ('.' + b);
-					},
-					A2(
-						$elm$core$Maybe$map,
-						$elm$core$Tuple$mapFirst($elm$core$String$fromChar),
-						$elm$core$String$uncons(
-							_Utils_ap(
-								A2(
-									$elm$core$String$repeat,
-									$elm$core$Basics$abs(e),
-									'0'),
-								total))))) : A3(
-				$elm$core$String$padRight,
-				e + 1,
-				_Utils_chr('0'),
-				total);
-			return _Utils_ap(
-				(fl < 0) ? '-' : '',
-				zeroed);
-		} else {
-			var num = _v0.a;
-			return _Utils_ap(
-				(fl < 0) ? '-' : '',
-				num);
-		}
-	} else {
-		return '';
-	}
-};
-var $myrho$elm_round$Round$roundFun = F3(
-	function (functor, s, fl) {
-		if ($elm$core$Basics$isInfinite(fl) || $elm$core$Basics$isNaN(fl)) {
-			return $elm$core$String$fromFloat(fl);
-		} else {
-			var signed = fl < 0;
-			var _v0 = $myrho$elm_round$Round$splitComma(
-				$myrho$elm_round$Round$toDecimal(
-					$elm$core$Basics$abs(fl)));
-			var before = _v0.a;
-			var after = _v0.b;
-			var r = $elm$core$String$length(before) + s;
-			var normalized = _Utils_ap(
-				A2($elm$core$String$repeat, (-r) + 1, '0'),
-				A3(
-					$elm$core$String$padRight,
-					r,
-					_Utils_chr('0'),
-					_Utils_ap(before, after)));
-			var totalLen = $elm$core$String$length(normalized);
-			var roundDigitIndex = A2($elm$core$Basics$max, 1, r);
-			var increase = A2(
-				functor,
-				signed,
-				A3($elm$core$String$slice, roundDigitIndex, totalLen, normalized));
-			var remains = A3($elm$core$String$slice, 0, roundDigitIndex, normalized);
-			var num = increase ? $elm$core$String$reverse(
-				A2(
-					$elm$core$Maybe$withDefault,
-					'1',
-					A2(
-						$elm$core$Maybe$map,
-						$myrho$elm_round$Round$increaseNum,
-						$elm$core$String$uncons(
-							$elm$core$String$reverse(remains))))) : remains;
-			var numLen = $elm$core$String$length(num);
-			var numZeroed = (num === '0') ? num : ((s <= 0) ? _Utils_ap(
-				num,
-				A2(
-					$elm$core$String$repeat,
-					$elm$core$Basics$abs(s),
-					'0')) : ((_Utils_cmp(
-				s,
-				$elm$core$String$length(after)) < 0) ? (A3($elm$core$String$slice, 0, numLen - s, num) + ('.' + A3($elm$core$String$slice, numLen - s, numLen, num))) : _Utils_ap(
-				before + '.',
-				A3(
-					$elm$core$String$padRight,
-					s,
-					_Utils_chr('0'),
-					after))));
-			return A2($myrho$elm_round$Round$addSign, signed, numZeroed);
-		}
-	});
-var $myrho$elm_round$Round$round = $myrho$elm_round$Round$roundFun(
-	F2(
-		function (signed, str) {
-			var _v0 = $elm$core$String$uncons(str);
-			if (_v0.$ === 'Nothing') {
-				return false;
-			} else {
-				if ('5' === _v0.a.a.valueOf()) {
-					if (_v0.a.b === '') {
-						var _v1 = _v0.a;
-						return !signed;
-					} else {
-						var _v2 = _v0.a;
-						return true;
-					}
-				} else {
-					var _v3 = _v0.a;
-					var _int = _v3.a;
-					return function (i) {
-						return ((i > 53) && signed) || ((i >= 53) && (!signed));
-					}(
-						$elm$core$Char$toCode(_int));
-				}
-			}
-		}));
 var $author$project$LoadGame$viewSavedGame = function (save) {
 	var playerName = function () {
 		var _v3 = save.name;

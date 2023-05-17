@@ -6,18 +6,28 @@ import Html.Attributes exposing (src, style, type_)
 import Html.Events exposing (onClick, onMouseOver, onMouseOut)
 
 import Route exposing (Route)
+import DecodingJson exposing (..)
 
 
 type alias Model =
   { navKey : Nav.Key
-  , button_back : String
+  , scores : List DecodingJson.Score
+  , buttonBack : String
   }
 
 
-init : Nav.Key -> ( Model, Cmd Msg )
-init navKey =
+init : Maybe (List DecodingJson.Score) -> Nav.Key -> ( Model, Cmd Msg )
+init highScores navKey =
   ( { navKey = navKey
-    , button_back = "assets/button/button_back.png"
+    , scores =
+        case highScores of
+          Just hS ->
+            hS
+
+          Nothing ->
+            []
+
+    , buttonBack = "assets/button/button_back.png"
     }
   , Cmd.none
   )
@@ -34,14 +44,14 @@ update msg model =
   case msg of
     HoverBack ->
       ( { model
-        | button_back = "assets/button/button_back_hover.png"
+        | buttonBack = "assets/button/button_back_hover.png"
         }
       , Cmd.none
       )
 
     MouseOut ->
       ( { model
-        | button_back = "assets/button/button_back.png"
+        | buttonBack = "assets/button/button_back.png"
         }
       , Cmd.none
       )
@@ -61,7 +71,7 @@ view model =
            , style "top" "100px"
            ] [ text "High Scores" ]
       , a [ Route.href Route.Home ]
-          [ img [ src model.button_back
+          [ img [ src model.buttonBack
                 , style "position" "absolute"
                 , style "left" "752px"
                 , style "top" "864px"

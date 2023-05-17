@@ -7122,12 +7122,13 @@ var $elm$core$Task$perform = F2(
 var $elm$browser$Browser$application = _Browser_application;
 var $author$project$Main$NotFoundPage = {$: 'NotFoundPage'};
 var $elm$json$Json$Decode$decodeValue = _Json_run;
-var $author$project$DecodingJson$Flags = F4(
-	function (save1, save2, save3, settings) {
-		return {save1: save1, save2: save2, save3: save3, settings: settings};
+var $author$project$DecodingJson$Flags = F5(
+	function (save1, save2, save3, settings, highScores) {
+		return {highScores: highScores, save1: save1, save2: save2, save3: save3, settings: settings};
 	});
 var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$map4 = _Json_map4;
+var $elm$json$Json$Decode$list = _Json_decodeList;
+var $elm$json$Json$Decode$map5 = _Json_map5;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
 var $elm$json$Json$Decode$maybe = function (decoder) {
 	return $elm$json$Json$Decode$oneOf(
@@ -7411,7 +7412,6 @@ var $author$project$DecodingJson$itemDecoder = A7(
 			},
 			$elm$json$Json$Decode$string)),
 	A2($elm$json$Json$Decode$field, 'pickable', $elm$json$Json$Decode$bool));
-var $elm$json$Json$Decode$list = _Json_decodeList;
 var $elm$json$Json$Decode$map8 = _Json_map8;
 var $author$project$DecodingJson$levelDecoder = A9(
 	$elm$json$Json$Decode$map8,
@@ -7447,7 +7447,6 @@ var $author$project$DecodingJson$levelDecoder = A9(
 	A2($elm$json$Json$Decode$field, 'startY', $elm$json$Json$Decode$float),
 	A2($elm$json$Json$Decode$field, 'endX', $elm$json$Json$Decode$float),
 	A2($elm$json$Json$Decode$field, 'endY', $elm$json$Json$Decode$float));
-var $elm$json$Json$Decode$map5 = _Json_map5;
 var $author$project$Player$Idle = {$: 'Idle'};
 var $author$project$Player$Player = function (x) {
 	return function (y) {
@@ -7633,6 +7632,17 @@ var $author$project$DecodingJson$saveDecoder = A6(
 	A2($elm$json$Json$Decode$field, 'time', $elm$json$Json$Decode$float),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'level', $author$project$DecodingJson$levelDecoder)));
+var $author$project$DecodingJson$Score = F3(
+	function (name, difficulty, score) {
+		return {difficulty: difficulty, name: name, score: score};
+	});
+var $elm$json$Json$Decode$map3 = _Json_map3;
+var $author$project$DecodingJson$scoresDecoder = A4(
+	$elm$json$Json$Decode$map3,
+	$author$project$DecodingJson$Score,
+	A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'difficulty', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'score', $elm$json$Json$Decode$float));
 var $author$project$DecodingJson$Settings = F2(
 	function (music, movement) {
 		return {movement: movement, music: music};
@@ -7672,8 +7682,8 @@ var $author$project$DecodingJson$settingsDecoder = A3(
 	$author$project$DecodingJson$Settings,
 	A2($elm$json$Json$Decode$field, 'music', $author$project$DecodingJson$musicDecoder),
 	A2($elm$json$Json$Decode$field, 'movement', $author$project$DecodingJson$movementDecoder));
-var $author$project$DecodingJson$flagsDecoder = A5(
-	$elm$json$Json$Decode$map4,
+var $author$project$DecodingJson$flagsDecoder = A6(
+	$elm$json$Json$Decode$map5,
 	$author$project$DecodingJson$Flags,
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'save1', $author$project$DecodingJson$saveDecoder)),
@@ -7682,7 +7692,12 @@ var $author$project$DecodingJson$flagsDecoder = A5(
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'save3', $author$project$DecodingJson$saveDecoder)),
 	$elm$json$Json$Decode$maybe(
-		A2($elm$json$Json$Decode$field, 'settings', $author$project$DecodingJson$settingsDecoder)));
+		A2($elm$json$Json$Decode$field, 'settings', $author$project$DecodingJson$settingsDecoder)),
+	$elm$json$Json$Decode$maybe(
+		A2(
+			$elm$json$Json$Decode$field,
+			'highScores',
+			$elm$json$Json$Decode$list($author$project$DecodingJson$scoresDecoder))));
 var $author$project$Game$First = {$: 'First'};
 var $author$project$Main$GamePage = function (a) {
 	return {$: 'GamePage', a: a};
@@ -7970,8 +7985,8 @@ var $author$project$Sword$textures = _List_fromArray(
 var $author$project$Game$texturesList = $elm$core$List$concat(
 	_List_fromArray(
 		[$author$project$Level$textures, $author$project$Player$textures, $author$project$Enemy$textures, $author$project$Sword$textures, $author$project$Item$textures]));
-var $author$project$Game$init = F4(
-	function (save, pos, settings, navKey) {
+var $author$project$Game$init = F5(
+	function (save, pos, settings, highScores, navKey) {
 		var _v0 = A2($elm$core$Debug$log, '[Game.init] save', save);
 		var _v1 = A2($elm$core$Debug$log, '[Game.init] pos', pos);
 		var _v2 = A2($elm$core$Debug$log, '[Game.init] settings', settings);
@@ -8066,6 +8081,14 @@ var $author$project$Game$init = F4(
 				}(),
 				resources: $Zinggi$elm_game_resources$Game$Resources$init,
 				savePosition: pos,
+				scores: function () {
+					if (highScores.$ === 'Just') {
+						var hS = highScores.a;
+						return hS;
+					} else {
+						return _List_Nil;
+					}
+				}(),
 				screen: _Utils_Tuple2(1280, 720),
 				time: function () {
 					if (save.$ === 'Just') {
@@ -8092,11 +8115,12 @@ var $author$project$Help$init = function (navKey) {
 		{button_back: 'assets/button/button_back.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
-var $author$project$HighScores$init = function (navKey) {
-	return _Utils_Tuple2(
-		{button_back: 'assets/button/button_back.png', navKey: navKey},
-		$elm$core$Platform$Cmd$none);
-};
+var $author$project$HighScores$init = F2(
+	function (scores, navKey) {
+		return _Utils_Tuple2(
+			{buttonBack: 'assets/button/button_back.png', navKey: navKey},
+			$elm$core$Platform$Cmd$none);
+	});
 var $author$project$Home$init = function (navKey) {
 	return _Utils_Tuple2(
 		{button_help: 'assets/button/button_help.png', button_highScore: 'assets/button/button_highScore.png', button_loadGame: 'assets/button/button_loadGame.png', button_newGame: 'assets/button/button_newGame.png', button_settings: 'assets/button/button_settings.png', navKey: navKey},
@@ -8142,21 +8166,21 @@ var $author$project$Main$initPage = function (_v0) {
 					$author$project$Main$NewGamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$NewGamePageMsg, pageCmds));
 			case 'Game1':
-				var _v5 = A4($author$project$Game$init, model.flags.save1, $author$project$Game$First, model.flags.settings, model.navKey);
+				var _v5 = A5($author$project$Game$init, model.flags.save1, $author$project$Game$First, model.flags.settings, model.flags.highScores, model.navKey);
 				var pageModel = _v5.a;
 				var pageCmds = _v5.b;
 				return _Utils_Tuple2(
 					$author$project$Main$GamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, pageCmds));
 			case 'Game2':
-				var _v6 = A4($author$project$Game$init, model.flags.save2, $author$project$Game$Second, model.flags.settings, model.navKey);
+				var _v6 = A5($author$project$Game$init, model.flags.save2, $author$project$Game$Second, model.flags.settings, model.flags.highScores, model.navKey);
 				var pageModel = _v6.a;
 				var pageCmds = _v6.b;
 				return _Utils_Tuple2(
 					$author$project$Main$GamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$GamePageMsg, pageCmds));
 			case 'Game3':
-				var _v7 = A4($author$project$Game$init, model.flags.save3, $author$project$Game$Third, model.flags.settings, model.navKey);
+				var _v7 = A5($author$project$Game$init, model.flags.save3, $author$project$Game$Third, model.flags.settings, model.flags.highScores, model.navKey);
 				var pageModel = _v7.a;
 				var pageCmds = _v7.b;
 				return _Utils_Tuple2(
@@ -8170,7 +8194,7 @@ var $author$project$Main$initPage = function (_v0) {
 					$author$project$Main$LoadGamePage(pageModel),
 					A2($elm$core$Platform$Cmd$map, $author$project$Main$LoadGamePageMsg, pageCmds));
 			case 'HighScores':
-				var _v9 = $author$project$HighScores$init(model.navKey);
+				var _v9 = A2($author$project$HighScores$init, model.flags.highScores, model.navKey);
 				var pageModel = _v9.a;
 				var pageCmds = _v9.b;
 				return _Utils_Tuple2(
@@ -8979,7 +9003,7 @@ var $author$project$Main$init = F3(
 				var decoded = _v2.a;
 				return decoded;
 			} else {
-				return {save1: $elm$core$Maybe$Nothing, save2: $elm$core$Maybe$Nothing, save3: $elm$core$Maybe$Nothing, settings: $elm$core$Maybe$Nothing};
+				return {highScores: $elm$core$Maybe$Nothing, save1: $elm$core$Maybe$Nothing, save2: $elm$core$Maybe$Nothing, save3: $elm$core$Maybe$Nothing, settings: $elm$core$Maybe$Nothing};
 			}
 		}();
 		var model = {
@@ -9914,6 +9938,191 @@ var $author$project$Game$encodeSave = function (model) {
 		default:
 			return $author$project$Ports$storeSave3(encodedSave);
 	}
+};
+var $author$project$Game$newScore = F3(
+	function (name, difficulty, score) {
+		return {
+			difficulty: $author$project$DecodingJson$difficultyToString(difficulty),
+			name: name,
+			score: score
+		};
+	});
+var $author$project$Game$saveScores = function (score) {
+	return _List_fromArray(
+		[
+			_Utils_Tuple2(
+			'name',
+			$elm$json$Json$Encode$string(score.name)),
+			_Utils_Tuple2(
+			'difficulty',
+			$elm$json$Json$Encode$string(score.difficulty)),
+			_Utils_Tuple2(
+			'score',
+			$elm$json$Json$Encode$float(score.score))
+		]);
+};
+var $elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
+};
+var $elm$core$List$sortBy = _List_sortBy;
+var $author$project$Ports$storeScores = _Platform_outgoingPort('storeScores', $elm$core$Basics$identity);
+var $elm$core$List$takeReverse = F3(
+	function (n, list, kept) {
+		takeReverse:
+		while (true) {
+			if (n <= 0) {
+				return kept;
+			} else {
+				if (!list.b) {
+					return kept;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs,
+						$temp$kept = A2($elm$core$List$cons, x, kept);
+					n = $temp$n;
+					list = $temp$list;
+					kept = $temp$kept;
+					continue takeReverse;
+				}
+			}
+		}
+	});
+var $elm$core$List$takeTailRec = F2(
+	function (n, list) {
+		return $elm$core$List$reverse(
+			A3($elm$core$List$takeReverse, n, list, _List_Nil));
+	});
+var $elm$core$List$takeFast = F3(
+	function (ctr, n, list) {
+		if (n <= 0) {
+			return _List_Nil;
+		} else {
+			var _v0 = _Utils_Tuple2(n, list);
+			_v0$1:
+			while (true) {
+				_v0$5:
+				while (true) {
+					if (!_v0.b.b) {
+						return list;
+					} else {
+						if (_v0.b.b.b) {
+							switch (_v0.a) {
+								case 1:
+									break _v0$1;
+								case 2:
+									var _v2 = _v0.b;
+									var x = _v2.a;
+									var _v3 = _v2.b;
+									var y = _v3.a;
+									return _List_fromArray(
+										[x, y]);
+								case 3:
+									if (_v0.b.b.b.b) {
+										var _v4 = _v0.b;
+										var x = _v4.a;
+										var _v5 = _v4.b;
+										var y = _v5.a;
+										var _v6 = _v5.b;
+										var z = _v6.a;
+										return _List_fromArray(
+											[x, y, z]);
+									} else {
+										break _v0$5;
+									}
+								default:
+									if (_v0.b.b.b.b && _v0.b.b.b.b.b) {
+										var _v7 = _v0.b;
+										var x = _v7.a;
+										var _v8 = _v7.b;
+										var y = _v8.a;
+										var _v9 = _v8.b;
+										var z = _v9.a;
+										var _v10 = _v9.b;
+										var w = _v10.a;
+										var tl = _v10.b;
+										return (ctr > 1000) ? A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A2($elm$core$List$takeTailRec, n - 4, tl))))) : A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A3($elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
+									} else {
+										break _v0$5;
+									}
+							}
+						} else {
+							if (_v0.a === 1) {
+								break _v0$1;
+							} else {
+								break _v0$5;
+							}
+						}
+					}
+				}
+				return list;
+			}
+			var _v1 = _v0.b;
+			var x = _v1.a;
+			return _List_fromArray(
+				[x]);
+		}
+	});
+var $elm$core$List$take = F2(
+	function (n, list) {
+		return A3($elm$core$List$takeFast, 0, n, list);
+	});
+var $author$project$Game$encodeScore = function (model) {
+	var difficultyPenalty = function () {
+		var _v0 = model.difficulty;
+		switch (_v0.$) {
+			case 'Easy':
+				return 3.0;
+			case 'Medium':
+				return 2.0;
+			default:
+				return 1.0;
+		}
+	}();
+	var score = ((model.player.playerLevel / model.time) / difficultyPenalty) * 1000.0;
+	var myScore = $elm$core$List$singleton(
+		A3($author$project$Game$newScore, model.name, model.difficulty, score));
+	var sortedScores = A2(
+		$elm$core$List$take,
+		5,
+		$elm$core$List$reverse(
+			A2(
+				$elm$core$List$sortBy,
+				function ($) {
+					return $.score;
+				},
+				A2($elm$core$List$append, model.scores, myScore))));
+	var encodedScore = A2(
+		$elm$json$Json$Encode$list,
+		$elm$json$Json$Encode$object,
+		A2($elm$core$List$map, $author$project$Game$saveScores, sortedScores));
+	return $author$project$Ports$storeScores(encodedScore);
 };
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
@@ -12207,10 +12416,15 @@ var $author$project$Game$update = F2(
 						model,
 						{pauseToggle: false}),
 					$elm$core$Platform$Cmd$none);
-			case 'SaveGame':
+			case 'FinishedGame':
 				return _Utils_Tuple2(
 					model,
-					$author$project$Game$encodeSave(model));
+					$elm$core$Platform$Cmd$batch(
+						_List_fromArray(
+							[
+								$author$project$Game$encodeSave(model),
+								$author$project$Game$encodeScore(model)
+							])));
 			default:
 				var rel = msg.a;
 				return rel ? _Utils_Tuple2(model, $elm$browser$Browser$Navigation$reload) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -12238,13 +12452,13 @@ var $author$project$HighScores$update = F2(
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{button_back: 'assets/button/button_back_hover.png'}),
+					{buttonBack: 'assets/button/button_back_hover.png'}),
 				$elm$core$Platform$Cmd$none);
 		} else {
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{button_back: 'assets/button/button_back.png'}),
+					{buttonBack: 'assets/button/button_back.png'}),
 				$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -14329,8 +14543,8 @@ var $author$project$Game$viewDefenseBar = F4(
 					A2($author$project$Game$viewDefenseInfo, maxDef, currDef)
 				]));
 	});
+var $author$project$Game$FinishedGame = {$: 'FinishedGame'};
 var $author$project$Game$PauseScreenReturn = {$: 'PauseScreenReturn'};
-var $author$project$Game$SaveGame = {$: 'SaveGame'};
 var $myrho$elm_round$Round$addSign = F2(
 	function (signed, str) {
 		var isNotZero = A2(
@@ -14666,7 +14880,7 @@ var $author$project$Game$viewEndScreen = F4(
 							_List_fromArray(
 								[
 									$author$project$Route$href($author$project$Route$Home),
-									$elm$html$Html$Events$onMouseOver($author$project$Game$SaveGame)
+									$elm$html$Html$Events$onMouseOver($author$project$Game$FinishedGame)
 								]),
 							_List_fromArray(
 								[
@@ -15374,7 +15588,7 @@ var $author$project$HighScores$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.button_back),
+								$elm$html$Html$Attributes$src(model.buttonBack),
 								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 								A2($elm$html$Html$Attributes$style, 'left', '752px'),
 								A2($elm$html$Html$Attributes$style, 'top', '864px'),

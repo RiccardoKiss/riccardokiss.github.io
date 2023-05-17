@@ -31,12 +31,18 @@ type alias Settings =
   , movement : Movement
   }
 
+type alias Score =
+  { name : String
+  , difficulty : String
+  , score : Float
+  }
+
 type alias Flags =
   { save1 : Maybe Save
   , save2 : Maybe Save
   , save3 : Maybe Save
   , settings : Maybe Settings
-  --, highscores :
+  , highScores : Maybe (List Score)
   }
 
 difficultyToString : Difficulty -> String
@@ -53,11 +59,19 @@ difficultyToString difficulty =
 
 flagsDecoder : Decoder Flags
 flagsDecoder =
-  D.map4 Flags
+  D.map5 Flags
     (D.maybe (D.field "save1" saveDecoder))
     (D.maybe (D.field "save2" saveDecoder))
     (D.maybe (D.field "save3" saveDecoder))
     (D.maybe (D.field "settings" settingsDecoder))
+    (D.maybe (D.field "highScores" (D.list scoresDecoder)))
+
+scoresDecoder : Decoder Score
+scoresDecoder =
+  D.map3 Score
+    (D.field "name" D.string)
+    (D.field "difficulty" D.string)
+    (D.field "score" D.float)
 
 settingsDecoder : Decoder Settings
 settingsDecoder =
@@ -150,7 +164,6 @@ difficultyDecoder =
             _ ->
               D.fail "Invalid Difficulty"
       )
-
 
 playerDecoder : Decoder Player.Player
 playerDecoder =

@@ -50,6 +50,7 @@ type alias Model =
   , pauseToggle : Bool
   , music : Settings.Music
   , movement : Settings.Movement
+  , scores : List DecodingJson.Score
   , button_DS_respawn : String
   , button_DS_return : String
   , button_PS_resume : String
@@ -81,7 +82,7 @@ type Msg
   | Hover Button
   | MouseOut Button
   | ClickResume
-  | SaveGame
+  | FinishedGame
   | Reload Bool
 
 
@@ -108,8 +109,14 @@ initPlayer =
   , speedPotions = Potion.speedPotion 1.5 5.0 5.0 0.0 0
   }
 
-init : Maybe DecodingJson.Save -> SavePosition -> Maybe DecodingJson.Settings -> Nav.Key -> ( Model, Cmd Msg )
-init save pos settings navKey =
+init :
+  Maybe DecodingJson.Save
+  -> SavePosition
+  -> Maybe DecodingJson.Settings
+  -> Maybe (List DecodingJson.Score)
+  -> Nav.Key
+  -> ( Model, Cmd Msg )
+init save pos settings highScores navKey =
   let
     _ = Debug.log "[Game.init] save" save
     _ = Debug.log "[Game.init] pos" pos
@@ -209,6 +216,13 @@ init save pos settings navKey =
 
           Nothing ->
             Settings.WASD
+    , scores =
+        case highScores of
+          Just hS ->
+            hS
+
+          Nothing ->
+            []
     , button_DS_respawn = "assets/button/button_DS_respawn.png"
     , button_DS_return = "assets/button/button_DS_return_MainMenu.png"
     , button_PS_resume = "assets/button/button_resume.png"
@@ -403,7 +417,7 @@ update msg model =
       ( model
       , Cmd.batch
           [ encodeSave model
-          , -- port na ulozenie do localStorage highScore
+          , encodeScore model
           ]
       )
 
@@ -413,6 +427,46 @@ update msg model =
       else
         ( model, Cmd.none )
 
+
+encodeScore : Model -> Cmd msg
+encodeScore model =
+  let
+    difficultyPenalty =
+      case model.difficulty of
+        DecodingJson.Easy ->
+          3.0
+
+        DecodingJson.Medium ->
+          2.0
+
+        DecodingJson.Hard ->
+          1.0
+
+    score = ((toFloat model.player.playerLevel) / model.time / difficultyPenalty) * 1000.0
+    myScore = List.singleton (newScore model.name model.difficulty score)
+    sortedScores =
+      List.append model.scores myScore   -- merge highScores from localStorage with current score entry
+      |> List.sortBy .score                  -- sort all high scores based on score value from lowest to highest
+      |> List.reverse                        -- entries with highest to lowest score values
+      |> List.take 5                         -- take first 5 entries, drop the rest
+    encodedScore =
+      Encode.list Encode.object (List.map saveScores sortedScores)
+  in
+  Ports.storeScores encodedScore
+
+newScore : String -> DecodingJson.Difficulty -> Float -> DecodingJson.Score
+newScore name difficulty score =
+  { name = name
+  , difficulty = DecodingJson.difficultyToString difficulty
+  , score = score
+  }
+
+saveScores : DecodingJson.Score -> List (String, Encode.Value)
+saveScores score =
+  [ ( "name", Encode.string score.name )
+  , ( "difficulty", Encode.string score.difficulty )
+  , ( "score", Encode.float score.score )
+  ]
 
 encodeSave : Model -> Cmd msg
 encodeSave model =

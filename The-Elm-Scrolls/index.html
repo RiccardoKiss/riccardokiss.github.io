@@ -22,12 +22,15 @@
     var storedSettings = localStorage.getItem('settings');
     var retrievedSettings = storedSettings ? JSON.parse(storedSettings) : null;
 
+    var storedScores = localStorage.getItem('highScores');
+    var retrievedScores = storedScores ? JSON.parse(storedScores) : null;
+
     const flags = {
       save1: retrievedSave1,
       save2: retrievedSave2,
       save3: retrievedSave3,
       settings: retrievedSettings,
-      //highscores: null
+      highScores: retrievedScores
     };
 
     console.log("Flags: ", flags);
@@ -49,6 +52,10 @@
 
     app.ports.storeSettings.subscribe(function(state) {
       localStorage.setItem('settings', JSON.stringify(state));
+    });
+
+    app.ports.storeScores.subscribe(function(state) {
+      localStorage.setItem('highScores', JSON.stringify(state));
     });
 
     app.ports.loadedPage.subscribe(function(state) {

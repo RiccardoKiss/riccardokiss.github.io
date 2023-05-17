@@ -11,3 +11,4 @@ port loadedPage : () -> Cmd msg
 port reloadPage : (Bool -> msg) -> Sub msg
 
 port storeSettings : E.Value -> Cmd msg
+port storeScores : E.Value -> Cmd msg

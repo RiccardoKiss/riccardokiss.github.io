@@ -79,6 +79,7 @@ init flags url navKey =
           , save2 = Nothing  --DecodingJson.emptySave
           , save3 = Nothing  --DecodingJson.emptySave
           , settings = Nothing
+          , highScores = Nothing
           }
     _ = Debug.log "[Main.init] decodedFlags" decodedFlags
     model =
@@ -115,21 +116,21 @@ initPage ( model, existingCmds ) =
         Route.Game1 ->
           let
             ( pageModel, pageCmds ) =
-              Game.init model.flags.save1 Game.First model.flags.settings model.navKey
+              Game.init model.flags.save1 Game.First model.flags.settings model.flags.highScores model.navKey
           in
           ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
 
         Route.Game2 ->
           let
             ( pageModel, pageCmds ) =
-              Game.init model.flags.save2 Game.Second model.flags.settings model.navKey
+              Game.init model.flags.save2 Game.Second model.flags.settings model.flags.highScores model.navKey
           in
           ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
 
         Route.Game3 ->
           let
             ( pageModel, pageCmds ) =
-              Game.init model.flags.save3 Game.Third model.flags.settings model.navKey
+              Game.init model.flags.save3 Game.Third model.flags.settings model.flags.highScores model.navKey
           in
           ( GamePage pageModel, Cmd.map GamePageMsg pageCmds )
 
@@ -143,7 +144,7 @@ initPage ( model, existingCmds ) =
         Route.HighScores ->
           let
             ( pageModel, pageCmds ) =
-              HighScores.init model.navKey
+              HighScores.init model.flags.highScores model.navKey
           in
           ( HighScoresPage pageModel, Cmd.map HighScoresPageMsg pageCmds )
 

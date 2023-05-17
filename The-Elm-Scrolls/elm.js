@@ -8116,9 +8116,20 @@ var $author$project$Help$init = function (navKey) {
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$HighScores$init = F2(
-	function (scores, navKey) {
+	function (highScores, navKey) {
 		return _Utils_Tuple2(
-			{buttonBack: 'assets/button/button_back.png', navKey: navKey},
+			{
+				buttonBack: 'assets/button/button_back.png',
+				navKey: navKey,
+				scores: function () {
+					if (highScores.$ === 'Just') {
+						var hS = highScores.a;
+						return hS;
+					} else {
+						return _List_Nil;
+					}
+				}()
+			},
 			$elm$core$Platform$Cmd$none);
 	});
 var $author$project$Home$init = function (navKey) {
@@ -15544,6 +15555,28 @@ var $author$project$Help$view = function (model) {
 };
 var $author$project$HighScores$HoverBack = {$: 'HoverBack'};
 var $author$project$HighScores$MouseOut = {$: 'MouseOut'};
+var $author$project$HighScores$viewScoreEntry = function (entry) {
+	if (entry.$ === 'Just') {
+		var s = entry.a;
+		return A2(
+			$elm$html$Html$pre,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+					A2($elm$html$Html$Attributes$style, 'display', 'block'),
+					A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+					A2($elm$html$Html$Attributes$style, 'margin-bottom', '1em'),
+					A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(
+					s.name + ('\t' + (s.difficulty + ('\t\t' + A2($myrho$elm_round$Round$round, 2, s.score)))))
+				]));
+	} else {
+		return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+	}
+};
 var $author$project$HighScores$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -15569,12 +15602,65 @@ var $author$project$HighScores$view = function (model) {
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-						A2($elm$html$Html$Attributes$style, 'left', '800px'),
-						A2($elm$html$Html$Attributes$style, 'top', '100px')
+						A2($elm$html$Html$Attributes$style, 'left', '760px'),
+						A2($elm$html$Html$Attributes$style, 'top', '100px'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '5em'),
+						A2($elm$html$Html$Attributes$style, 'margin', '0px')
 					]),
 				_List_fromArray(
 					[
 						$elm$html$Html$text('High Scores')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '760px'),
+						A2($elm$html$Html$Attributes$style, 'top', '250px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$pre,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+								A2($elm$html$Html$Attributes$style, 'display', 'block'),
+								A2($elm$html$Html$Attributes$style, 'border-bottom', '5px double black'),
+								A2($elm$html$Html$Attributes$style, 'font-family', 'Consolas'),
+								A2($elm$html$Html$Attributes$style, 'font-weight', 'bolder'),
+								A2($elm$html$Html$Attributes$style, 'font-size', '1.5em')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Name\tDifficulty\tScore')
+							])),
+						$author$project$HighScores$viewScoreEntry(
+						A2(
+							$elm$core$Array$get,
+							0,
+							$elm$core$Array$fromList(model.scores))),
+						$author$project$HighScores$viewScoreEntry(
+						A2(
+							$elm$core$Array$get,
+							1,
+							$elm$core$Array$fromList(model.scores))),
+						$author$project$HighScores$viewScoreEntry(
+						A2(
+							$elm$core$Array$get,
+							2,
+							$elm$core$Array$fromList(model.scores))),
+						$author$project$HighScores$viewScoreEntry(
+						A2(
+							$elm$core$Array$get,
+							3,
+							$elm$core$Array$fromList(model.scores))),
+						$author$project$HighScores$viewScoreEntry(
+						A2(
+							$elm$core$Array$get,
+							4,
+							$elm$core$Array$fromList(model.scores)))
 					])),
 				A2(
 				$elm$html$Html$a,

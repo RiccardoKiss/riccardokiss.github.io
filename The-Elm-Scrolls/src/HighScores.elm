@@ -1,9 +1,11 @@
 module HighScores exposing (..)
 
 import Browser.Navigation as Nav
-import Html exposing (Html, div, h1, a, text, img, input, p)
-import Html.Attributes exposing (src, style, type_)
-import Html.Events exposing (onClick, onMouseOver, onMouseOut)
+import Html exposing (Html, div, h1, a, text, img, input, pre)
+import Html.Attributes exposing (src, style)
+import Html.Events exposing (onMouseOver, onMouseOut)
+import Array
+import Round
 
 import Route exposing (Route)
 import DecodingJson exposing (..)
@@ -56,6 +58,20 @@ update msg model =
       , Cmd.none
       )
 
+viewScoreEntry : Maybe DecodingJson.Score -> Html Msg
+viewScoreEntry entry =
+  case entry of
+    Just s ->
+      pre [ style "position" "relative"
+          , style "display" "block"
+          , style "font-family" "Consolas"
+          --, style "font-weight" "bolder"
+          , style "margin-bottom" "1em"
+          , style "font-size" "1.5em"
+          ]
+          [ text (s.name ++ "\t" ++ s.difficulty ++ "\t\t" ++ (Round.round 2 s.score)) ]
+    Nothing ->
+      div [] []
 
 view : Model -> Html Msg
 view model =
@@ -67,9 +83,29 @@ view model =
             , style "top" "0px"
             ] []
       , h1 [ style "position" "absolute"
-           , style "left" "800px"
+           , style "left" "760px"
            , style "top" "100px"
+           , style "font-size" "5em"
+           , style "margin" "0px"
            ] [ text "High Scores" ]
+      , div [ style "position" "absolute"
+            , style "left" "760px"
+            , style "top" "300px"
+            ]
+            [ pre [ style "position" "relative"
+                  , style "display" "block"
+                  , style "border-bottom" "5px double black"
+                  , style "font-family" "Consolas"
+                  , style "font-weight" "bolder"
+                  , style "font-size" "1.5em"
+                  ]
+                  [ text "Name\tDifficulty\tScore" ]
+            , viewScoreEntry (Array.get 0 (Array.fromList model.scores))
+            , viewScoreEntry (Array.get 1 (Array.fromList model.scores))
+            , viewScoreEntry (Array.get 2 (Array.fromList model.scores))
+            , viewScoreEntry (Array.get 3 (Array.fromList model.scores))
+            , viewScoreEntry (Array.get 4 (Array.fromList model.scores))
+            ]
       , a [ Route.href Route.Home ]
           [ img [ src model.buttonBack
                 , style "position" "absolute"

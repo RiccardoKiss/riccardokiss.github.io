@@ -37,6 +37,7 @@ type EnemyType
   = Bandit
   | Zombie
   | Skeleton
+  | DragonKnight
   | Prototype
 
 textures : List String
@@ -51,6 +52,11 @@ textures =
   , "assets/enemy/skeleton_up.png"
   , "assets/enemy/skeleton_down.png"
   --, "assets/enemy/skeleton_idle.png"
+  , "assets/enemy/dragonKnight_right.png"
+  , "assets/enemy/dragonKnight_left.png"
+  , "assets/enemy/dragonKnight_up.png"
+  , "assets/enemy/dragonKnight_down.png"
+  --, "assets/enemy/dragonKnight_idle.png"
   ]
 
 prototype : Float -> Float -> Direction -> Enemy
@@ -145,6 +151,29 @@ skeleton initX initY initDir =
   , detectPlayerRadius = 3
   }
 
+dragonKnight : Float -> Float -> Direction -> Enemy
+dragonKnight initX initY initDir =
+  { initX = initX
+  , initY = initY
+  , initDir = initDir
+  , x = initX
+  , y = initY
+  , dir = initDir
+  , vx = 0
+  , vy = 0
+  , width = 1.0
+  , height = 2.0
+  , hostile = False
+  , alive = True
+  , enemyType = DragonKnight
+  , distanceLoop = 5.0
+  , speed = 2.5
+  , attack = 3
+  , health = 10
+  , expDrop = 3
+  , detectPlayerRadius = 3
+  }
+
 isAlive : Enemy -> Bool
 isAlive enemy =
   if enemy.alive then True else False
@@ -188,6 +217,9 @@ enemyTypeToString enemy =
     Skeleton ->
       "skeleton"
 
+    DragonKnight ->
+      "dragonKnight"
+      
     Prototype ->
       "enemy"
 

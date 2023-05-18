@@ -37,7 +37,6 @@ init highScores navKey =
 
 type Msg
   = HoverBack
-  --| ClickedBack
   | MouseOut
 
 

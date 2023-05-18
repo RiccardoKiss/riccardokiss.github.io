@@ -8109,10 +8109,11 @@ var $author$project$Game$init = F5(
 						$Zinggi$elm_game_resources$Game$Resources$loadTextures($author$project$Game$texturesList))
 					])));
 	});
+var $author$project$Help$Controls = {$: 'Controls'};
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Help$init = function (navKey) {
 	return _Utils_Tuple2(
-		{button_back: 'assets/button/button_back.png', navKey: navKey},
+		{activeTab: $author$project$Help$Controls, buttonBack: 'assets/button/button_back.png', navKey: navKey},
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$HighScores$init = F2(
@@ -12443,18 +12444,26 @@ var $author$project$Game$update = F2(
 	});
 var $author$project$Help$update = F2(
 	function (msg, model) {
-		if (msg.$ === 'HoverBack') {
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{button_back: 'assets/button/button_back_hover.png'}),
-				$elm$core$Platform$Cmd$none);
-		} else {
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{button_back: 'assets/button/button_back.png'}),
-				$elm$core$Platform$Cmd$none);
+		switch (msg.$) {
+			case 'HoverBack':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{buttonBack: 'assets/button/button_back_hover.png'}),
+					$elm$core$Platform$Cmd$none);
+			case 'MouseOut':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{buttonBack: 'assets/button/button_back.png'}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var tab = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{activeTab: tab}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$HighScores$update = F2(
@@ -15496,8 +15505,571 @@ var $author$project$Game$view = function (model) {
 				A4($author$project$Game$viewPlayerInput, 820, 835, model.keys, model.movement)
 			]));
 };
+var $author$project$Help$Armors = {$: 'Armors'};
+var $author$project$Help$Enemies = {$: 'Enemies'};
 var $author$project$Help$HoverBack = {$: 'HoverBack'};
 var $author$project$Help$MouseOut = {$: 'MouseOut'};
+var $author$project$Help$Weapons = {$: 'Weapons'};
+var $author$project$Help$ActiveTabTo = function (a) {
+	return {$: 'ActiveTabTo', a: a};
+};
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $author$project$Help$tabToString = function (tab) {
+	switch (tab.$) {
+		case 'Controls':
+			return 'Controls';
+		case 'Armors':
+			return 'Armors';
+		case 'Weapons':
+			return 'Weapons';
+		default:
+			return 'Enemies';
+	}
+};
+var $author$project$Help$viewTabButton = F2(
+	function (tab, activeTab) {
+		var buttonBgColor = _Utils_eq(tab, activeTab) ? '#deb787' : '#fad1a0';
+		return A2(
+			$elm$html$Html$button,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'block'),
+					A2($elm$html$Html$Attributes$style, 'color', 'black'),
+					A2($elm$html$Html$Attributes$style, 'width', '100%'),
+					A2($elm$html$Html$Attributes$style, 'height', '3em'),
+					A2($elm$html$Html$Attributes$style, 'border', 'none'),
+					A2($elm$html$Html$Attributes$style, 'outline', 'none'),
+					A2($elm$html$Html$Attributes$style, 'cursor', 'pointer'),
+					A2($elm$html$Html$Attributes$style, 'transition', '0.3s'),
+					A2($elm$html$Html$Attributes$style, 'font-size', '2em'),
+					A2($elm$html$Html$Attributes$style, 'border-right', '2px solid black'),
+					A2($elm$html$Html$Attributes$style, 'background-color', buttonBgColor),
+					$elm$html$Html$Events$onClick(
+					$author$project$Help$ActiveTabTo(tab))
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(
+					$author$project$Help$tabToString(tab))
+				]));
+	});
+var $author$project$Help$tabContentHeaderStyle = F2(
+	function (left, top) {
+		return _List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'font-size', '2.5em'),
+				A2($elm$html$Html$Attributes$style, 'font-weight', 'bold'),
+				A2($elm$html$Html$Attributes$style, 'text-decoration', 'underline'),
+				A2($elm$html$Html$Attributes$style, 'margin', 'unset'),
+				A2($elm$html$Html$Attributes$style, 'display', 'unset'),
+				A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+				A2($elm$html$Html$Attributes$style, 'left', left),
+				A2($elm$html$Html$Attributes$style, 'top', top)
+			]);
+	});
+var $author$project$Help$tabContentImageStyle = F3(
+	function (left, top, imgPath) {
+		return _List_fromArray(
+			[
+				$elm$html$Html$Attributes$src(imgPath),
+				A2($elm$html$Html$Attributes$style, 'margin', 'unset'),
+				A2($elm$html$Html$Attributes$style, 'display', 'unset'),
+				A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+				A2($elm$html$Html$Attributes$style, 'left', left),
+				A2($elm$html$Html$Attributes$style, 'top', top)
+			]);
+	});
+var $author$project$Help$tabContentTextStyle = F2(
+	function (left, top) {
+		return _List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'font-size', '1.5em'),
+				A2($elm$html$Html$Attributes$style, 'margin', 'unset'),
+				A2($elm$html$Html$Attributes$style, 'display', 'unset'),
+				A2($elm$html$Html$Attributes$style, 'position', 'relative'),
+				A2($elm$html$Html$Attributes$style, 'left', left),
+				A2($elm$html$Html$Attributes$style, 'top', top)
+			]);
+	});
+var $author$project$Help$viewArmorsContent = _List_fromArray(
+	[
+		A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'justify-content', 'space-evenly')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$img,
+				_Utils_ap(
+					A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/player/player_EEE_256_512.png'),
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', '30em')
+						])),
+				_List_Nil),
+				A2(
+				$elm$html$Html$img,
+				_Utils_ap(
+					A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/player/player_LLL_256_512.png'),
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', '30em')
+						])),
+				_List_Nil),
+				A2(
+				$elm$html$Html$img,
+				_Utils_ap(
+					A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/player/player_SSS_256_512.png'),
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', '30em')
+						])),
+				_List_Nil),
+				A2(
+				$elm$html$Html$img,
+				_Utils_ap(
+					A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/player/player_DDD_256_512.png'),
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', '30em')
+						])),
+				_List_Nil)
+			])),
+		A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'justify-content', 'space-evenly')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('None Set')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Leather Set')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Silver Set')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Dragon Set')
+					]))
+			])),
+		A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'justify-content', 'space-around')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Helmet\t    0\nChestplate  1\nLegs\t    1\n\nTotal DEF:  2')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Helmet\t    10\nChestplate  10\nLegs\t    10\n\nTotal DEF:  30')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Helmet\t    20\nChestplate  20\nLegs\t    20\n\nTotal DEF:  60')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Helmet\t    30\nChestplate  30\nLegs\t    30\n\nTotal DEF:  90')
+					]))
+			]))
+	]);
+var $author$project$Help$viewControlsContent = _List_fromArray(
+	[
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentHeaderStyle, '40%', '0%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Movement')
+			])),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '-0.5%', '10%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Up')
+			])),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '-11%', '40%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Left')
+			])),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '-9.5%', '40%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Down')
+			])),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '-8%', '40%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Right')
+			])),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '-21.5%', '23%', 'assets/button/w_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '-34%', '35%', 'assets/button/a_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '-33%', '35%', 'assets/button/s_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '-32%', '35%', 'assets/button/d_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '-13%', '25%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Or')
+			])),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '9.5%', '23%', 'assets/button/arrowUp_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '-3%', '35%', 'assets/button/arrowLeft_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '-2%', '35%', 'assets/button/arrowDown_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '-1%', '35%', 'assets/button/arrowRight_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentHeaderStyle, '-73%', '56%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Attack')
+			])),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '7%', '60%', 'assets/button/spacebar_192_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '-8%', '65%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Press')
+			])),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentHeaderStyle, '25%', '45%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Use Consumables')
+			])),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '-7%', '60%', 'assets/button/q_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '-13%', '65%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Press')
+			])),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '7%', '60%', 'assets/button/e_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '81%', '54%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Press')
+			])),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentHeaderStyle, '-2%', '77%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Show Character Details')
+			])),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '-30%', '94%', 'assets/button/c_48_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '-35.5%', '100%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Hold')
+			])),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentHeaderStyle, '0%', '77%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Pause the Game')
+			])),
+		A2(
+		$elm$html$Html$img,
+		A3($author$project$Help$tabContentImageStyle, '75%', '83%', 'assets/button/esc_96_48.png'),
+		_List_Nil),
+		A2(
+		$elm$html$Html$pre,
+		A2($author$project$Help$tabContentTextStyle, '66%', '88%'),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Press')
+			]))
+	]);
+var $author$project$Help$viewEnemiesContent = _List_Nil;
+var $author$project$Help$viewWeaponsContent = _List_fromArray(
+	[
+		A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'justify-content', 'space-evenly')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_Utils_ap(
+							A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/sword/sword_wood_128_128.png'),
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'height', '50%')
+								])),
+						_List_Nil),
+						A2(
+						$elm$html$Html$img,
+						_Utils_ap(
+							A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/sword/sword_stone_128_128.png'),
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'height', '50%')
+								])),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'justify-content', 'space-evenly')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$pre,
+						A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Wooden Sword')
+							])),
+						A2(
+						$elm$html$Html$pre,
+						A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Stone Sword')
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'justify-content', 'space-evenly')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$pre,
+						A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Attack\t5')
+							])),
+						A2(
+						$elm$html$Html$pre,
+						A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Attack\t10')
+							]))
+					]))
+			])),
+		A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'justify-content', 'space-evenly')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_Utils_ap(
+							A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/sword/sword_iron_128_128.png'),
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'height', '50%')
+								])),
+						_List_Nil),
+						A2(
+						$elm$html$Html$img,
+						_Utils_ap(
+							A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/sword/sword_dragon_128_128.png'),
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'height', '50%')
+								])),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'justify-content', 'space-evenly')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$pre,
+						A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Iron Sword')
+							])),
+						A2(
+						$elm$html$Html$pre,
+						A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Dragon Sword')
+							]))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'justify-content', 'space-evenly')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$pre,
+						A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Attack\t15')
+							])),
+						A2(
+						$elm$html$Html$pre,
+						A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Attack\t20')
+							]))
+					]))
+			]))
+	]);
+var $author$project$Help$viewTabContent = function (tab) {
+	var content = function () {
+		switch (tab.$) {
+			case 'Controls':
+				return $author$project$Help$viewControlsContent;
+			case 'Armors':
+				return $author$project$Help$viewArmorsContent;
+			case 'Weapons':
+				return $author$project$Help$viewWeaponsContent;
+			default:
+				return $author$project$Help$viewEnemiesContent;
+		}
+	}();
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'float', 'left'),
+				A2($elm$html$Html$Attributes$style, 'width', '80%'),
+				A2($elm$html$Html$Attributes$style, 'height', '100%'),
+				A2($elm$html$Html$Attributes$style, 'overflow-y', 'auto'),
+				A2($elm$html$Html$Attributes$style, 'overflow-x', 'hidden'),
+				A2($elm$html$Html$Attributes$style, 'display', 'block')
+			]),
+		content);
+};
 var $author$project$Help$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -15523,12 +16095,57 @@ var $author$project$Help$view = function (model) {
 				_List_fromArray(
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-						A2($elm$html$Html$Attributes$style, 'left', '800px'),
-						A2($elm$html$Html$Attributes$style, 'top', '100px')
+						A2($elm$html$Html$Attributes$style, 'left', '46.28%'),
+						A2($elm$html$Html$Attributes$style, 'top', '7%'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '5em'),
+						A2($elm$html$Html$Attributes$style, 'margin', '0px')
 					]),
 				_List_fromArray(
 					[
 						$elm$html$Html$text('Help')
+					])),
+				A2(
+				$elm$html$Html$img,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$src('assets/character_screen_scroll_background_1200_600.png'),
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '15%'),
+						A2($elm$html$Html$Attributes$style, 'top', '18%'),
+						A2($elm$html$Html$Attributes$style, 'width', '70%')
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '15%'),
+						A2($elm$html$Html$Attributes$style, 'top', '18%'),
+						A2($elm$html$Html$Attributes$style, 'width', '55%'),
+						A2($elm$html$Html$Attributes$style, 'height', '50%'),
+						A2($elm$html$Html$Attributes$style, 'padding-left', '7.5%'),
+						A2($elm$html$Html$Attributes$style, 'padding-right', '7.5%'),
+						A2($elm$html$Html$Attributes$style, 'padding-top', '5%')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'float', 'left'),
+								A2($elm$html$Html$Attributes$style, 'width', '20%'),
+								A2($elm$html$Html$Attributes$style, 'height', 'auto')
+							]),
+						_List_fromArray(
+							[
+								A2($author$project$Help$viewTabButton, $author$project$Help$Controls, model.activeTab),
+								A2($author$project$Help$viewTabButton, $author$project$Help$Armors, model.activeTab),
+								A2($author$project$Help$viewTabButton, $author$project$Help$Weapons, model.activeTab),
+								A2($author$project$Help$viewTabButton, $author$project$Help$Enemies, model.activeTab)
+							])),
+						$author$project$Help$viewTabContent(model.activeTab)
 					])),
 				A2(
 				$elm$html$Html$a,
@@ -15542,7 +16159,7 @@ var $author$project$Help$view = function (model) {
 						$elm$html$Html$img,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$src(model.button_back),
+								$elm$html$Html$Attributes$src(model.buttonBack),
 								A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 								A2($elm$html$Html$Attributes$style, 'left', '752px'),
 								A2($elm$html$Html$Attributes$style, 'top', '864px'),
@@ -15617,7 +16234,7 @@ var $author$project$HighScores$view = function (model) {
 					[
 						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
 						A2($elm$html$Html$Attributes$style, 'left', '760px'),
-						A2($elm$html$Html$Attributes$style, 'top', '250px')
+						A2($elm$html$Html$Attributes$style, 'top', '300px')
 					]),
 				_List_fromArray(
 					[

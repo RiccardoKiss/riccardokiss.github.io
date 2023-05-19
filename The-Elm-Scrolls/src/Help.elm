@@ -126,9 +126,9 @@ viewTabContent tab =
       ]
       content
 
-tabContentHeaderStyle : String -> String -> List (Html.Attribute msg)
-tabContentHeaderStyle left top =
-  [ style "font-size" "2.5em"
+tabContentHeaderStyle : String -> String -> String -> List (Html.Attribute msg)
+tabContentHeaderStyle left top size =
+  [ style "font-size" size
   , style "font-weight" "bold"
   , style "text-decoration" "underline"
   , style "margin" "unset"
@@ -160,7 +160,7 @@ tabContentImageStyle left top imgPath =
 
 viewControlsContent : List (Html Msg)
 viewControlsContent =
-  [ pre (tabContentHeaderStyle "40%" "0%") [ text "Movement" ]
+  [ pre (tabContentHeaderStyle "40%" "0%" "2.5em") [ text "Movement" ]
   , pre (tabContentTextStyle "-0.5%" "10%") [ text "Up" ]
   , pre (tabContentTextStyle "-11%" "40%") [ text "Left" ]
   , pre (tabContentTextStyle "-9.5%" "40%") [ text "Down" ]
@@ -174,18 +174,18 @@ viewControlsContent =
   , img (tabContentImageStyle "-3%" "35%" "assets/button/arrowLeft_48_48.png") []
   , img (tabContentImageStyle "-2%" "35%" "assets/button/arrowDown_48_48.png") []
   , img (tabContentImageStyle "-1%" "35%" "assets/button/arrowRight_48_48.png") []
-  , pre (tabContentHeaderStyle "-73%" "56%") [ text "Attack" ]
+  , pre (tabContentHeaderStyle "-73%" "56%" "2.5em") [ text "Attack" ]
   , img (tabContentImageStyle "7%" "60%" "assets/button/spacebar_192_48.png") []
   , pre (tabContentTextStyle "-8%" "65%") [ text "Press" ]
-  , pre (tabContentHeaderStyle "25%" "45%") [ text "Use Consumables" ]
+  , pre (tabContentHeaderStyle "25%" "45%" "2.5em") [ text "Use Consumables" ]
   , img (tabContentImageStyle "-7%" "60%" "assets/button/q_48_48.png") []
   , pre (tabContentTextStyle "-13%" "65%") [ text "Press" ]
   , img (tabContentImageStyle "7%" "60%" "assets/button/e_48_48.png") []
   , pre (tabContentTextStyle "81%" "54%") [ text "Press" ]
-  , pre (tabContentHeaderStyle "-2%" "77%") [ text "Show Character Details" ]
+  , pre (tabContentHeaderStyle "-2%" "77%" "2.5em") [ text "Show Character Details" ]
   , img (tabContentImageStyle "-30%" "94%" "assets/button/c_48_48.png") []
   , pre (tabContentTextStyle "-35.5%" "100%") [ text "Hold" ]
-  , pre (tabContentHeaderStyle "0%" "77%") [ text "Pause the Game" ]
+  , pre (tabContentHeaderStyle "0%" "77%" "2.5em") [ text "Pause the Game" ]
   , img (tabContentImageStyle "75%" "83%" "assets/button/esc_96_48.png") []
   , pre (tabContentTextStyle "66%" "88%") [ text "Press" ]
   ]
@@ -203,15 +203,15 @@ viewArmorsContent =
   , div [ style "display" "flex"
         , style "justify-content" "space-evenly"
         ]
-        [ pre (tabContentHeaderStyle "0%" "20%") [ text "None Set" ]
-        , pre (tabContentHeaderStyle "0%" "20%") [ text "Leather Set" ]
-        , pre (tabContentHeaderStyle "0%" "20%") [ text "Silver Set" ]
-        , pre (tabContentHeaderStyle "0%" "20%") [ text "Dragon Set" ]
+        [ pre (tabContentHeaderStyle "0%" "20%" "2.5em") [ text "None Set" ]
+        , pre (tabContentHeaderStyle "0%" "20%" "2.5em") [ text "Leather Set" ]
+        , pre (tabContentHeaderStyle "0%" "20%" "2.5em") [ text "Silver Set" ]
+        , pre (tabContentHeaderStyle "0%" "20%" "2.5em") [ text "Dragon Set" ]
         ]
   , div [ style "display" "flex"
         , style "justify-content" "space-around"
         ]
-        [ pre (tabContentTextStyle "0%" "25%") [ text "Helmet\t    0\nChestplate  1\nLegs\t    1\n\nTotal DEF:  2" ]
+        [ pre (tabContentTextStyle "0%" "25%") [ text "Helmet\t    0\nChestplate  5\nLegs\t    5\n\nTotal DEF:  10" ]
         , pre (tabContentTextStyle "0%" "25%") [ text "Helmet\t    10\nChestplate  10\nLegs\t    10\n\nTotal DEF:  30" ]
         , pre (tabContentTextStyle "0%" "25%") [ text "Helmet\t    20\nChestplate  20\nLegs\t    20\n\nTotal DEF:  60" ]
         , pre (tabContentTextStyle "0%" "25%") [ text "Helmet\t    30\nChestplate  30\nLegs\t    30\n\nTotal DEF:  90" ]
@@ -230,8 +230,8 @@ viewWeaponsContent =
         , div [ style "display" "flex"
               , style "justify-content" "space-evenly"
               ]
-              [ pre (tabContentHeaderStyle "0%" "20%") [ text "Wooden Sword" ]
-              , pre (tabContentHeaderStyle "0%" "20%") [ text "Stone Sword" ]
+              [ pre (tabContentHeaderStyle "0%" "20%" "2.5em") [ text "Wooden Sword" ]
+              , pre (tabContentHeaderStyle "0%" "20%" "2.5em") [ text "Stone Sword" ]
               ]
         , div [ style "display" "flex"
               , style "justify-content" "space-evenly"
@@ -250,8 +250,8 @@ viewWeaponsContent =
         , div [ style "display" "flex"
               , style "justify-content" "space-evenly"
               ]
-              [ pre (tabContentHeaderStyle "0%" "20%") [ text "Iron Sword" ]
-              , pre (tabContentHeaderStyle "0%" "20%") [ text "Dragon Sword" ]
+              [ pre (tabContentHeaderStyle "0%" "20%" "2.5em") [ text "Iron Sword" ]
+              , pre (tabContentHeaderStyle "0%" "20%" "2.5em") [ text "Dragon Sword" ]
               ]
         , div [ style "display" "flex"
               , style "justify-content" "space-evenly"
@@ -264,8 +264,31 @@ viewWeaponsContent =
 
 viewEnemiesContent : List (Html Msg)
 viewEnemiesContent =
-  --div []
-  []
+  [ div [ style "display" "flex"
+        , style "justify-content" "space-evenly"
+        ]
+        [ img ((tabContentImageStyle "0%" "0%" "assets/enemy/bandit_256_512.png") ++ [style "height" "30em"]) []
+        , img ((tabContentImageStyle "0%" "0%" "assets/enemy/zombie_256_512.png") ++ [style "height" "30em"]) []
+        , img ((tabContentImageStyle "0%" "0%" "assets/enemy/skeleton_256_512.png") ++ [style "height" "30em"]) []
+        , img ((tabContentImageStyle "0%" "0%" "assets/enemy/dragonKnight_256_512.png") ++ [style "height" "30em"]) []
+        ]
+  , div [ style "display" "flex"
+        --, style "justify-content" "space-evenly"
+        ]
+        [ pre (tabContentHeaderStyle "7%" "20%" "2.0em") [ text "Bandit" ]
+        , pre (tabContentHeaderStyle "21%" "20%" "2.0em") [ text "Zombie" ]
+        , pre (tabContentHeaderStyle "34%" "20%" "2.0em") [ text "Skeleton" ]
+        , pre (tabContentHeaderStyle "41%" "20%" "2.0em") [ text "Dragon Knight" ]
+        ]
+  , div [ style "display" "flex"
+        , style "justify-content" "space-around"
+        ]
+        [ pre (tabContentTextStyle "0%" "25%") [ text "Health:\t10\nAttack:\t2\nSpeed:\t2.0\nEXP drop: 2" ]
+        , pre (tabContentTextStyle "0%" "25%") [ text "Health:\t15\nAttack:\t4\nSpeed:\t1.0\nEXP drop: 3" ]
+        , pre (tabContentTextStyle "0%" "25%") [ text "Health:\t25\nAttack:\t7\nSpeed:\t2.5\nEXP drop: 5" ]
+        , pre (tabContentTextStyle "0%" "25%") [ text "Health:\t100\nAttack:\t20\nSpeed:\t4.0\nEXP drop: 20" ]
+        ]
+  ]
 
 view : Model -> Html Msg
 view model =

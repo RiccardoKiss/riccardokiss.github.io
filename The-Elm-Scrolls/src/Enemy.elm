@@ -47,6 +47,16 @@ textures =
   , "assets/enemy/enemy_up.png"
   , "assets/enemy/enemy_down.png"
   --, "assets/enemy/enemy_idle.png"
+  , "assets/enemy/bandit_right.png"
+  , "assets/enemy/bandit_left.png"
+  , "assets/enemy/bandit_up.png"
+  , "assets/enemy/bandit_down.png"
+  --, "assets/enemy/bandit_idle.png"
+  , "assets/enemy/zombie_right.png"
+  , "assets/enemy/zombie_left.png"
+  , "assets/enemy/zombie_up.png"
+  , "assets/enemy/zombie_down.png"
+  --, "assets/enemy/zombie_idle.png"
   , "assets/enemy/skeleton_right.png"
   , "assets/enemy/skeleton_left.png"
   , "assets/enemy/skeleton_up.png"
@@ -60,7 +70,7 @@ textures =
   ]
 
 prototype : Float -> Float -> Direction -> Enemy
-prototype initX initY initDir =
+prototype initX initY initDir =                   -- baseline enemy
   { initX = initX
   , initY = initY
   , initDir = initDir
@@ -83,7 +93,7 @@ prototype initX initY initDir =
   }
 
 bandit : Float -> Float -> Direction -> Enemy
-bandit initX initY initDir  =
+bandit initX initY initDir  =                  -- fast, but fragile enemy
   { initX = initX
   , initY = initY
   , initDir = initDir
@@ -100,13 +110,13 @@ bandit initX initY initDir  =
   , distanceLoop = 5.0
   , speed = 2.0
   , attack = 2
-  , health = 15
+  , health = 10
   , expDrop = 2
   , detectPlayerRadius = 2
   }
 
 zombie : Float -> Float -> Direction -> Enemy
-zombie initX initY initDir =
+zombie initX initY initDir =                  -- slower, but tougher enemy
   { initX = initX
   , initY = initY
   , initDir = initDir
@@ -121,15 +131,15 @@ zombie initX initY initDir =
   , alive = True
   , enemyType = Zombie
   , distanceLoop = 5.0
-  , speed = 1.5
-  , attack = 5
+  , speed = 1.0
+  , attack = 4
   , health = 15
-  , expDrop = 5
-  , detectPlayerRadius = 4
+  , expDrop = 3
+  , detectPlayerRadius = 3
   }
 
 skeleton : Float -> Float -> Direction -> Enemy
-skeleton initX initY initDir =
+skeleton initX initY initDir =                  -- fast and tough enemy
   { initX = initX
   , initY = initY
   , initDir = initDir
@@ -145,14 +155,14 @@ skeleton initX initY initDir =
   , enemyType = Skeleton
   , distanceLoop = 5.0
   , speed = 2.5
-  , attack = 3
-  , health = 10
-  , expDrop = 3
+  , attack = 7
+  , health = 25
+  , expDrop = 5
   , detectPlayerRadius = 3
   }
 
 dragonKnight : Float -> Float -> Direction -> Enemy
-dragonKnight initX initY initDir =
+dragonKnight initX initY initDir =                  -- fast, strong and tough enemy
   { initX = initX
   , initY = initY
   , initDir = initDir
@@ -166,11 +176,11 @@ dragonKnight initX initY initDir =
   , hostile = False
   , alive = True
   , enemyType = DragonKnight
-  , distanceLoop = 5.0
-  , speed = 2.5
-  , attack = 3
-  , health = 10
-  , expDrop = 3
+  , distanceLoop = 4.0
+  , speed = 4.0
+  , attack = 20
+  , health = 100
+  , expDrop = 20
   , detectPlayerRadius = 3
   }
 
@@ -219,7 +229,7 @@ enemyTypeToString enemy =
 
     DragonKnight ->
       "dragonKnight"
-      
+
     Prototype ->
       "enemy"
 

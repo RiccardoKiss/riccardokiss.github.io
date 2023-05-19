@@ -103,7 +103,7 @@ initPlayer =
   , maxHealth = 100
   , currentHealth = 50
   , playerLevel = 1
-  , maxExp = 5
+  , maxExp = 10
   , currentExp = 0
   , healthPotions = Potion.healthPotion 0.1 0.0 3.0 0.0 0
   , speedPotions = Potion.speedPotion 1.5 5.0 5.0 0.0 0
@@ -829,7 +829,7 @@ playerAttacked enemyList player =
     dmgTaken = List.filter (collisionPlayerEnemy player) enemyList
                |> List.map Enemy.getAttack
                |> List.sum
-    newHp = player.currentHealth - dmgTaken
+    newHp = player.currentHealth - (dmgTaken - player.armor.totalDef)   -- player's armor mitigates some of the damage taken
   in
   { player | currentHealth = if newHp <= 0 then 0 else newHp }
 

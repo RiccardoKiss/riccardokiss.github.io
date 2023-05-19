@@ -66,11 +66,13 @@ init flags url navKey =
   let
     _ = Debug.log "[Main.init] url" url
     stringUrl = Url.toString url
+    _ = Debug.log "[Main.init] stringUrl" stringUrl
     replacedUrl =
       if String.contains "/The-Elm-Scrolls/" stringUrl then
         String.replace "/The-Elm-Scrolls/" "/" stringUrl
       else
         stringUrl
+    _ = Debug.log "[Main.init] replacedUrl" replacedUrl
     decodedFlags =
       case Decode.decodeValue flagsDecoder flags of
         Ok decoded -> decoded
@@ -86,10 +88,11 @@ init flags url navKey =
       { route =
           case Url.fromString replacedUrl of
             Just u ->
-              _ = Debug.log "[Main.init] replacedUrl" u
+              _ = Debug.log "[Main.init] parseUrl1" u
               Route.parseUrl u
 
             Nothing ->
+              _ = Debug.log "[Main.init] parseUrl2" url
               Route.parseUrl url
       , pageModel = NotFoundPage
       , navKey = navKey

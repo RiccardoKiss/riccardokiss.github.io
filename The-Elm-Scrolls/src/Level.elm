@@ -201,6 +201,6 @@ level3 difficulty =
   , items = level3Items
   , startX = level3StartCoordinates.x
   , startY = level3StartCoordinates.y
-  , endX = 109.0
+  , endX = 108.0
   , endY = 31.0
   }

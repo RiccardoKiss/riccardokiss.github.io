@@ -829,7 +829,12 @@ playerAttacked enemyList player =
     dmgTaken = List.filter (collisionPlayerEnemy player) enemyList
                |> List.map Enemy.getAttack
                |> List.sum
-    newHp = player.currentHealth - (dmgTaken - player.armor.totalDef)   -- player's armor mitigates some of the damage taken
+    dmgAfterMitigation = dmgTaken - (player.armor.totalDef // 10)  -- player's armor mitigates some of the damage taken
+    newHp =
+      if dmgAfterMitigation > 0 then
+        player.currentHealth - dmgAfterMitigation
+      else
+        player.currentHealth
   in
   { player | currentHealth = if newHp <= 0 then 0 else newHp }
 

@@ -7498,7 +7498,7 @@ var $author$project$Sword$ironSword = {action: $author$project$Sword$NotAttack, 
 var $author$project$Armor$Leather = {$: 'Leather'};
 var $author$project$Armor$leatherArmorSet = {armorType: $author$project$Armor$Leather, chestDef: 10, helmetDef: 10, legsDef: 10, totalDef: 30};
 var $author$project$Armor$None = {$: 'None'};
-var $author$project$Armor$noneArmorSet = {armorType: $author$project$Armor$None, chestDef: 1, helmetDef: 0, legsDef: 1, totalDef: 2};
+var $author$project$Armor$noneArmorSet = {armorType: $author$project$Armor$None, chestDef: 5, helmetDef: 0, legsDef: 5, totalDef: 10};
 var $author$project$Potion$Potion = F5(
 	function (ratio, duration, cooldown, timeOfLastUse, count) {
 		return {cooldown: cooldown, count: count, duration: duration, ratio: ratio, timeOfLastUse: timeOfLastUse};
@@ -7789,7 +7789,7 @@ var $author$project$Game$initPlayer = {
 	healthPotions: A5($author$project$Potion$healthPotion, 0.1, 0.0, 3.0, 0.0, 0),
 	height: 2.0,
 	maxDefense: 100,
-	maxExp: 5,
+	maxExp: 10,
 	maxHealth: 100,
 	playerLevel: 1,
 	speedPotions: A5($author$project$Potion$speedPotion, 1.5, 5.0, 5.0, 0.0, 0),
@@ -7819,7 +7819,7 @@ var $author$project$Level$applyDifficultyToEnemy = F2(
 	});
 var $author$project$Enemy$skeleton = F3(
 	function (initX, initY, initDir) {
-		return {alive: true, attack: 3, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 3, health: 10, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
+		return {alive: true, attack: 7, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 5, health: 25, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
 	});
 var $author$project$Level$level1Enemies = function (difficulty) {
 	var enemies = _List_fromArray(
@@ -7973,7 +7973,7 @@ var $elm$core$List$concat = function (lists) {
 	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
 };
 var $author$project$Enemy$textures = _List_fromArray(
-	['assets/enemy/enemy_right.png', 'assets/enemy/enemy_left.png', 'assets/enemy/enemy_up.png', 'assets/enemy/enemy_down.png', 'assets/enemy/skeleton_right.png', 'assets/enemy/skeleton_left.png', 'assets/enemy/skeleton_up.png', 'assets/enemy/skeleton_down.png']);
+	['assets/enemy/enemy_right.png', 'assets/enemy/enemy_left.png', 'assets/enemy/enemy_up.png', 'assets/enemy/enemy_down.png', 'assets/enemy/bandit_right.png', 'assets/enemy/bandit_left.png', 'assets/enemy/bandit_up.png', 'assets/enemy/bandit_down.png', 'assets/enemy/zombie_right.png', 'assets/enemy/zombie_left.png', 'assets/enemy/zombie_up.png', 'assets/enemy/zombie_down.png', 'assets/enemy/skeleton_right.png', 'assets/enemy/skeleton_left.png', 'assets/enemy/skeleton_up.png', 'assets/enemy/skeleton_down.png', 'assets/enemy/dragonKnight_right.png', 'assets/enemy/dragonKnight_left.png', 'assets/enemy/dragonKnight_up.png', 'assets/enemy/dragonKnight_down.png']);
 var $author$project$Item$textures = _List_fromArray(
 	['assets/item/item_stand_empty.png', 'assets/item/item_stand_health_potion_idle.png', 'assets/item/item_stand_speed_potion_idle.png', 'assets/item/item_stand_sword_wood_idle.png', 'assets/item/item_stand_sword_stone_idle.png', 'assets/item/item_stand_sword_iron_idle.png', 'assets/item/item_stand_sword_dragon_idle.png', 'assets/item/item_stand_leather_chest.png', 'assets/item/item_stand_silver_chest.png', 'assets/item/item_stand_dragon_chest.png']);
 var $author$project$Level$textures = _List_fromArray(
@@ -9664,6 +9664,8 @@ var $author$project$Enemy$enemyTypeToString = function (enemy) {
 			return 'zombie';
 		case 'Skeleton':
 			return 'skeleton';
+		case 'DragonKnight':
+			return 'dragonKnight';
 		default:
 			return 'enemy';
 	}
@@ -11210,7 +11212,7 @@ var $author$project$Tilemap$level3TileMap = $elm$core$Array$fromList(
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
-			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXFFFFFFXXXXXXFTTTTTTTTTTTTTTTTTTTTTTETFXXXXXXXXXXXXXXXXX')),
+			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXFFFFFFXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTEFXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
 			$elm$core$String$toList('XXXXXXXXXXXXXXXXXXXXFTTTTTTTTTTTTTTTTTTTTFXXXXXXFTTTTTTTTTTTTTTTTFXXXXXXFFFFFFXXXXXXFTTTTTTTTTTTTTTTTTTTTTTTTFXXXXXXXXXXXXXXXXX')),
 			$elm$core$Array$fromList(
@@ -11516,7 +11518,8 @@ var $author$project$Game$playerAttacked = F2(
 					$elm$core$List$filter,
 					$author$project$Game$collisionPlayerEnemy(player),
 					enemyList)));
-		var newHp = player.currentHealth - dmgTaken;
+		var dmgAfterMitigation = dmgTaken - ((player.armor.totalDef / 10) | 0);
+		var newHp = (dmgAfterMitigation > 0) ? (player.currentHealth - dmgAfterMitigation) : player.currentHealth;
 		return _Utils_update(
 			player,
 			{
@@ -15553,11 +15556,11 @@ var $author$project$Help$viewTabButton = F2(
 					$author$project$Help$tabToString(tab))
 				]));
 	});
-var $author$project$Help$tabContentHeaderStyle = F2(
-	function (left, top) {
+var $author$project$Help$tabContentHeaderStyle = F3(
+	function (left, top, size) {
 		return _List_fromArray(
 			[
-				A2($elm$html$Html$Attributes$style, 'font-size', '2.5em'),
+				A2($elm$html$Html$Attributes$style, 'font-size', size),
 				A2($elm$html$Html$Attributes$style, 'font-weight', 'bold'),
 				A2($elm$html$Html$Attributes$style, 'text-decoration', 'underline'),
 				A2($elm$html$Html$Attributes$style, 'margin', 'unset'),
@@ -15650,28 +15653,28 @@ var $author$project$Help$viewArmorsContent = _List_fromArray(
 			[
 				A2(
 				$elm$html$Html$pre,
-				A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+				A3($author$project$Help$tabContentHeaderStyle, '0%', '20%', '2.5em'),
 				_List_fromArray(
 					[
 						$elm$html$Html$text('None Set')
 					])),
 				A2(
 				$elm$html$Html$pre,
-				A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+				A3($author$project$Help$tabContentHeaderStyle, '0%', '20%', '2.5em'),
 				_List_fromArray(
 					[
 						$elm$html$Html$text('Leather Set')
 					])),
 				A2(
 				$elm$html$Html$pre,
-				A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+				A3($author$project$Help$tabContentHeaderStyle, '0%', '20%', '2.5em'),
 				_List_fromArray(
 					[
 						$elm$html$Html$text('Silver Set')
 					])),
 				A2(
 				$elm$html$Html$pre,
-				A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+				A3($author$project$Help$tabContentHeaderStyle, '0%', '20%', '2.5em'),
 				_List_fromArray(
 					[
 						$elm$html$Html$text('Dragon Set')
@@ -15691,7 +15694,7 @@ var $author$project$Help$viewArmorsContent = _List_fromArray(
 				A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Helmet\t    0\nChestplate  1\nLegs\t    1\n\nTotal DEF:  2')
+						$elm$html$Html$text('Helmet\t    0\nChestplate  5\nLegs\t    5\n\nTotal DEF:  10')
 					])),
 				A2(
 				$elm$html$Html$pre,
@@ -15720,7 +15723,7 @@ var $author$project$Help$viewControlsContent = _List_fromArray(
 	[
 		A2(
 		$elm$html$Html$pre,
-		A2($author$project$Help$tabContentHeaderStyle, '40%', '0%'),
+		A3($author$project$Help$tabContentHeaderStyle, '40%', '0%', '2.5em'),
 		_List_fromArray(
 			[
 				$elm$html$Html$text('Movement')
@@ -15794,7 +15797,7 @@ var $author$project$Help$viewControlsContent = _List_fromArray(
 		_List_Nil),
 		A2(
 		$elm$html$Html$pre,
-		A2($author$project$Help$tabContentHeaderStyle, '-73%', '56%'),
+		A3($author$project$Help$tabContentHeaderStyle, '-73%', '56%', '2.5em'),
 		_List_fromArray(
 			[
 				$elm$html$Html$text('Attack')
@@ -15812,7 +15815,7 @@ var $author$project$Help$viewControlsContent = _List_fromArray(
 			])),
 		A2(
 		$elm$html$Html$pre,
-		A2($author$project$Help$tabContentHeaderStyle, '25%', '45%'),
+		A3($author$project$Help$tabContentHeaderStyle, '25%', '45%', '2.5em'),
 		_List_fromArray(
 			[
 				$elm$html$Html$text('Use Consumables')
@@ -15841,7 +15844,7 @@ var $author$project$Help$viewControlsContent = _List_fromArray(
 			])),
 		A2(
 		$elm$html$Html$pre,
-		A2($author$project$Help$tabContentHeaderStyle, '-2%', '77%'),
+		A3($author$project$Help$tabContentHeaderStyle, '-2%', '77%', '2.5em'),
 		_List_fromArray(
 			[
 				$elm$html$Html$text('Show Character Details')
@@ -15859,7 +15862,7 @@ var $author$project$Help$viewControlsContent = _List_fromArray(
 			])),
 		A2(
 		$elm$html$Html$pre,
-		A2($author$project$Help$tabContentHeaderStyle, '0%', '77%'),
+		A3($author$project$Help$tabContentHeaderStyle, '0%', '77%', '2.5em'),
 		_List_fromArray(
 			[
 				$elm$html$Html$text('Pause the Game')
@@ -15876,7 +15879,130 @@ var $author$project$Help$viewControlsContent = _List_fromArray(
 				$elm$html$Html$text('Press')
 			]))
 	]);
-var $author$project$Help$viewEnemiesContent = _List_Nil;
+var $author$project$Help$viewEnemiesContent = _List_fromArray(
+	[
+		A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'justify-content', 'space-evenly')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$img,
+				_Utils_ap(
+					A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/enemy/bandit_256_512.png'),
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', '30em')
+						])),
+				_List_Nil),
+				A2(
+				$elm$html$Html$img,
+				_Utils_ap(
+					A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/enemy/zombie_256_512.png'),
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', '30em')
+						])),
+				_List_Nil),
+				A2(
+				$elm$html$Html$img,
+				_Utils_ap(
+					A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/enemy/skeleton_256_512.png'),
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', '30em')
+						])),
+				_List_Nil),
+				A2(
+				$elm$html$Html$img,
+				_Utils_ap(
+					A3($author$project$Help$tabContentImageStyle, '0%', '0%', 'assets/enemy/dragonKnight_256_512.png'),
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', '30em')
+						])),
+				_List_Nil)
+			])),
+		A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$pre,
+				A3($author$project$Help$tabContentHeaderStyle, '7%', '20%', '2.0em'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Bandit')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A3($author$project$Help$tabContentHeaderStyle, '21%', '20%', '2.0em'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Zombie')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A3($author$project$Help$tabContentHeaderStyle, '34%', '20%', '2.0em'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Skeleton')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A3($author$project$Help$tabContentHeaderStyle, '41%', '20%', '2.0em'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Dragon Knight')
+					]))
+			])),
+		A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'justify-content', 'space-around')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Health:\t10\nAttack:\t2\nSpeed:\t2.0\nEXP drop: 2')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Health:\t15\nAttack:\t4\nSpeed:\t1.0\nEXP drop: 3')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Health:\t25\nAttack:\t7\nSpeed:\t2.5\nEXP drop: 5')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				A2($author$project$Help$tabContentTextStyle, '0%', '25%'),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Health:\t100\nAttack:\t20\nSpeed:\t4.0\nEXP drop: 20')
+					]))
+			]))
+	]);
 var $author$project$Help$viewWeaponsContent = _List_fromArray(
 	[
 		A2(
@@ -15923,14 +16049,14 @@ var $author$project$Help$viewWeaponsContent = _List_fromArray(
 					[
 						A2(
 						$elm$html$Html$pre,
-						A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+						A3($author$project$Help$tabContentHeaderStyle, '0%', '20%', '2.5em'),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Wooden Sword')
 							])),
 						A2(
 						$elm$html$Html$pre,
-						A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+						A3($author$project$Help$tabContentHeaderStyle, '0%', '20%', '2.5em'),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Stone Sword')
@@ -16005,14 +16131,14 @@ var $author$project$Help$viewWeaponsContent = _List_fromArray(
 					[
 						A2(
 						$elm$html$Html$pre,
-						A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+						A3($author$project$Help$tabContentHeaderStyle, '0%', '20%', '2.5em'),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Iron Sword')
 							])),
 						A2(
 						$elm$html$Html$pre,
-						A2($author$project$Help$tabContentHeaderStyle, '0%', '20%'),
+						A3($author$project$Help$tabContentHeaderStyle, '0%', '20%', '2.5em'),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Dragon Sword')

@@ -65,12 +65,12 @@ init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
   let
     _ = Debug.log "[Main.init] url" url
-    stringUrl = Url.toString url
+    {-stringUrl = Url.toString url
     replacedUrl =
       if String.contains "/The-Elm-Scrolls/" stringUrl then
         String.replace "/The-Elm-Scrolls/" "/" stringUrl
       else
-        stringUrl
+        stringUrl-}
     decodedFlags =
       case Decode.decodeValue flagsDecoder flags of
         Ok decoded -> decoded
@@ -83,13 +83,13 @@ init flags url navKey =
           }
     _ = Debug.log "[Main.init] decodedFlags" decodedFlags
     model =
-      { route =
-          case Url.fromString replacedUrl of
+      { route = Route.parseUrl url
+          {-case Url.fromString replacedUrl of
             Just u ->
               Route.parseUrl u
 
             Nothing ->
-              Route.parseUrl url
+              Route.parseUrl url-}
       , pageModel = NotFoundPage
       , navKey = navKey
       , flags = decodedFlags

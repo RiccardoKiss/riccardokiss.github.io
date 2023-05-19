@@ -9013,12 +9013,65 @@ var $author$project$Route$parseUrl = function (url) {
 		return $author$project$Route$NotFound;
 	}
 };
+var $elm$core$String$replace = F3(
+	function (before, after, string) {
+		return A2(
+			$elm$core$String$join,
+			after,
+			A2($elm$core$String$split, before, string));
+	});
+var $elm$url$Url$addPort = F2(
+	function (maybePort, starter) {
+		if (maybePort.$ === 'Nothing') {
+			return starter;
+		} else {
+			var port_ = maybePort.a;
+			return starter + (':' + $elm$core$String$fromInt(port_));
+		}
+	});
+var $elm$url$Url$addPrefixed = F3(
+	function (prefix, maybeSegment, starter) {
+		if (maybeSegment.$ === 'Nothing') {
+			return starter;
+		} else {
+			var segment = maybeSegment.a;
+			return _Utils_ap(
+				starter,
+				_Utils_ap(prefix, segment));
+		}
+	});
+var $elm$url$Url$toString = function (url) {
+	var http = function () {
+		var _v0 = url.protocol;
+		if (_v0.$ === 'Http') {
+			return 'http://';
+		} else {
+			return 'https://';
+		}
+	}();
+	return A3(
+		$elm$url$Url$addPrefixed,
+		'#',
+		url.fragment,
+		A3(
+			$elm$url$Url$addPrefixed,
+			'?',
+			url.query,
+			_Utils_ap(
+				A2(
+					$elm$url$Url$addPort,
+					url.port_,
+					_Utils_ap(http, url.host)),
+				url.path)));
+};
 var $author$project$Main$init = F3(
 	function (flags, url, navKey) {
+		var stringUrl = $elm$url$Url$toString(url);
+		var replacedUrl = A2($elm$core$String$contains, '/The-Elm-Scrolls/', stringUrl) ? A3($elm$core$String$replace, '/The-Elm-Scrolls/', '/', stringUrl) : stringUrl;
 		var decodedFlags = function () {
-			var _v2 = A2($elm$json$Json$Decode$decodeValue, $author$project$DecodingJson$flagsDecoder, flags);
-			if (_v2.$ === 'Ok') {
-				var decoded = _v2.a;
+			var _v3 = A2($elm$json$Json$Decode$decodeValue, $author$project$DecodingJson$flagsDecoder, flags);
+			if (_v3.$ === 'Ok') {
+				var decoded = _v3.a;
 				return decoded;
 			} else {
 				return {highScores: $elm$core$Maybe$Nothing, save1: $elm$core$Maybe$Nothing, save2: $elm$core$Maybe$Nothing, save3: $elm$core$Maybe$Nothing, settings: $elm$core$Maybe$Nothing};
@@ -9028,7 +9081,15 @@ var $author$project$Main$init = F3(
 			flags: decodedFlags,
 			navKey: navKey,
 			pageModel: $author$project$Main$NotFoundPage,
-			route: $author$project$Route$parseUrl(url)
+			route: function () {
+				var _v2 = $elm$url$Url$fromString(replacedUrl);
+				if (_v2.$ === 'Just') {
+					var u = _v2.a;
+					return $author$project$Route$parseUrl(u);
+				} else {
+					return $author$project$Route$parseUrl(url);
+				}
+			}()
 		};
 		var _v0 = A2($elm$core$Debug$log, '[Main.init] url', url);
 		var _v1 = A2($elm$core$Debug$log, '[Main.init] decodedFlags', decodedFlags);
@@ -9559,50 +9620,6 @@ var $author$project$Main$subscriptions = function (model) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
-var $elm$url$Url$addPort = F2(
-	function (maybePort, starter) {
-		if (maybePort.$ === 'Nothing') {
-			return starter;
-		} else {
-			var port_ = maybePort.a;
-			return starter + (':' + $elm$core$String$fromInt(port_));
-		}
-	});
-var $elm$url$Url$addPrefixed = F3(
-	function (prefix, maybeSegment, starter) {
-		if (maybeSegment.$ === 'Nothing') {
-			return starter;
-		} else {
-			var segment = maybeSegment.a;
-			return _Utils_ap(
-				starter,
-				_Utils_ap(prefix, segment));
-		}
-	});
-var $elm$url$Url$toString = function (url) {
-	var http = function () {
-		var _v0 = url.protocol;
-		if (_v0.$ === 'Http') {
-			return 'http://';
-		} else {
-			return 'https://';
-		}
-	}();
-	return A3(
-		$elm$url$Url$addPrefixed,
-		'#',
-		url.fragment,
-		A3(
-			$elm$url$Url$addPrefixed,
-			'?',
-			url.query,
-			_Utils_ap(
-				A2(
-					$elm$url$Url$addPort,
-					url.port_,
-					_Utils_ap(http, url.host)),
-				url.path)));
-};
 var $ohanhi$keyboard$Keyboard$Escape = {$: 'Escape'};
 var $author$project$DecodingJson$difficultyToString = function (difficulty) {
 	switch (difficulty.$) {
@@ -15280,13 +15297,6 @@ var $author$project$Game$viewPlayerDebugInfo = F5(
 					$elm$html$Html$text(
 					'\narmor: ' + $author$project$Armor$armorTypeToString(player.armor))
 				]));
-	});
-var $elm$core$String$replace = F3(
-	function (before, after, string) {
-		return A2(
-			$elm$core$String$join,
-			after,
-			A2($elm$core$String$split, before, string));
 	});
 var $author$project$Game$keyButtonTexture = F2(
 	function (keyButton, keys) {

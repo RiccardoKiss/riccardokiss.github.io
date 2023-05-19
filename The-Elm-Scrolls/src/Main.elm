@@ -1,11 +1,11 @@
 module Main exposing (..)
 
-import Url exposing (Url)
-import Url.Parser as Parser exposing (Parser, (</>), parse, map, oneOf, top, s, string, int)
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Url exposing (..)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Json.Decode as Decode exposing (Decoder, decodeValue)
-import Json.Decode.Pipeline exposing (required, optional, hardcoded)
 import Debug exposing (..)
 
 import Route exposing (Route)
@@ -18,15 +18,9 @@ import HighScores
 import Settings
 import Help
 
-import Url.Builder
-import Browser.Events exposing (..)
-import Browser.Dom exposing (..)
-import Html exposing (..)
-import Html.Attributes exposing (..)
 
-
+-- Credits:
 -- https://github.com/elm/package.elm-lang.org/blob/master/src/frontend/Main.elm
--- https://package.elm-lang.org/packages/elm/url/latest/Url-Builder
 -- https://package.elm-lang.org/packages/elm/browser/latest/Browser#application
 -- https://guide.elm-lang.org/webapps/navigation.html
 -- https://github.com/rtfeldman/elm-spa-example
@@ -71,19 +65,31 @@ init : Decode.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url navKey =
   let
     _ = Debug.log "[Main.init] url" url
+    stringUrl = Url.toString url
+    replacedUrl =
+      if String.contains "/The-Elm-Scrolls/" stringUrl then
+        String.replace "/The-Elm-Scrolls/" "/" stringUrl
+      else
+        stringUrl
     decodedFlags =
       case Decode.decodeValue flagsDecoder flags of
         Ok decoded -> decoded
         Err _ ->
-          { save1 = Nothing  --DecodingJson.emptySave
-          , save2 = Nothing  --DecodingJson.emptySave
-          , save3 = Nothing  --DecodingJson.emptySave
+          { save1 = Nothing
+          , save2 = Nothing
+          , save3 = Nothing
           , settings = Nothing
           , highScores = Nothing
           }
     _ = Debug.log "[Main.init] decodedFlags" decodedFlags
     model =
-      { route = Route.parseUrl url
+      { route =
+          case Url.fromString replacedUrl of
+            Just u ->
+              Route.parseUrl u
+
+            Nothing ->
+              Route.parseUrl url
       , pageModel = NotFoundPage
       , navKey = navKey
       , flags = decodedFlags

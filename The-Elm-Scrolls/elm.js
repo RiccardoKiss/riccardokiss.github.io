@@ -9069,9 +9069,9 @@ var $author$project$Main$init = F3(
 		var stringUrl = $elm$url$Url$toString(url);
 		var replacedUrl = A2($elm$core$String$contains, '/The-Elm-Scrolls/', stringUrl) ? A3($elm$core$String$replace, '/The-Elm-Scrolls/', '/', stringUrl) : stringUrl;
 		var decodedFlags = function () {
-			var _v3 = A2($elm$json$Json$Decode$decodeValue, $author$project$DecodingJson$flagsDecoder, flags);
-			if (_v3.$ === 'Ok') {
-				var decoded = _v3.a;
+			var _v7 = A2($elm$json$Json$Decode$decodeValue, $author$project$DecodingJson$flagsDecoder, flags);
+			if (_v7.$ === 'Ok') {
+				var decoded = _v7.a;
 				return decoded;
 			} else {
 				return {highScores: $elm$core$Maybe$Nothing, save1: $elm$core$Maybe$Nothing, save2: $elm$core$Maybe$Nothing, save3: $elm$core$Maybe$Nothing, settings: $elm$core$Maybe$Nothing};
@@ -9082,17 +9082,21 @@ var $author$project$Main$init = F3(
 			navKey: navKey,
 			pageModel: $author$project$Main$NotFoundPage,
 			route: function () {
-				var _v2 = $elm$url$Url$fromString(replacedUrl);
-				if (_v2.$ === 'Just') {
-					var u = _v2.a;
+				var _v4 = $elm$url$Url$fromString(replacedUrl);
+				if (_v4.$ === 'Just') {
+					var u = _v4.a;
+					var _v5 = A2($elm$core$Debug$log, '[Main.init] parseUrl1', u);
 					return $author$project$Route$parseUrl(u);
 				} else {
+					var _v6 = A2($elm$core$Debug$log, '[Main.init] parseUrl2', url);
 					return $author$project$Route$parseUrl(url);
 				}
 			}()
 		};
 		var _v0 = A2($elm$core$Debug$log, '[Main.init] url', url);
-		var _v1 = A2($elm$core$Debug$log, '[Main.init] decodedFlags', decodedFlags);
+		var _v1 = A2($elm$core$Debug$log, '[Main.init] stringUrl', stringUrl);
+		var _v2 = A2($elm$core$Debug$log, '[Main.init] replacedUrl', replacedUrl);
+		var _v3 = A2($elm$core$Debug$log, '[Main.init] decodedFlags', decodedFlags);
 		return $author$project$Main$initPage(
 			_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
 	});

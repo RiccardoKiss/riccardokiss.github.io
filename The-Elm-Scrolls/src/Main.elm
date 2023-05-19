@@ -88,11 +88,15 @@ init flags url navKey =
       { route =
           case Url.fromString replacedUrl of
             Just u ->
-              _ = Debug.log "[Main.init] parseUrl1" u
+              let
+                _ = Debug.log "[Main.init] parseUrl1" u
+              in
               Route.parseUrl u
 
             Nothing ->
-              _ = Debug.log "[Main.init] parseUrl2" url
+              let
+                _ = Debug.log "[Main.init] parseUrl2" url
+              in
               Route.parseUrl url
       , pageModel = NotFoundPage
       , navKey = navKey

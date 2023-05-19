@@ -305,6 +305,13 @@ view model =
            , style "font-size" "5em"
            , style "margin" "0px"
            ] [ text "Help" ]
+      , pre [ style "font-size" "1.5em"
+            , style "margin" "unset"
+            , style "display" "unset"
+            , style "position" "absolute"
+            , style "left" "40%"
+            , style "top" "16%"
+            ] [ text "Goal: Find the Elm Scrolls in Level 3 !" ]
       , img [ src "assets/character_screen_scroll_background_1200_600.png"
             , style "position" "absolute"
             , style "left" "15%"

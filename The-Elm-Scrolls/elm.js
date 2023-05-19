@@ -7817,14 +7817,30 @@ var $author$project$Level$applyDifficultyToEnemy = F2(
 					{health: enemy.health * 3});
 		}
 	});
-var $author$project$Enemy$skeleton = F3(
+var $author$project$Enemy$bandit = F3(
 	function (initX, initY, initDir) {
-		return {alive: true, attack: 7, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 5, health: 25, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
+		return {alive: true, attack: 2, detectPlayerRadius: 2, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Bandit, expDrop: 2, health: 10, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.0, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
 	});
 var $author$project$Level$level1Enemies = function (difficulty) {
 	var enemies = _List_fromArray(
 		[
-			A3($author$project$Enemy$skeleton, 57, 17, $author$project$Enemy$Right)
+			A3($author$project$Enemy$bandit, 57, 17, $author$project$Enemy$Right),
+			A3($author$project$Enemy$bandit, 68, 19, $author$project$Enemy$Right),
+			A3($author$project$Enemy$bandit, 76, 17, $author$project$Enemy$Right),
+			A3($author$project$Enemy$bandit, 81, 10, $author$project$Enemy$Right),
+			A3($author$project$Enemy$bandit, 57, 22, $author$project$Enemy$Up),
+			A3($author$project$Enemy$bandit, 54, 28, $author$project$Enemy$Left),
+			A3($author$project$Enemy$bandit, 41, 26, $author$project$Enemy$Left),
+			A3($author$project$Enemy$bandit, 29, 35, $author$project$Enemy$Down),
+			A3($author$project$Enemy$bandit, 62, 35, $author$project$Enemy$Left),
+			A3($author$project$Enemy$bandit, 17, 27, $author$project$Enemy$Right),
+			A3($author$project$Enemy$bandit, 89, 32, $author$project$Enemy$Right),
+			A3($author$project$Enemy$bandit, 110, 31, $author$project$Enemy$Down),
+			A3($author$project$Enemy$bandit, 53, 51, $author$project$Enemy$Right),
+			A3($author$project$Enemy$bandit, 35, 52, $author$project$Enemy$Up),
+			A3($author$project$Enemy$bandit, 45, 66, $author$project$Enemy$Left),
+			A3($author$project$Enemy$bandit, 79, 52, $author$project$Enemy$Up),
+			A3($author$project$Enemy$bandit, 79, 78, $author$project$Enemy$Down)
 		]);
 	return A2(
 		$elm$core$List$map,
@@ -10194,8 +10210,23 @@ var $author$project$Game$getExp = F2(
 			player,
 			{currentExp: (player.currentExp + expGained) - player.maxExp, currentHealth: player.currentHealth + 10, maxHealth: player.maxHealth + 10, playerLevel: player.playerLevel + 1});
 	});
+var $author$project$Enemy$zombie = F3(
+	function (initX, initY, initDir) {
+		return {alive: true, attack: 4, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Zombie, expDrop: 3, health: 15, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 1.0, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
+	});
 var $author$project$Level$level2Enemies = function (difficulty) {
-	return _List_Nil;
+	return _List_fromArray(
+		[
+			A3($author$project$Enemy$zombie, 43, 38, $author$project$Enemy$Right),
+			A3($author$project$Enemy$zombie, 26, 52, $author$project$Enemy$Up),
+			A3($author$project$Enemy$zombie, 41, 104, $author$project$Enemy$Up),
+			A3($author$project$Enemy$zombie, 94, 26, $author$project$Enemy$Down),
+			A3($author$project$Enemy$zombie, 101, 59, $author$project$Enemy$Down),
+			A3($author$project$Enemy$zombie, 86, 72, $author$project$Enemy$Up),
+			A3($author$project$Enemy$zombie, 102, 104, $author$project$Enemy$Up),
+			A3($author$project$Enemy$zombie, 57, 70, $author$project$Enemy$Up),
+			A3($author$project$Enemy$zombie, 50, 73, $author$project$Enemy$Down)
+		]);
 };
 var $author$project$Item$ironSwordStand = F2(
 	function (x, y) {
@@ -10240,8 +10271,30 @@ var $author$project$Level$level2 = function (difficulty) {
 		startY: $author$project$Level$level2StartCoordinates.y
 	};
 };
+var $author$project$Enemy$DragonKnight = {$: 'DragonKnight'};
+var $author$project$Enemy$dragonKnight = F3(
+	function (initX, initY, initDir) {
+		return {alive: true, attack: 20, detectPlayerRadius: 3, dir: initDir, distanceLoop: 4.0, enemyType: $author$project$Enemy$DragonKnight, expDrop: 20, health: 100, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 4.0, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
+	});
+var $author$project$Enemy$skeleton = F3(
+	function (initX, initY, initDir) {
+		return {alive: true, attack: 7, detectPlayerRadius: 3, dir: initDir, distanceLoop: 5.0, enemyType: $author$project$Enemy$Skeleton, expDrop: 5, health: 25, height: 2.0, hostile: false, initDir: initDir, initX: initX, initY: initY, speed: 2.5, vx: 0, vy: 0, width: 1.0, x: initX, y: initY};
+	});
 var $author$project$Level$level3Enemies = function (difficulty) {
-	return _List_Nil;
+	return _List_fromArray(
+		[
+			A3($author$project$Enemy$dragonKnight, 104, 30, $author$project$Enemy$Up),
+			A3($author$project$Enemy$skeleton, 95, 53, $author$project$Enemy$Left),
+			A3($author$project$Enemy$skeleton, 95, 71, $author$project$Enemy$Left),
+			A3($author$project$Enemy$skeleton, 74, 83, $author$project$Enemy$Left),
+			A3($author$project$Enemy$skeleton, 39, 92, $author$project$Enemy$Down),
+			A3($author$project$Enemy$skeleton, 40, 69, $author$project$Enemy$Up),
+			A3($author$project$Enemy$skeleton, 27, 79, $author$project$Enemy$Up),
+			A3($author$project$Enemy$skeleton, 24, 31, $author$project$Enemy$Down),
+			A3($author$project$Enemy$skeleton, 52, 40, $author$project$Enemy$Down),
+			A3($author$project$Enemy$skeleton, 69, 39, $author$project$Enemy$Left),
+			A3($author$project$Enemy$skeleton, 80, 111, $author$project$Enemy$Right)
+		]);
 };
 var $author$project$Item$dragonArmorStand = F2(
 	function (x, y) {
@@ -11355,7 +11408,7 @@ var $author$project$Game$enemyPhysics = F4(
 					return _Utils_update(
 						enemy,
 						{
-							dir: (xDiff < 0.10) ? ((_Utils_cmp(newY, enemy.y) > 0) ? $author$project$Enemy$Up : $author$project$Enemy$Down) : ((_Utils_cmp(newX, enemy.x) < 0) ? $author$project$Enemy$Left : $author$project$Enemy$Right),
+							dir: enemy.hostile ? ((xDiff < 0.10) ? ((_Utils_cmp(newY, enemy.y) > 0) ? $author$project$Enemy$Up : $author$project$Enemy$Down) : ((_Utils_cmp(newX, enemy.x) < 0) ? $author$project$Enemy$Left : $author$project$Enemy$Right)) : enemy.dir,
 							x: newX,
 							y: newY
 						});
@@ -11885,6 +11938,46 @@ var $author$project$Game$playerTick = F7(
 							A3($author$project$Player$applyHealthPotion, keys, time, player))))));
 	});
 var $elm$browser$Browser$Navigation$reload = _Browser_reload(false);
+var $author$project$Game$respawnLevel = F2(
+	function (difficulty, currentLevel) {
+		var levelDifficulty = function () {
+			switch (difficulty.$) {
+				case 'Easy':
+					return $author$project$Level$Easy;
+				case 'Medium':
+					return $author$project$Level$Medium;
+				default:
+					return $author$project$Level$Hard;
+			}
+		}();
+		var _v0 = currentLevel.map;
+		switch (_v0.$) {
+			case 'Lvl1':
+				return $author$project$Level$level1(levelDifficulty);
+			case 'Lvl2':
+				return $author$project$Level$level2(levelDifficulty);
+			default:
+				return $author$project$Level$level3(levelDifficulty);
+		}
+	});
+var $author$project$Game$respawnPlayer = F2(
+	function (currentLevel, player) {
+		var _v0 = currentLevel.map;
+		switch (_v0.$) {
+			case 'Lvl1':
+				return _Utils_update(
+					player,
+					{currentHealth: 50, x: $author$project$Level$level1StartCoordinates.x, y: $author$project$Level$level1StartCoordinates.y});
+			case 'Lvl2':
+				return _Utils_update(
+					player,
+					{currentHealth: 50, x: $author$project$Level$level2StartCoordinates.x, y: $author$project$Level$level2StartCoordinates.y});
+			default:
+				return _Utils_update(
+					player,
+					{currentHealth: 50, x: $author$project$Level$level3StartCoordinates.x, y: $author$project$Level$level3StartCoordinates.y});
+		}
+	});
 var $Zinggi$elm_game_resources$Game$Resources$update = F2(
 	function (_v0, _v1) {
 		var url = _v0.a;
@@ -12463,9 +12556,19 @@ var $author$project$Game$update = F2(
 								$author$project$Game$encodeSave(model),
 								$author$project$Game$encodeScore(model)
 							])));
-			default:
+			case 'Reload':
 				var rel = msg.a;
 				return rel ? _Utils_Tuple2(model, $elm$browser$Browser$Navigation$reload) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			default:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							level: A2($author$project$Game$respawnLevel, model.difficulty, model.level),
+							pauseToggle: false,
+							player: A2($author$project$Game$respawnPlayer, model.level, model.player)
+						}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Help$update = F2(
@@ -14371,6 +14474,7 @@ var $author$project$Game$Hover = function (a) {
 var $author$project$Game$MouseOut = function (a) {
 	return {$: 'MouseOut', a: a};
 };
+var $author$project$Game$Respawn = {$: 'Respawn'};
 var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$Attributes$href = function (url) {
 	return A2(
@@ -14417,6 +14521,12 @@ var $elm$html$Html$Events$on = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$html$Html$Events$onMouseOut = function (msg) {
 	return A2(
 		$elm$html$Html$Events$on,
@@ -14467,34 +14577,18 @@ var $author$project$Game$viewDeathScreen = F6(
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$a,
+							$elm$html$Html$img,
 							_List_fromArray(
 								[
-									function () {
-									switch (pos.$) {
-										case 'First':
-											return $author$project$Route$href($author$project$Route$Game1);
-										case 'Second':
-											return $author$project$Route$href($author$project$Route$Game2);
-										default:
-											return $author$project$Route$href($author$project$Route$Game3);
-									}
-								}()
+									$elm$html$Html$Attributes$src(pathRespawn),
+									$elm$html$Html$Events$onMouseOver(
+									$author$project$Game$Hover($author$project$Game$DeathScreenRespawn)),
+									$elm$html$Html$Events$onMouseOut(
+									$author$project$Game$MouseOut($author$project$Game$DeathScreenRespawn)),
+									$elm$html$Html$Events$onClick($author$project$Game$Respawn),
+									A2($elm$html$Html$Attributes$style, 'cursor', 'pointer')
 								]),
-							_List_fromArray(
-								[
-									A2(
-									$elm$html$Html$img,
-									_List_fromArray(
-										[
-											$elm$html$Html$Attributes$src(pathRespawn),
-											$elm$html$Html$Events$onMouseOver(
-											$author$project$Game$Hover($author$project$Game$DeathScreenRespawn)),
-											$elm$html$Html$Events$onMouseOut(
-											$author$project$Game$MouseOut($author$project$Game$DeathScreenRespawn))
-										]),
-									_List_Nil)
-								]))
+							_List_Nil)
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -15099,12 +15193,6 @@ var $author$project$Game$ClickResume = {$: 'ClickResume'};
 var $author$project$Game$PauseScreenHelp = {$: 'PauseScreenHelp'};
 var $author$project$Game$PauseScreenResume = {$: 'PauseScreenResume'};
 var $author$project$Game$PauseScreenSettings = {$: 'PauseScreenSettings'};
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $author$project$Game$viewPauseScreen = F9(
 	function (left, top, pathResume, pathSettings, pathHelp, pathReturn, pauseToggle, player, level) {
 		var exitReached = _Utils_eq(
@@ -15270,43 +15358,6 @@ var $author$project$Game$viewPauseScreen = F9(
 								]))
 						]))
 				])) : A2($elm$html$Html$div, _List_Nil, _List_Nil);
-	});
-var $author$project$Game$viewPlayerDebugInfo = F5(
-	function (left, top, name, diff, player) {
-		return A2(
-			$elm$html$Html$pre,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'left',
-					$elm$core$String$fromInt(left) + 'px'),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'top',
-					$elm$core$String$fromInt(top) + 'px')
-				]),
-			_List_fromArray(
-				[
-					$elm$html$Html$text('name: ' + name),
-					$elm$html$Html$text(
-					'\ndifficulty: ' + $author$project$DecodingJson$difficultyToString(diff)),
-					$elm$html$Html$text(
-					'\nx: ' + $elm$core$String$fromFloat(player.x)),
-					$elm$html$Html$text(
-					'\ny: ' + $elm$core$String$fromFloat(player.y)),
-					$elm$html$Html$text(
-					'\nvx: ' + $elm$core$String$fromFloat(player.vx)),
-					$elm$html$Html$text(
-					'\nvy: ' + $elm$core$String$fromFloat(player.vy)),
-					$elm$html$Html$text(
-					'\ncurrentSpeed: ' + $elm$core$String$fromFloat(player.currentSpeed)),
-					$elm$html$Html$text(
-					'\nsword: ' + $author$project$Sword$swordTypeToString(player.sword)),
-					$elm$html$Html$text(
-					'\narmor: ' + $author$project$Armor$armorTypeToString(player.armor))
-				]));
 	});
 var $author$project$Game$keyButtonTexture = F2(
 	function (keyButton, keys) {
@@ -15520,7 +15571,6 @@ var $author$project$Game$view = function (model) {
 					]),
 				{camera: model.camera, size: model.screen, time: model.time},
 				$author$project$Game$render(model)),
-				A5($author$project$Game$viewPlayerDebugInfo, 100, 100, model.name, model.difficulty, model.player),
 				A3($author$project$Game$viewTime, 950, 50, model.time),
 				A4($author$project$Game$viewDefenseBar, 448, 685, model.player.maxDefense, model.player.armor.totalDef),
 				A4($author$project$Game$viewHealthBar, 448, 725, model.player.maxHealth, model.player.currentHealth),
@@ -16255,6 +16305,21 @@ var $author$project$Help$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text('Help')
+					])),
+				A2(
+				$elm$html$Html$pre,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'font-size', '1.5em'),
+						A2($elm$html$Html$Attributes$style, 'margin', 'unset'),
+						A2($elm$html$Html$Attributes$style, 'display', 'unset'),
+						A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
+						A2($elm$html$Html$Attributes$style, 'left', '40%'),
+						A2($elm$html$Html$Attributes$style, 'top', '16%')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Goal: Find the Elm Scrolls in Level 3 !')
 					])),
 				A2(
 				$elm$html$Html$img,

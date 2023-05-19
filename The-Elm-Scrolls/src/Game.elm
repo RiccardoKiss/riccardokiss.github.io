@@ -84,6 +84,7 @@ type Msg
   | ClickResume
   | FinishedGame
   | Reload Bool
+  | Respawn
 
 
 initPlayer : Player
@@ -427,6 +428,15 @@ update msg model =
       else
         ( model, Cmd.none )
 
+    Respawn ->
+      ( { model
+          | player = respawnPlayer model.level model.player
+          , level = respawnLevel model.difficulty model.level
+          , pauseToggle = False
+        }
+      , Cmd.none
+      )
+
 
 encodeScore : Model -> Cmd msg
 encodeScore model =
@@ -595,6 +605,28 @@ initNextLevelPlayer currentLevel player =
     Lvl3 ->
       player
 
+respawnPlayer : Level -> Player -> Player
+respawnPlayer currentLevel player =
+  case currentLevel.map of
+    Lvl1 ->
+      { player
+        | x = Level.level1StartCoordinates.x
+        , y = Level.level1StartCoordinates.y
+        , currentHealth = 50
+      }
+    Lvl2 ->
+      { player
+        | x = Level.level2StartCoordinates.x
+        , y = Level.level2StartCoordinates.y
+        , currentHealth = 50
+      }
+    Lvl3 ->
+      { player
+        | x = Level.level3StartCoordinates.x
+        , y = Level.level3StartCoordinates.y
+        , currentHealth = 50
+      }
+
 initNextLevel : DecodingJson.Difficulty -> Level -> Level
 initNextLevel difficulty currentLevel =
   let
@@ -618,6 +650,30 @@ initNextLevel difficulty currentLevel =
 
     Lvl3 ->
       currentLevel
+
+respawnLevel : DecodingJson.Difficulty -> Level -> Level
+respawnLevel difficulty currentLevel =
+  let
+    levelDifficulty =
+      case difficulty of
+        DecodingJson.Easy ->
+          Level.Easy
+
+        DecodingJson.Medium ->
+          Level.Medium
+
+        DecodingJson.Hard ->
+          Level.Hard
+  in
+  case currentLevel.map of
+    Lvl1 ->
+      Level.level1 levelDifficulty
+
+    Lvl2 ->
+      Level.level2 levelDifficulty
+
+    Lvl3 ->
+      Level.level3 levelDifficulty
 
 playerTick :
   Float
@@ -807,15 +863,18 @@ enemyPhysics dt lvl player enemy =
             | x = newX
             , y = newY
             , dir =
-              if xDiff < 0.10 then -- newX == enemy.x
-                if newY > enemy.y then
-                  Enemy.Up
-                else -- newY < enemy.y
-                  Enemy.Down
-              else if newX < enemy.x  then
-                Enemy.Left --enemy.dir
-              else -- if newX > enemy.x then
-                Enemy.Right --enemy,dir
+              if enemy.hostile then
+                if xDiff < 0.10 then -- newX == enemy.x
+                  if newY > enemy.y then
+                    Enemy.Up
+                  else -- newY < enemy.y
+                    Enemy.Down
+                else if newX < enemy.x  then
+                  Enemy.Left
+                else -- if newX >= enemy.x then
+                  Enemy.Right
+              else
+                enemy.dir
           }
       else
         enemy
@@ -1612,21 +1671,12 @@ viewDeathScreen left top pathRespawn pathReturn player pos =
               , style "left" "390px"
               , style "top" "300px"
               ]
-              [ a [ case pos of
-                      First ->
-                        Route.href Route.Game1
-
-                      Second ->
-                        Route.href Route.Game2
-
-                      Third ->
-                        Route.href Route.Game3
-                  ]
-                [ img [ src pathRespawn
-                      , onMouseOver (Hover DeathScreenRespawn)
-                      , onMouseOut (MouseOut DeathScreenRespawn)
-                      ] []
-                ]
+              [ img [ src pathRespawn
+                    , onMouseOver (Hover DeathScreenRespawn)
+                    , onMouseOut (MouseOut DeathScreenRespawn)
+                    , onClick Respawn
+                    , style "cursor" "pointer"
+                    ] []
               ]
         , div [ style "position" "absolute"
               , style "left" "390px"
@@ -1677,7 +1727,7 @@ view model =
             , size = model.screen  -- (1280, 720)
             }
               (render model)
-      , viewPlayerDebugInfo 100 100 model.name model.difficulty model.player
+      --, viewPlayerDebugInfo 100 100 model.name model.difficulty model.player
       , viewTime 950 50 model.time
       , viewDefenseBar 448 685 model.player.maxDefense model.player.armor.totalDef
       , viewHealthBar 448 725 model.player.maxHealth model.player.currentHealth

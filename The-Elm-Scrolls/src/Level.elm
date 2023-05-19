@@ -66,9 +66,23 @@ level1Enemies : Difficulty -> List Enemy
 level1Enemies difficulty =
   let
     enemies =
-      [ skeleton 57 17 Enemy.Right
-      --, skeleton 55 12 Enemy.Up
-      --, skeleton 55 14 Enemy.Up
+      [ bandit 57 17 Enemy.Right
+      , bandit 68 19 Enemy.Right
+      , bandit 76 17 Enemy.Right
+      , bandit 81 10 Enemy.Right
+      , bandit 57 22 Enemy.Up
+      , bandit 54 28 Enemy.Left
+      , bandit 41 26 Enemy.Left
+      , bandit 29 35 Enemy.Down
+      , bandit 62 35 Enemy.Left
+      , bandit 17 27 Enemy.Right
+      , bandit 89 32 Enemy.Right
+      , bandit 110 31 Enemy.Down
+      , bandit 53 51 Enemy.Right
+      , bandit 35 52 Enemy.Up
+      , bandit 45 66 Enemy.Left
+      , bandit 79 52 Enemy.Up
+      , bandit 79 78 Enemy.Down
       ]
   in
   enemies
@@ -116,7 +130,16 @@ level1 difficulty =
 
 level2Enemies : Difficulty -> List Enemy
 level2Enemies difficulty =
-  []
+  [ zombie 43 38 Enemy.Right
+  , zombie 26 52 Enemy.Up
+  , zombie 41 104 Enemy.Up
+  , zombie 94 26 Enemy.Down
+  , zombie 101 59 Enemy.Down
+  , zombie 86 72 Enemy.Up
+  , zombie 102 104 Enemy.Up
+  , zombie 57 70 Enemy.Up
+  , zombie 50 73 Enemy.Down
+  ]
 
 level2Items : List Item
 level2Items =
@@ -161,7 +184,18 @@ level2 difficulty =
 
 level3Enemies : Difficulty -> List Enemy
 level3Enemies difficulty =
-  []
+  [ dragonKnight 104 30 Enemy.Up
+  , skeleton 95 53 Enemy.Left
+  , skeleton 95 71 Enemy.Left
+  , skeleton 74 83 Enemy.Left
+  , skeleton 39 92 Enemy.Down
+  , skeleton 40 69 Enemy.Up
+  , skeleton 27 79 Enemy.Up
+  , skeleton 24 31 Enemy.Down
+  , skeleton 52 40 Enemy.Down
+  , skeleton 69 39 Enemy.Left
+  , skeleton 80 111 Enemy.Right
+  ]
 
 level3Items : List Item
 level3Items =

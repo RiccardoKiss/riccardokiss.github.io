@@ -49,7 +49,7 @@ matchRoute : Parser (Route -> a) a
 matchRoute =
   oneOf
     [ Parser.map Home (s "index.html")
-    --, Parser.map Home Parser.top
+    , Parser.map Home Parser.top
     , Parser.map NewGame (s "new-game")
     , Parser.map Game1 (s "game1")
     , Parser.map Game2 (s "game2")

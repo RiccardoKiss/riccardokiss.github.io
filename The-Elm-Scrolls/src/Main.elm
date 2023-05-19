@@ -86,6 +86,7 @@ init flags url navKey =
       { route =
           case Url.fromString replacedUrl of
             Just u ->
+              _ = Debug.log "[Main.init] replacedUrl" u
               Route.parseUrl u
 
             Nothing ->

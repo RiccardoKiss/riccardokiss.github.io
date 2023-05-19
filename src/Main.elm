@@ -204,7 +204,7 @@ update msg model =
           )
 
     ( UrlChanged url, _ ) ->
-      let
+      {-let
         stringUrl = Url.toString url
         replacedUrl =
           if String.contains "/The-Elm-Scrolls/" stringUrl then
@@ -218,7 +218,7 @@ update msg model =
 
             Nothing ->
               Route.parseUrl url
-      in
+      in-}
       ( { model | route = newRoute }, Cmd.none )
       |> initPage
 

@@ -336,7 +336,10 @@ enemyDecoder =
 
               "prototype" ->
                 D.succeed Enemy.Prototype
-
+              
+              "dragonKnight" ->
+                D.succeed Enemy.DragonKnight
+                
               _ ->
                 D.fail "Invalid EnemyType"
           )

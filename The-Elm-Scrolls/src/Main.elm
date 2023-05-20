@@ -83,13 +83,13 @@ init flags url navKey =
           }
     _ = Debug.log "[Main.init] decodedFlags" decodedFlags
     model =
-      { route =
-          case Url.fromString replacedUrl of
+      { route = Route.parseUrl url
+          {-case Url.fromString replacedUrl of
             Just u ->
               Route.parseUrl u
 
             Nothing ->
-              Route.parseUrl url
+              Route.parseUrl url-}
       , pageModel = NotFoundPage
       , navKey = navKey
       , flags = decodedFlags
@@ -211,13 +211,13 @@ update msg model =
             String.replace "/The-Elm-Scrolls/" "/" stringUrl
           else
             stringUrl
-        newRoute =
-          case Url.fromString replacedUrl of
+        newRoute = Route.parseUrl url
+          {-case Url.fromString replacedUrl of
             Just u ->
               Route.parseUrl u
 
             Nothing ->
-              Route.parseUrl url
+              Route.parseUrl url-}
       in
       ( { model | route = newRoute }, Cmd.none )
       |> initPage

@@ -9085,9 +9085,9 @@ var $author$project$Main$init = F3(
 		var stringUrl = $elm$url$Url$toString(url);
 		var replacedUrl = A2($elm$core$String$contains, '/The-Elm-Scrolls/', stringUrl) ? A3($elm$core$String$replace, '/The-Elm-Scrolls/', '/', stringUrl) : stringUrl;
 		var decodedFlags = function () {
-			var _v3 = A2($elm$json$Json$Decode$decodeValue, $author$project$DecodingJson$flagsDecoder, flags);
-			if (_v3.$ === 'Ok') {
-				var decoded = _v3.a;
+			var _v2 = A2($elm$json$Json$Decode$decodeValue, $author$project$DecodingJson$flagsDecoder, flags);
+			if (_v2.$ === 'Ok') {
+				var decoded = _v2.a;
 				return decoded;
 			} else {
 				return {highScores: $elm$core$Maybe$Nothing, save1: $elm$core$Maybe$Nothing, save2: $elm$core$Maybe$Nothing, save3: $elm$core$Maybe$Nothing, settings: $elm$core$Maybe$Nothing};
@@ -9097,15 +9097,7 @@ var $author$project$Main$init = F3(
 			flags: decodedFlags,
 			navKey: navKey,
 			pageModel: $author$project$Main$NotFoundPage,
-			route: function () {
-				var _v2 = $elm$url$Url$fromString(replacedUrl);
-				if (_v2.$ === 'Just') {
-					var u = _v2.a;
-					return $author$project$Route$parseUrl(u);
-				} else {
-					return $author$project$Route$parseUrl(url);
-				}
-			}()
+			route: $author$project$Route$parseUrl(url)
 		};
 		var _v0 = A2($elm$core$Debug$log, '[Main.init] url', url);
 		var _v1 = A2($elm$core$Debug$log, '[Main.init] decodedFlags', decodedFlags);
@@ -12854,15 +12846,7 @@ var $author$project$Main$update = F2(
 					var url = _v0.a.a;
 					var stringUrl = $elm$url$Url$toString(url);
 					var replacedUrl = A2($elm$core$String$contains, '/The-Elm-Scrolls/', stringUrl) ? A3($elm$core$String$replace, '/The-Elm-Scrolls/', '/', stringUrl) : stringUrl;
-					var newRoute = function () {
-						var _v2 = $elm$url$Url$fromString(replacedUrl);
-						if (_v2.$ === 'Just') {
-							var u = _v2.a;
-							return $author$project$Route$parseUrl(u);
-						} else {
-							return $author$project$Route$parseUrl(url);
-						}
-					}();
+					var newRoute = $author$project$Route$parseUrl(url);
 					return $author$project$Main$initPage(
 						_Utils_Tuple2(
 							_Utils_update(
@@ -12873,9 +12857,9 @@ var $author$project$Main$update = F2(
 					if (_v0.b.$ === 'HomePage') {
 						var subMsg = _v0.a.a;
 						var modelHome = _v0.b.a;
-						var _v3 = A2($author$project$Home$update, subMsg, modelHome);
-						var updatedPageModel = _v3.a;
-						var updatedCmds = _v3.b;
+						var _v2 = A2($author$project$Home$update, subMsg, modelHome);
+						var updatedPageModel = _v2.a;
+						var updatedCmds = _v2.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -12890,9 +12874,9 @@ var $author$project$Main$update = F2(
 					if (_v0.b.$ === 'NewGamePage') {
 						var subMsg = _v0.a.a;
 						var modelNewGame = _v0.b.a;
-						var _v4 = A2($author$project$NewGame$update, subMsg, modelNewGame);
-						var updatedPageModel = _v4.a;
-						var updatedCmds = _v4.b;
+						var _v3 = A2($author$project$NewGame$update, subMsg, modelNewGame);
+						var updatedPageModel = _v3.a;
+						var updatedCmds = _v3.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -12907,9 +12891,9 @@ var $author$project$Main$update = F2(
 					if (_v0.b.$ === 'GamePage') {
 						var subMsg = _v0.a.a;
 						var modelGame = _v0.b.a;
-						var _v5 = A2($author$project$Game$update, subMsg, modelGame);
-						var updatedPageModel = _v5.a;
-						var updatedCmds = _v5.b;
+						var _v4 = A2($author$project$Game$update, subMsg, modelGame);
+						var updatedPageModel = _v4.a;
+						var updatedCmds = _v4.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -12924,9 +12908,9 @@ var $author$project$Main$update = F2(
 					if (_v0.b.$ === 'LoadGamePage') {
 						var subMsg = _v0.a.a;
 						var modelLoadGame = _v0.b.a;
-						var _v6 = A2($author$project$LoadGame$update, subMsg, modelLoadGame);
-						var updatedPageModel = _v6.a;
-						var updatedCmds = _v6.b;
+						var _v5 = A2($author$project$LoadGame$update, subMsg, modelLoadGame);
+						var updatedPageModel = _v5.a;
+						var updatedCmds = _v5.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -12941,9 +12925,9 @@ var $author$project$Main$update = F2(
 					if (_v0.b.$ === 'HighScoresPage') {
 						var subMsg = _v0.a.a;
 						var modelHighScores = _v0.b.a;
-						var _v7 = A2($author$project$HighScores$update, subMsg, modelHighScores);
-						var updatedPageModel = _v7.a;
-						var updatedCmds = _v7.b;
+						var _v6 = A2($author$project$HighScores$update, subMsg, modelHighScores);
+						var updatedPageModel = _v6.a;
+						var updatedCmds = _v6.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -12958,9 +12942,9 @@ var $author$project$Main$update = F2(
 					if (_v0.b.$ === 'SettingsPage') {
 						var subMsg = _v0.a.a;
 						var modelSettings = _v0.b.a;
-						var _v8 = A2($author$project$Settings$update, subMsg, modelSettings);
-						var updatedPageModel = _v8.a;
-						var updatedCmds = _v8.b;
+						var _v7 = A2($author$project$Settings$update, subMsg, modelSettings);
+						var updatedPageModel = _v7.a;
+						var updatedCmds = _v7.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -12975,9 +12959,9 @@ var $author$project$Main$update = F2(
 					if (_v0.b.$ === 'HelpPage') {
 						var subMsg = _v0.a.a;
 						var modelHelp = _v0.b.a;
-						var _v9 = A2($author$project$Help$update, subMsg, modelHelp);
-						var updatedPageModel = _v9.a;
-						var updatedCmds = _v9.b;
+						var _v8 = A2($author$project$Help$update, subMsg, modelHelp);
+						var updatedPageModel = _v8.a;
+						var updatedCmds = _v8.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,

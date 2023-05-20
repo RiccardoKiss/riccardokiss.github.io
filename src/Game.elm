@@ -455,10 +455,16 @@ encodeScore model =
     score = ((toFloat model.player.playerLevel) / model.time / difficultyPenalty) * 1000.0
     myScore = List.singleton (newScore model.name model.difficulty score)
     sortedScores =
-      List.append model.scores myScore   -- merge highScores from localStorage with current score entry
-      |> List.sortBy .score                  -- sort all high scores based on score value from lowest to highest
-      |> List.reverse                        -- entries with highest to lowest score values
-      |> List.take 5                         -- take first 5 entries, drop the rest
+      if List.member myScore model.scores then -- prevent saving duplicates
+        model.scores
+        |> List.sortBy .score
+        |> List.reverse
+        |> List.take 5
+      else
+        List.append model.scores myScore       -- merge highScores from localStorage with current score entry
+        |> List.sortBy .score                  -- sort all high scores based on score value from lowest to highest
+        |> List.reverse                        -- entries with highest to lowest score values
+        |> List.take 5                         -- take first 5 entries, drop the rest
     encodedScore =
       Encode.list Encode.object (List.map saveScores sortedScores)
   in

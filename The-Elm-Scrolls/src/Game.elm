@@ -232,8 +232,8 @@ init save pos settings highScores navKey =
     , button_PS_return = "assets/button/button_return_MainMenu.png"
     }
   , Cmd.batch
-      [ Cmd.map Resources ( Resources.loadTextures texturesList )
-      --, Ports.loadedPage ()
+      [ Ports.loadedPage ()
+      , Cmd.map Resources ( Resources.loadTextures texturesList )
       ]
   )
 

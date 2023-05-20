@@ -7969,6 +7969,12 @@ var $Zinggi$elm_game_resources$Game$Resources$loadTextures = function (urls) {
 			},
 			urls));
 };
+var $elm$json$Json$Encode$null = _Json_encodeNull;
+var $author$project$Ports$loadedPage = _Platform_outgoingPort(
+	'loadedPage',
+	function ($) {
+		return $elm$json$Json$Encode$null;
+	});
 var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $elm$core$List$append = F2(
@@ -8112,6 +8118,7 @@ var $author$project$Game$init = F5(
 			$elm$core$Platform$Cmd$batch(
 				_List_fromArray(
 					[
+						$author$project$Ports$loadedPage(_Utils_Tuple0),
 						A2(
 						$elm$core$Platform$Cmd$map,
 						$author$project$Game$Resources,
@@ -8141,12 +8148,6 @@ var $author$project$HighScores$init = F2(
 				}()
 			},
 			$elm$core$Platform$Cmd$none);
-	});
-var $elm$json$Json$Encode$null = _Json_encodeNull;
-var $author$project$Ports$loadedPage = _Platform_outgoingPort(
-	'loadedPage',
-	function ($) {
-		return $elm$json$Json$Encode$null;
 	});
 var $author$project$Home$init = function (navKey) {
 	return _Utils_Tuple2(

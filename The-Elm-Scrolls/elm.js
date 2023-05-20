@@ -8346,6 +8346,18 @@ var $elm$url$Url$Parser$s = function (str) {
 			}
 		});
 };
+var $elm$url$Url$Parser$slash = F2(
+	function (_v0, _v1) {
+		var parseBefore = _v0.a;
+		var parseAfter = _v1.a;
+		return $elm$url$Url$Parser$Parser(
+			function (state) {
+				return A2(
+					$elm$core$List$concatMap,
+					parseAfter,
+					parseBefore(state));
+			});
+	});
 var $elm$url$Url$Parser$top = $elm$url$Url$Parser$Parser(
 	function (state) {
 		return _List_fromArray(
@@ -8357,40 +8369,73 @@ var $author$project$Route$matchRoute = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Home,
-			$elm$url$Url$Parser$s('index.html')),
-			A2($elm$url$Url$Parser$map, $author$project$Route$Home, $elm$url$Url$Parser$top),
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$s('index.html'))),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$Home,
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$top)),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$NewGame,
-			$elm$url$Url$Parser$s('new-game')),
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$s('new-game'))),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Game1,
-			$elm$url$Url$Parser$s('game1')),
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$s('game1'))),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Game2,
-			$elm$url$Url$Parser$s('game2')),
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$s('game2'))),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Game3,
-			$elm$url$Url$Parser$s('game3')),
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$s('game3'))),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$LoadGame,
-			$elm$url$Url$Parser$s('load-game')),
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$s('load-game'))),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$HighScores,
-			$elm$url$Url$Parser$s('highscores')),
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$s('highscores'))),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Settings,
-			$elm$url$Url$Parser$s('settings')),
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$s('settings'))),
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Help,
-			$elm$url$Url$Parser$s('help'))
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('The-Elm-Scrolls'),
+				$elm$url$Url$Parser$s('help')))
 		]));
 var $elm$url$Url$Parser$getFirstMatch = function (states) {
 	getFirstMatch:

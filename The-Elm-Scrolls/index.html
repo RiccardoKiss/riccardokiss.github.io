@@ -16,76 +16,82 @@
       // the correct url will be waiting in the browser's history for
       // the single page app to route accordingly.
       (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) {
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + decoded + l.hash
-          );
+        if (l.search) {
+          var q = {};
+          l.search
+            .slice(1)
+            .split("&")
+            .forEach(function(v) {
+              var a = v.split("=");
+              q[a[0]] = a
+                .slice(1)
+                .join("=")
+                .replace(/~and~/g, "&");
+            });
+          if (q.p !== undefined) {
+            window.history.replaceState(null, null, l.pathname.slice(0, -1) + (q.p || "") + (q.q ? "?" + q.q : "") + l.hash);
+          }
         }
-      }(window.location))
+      })(window.location);
   </script>
   <script type="text/javascript" src="elm.js"></script>
 </head>
 <body>
   <div id="elm"></div>
+  <script type="text/javascript">
+      var storedSave1 = localStorage.getItem('save1');
+      var storedSave2 = localStorage.getItem('save2');
+      var storedSave3 = localStorage.getItem('save3');
+
+      var retrievedSave1 = storedSave1 ? JSON.parse(storedSave1) : null;
+      var retrievedSave2 = storedSave2 ? JSON.parse(storedSave2) : null;
+      var retrievedSave3 = storedSave3 ? JSON.parse(storedSave3) : null;
+
+      var storedSettings = localStorage.getItem('settings');
+      var retrievedSettings = storedSettings ? JSON.parse(storedSettings) : null;
+
+      var storedScores = localStorage.getItem('highScores');
+      var retrievedScores = storedScores ? JSON.parse(storedScores) : null;
+
+      const flags = {
+        save1: retrievedSave1,
+        save2: retrievedSave2,
+        save3: retrievedSave3,
+        settings: retrievedSettings,
+        highScores: retrievedScores
+      };
+
+      console.log("Flags: ", flags);
+
+  	  var app = Elm.Main.init({
+        node: document.getElementById('elm'),
+        flags : flags
+      });
+
+      app.ports.storeSave1.subscribe(function(state) {
+        localStorage.setItem('save1', JSON.stringify(state));
+      });
+      app.ports.storeSave2.subscribe(function(state) {
+        localStorage.setItem('save2', JSON.stringify(state));
+      });
+      app.ports.storeSave3.subscribe(function(state) {
+        localStorage.setItem('save3', JSON.stringify(state));
+      });
+
+      app.ports.storeSettings.subscribe(function(state) {
+        localStorage.setItem('settings', JSON.stringify(state));
+      });
+
+      app.ports.storeScores.subscribe(function(state) {
+        localStorage.setItem('highScores', JSON.stringify(state));
+      });
+
+      app.ports.loadedPage.subscribe(function(state) {
+        let reload = localStorage.getItem('reloadPage');
+        reload = reload ? JSON.parse(reload) : true;
+        app.ports.reloadPage.send(reload);
+        localStorage.setItem('reloadPage', JSON.stringify(!reload));
+      });
+  </script>
 </body>
-<script>
-
-    var storedSave1 = localStorage.getItem('save1');
-    var storedSave2 = localStorage.getItem('save2');
-    var storedSave3 = localStorage.getItem('save3');
-
-    var retrievedSave1 = storedSave1 ? JSON.parse(storedSave1) : null;
-    var retrievedSave2 = storedSave2 ? JSON.parse(storedSave2) : null;
-    var retrievedSave3 = storedSave3 ? JSON.parse(storedSave3) : null;
-
-    var storedSettings = localStorage.getItem('settings');
-    var retrievedSettings = storedSettings ? JSON.parse(storedSettings) : null;
-
-    var storedScores = localStorage.getItem('highScores');
-    var retrievedScores = storedScores ? JSON.parse(storedScores) : null;
-
-    const flags = {
-      save1: retrievedSave1,
-      save2: retrievedSave2,
-      save3: retrievedSave3,
-      settings: retrievedSettings,
-      highScores: retrievedScores
-    };
-
-    console.log("Flags: ", flags);
-
-	  var app = Elm.Main.init({
-      node: document.getElementById('elm'),
-      flags : flags
-    });
-
-    app.ports.storeSave1.subscribe(function(state) {
-      localStorage.setItem('save1', JSON.stringify(state));
-    });
-    app.ports.storeSave2.subscribe(function(state) {
-      localStorage.setItem('save2', JSON.stringify(state));
-    });
-    app.ports.storeSave3.subscribe(function(state) {
-      localStorage.setItem('save3', JSON.stringify(state));
-    });
-
-    app.ports.storeSettings.subscribe(function(state) {
-      localStorage.setItem('settings', JSON.stringify(state));
-    });
-
-    app.ports.storeScores.subscribe(function(state) {
-      localStorage.setItem('highScores', JSON.stringify(state));
-    });
-
-    app.ports.loadedPage.subscribe(function(state) {
-      let reload = localStorage.getItem('reloadPage');
-      reload = reload ? JSON.parse(reload) : true;
-      app.ports.reloadPage.send(reload);
-      localStorage.setItem('reloadPage', JSON.stringify(!reload));
-    });
-
-</script>
 </html>

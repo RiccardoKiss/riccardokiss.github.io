@@ -48,16 +48,16 @@ parseUrl url =
 matchRoute : Parser (Route -> a) a
 matchRoute =
     oneOf
-      [ Parser.map Home (s "index.html")
-      , Parser.map Home (Parser.top)
-      , Parser.map NewGame (s "new-game")
-      , Parser.map Game1 (s "game1")
-      , Parser.map Game2 (s "game2")
-      , Parser.map Game3 (s "game3")
-      , Parser.map LoadGame (s "load-game")
-      , Parser.map HighScores (s "highscores")
-      , Parser.map Settings (s "settings")
-      , Parser.map Help (s "help")
+      [ Parser.map Home (s "The-Elm-Scrolls" </> s "index.html")
+      , Parser.map Home (s "The-Elm-Scrolls" </> Parser.top)
+      , Parser.map NewGame (s "The-Elm-Scrolls" </> s "new-game")
+      , Parser.map Game1 (s "The-Elm-Scrolls" </> s "game1")
+      , Parser.map Game2 (s "The-Elm-Scrolls" </> s "game2")
+      , Parser.map Game3 (s "The-Elm-Scrolls" </> s "game3")
+      , Parser.map LoadGame (s "The-Elm-Scrolls" </> s "load-game")
+      , Parser.map HighScores (s "The-Elm-Scrolls" </> s "highscores")
+      , Parser.map Settings (s "The-Elm-Scrolls" </> s "settings")
+      , Parser.map Help (s "The-Elm-Scrolls" </> s "help")
       ]
 
 routeToString : Route -> String
